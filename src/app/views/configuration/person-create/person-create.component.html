@@ -1,0 +1,131 @@
+<div class="modal-header">
+  <h5 class="modal-title">{{ personData?.id ? 'Editar' : 'Registrar' }} Persona</h5>
+  <button type="button" class="btn-close" (click)="cancel()"></button>
+</div>
+
+<div class="modal-body">
+  <p *ngIf="errorMessage" class="fs-14 text-danger">{{ errorMessage }}</p>
+
+  <form [formGroup]="form" class="row">
+    <div class="col-lg-9">
+      <div class="card">
+        <div class="card-header border-bottom border-dashed">
+          <h4 class="card-title mb-0">Información Básica</h4>
+        </div>
+        <div class="card-body">
+          <div class="row">
+            <div class="col-lg-3 mb-3">
+              <label class="form-label">Primer nombre <span class="required">*</span></label>
+              <input formControlName="firstName" type="text" class="form-control"
+                [ngClass]="{ 'is-invalid': submitted && form.get('firstName')?.invalid }">
+              <div class="invalid-feedback" *ngIf="submitted && form.get('firstName')?.errors?.['required']">
+                Campo obligatorio
+              </div>
+            </div>
+
+            <div class="col-lg-3 mb-3">
+              <label class="form-label">Segundo nombre</label>
+              <input formControlName="secondName" type="text" class="form-control"
+                [ngClass]="{ 'is-invalid': submitted && form.get('secondName')?.invalid }">
+              <div class="invalid-feedback" *ngIf="submitted && form.get('secondName')?.errors?.['required']">
+                Campo obligatorio
+              </div>
+            </div>
+
+            <div class="col-lg-3 mb-3">
+              <label class="form-label">Primer apellido <span class="required">*</span></label>
+              <input formControlName="firstSurname" type="text" class="form-control"
+                [ngClass]="{ 'is-invalid': submitted && form.get('firstSurname')?.invalid }">
+              <div class="invalid-feedback" *ngIf="submitted && form.get('firstSurname')?.errors?.['required']">
+                Campo obligatorio
+              </div>
+            </div>
+
+            <div class="col-lg-3 mb-3">
+              <label class="form-label">Segundo apellido</label>
+              <input formControlName="secondSurname" type="text" class="form-control"
+                [ngClass]="{ 'is-invalid': submitted && form.get('secondSurname')?.invalid }">
+              <div class="invalid-feedback" *ngIf="submitted && form.get('secondSurname')?.errors?.['required']">
+                Campo obligatorio
+              </div>
+            </div>
+
+            <div class="col-lg-12 mb-3">
+              <label class="form-label">Nombre completo</label>
+              <input formControlName="fullName" type="text" class="form-control" readonly>
+            </div>
+
+            <div class="col-lg-4 mb-3">
+              <label class="form-label">Tipo de documento <span class="required">*</span></label>
+                <select class="form-control form-select" [ngClass]="{ 'is-invalid': submitted && form.get('secondSurname')?.invalid }" name="choices-single-default" id="choices-single-default" formControlName="documentType">
+                  <option value="">Seleccione</option>
+                  <option *ngFor="let type of documentTypeOpt" [value]="type.value">{{ type.label }}</option>
+                </select>
+                <div class="invalid-feedback" *ngIf="submitted && form.get('documentType')?.errors?.['required']">
+                Campo obligatorio
+              </div>
+            </div>
+
+            <div class="col-lg-4 mb-3">
+              <label class="form-label">Número de documento <span class="required">*</span></label>
+              <input formControlName="identification" type="text" class="form-control"
+                [ngClass]="{ 'is-invalid': submitted && form.get('identification')?.invalid }">
+              <div class="invalid-feedback" *ngIf="submitted && form.get('identification')?.errors?.['required']">
+                Campo obligatorio
+              </div>
+            </div>
+
+            <div class="col-lg-4 mb-3">
+              <label class="form-label">Género <span class="required">*</span></label>
+              <select class="form-control form-select" data-choices name="choices-single-default" id="choices-single-default" formControlName="gender">
+                <option value="">Seleccione</option>
+                <option *ngFor="let type of genderOpt" [value]="type.value">{{ type.label }}</option>
+              </select>
+            </div>
+
+
+            <div class="col-lg-6 mb-3">
+              <label class="form-label">Ocupación <span class="required">*</span></label>
+              <input formControlName="occupation" type="text" class="form-control"
+                [ngClass]="{ 'is-invalid': submitted && form.get('occupation')?.invalid }">
+              <div class="invalid-feedback" *ngIf="submitted && form.get('occupation')?.errors?.['required']">
+                Campo obligatorio
+              </div>
+            </div>
+
+            <div class="col-lg-12 mb-3">
+              <label class="form-label">Sobre la persona</label>
+              <textarea formControlName="description" class="form-control" rows="3"
+                [ngClass]="{ 'is-invalid': submitted && form.get('description')?.invalid }"></textarea>
+              <div class="invalid-feedback" *ngIf="submitted && form.get('description')?.errors?.['required']">
+                Campo obligatorio
+              </div>
+              <div class="invalid-feedback" *ngIf="submitted && form.get('description')?.errors?.['minlength']">
+                Debe tener al menos 10 caracteres.
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-lg-3">
+      <div class="card">
+        <div class="card-header border-bottom border-dashed">
+          <h4 class="card-title mb-0">Foto de perfil</h4>
+        </div>
+        <div class="card-body">
+          <div class="col-12">
+            <FileUploader [showPreview]="true" />
+          </div>
+        </div>
+      </div>
+    </div>
+  </form>
+</div>
+
+<div class="modal-footer">
+  <button class="btn btn-danger" (click)="cancel()">Cancelar</button>
+  <button class="btn btn-primary me-1" (click)="savePerson()">{{ personData?.id ? 'Editar' : 'Registrar' }}</button>
+</div>

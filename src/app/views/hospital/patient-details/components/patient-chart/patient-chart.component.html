@@ -1,0 +1,39 @@
+<div class="card">
+  <div class="card-header border-bottom border-dashed">
+    <div class="d-flex align-items-center gap-2">
+      <div class="d-block">
+        <h4 class="card-title mb-0">Patient Statistic</h4>
+      </div>
+
+      <div class="ms-auto">
+        <div ngbDropdown>
+          <a ngbDropdownToggle class="cursor-pointer btn btn-sm btn-soft-primary drop-arrow-none"
+            data-bs-toggle="dropdown" aria-expanded="false">
+            This Month
+          </a>
+          <div ngbDropdownMenu class="dropdown-menu-end">
+
+            <a href="javascript:void(0);" ngbDropdownItem>Download</a>
+
+            <a href="javascript:void(0);" ngbDropdownItem>Export</a>
+
+            <a href="javascript:void(0);" ngbDropdownItem>Import</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="card-body">
+    <apx-chart
+    [chart]="patientStatisticChartOpts.chart!"
+    [series]="patientStatisticChartOpts.series!"
+    [legend]="patientStatisticChartOpts.legend!"
+    [labels]="patientStatisticChartOpts.labels!"
+    [colors]="patientStatisticChartOpts.colors!"
+    [responsive]="patientStatisticChartOpts.responsive!"
+    />
+    <div class="mt-4">
+      <p class="text-primary mb-0 fw-medium fs-16">Total Visit 11</p>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,149 @@
+<page-title subtitle="Apex" title="Sparklines Charts" />
+<div class="row">
+  <div class="col-12">
+    <div class="card">
+      <div class="card-body">
+
+        <div class="row" dir="ltr">
+          <div class="col-md-4">
+            <apx-chart [chart]="spark1ChartOpts.chart!" [stroke]="spark1ChartOpts.stroke!"
+              [fill]="spark1ChartOpts.fill!" [series]="spark1ChartOpts.series!" [yaxis]="spark1ChartOpts.yaxis!"
+              [colors]="spark1ChartOpts.colors!" [title]="spark1ChartOpts.title!"
+              [subtitle]="spark1ChartOpts.subtitle!" />
+          </div>
+          <div class="col-md-4">
+            <apx-chart [chart]="spark2ChartOpts.chart!" [stroke]="spark2ChartOpts.stroke!"
+              [fill]="spark2ChartOpts.fill!" [series]="spark2ChartOpts.series!" [yaxis]="spark2ChartOpts.yaxis!"
+              [colors]="spark2ChartOpts.colors!" [title]="spark2ChartOpts.title!"
+              [subtitle]="spark2ChartOpts.subtitle!" />
+          </div>
+          <div class="col-md-4">
+            <apx-chart [chart]="spark3ChartOpts.chart!" [stroke]="spark3ChartOpts.stroke!"
+              [fill]="spark3ChartOpts.fill!" [series]="spark3ChartOpts.series!" [yaxis]="spark3ChartOpts.yaxis!"
+              [colors]="spark3ChartOpts.colors!" [title]="spark3ChartOpts.title!"
+              [subtitle]="spark3ChartOpts.subtitle!" />
+          </div>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col-12">
+          <div class="table-responsive">
+            <table class="table mb-0">
+              <thead class="table-light">
+                <tr>
+                  <th class="ps-3">Total Value</th>
+                  <th>Percentage of Portfolio</th>
+                  <th>Last 10 days</th>
+                  <th>Volume</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td class="ps-3">{{currency}}32,554</td>
+                  <td>15%</td>
+                  <td>
+                    <apx-chart 
+                    [chart]="chart1Opts.chart!"
+                    [series]="chart1Opts.series!"
+                    [colors]="chart1Opts.colors!"
+                    [tooltip]="chart1Opts.tooltip!"
+                    [stroke]="chart1Opts.stroke!"
+                    [markers]="chart1Opts.markers!"
+                    />
+                  </td>
+                  <td>
+                    <apx-chart 
+                    [chart]="chart5Opts.chart!"
+                    [plotOptions]="chart5Opts.plotOptions!"
+                    [labels]="chart5Opts.labels!"
+                    [series]="chart5Opts.series!"
+                    [xaxis]="chart5Opts.xaxis!"
+                    [colors]="chart5Opts.colors!"
+                    [tooltip]="chart5Opts.tooltip!"
+                    />
+                  </td>
+                </tr>
+                <tr>
+                  <td class="ps-3">{{currency}}23,533</td>
+                  <td>7%</td>
+                  <td>
+                    <apx-chart 
+                    [chart]="chart2Opts.chart!"
+                    [series]="chart2Opts.series!"
+                    [colors]="chart2Opts.colors!"
+                    [tooltip]="chart2Opts.tooltip!"
+                    [stroke]="chart2Opts.stroke!"
+                    [markers]="chart2Opts.markers!"
+                    />
+                  </td>
+                  <td>
+                    <apx-chart 
+                    [chart]="chart6Opts.chart!"
+                    [plotOptions]="chart6Opts.plotOptions!"
+                    [labels]="chart6Opts.labels!"
+                    [series]="chart6Opts.series!"
+                    [xaxis]="chart6Opts.xaxis!"
+                    [colors]="chart6Opts.colors!"
+                    [tooltip]="chart6Opts.tooltip!"
+                    />
+                  </td>
+                </tr>
+                <tr>
+                  <td class="ps-3">{{currency}}54,276</td>
+                  <td>9%</td>
+                  <td>
+                    <apx-chart 
+                    [chart]="chart3Opts.chart!"
+                    [series]="chart3Opts.series!"
+                    [colors]="chart3Opts.colors!"
+                    [tooltip]="chart3Opts.tooltip!"
+                    [stroke]="chart3Opts.stroke!"
+                    [markers]="chart3Opts.markers!"
+                    />
+                  </td>
+                  <td>
+                    <apx-chart 
+                    [chart]="chart7Opts.chart!"
+                    [plotOptions]="chart7Opts.plotOptions!"
+                    [labels]="chart7Opts.labels!"
+                    [series]="chart7Opts.series!"
+                    [xaxis]="chart7Opts.xaxis!"
+                    [colors]="chart7Opts.colors!"
+                    [tooltip]="chart7Opts.tooltip!"
+                    />
+                  </td>
+                </tr>
+                <tr>
+                  <td class="ps-3">{{currency}}11,533</td>
+                  <td>2%</td>
+                  <td>
+                    <apx-chart 
+                    [chart]="chart4Opts.chart!"
+                    [series]="chart4Opts.series!"
+                    [colors]="chart4Opts.colors!"
+                    [tooltip]="chart4Opts.tooltip!"
+                    [stroke]="chart4Opts.stroke!"
+                    [markers]="chart4Opts.markers!"
+                    />
+                  </td>
+                  <td>
+                    <apx-chart 
+                    [chart]="chart8Opts.chart!"
+                    [plotOptions]="chart8Opts.plotOptions!"
+                    [labels]="chart8Opts.labels!"
+                    [series]="chart8Opts.series!"
+                    [xaxis]="chart8Opts.xaxis!"
+                    [colors]="chart8Opts.colors!"
+                    [tooltip]="chart8Opts.tooltip!"
+                    />
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

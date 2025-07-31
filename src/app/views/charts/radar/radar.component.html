@@ -1,0 +1,72 @@
+<page-title subtitle="Apex" title="Radar Charts" />
+<div class="row">
+  <div class="col-xl-6">
+    <div class="card">
+      <div class="card-body">
+        <h4 class="header-title mb-3">Basic Radar Chart</h4>
+        <div dir="ltr">
+          <apx-chart 
+          [chart]="basicRadarChartOpts.chart!"
+          [series]="basicRadarChartOpts.series!"
+          [colors]="basicRadarChartOpts.colors!"
+          [labels]="basicRadarChartOpts.labels!"
+          />
+        </div>
+      </div>
+
+    </div>
+
+  </div>
+
+  <div class="col-xl-6">
+    <div class="card">
+      <div class="card-body">
+        <h4 class="header-title mb-3">Radar with Polygon-fill</h4>
+        <div dir="ltr">
+          <apx-chart 
+          [chart]="polygonRadarChartOpts.chart!"
+          [series]="polygonRadarChartOpts.series!"
+          [colors]="polygonRadarChartOpts.colors!"
+          [labels]="polygonRadarChartOpts.labels!"
+          [plotOptions]="polygonRadarChartOpts.plotOptions!"
+          [markers]="polygonRadarChartOpts.markers!"
+          [tooltip]="polygonRadarChartOpts.tooltip!"
+          [yaxis]="polygonRadarChartOpts.yaxis!"
+          />
+        </div>
+      </div>
+
+    </div>
+
+  </div>
+
+</div>
+
+
+<div class="row">
+  <div class="col-xl-6">
+    <div class="card">
+      <div class="card-body">
+        <h4 class="header-title mb-3">Radar – Multiple Series</h4>
+        <div dir="ltr">
+          <apx-chart 
+          [chart]="multipleSeriesOpts.chart!"
+          [series]="multipleSeriesOpts.series!"
+          [colors]="multipleSeriesOpts.colors!"
+          [labels]="multipleSeriesOpts.labels!"
+          [fill]="multipleSeriesOpts.fill!"
+          [markers]="multipleSeriesOpts.markers!"
+          [stroke]="multipleSeriesOpts.stroke!"
+          [legend]="multipleSeriesOpts.legend!"
+          />
+          <div class="text-center mt-2">
+            <button (click)="changeTraffic()" class="btn btn-sm btn-primary">Update</button>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+  </div>
+
+</div>

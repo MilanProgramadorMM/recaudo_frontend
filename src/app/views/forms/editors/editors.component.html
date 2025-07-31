@@ -1,0 +1,25 @@
+<page-title subtitle="Forms" title="Editors" />
+<div class="card">
+  <div class="card-header border-bottom border-dashed d-flex align-items-center">
+    <h4 class="header-title">Quill Editor</h4>
+  </div>
+
+  <div class="card-body">
+    <p class="text-muted">Snow is a clean, flat toolbar theme.</p>
+    <quill-editor #quillEditor [(ngModel)]="content" theme="snow" [modules]="editorConfig" style="height: 300px"
+      class="w-100"></quill-editor>
+  </div>
+</div>
+
+<div class="card">
+  <div class="card-header border-bottom border-dashed d-flex align-items-center">
+    <h5 class="mb-1">Bubble Editor</h5>
+  </div>
+
+  <div class="card-body">
+    <p class="text-muted">Bubble is a simple tooltip based theme.</p>
+
+    <quill-editor [(ngModel)]="content" theme="bubble" [modules]="editorConfig" style="height: 300px"
+      class="w-100"></quill-editor>
+  </div>
+</div>

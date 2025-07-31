@@ -1,0 +1,86 @@
+<page-title title="Calendar" />
+<div class="row">
+  <div class="col-xl-3">
+    <div class="card">
+      <div class="card-body">
+        <button class="btn btn-primary w-100" (click)="createEvent()" id="btn-new-event">
+          <i class="ti ti-plus me-2 align-middle"></i> Create New Event
+        </button>
+
+        <div id="external-events" class="mt-2">
+          <p class="text-muted">Drag and drop your event or click in the calendar</p>
+          @for (event of externalEvents; track $index) {
+          <div class="external-event fc-event bg-{{event.className}}-subtle {{event.textClass}}"
+          [id]="'bg-' + event.className">
+            <i class="ti ti-circle-filled me-2"></i>{{event.title}}
+          </div>
+          }
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <div class="col-xl-9">
+    <div class="card">
+      <div class="card-body">
+        <full-calendar [options]="calendarOptions" [events]="this.calendarEvents"></full-calendar>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<ng-template #modalShow let-modal class="modal fade" id="event-modal" tabindex="-1">
+  <form class="needs-validation" name="event-form" id="forms-event" [formGroup]="formData" (ngSubmit)="saveEvent()"
+    novalidate>
+    <div class="modal-header">
+      <h4 class="modal-title" id="modal-title">
+        Create Event
+      </h4>
+      <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" (click)="modal.dismiss('Cross click')"></button>
+    </div>
+    <div class="modal-body">
+      <div class="row">
+        <div class="col-12">
+          <div class="mb-2">
+            <label class="control-label form-label" for="event-title">Event Name</label>
+            <input class="form-control" formControlName="title" placeholder="Insert Event Name" type="text" name="title"
+              id="event-title" required />
+            <div class="invalid-feedback">Please provide a valid event name</div>
+          </div>
+        </div>
+        <div class="col-12">
+          <div class="mb-2">
+            <label class="control-label form-label" for="event-category">Category</label>
+            <select class="form-select" formControlName="className" name="category" id="event-category" required>
+              <option value="bg-primary">Blue</option>
+              <option value="bg-success">Green</option>
+              <option value="bg-info">Cyan</option>
+              <option value="bg-warning">Yellow</option>
+              <option value="bg-danger">Red</option>
+            </select>
+            <div class="invalid-feedback">Please select a valid event category</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="d-flex flex-wrap align-items-center gap-2">
+        @if (isEditMode) {
+        <button type="button" class="btn btn-danger" id="btn-delete-event" (click)="deleteEvent()">
+          Delete
+        </button>
+        }
+
+        <button type="button" class="btn btn-light ms-auto" data-bs-dismiss="modal" (click)="modal.dismiss('Cross click')">
+          Close
+        </button>
+
+        <button type="submit" class="btn btn-primary" id="btn-save-event">
+          Save
+        </button>
+      </div>
+    </div>
+  </form>
+
+</ng-template>

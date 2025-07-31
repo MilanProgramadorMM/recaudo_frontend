@@ -1,0 +1,86 @@
+<page-title subtitle="Apex" title="Treemap Charts" />
+<div class="row">
+  <div class="col-xl-6">
+    <div class="card">
+      <div class="card-body">
+        <h4 class="header-title">Basic Treemap</h4>
+        <div dir="ltr">
+          <apx-chart 
+          [chart]="basicTreemapChart.chart!"
+          [series]="basicTreemapChart.series!"
+          [colors]="basicTreemapChart.colors!"
+          [legend]="basicTreemapChart.legend!"
+          [title]="basicTreemapChart.title!"
+          />
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+  <div class="col-xl-6">
+    <div class="card">
+      <div class="card-body">
+        <h4 class="header-title">Treemap Multiple Series</h4>
+        <div dir="ltr">
+          <apx-chart 
+          [chart]="multipleTreemapChart.chart!"
+          [series]="multipleTreemapChart.series!"
+          [colors]="multipleTreemapChart.colors!"
+          [legend]="multipleTreemapChart.legend!"
+          [title]="multipleTreemapChart.title!"
+          />
+        </div>
+      </div>
+
+    </div>
+
+  </div>
+
+</div>
+
+
+<div class="row">
+  <div class="col-xl-6">
+    <div class="card">
+      <div class="card-body">
+        <h4 class="header-title">Distributed Treemap</h4>
+        <div dir="ltr">
+          <apx-chart 
+          [chart]="distributedTreemapChart.chart!"
+          [series]="distributedTreemapChart.series!"
+          [colors]="distributedTreemapChart.colors!"
+          [legend]="distributedTreemapChart.legend!"
+          [title]="distributedTreemapChart.title!"
+          [plotOptions]="distributedTreemapChart.plotOptions!"
+          />
+        </div>
+      </div>
+
+    </div>
+
+  </div>
+
+
+  <div class="col-xl-6">
+    <div class="card">
+      <div class="card-body">
+        <h4 class="header-title">Color Range Treemap</h4>
+        <div dir="ltr">
+          <apx-chart 
+          [chart]="colorTreemapChart.chart!"
+          [series]="colorTreemapChart.series!"
+          [colors]="colorTreemapChart.colors!"
+          [legend]="colorTreemapChart.legend!"
+          [title]="colorTreemapChart.title!"
+          [plotOptions]="colorTreemapChart.plotOptions!"
+          [dataLabels]="colorTreemapChart.dataLabels!"
+          />
+        </div>
+      </div>
+
+    </div>
+
+  </div>
+
+</div>

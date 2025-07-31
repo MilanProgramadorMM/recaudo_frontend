@@ -1,0 +1,49 @@
+<div class="card">
+  <div class="card-header border-bottom border-dashed">
+    <div class="d-flex align-items-center gap-2">
+      <div class="d-block">
+        <h4 class="card-title mb-0">Diet</h4>
+      </div>
+      <div class="ms-auto">
+        <a href="javascript: void(0);" class="btn btn-soft-primary btn-sm">Add Note</a>
+      </div>
+    </div>
+  </div>
+
+  <div class="card-body">
+    <div class="row g-2">
+      <div class="col-lg-6">
+        <div class="d-flex p-2 rounded align-items-center gap-2 border">
+          <div class="avata d-flex align-items-center justify-content-center rounded-circle">
+            <iconify-icon icon="solar:wineglass-bold-duotone" class="text-primary fs-3"></iconify-icon>
+          </div>
+          <div>
+            <p class="text-muted fw-medium mb-0 fs-14"><span class="fw-medium text-dark">8 Glass Water
+                -</span>Per day</p>
+          </div>
+        </div>
+      </div>
+      <div class="col-lg-6">
+        <div class="d-flex p-2 rounded align-items-center gap-2 border">
+          <div class="avata d-flex align-items-center justify-content-center rounded-circle">
+            <iconify-icon icon="solar:cup-hot-bold-duotone" class="text-primary fs-3"></iconify-icon>
+          </div>
+          <div>
+            <p class="text-muted fw-medium mb-0 fs-14"><span class="fw-medium text-dark">3 Black Tea -</span>Per
+              day</p>
+          </div>
+        </div>
+      </div>
+    </div>
+    @for (item of dietData; track $index) {
+    <div class="d-flex p-2 rounded align-items-center gap-2 border mt-2">
+      <div class="avata d-flex align-items-center justify-content-center rounded-circle">
+        <iconify-icon [icon]="item.icon" class="text-primary fs-3"></iconify-icon>
+      </div>
+      <div>
+        <p class="text-dark fw-medium mb-0 fs-14">{{item.title}}</p>
+      </div>
+    </div>
+    }
+  </div>
+</div>

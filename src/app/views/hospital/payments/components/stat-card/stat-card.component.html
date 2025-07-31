@@ -1,0 +1,37 @@
+<div class="card">
+  <div class="card-body">
+    <div class="d-flex align-items-center gap-3">
+      <div>
+        <div class="avatar-lg bg-primary bg-opacity-10 rounded">
+          <iconify-icon [icon]="stats.icon"
+            class="fs-32 text-primary avatar-title"></iconify-icon>
+        </div>
+      </div>
+      <div>
+        <h4 class="card-title mb-1 d-flex align-items-center gap-2">{{stats.title}}</h4>
+        <p class="text-primary fw-medium fs-20 mb-0">{{stats.count}}
+          @if (stats.isMonth) {
+          <span class="fs-13 text-muted ms-1">/ Month</span>
+          }
+        </p>
+      </div>
+      <div ngbDropdown class="ms-auto">
+        <a ngbDropdownToggle class="drop-arrow-none cursor-pointer text-muted card-drop" data-bs-toggle="dropdown"
+          aria-expanded="false">
+          <i class="ti ti-dots-vertical"></i>
+        </a>
+        <div ngbDropdownMenu class="dropdown-menu-end">
+
+          <a href="javascript:void(0);" ngbDropdownItem>Action</a>
+
+          <a href="javascript:void(0);" ngbDropdownItem>Another Action</a>
+
+          <a href="javascript:void(0);" ngbDropdownItem>Something else here</a>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="card-footer border-top border-dashed">
+    <a href="javascript: void(0);" class="link-primary fw-medium">View More <i class="ti ti-arrow-right"></i></a>
+  </div>
+</div>

@@ -1,0 +1,134 @@
+<page-title title="Add Patients" subtitle="Hospital"/>
+<div class="row">
+  <div class="col-lg-7">
+    <div class="card">
+      <div class="card-header border-bottom border-dashed">
+        <h4 class="card-title mb-0">Basic information</h4>
+      </div>
+      <div class="card-body">
+        <div class="row">
+          <div class="col-lg-6">
+            <div class="mb-3">
+              <label for="patientFirst" class="form-label">Patient First Name</label>
+              <input type="text" class="form-control" id="patientFirst" placeholder="Enter First Name" required="">
+            </div>
+          </div>
+          <div class="col-lg-6">
+            <div class="mb-3">
+              <label for="patientLast" class="form-label">Patient Last Name</label>
+              <input type="text" class="form-control" id="patientLast" placeholder="Enter Last Name" required="">
+            </div>
+          </div>
+          <div class="col-lg-6">
+            <div class="mb-3">
+              <label for="email" class="form-label">Email Address</label>
+              <input type="email" class="form-control" id="email" placeholder="Enter Email" required="">
+            </div>
+          </div>
+          <div class="col-lg-6">
+            <div class="mb-3">
+              <label for="phoneNumber" class="form-label">Phone Number</label>
+              <input type="number" class="form-control" id="phoneNumber" placeholder="Enter Number" required="">
+            </div>
+          </div>
+          <div class="col-lg-6">
+            <div class="mb-3">
+              <label class="form-label">Birth Date</label>
+              <input mwlFlatpickr type="text" class="form-control flatpickr-input" data-provider="flatpickr"
+                data-date-format="d M, Y" placeholder="dd-mm-yyyy" readonly="readonly">
+            </div>
+          </div>
+
+          <div class="col-lg-6">
+            <div class="mb-3">
+              <label for="gender" class="form-label">Gender</label>
+              <select2 [data]="genderOpts" value="Male" class="my-1 my-md-0 me-sm-3" data-toggle="select2" id="gender"/>
+            </div>
+          </div>
+          <div class="col-lg-6">
+            <div class="mb-3">
+              <label for="age" class="form-label">Age</label>
+              <input type="number" class="form-control" id="age" placeholder="Enter Age" required="">
+            </div>
+          </div>
+          <div class="col-lg-6">
+            <div class="mb-3">
+              <label for="weight" class="form-label">Weight</label>
+              <input type="number" class="form-control" id="weight" placeholder="Enter Weight" required="">
+            </div>
+          </div>
+          <div class="col-lg-6">
+            <div class="mb-3">
+              <label for="height" class="form-label">Height</label>
+              <input type="number" class="form-control" id="height" placeholder="Enter Hight" required="">
+            </div>
+          </div>
+          <div class="col-lg-6">
+            <div class="mb-3">
+              <label for="marital-status" class="form-label">Marital Status</label>
+              <select2 [data]="maritalOpts" value="Married" class="my-1 my-md-0 me-sm-3" data-toggle="select2" id="marital-status" />
+            </div>
+          </div>
+          <div class="col-lg-12">
+            <div>
+              <label for="address" class="form-label">Patient Address</label>
+              <textarea class="form-control" id="address" rows="3" placeholder="Full Address"></textarea>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-lg-5">
+    <div class="card">
+      <div class="card-header border-bottom border-dashed">
+        <h4 class="card-title mb-0">Upload Profile Photo</h4>
+      </div>
+      <div class="card-body">
+        <div class="col-12">
+          <FileUploader [showPreview]="true" />
+
+        </div>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-header border-bottom border-dashed">
+        <h4 class="card-title mb-0">Medical Information</h4>
+      </div>
+      <div class="card-body">
+        <div class="row g-3">
+          <div class="col-lg-6">
+            <div>
+              <label for="bloodGroup" class="form-label">Patient Blood Group</label>
+              <input type="text" class="form-control" id="bloodGroup" placeholder="Enter Blood group" required="">
+            </div>
+          </div>
+          <div class="col-lg-6">
+            <div>
+              <label for="bloodPressure" class="form-label">Patient Blood Pressure</label>
+              <input type="text" class="form-control" id="bloodPressure" placeholder="Enter Blood pressure" required="">
+            </div>
+          </div>
+          <div class="col-lg-6">
+            <div>
+              <label for="sugarLevel" class="form-label">Patient Sugar Level</label>
+              <input type="text" class="form-control" id="sugarLevel" placeholder="Enter Sugar level" required="">
+            </div>
+          </div>
+          <div class="col-lg-6">
+            <div>
+              <label for="condition" class="form-label">Patient Condition</label>
+              <input type="text" class="form-control" id="condition" placeholder="Condition" required="">
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+    <div class="text-end mb-3">
+      <button class="btn btn-primary me-1">Add Patient</button>
+      <button class="btn btn-danger">Cancel</button>
+    </div>
+  </div>
+</div>

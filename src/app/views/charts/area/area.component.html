@@ -1,0 +1,215 @@
+<page-title subtitle="Apex" title="Area Charts" />
+<div class="row">
+  <div class="col-xl-6">
+    <div class="card">
+      <div class="card-body">
+        <h4 class="header-title mb-4">Basic Area Chart</h4>
+        <div dir="ltr">
+          <div id="basic-area" class="apex-charts" data-colors="#fa6767">
+            <apx-chart [chart]="basicChartOpts.chart!" [dataLabels]="basicChartOpts.dataLabels!"
+              [stroke]="basicChartOpts.stroke!" [colors]="basicChartOpts.colors!" [series]="basicChartOpts.series!"
+              [title]="basicChartOpts.title!" [subtitle]="basicChartOpts.subtitle!" [labels]="basicChartOpts.labels!"
+              [xaxis]="basicChartOpts.xaxis!" [yaxis]="basicChartOpts.yaxis!" [legend]="basicChartOpts.legend!"
+              [grid]="basicChartOpts.grid!" [grid]="basicChartOpts.grid!" [responsive]="basicChartOpts.responsive!"/>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-xl-6">
+    <div class="card">
+      <div class="card-body">
+        <h4 class="header-title mb-4">Spline Area</h4>
+        <div dir="ltr">
+          <apx-chart [chart]="splineChartOpts.chart!" [dataLabels]="splineChartOpts.dataLabels!"
+          [stroke]="splineChartOpts.stroke!" [colors]="splineChartOpts.colors!" [series]="splineChartOpts.series!"
+          [title]="splineChartOpts.title!" [subtitle]="splineChartOpts.subtitle!" [labels]="splineChartOpts.labels!"
+          [xaxis]="splineChartOpts.xaxis!" [yaxis]="splineChartOpts.yaxis!" [legend]="splineChartOpts.legend!"
+          [grid]="splineChartOpts.grid!" [grid]="splineChartOpts.grid!" [responsive]="splineChartOpts.responsive!"/>
+        </div>
+      </div>
+
+    </div>
+
+  </div>
+
+</div>
+
+
+<div class="row">
+  <div class="col-xl-6">
+    <div class="card">
+      <div class="card-body">
+        <h4 class="header-title mb-4">Area Chart - Datetime X-axis</h4>
+        <div class="toolbar apex-toolbar gap-1 d-flex flex-wrap">
+          <button id="one_month" class="btn btn-sm btn-light">1M</button>
+          <button id="six_months" class="btn btn-sm btn-light">6M</button>
+          <button id="one_year" class="btn btn-sm btn-light active">1Y</button>
+          <button id="ytd" class="btn btn-sm btn-light">YTD</button>
+          <button id="all" class="btn btn-sm btn-light">ALL</button>
+        </div>
+        <div dir="ltr">
+          <apx-chart [chart]="dateTimeChartChartOpts.chart!" [dataLabels]="dateTimeChartChartOpts.dataLabels!"
+          [stroke]="dateTimeChartChartOpts.stroke!" [colors]="dateTimeChartChartOpts.colors!" [series]="dateTimeChartChartOpts.series!"
+          [title]="dateTimeChartChartOpts.title!" [subtitle]="dateTimeChartChartOpts.subtitle!" [labels]="dateTimeChartChartOpts.labels!"
+          [xaxis]="dateTimeChartChartOpts.xaxis!" [yaxis]="dateTimeChartChartOpts.yaxis!" [legend]="dateTimeChartChartOpts.legend!"
+          [grid]="dateTimeChartChartOpts.grid!" [grid]="dateTimeChartChartOpts.grid!" [responsive]="dateTimeChartChartOpts.responsive!"/>
+        </div>
+      </div>
+
+    </div>
+
+  </div>
+
+
+  <div class="col-xl-6">
+    <div class="card">
+      <div class="card-body">
+        <h4 class="header-title mb-4">Area with Negative Values</h4>
+        <div dir="ltr">
+          <apx-chart [chart]="NegativeValuesChartOpts.chart!" [dataLabels]="NegativeValuesChartOpts.dataLabels!"
+          [stroke]="NegativeValuesChartOpts.stroke!" [colors]="NegativeValuesChartOpts.colors!" [series]="NegativeValuesChartOpts.series!"
+          [title]="NegativeValuesChartOpts.title!" [subtitle]="NegativeValuesChartOpts.subtitle!" [labels]="NegativeValuesChartOpts.labels!"
+          [xaxis]="NegativeValuesChartOpts.xaxis!" [yaxis]="NegativeValuesChartOpts.yaxis!" [legend]="NegativeValuesChartOpts.legend!"
+          [grid]="NegativeValuesChartOpts.grid!" [grid]="NegativeValuesChartOpts.grid!" [responsive]="dateTimeChartChartOpts.responsive!"/>
+        </div>
+      </div>
+
+    </div>
+
+  </div>
+
+</div>
+
+
+<div class="row">
+  <div class="col-xl-6">
+    <div class="card">
+      <div class="card-body">
+        <h4 class="header-title mb-4">Selection - Github Style</h4>
+        <div dir="ltr">
+          <apx-chart
+          [series]="githubmYearAreaChart.series!"
+          [chart]="githubmYearAreaChart.chart!"
+          [colors]="githubmYearAreaChart.colors!"
+          [legend]="githubmYearAreaChart.legend!"
+          [dataLabels]="githubmYearAreaChart.dataLabels!"
+          [fill]="githubmYearAreaChart.fill!"
+          [stroke]="githubmYearAreaChart.stroke!"
+          [xaxis]="githubmYearAreaChart.xaxis!"
+          dir="ltr"
+        />
+          <div class="pt-2 pb-2">
+            <div class="row align-items-center">
+              <div class="col-auto">
+                <img src="assets/images/users/avatar-2.jpg" class="avatar-xs rounded" alt="file-image">
+              </div>
+              <div class="col ps-0">
+                <a href="javascript:void(0);" class="text-muted fw-bold">Coderthemes</a>
+              </div>
+            </div>
+          </div>
+          <apx-chart
+          [series]="githubmMonthAreaChart.series!"
+          [chart]="githubmMonthAreaChart.chart!"
+          [colors]="githubmMonthAreaChart.colors!"
+          [yaxis]="githubmMonthAreaChart.yaxis!"
+          [dataLabels]="githubmMonthAreaChart.dataLabels!"
+          [fill]="githubmMonthAreaChart.fill!"
+          [stroke]="githubmMonthAreaChart.stroke!"
+          [xaxis]="githubmMonthAreaChart.xaxis!"
+          dir="ltr"
+       />
+        </div>
+      </div>
+
+    </div>
+
+  </div>
+
+
+  <div class="col-xl-6">
+    <div class="card">
+      <div class="card-body">
+        <h4 class="header-title mb-4">Stacked Area</h4>
+        <div dir="ltr">
+          <apx-chart
+          [series]="stackedChartOpts.series!"
+          [chart]="stackedChartOpts.chart!"
+          [colors]="stackedChartOpts.colors!"
+          [dataLabels]="stackedChartOpts.dataLabels!"
+          [fill]="stackedChartOpts.fill!"
+          [stroke]="stackedChartOpts.stroke!"
+          [legend]="stackedChartOpts.legend!"
+          [xaxis]="stackedChartOpts.xaxis!"
+          dir="ltr"
+       />
+        </div>
+      </div>
+
+    </div>
+
+  </div>
+
+</div>
+
+
+<div class="row">
+  <div class="col-xl-6">
+    <div class="card">
+      <div class="card-body">
+        <h4 class="header-title mb-4">Irregular TimeSeries</h4>
+        <div dir="ltr">
+          <apx-chart
+          [series]="timeSeriesChartOpts.series!"
+          [chart]="timeSeriesChartOpts.chart!"
+          [colors]="timeSeriesChartOpts.colors!"
+          [dataLabels]="timeSeriesChartOpts.dataLabels!"
+          [fill]="timeSeriesChartOpts.fill!"
+          [stroke]="timeSeriesChartOpts.stroke!"
+          [legend]="timeSeriesChartOpts.legend!"
+          [markers]="timeSeriesChartOpts.markers!"
+          [xaxis]="timeSeriesChartOpts.xaxis!"
+          [title]="timeSeriesChartOpts.title!"
+          [tooltip]="timeSeriesChartOpts.tooltip!"
+          [yaxis]="timeSeriesChartOpts.yaxis!"
+          dir="ltr"
+       />
+        </div>
+      </div>
+
+    </div>
+
+  </div>
+
+
+  <div class="col-xl-6">
+    <div class="card">
+      <div class="card-body">
+        <h4 class="header-title mb-4">Area Chart with Null values</h4>
+        <div dir="ltr">
+          <apx-chart
+          [series]="nullValuesChartOpts.series!"
+          [chart]="nullValuesChartOpts.chart!"
+          [colors]="nullValuesChartOpts.colors!"
+          [dataLabels]="nullValuesChartOpts.dataLabels!"
+          [fill]="nullValuesChartOpts.fill!"
+          [stroke]="nullValuesChartOpts.stroke!"
+          [legend]="nullValuesChartOpts.legend!"
+          [markers]="nullValuesChartOpts.markers!"
+          [xaxis]="nullValuesChartOpts.xaxis!"
+          [title]="nullValuesChartOpts.title!"
+          [tooltip]="nullValuesChartOpts.tooltip!"
+          [yaxis]="nullValuesChartOpts.yaxis!"
+          [theme]="nullValuesChartOpts.theme!"
+          dir="ltr"
+       />
+        </div>
+      </div>
+
+    </div>
+
+  </div>
+
+</div>

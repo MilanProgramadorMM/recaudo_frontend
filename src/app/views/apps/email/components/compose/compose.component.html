@@ -1,0 +1,131 @@
+<div class="card shadow-none">
+  <div class="card-body">
+    <div class="d-flex justify-content-between gap-2 align-items-center mb-2">
+      <button type="button" (click)="open(content)" class="btn btn-danger fw-semibold w-100" data-bs-toggle="modal"
+        data-bs-target="#email-compose-modal">Compose</button>
+
+      <button (click)="close()" type="button" class="btn btn-sm btn-icon btn-soft-danger ms-auto d-xl-none" data-bs-dismiss="offcanvas"
+        data-bs-target="#email-sidebar" aria-label="Close">
+        <i class="ti ti-x"></i>
+      </button>
+    </div>
+
+    <div class="email-menu-list d-flex flex-column gap-1">
+      <a href="javascript: void(0);" class="active">
+        <iconify-icon icon="solar:inbox-bold-duotone" class="me-2 fs-18 text-muted"></iconify-icon>
+        <span>Inbox</span>
+        <span class="badge bg-danger-subtle fs-12 text-danger ms-auto">21</span>
+      </a>
+
+      <a href="javascript: void(0);">
+        <iconify-icon icon="solar:map-arrow-right-bold-duotone" class="me-2 fs-18 text-muted"></iconify-icon>
+        <span>Sent</span>
+      </a>
+
+      <a href="javascript: void(0);">
+        <iconify-icon icon="solar:star-bold-duotone" class="me-2 fs-18 text-muted"></iconify-icon>
+        <span>Starred</span>
+      </a>
+
+      <a href="javascript: void(0);">
+        <iconify-icon icon="solar:clock-circle-bold-duotone" class="me-2 fs-18 text-muted"></iconify-icon>
+        <span>Scheduled</span>
+      </a>
+
+      <a href="javascript: void(0);">
+        <iconify-icon icon="solar:clapperboard-edit-bold-duotone" class="me-2 fs-18 text-muted"></iconify-icon>
+        <span>Draft</span>
+      </a>
+    </div>
+  </div>
+
+  <div class="card-body border-top border-light">
+    <a (click)="collapse.toggle()"
+      class="cursor-pointer btn-link d-flex align-items-center text-muted fw-bold fs-12 text-uppercase mb-0"
+      data-bs-toggle="collapse" data-bs-target="#other" aria-expanded="false" aria-controls="other">Other <i
+        class="ti ti-chevron-down ms-auto"></i></a>
+    <div #collapse="ngbCollapse" [(ngbCollapse)]="isCollapsed" id="other" class="collapse show">
+      <div class="email-menu-list d-flex flex-column gap-1 mt-2">
+        <a href="javascript: void(0);">
+          <iconify-icon icon="solar:mailbox-bold-duotone" class="me-2 fs-18 text-muted"></iconify-icon>
+          <span>All Mail</span>
+        </a>
+
+        <a href="javascript: void(0);">
+          <iconify-icon icon="solar:trash-bin-trash-bold-duotone" class="me-2 fs-18 text-muted"></iconify-icon>
+          <span>Trash</span>
+        </a>
+        <a href="javascript: void(0);">
+          <iconify-icon icon="solar:info-square-bold-duotone" class="me-2 fs-18 text-muted"></iconify-icon>
+          <span>Spam</span>
+        </a>
+        <a href="javascript: void(0);">
+          <iconify-icon icon="solar:chat-round-line-bold-duotone" class="me-2 fs-18 text-muted"></iconify-icon>
+          <span>Chats</span>
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <div class="card-body border-top border-light">
+    <a (click)="collapse2.toggle()"
+      class="cursor-pointer btn-link d-flex align-items-center text-muted fw-bold fs-12 text-uppercase mb-0"
+      data-bs-toggle="collapse" data-bs-target="#labels" aria-expanded="false" aria-controls="labels">Labels <i
+        class="ti ti-chevron-down ms-auto"></i></a>
+    <div #collapse2="ngbCollapse" [(ngbCollapse)]="isCollapsed2" id="labels" class="collapse show">
+      <div class="email-menu-list d-flex flex-column gap-1 mt-2">
+        <a href="javascript: void(0);">
+          <iconify-icon icon="solar:bolt-circle-bold-duotone" class="text-success fs-16 me-2"></iconify-icon>
+          <span>Personal</span>
+        </a>
+
+        <a href="javascript: void(0);">
+          <iconify-icon icon="solar:bolt-circle-bold-duotone" class="text-danger fs-16 me-2"></iconify-icon>
+          <span>Client</span>
+        </a>
+
+        <a href="javascript: void(0);">
+          <iconify-icon icon="solar:bolt-circle-bold-duotone" class="text-info fs-16 me-2"></iconify-icon>
+          <span>Marketing</span>
+        </a>
+
+        <a href="javascript: void(0);">
+          <iconify-icon icon="solar:bolt-circle-bold-duotone" class="text-secondary fs-16 me-2"></iconify-icon>
+          <span>Office</span>
+        </a>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<ng-template #content let-modal>
+  <div class="modal-header py-2">
+    <h4 class="modal-title" id="email-compose-modalLabel">New Message</h4>
+    <button type="button" (click)="modal.close()" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+  </div>
+
+  <div class="modal-body">
+    <form>
+      <div class="mb-2">
+        <label for="msgto" class="form-label">To</label>
+        <input type="text" id="msgto" class="form-control" placeholder="Example@email.com">
+      </div>
+      <div class="mb-2">
+        <label for="mailsubject" class="form-label">Subject</label>
+        <input type="text" id="mailsubject" class="form-control" placeholder="Your subject">
+      </div>
+
+      <div>
+        <label class="form-label">Message</label>
+        <quill-editor #quillEditor [(ngModel)]="content" theme="snow"  style="height: 150px"
+        class="w-100"></quill-editor>
+      </div>
+    </form>
+  </div>
+
+  <div class="modal-footer py-2">
+    <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Send Message</button>
+    <button type="button" class="btn btn-light" (click)="modal.close()">Cancel</button>
+  </div>
+</ng-template>

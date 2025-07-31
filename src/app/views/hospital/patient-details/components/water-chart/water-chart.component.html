@@ -1,0 +1,30 @@
+<div class="card">
+  <div class="card-header d-flex align-items-center justify-content-between border-bottom border-dashed">
+    <h4 class="card-title mb-0">Water</h4>
+    <div>
+      <p class="mb-0 fs-15 text-dark fw-medium">Goal: 15/56</p>
+    </div>
+  </div>
+  <div class="card-body">
+    <div class="custom-progress rounded">
+      <div class="progress-info d-flex justify-content-between align-items-center">
+        <div>
+          <span class="align-middle fw-medium fs-16">Cups Tracked</span>
+        </div>
+        <span class="fw-medium text-muted float-end">56</span>
+      </div>
+      <div class="progress-data rounded bg-primary" style="width: 15%;"></div>
+    </div>
+    <div id="booked-revenue-chart" data-colors="#465dff" class="mt-5">
+      <apx-chart
+      [chart]="waterChartOpts.chart!"
+      [plotOptions]="waterChartOpts.plotOptions!"
+      [colors]="waterChartOpts.colors!"
+      [series]="waterChartOpts.series!"
+      [xaxis]="waterChartOpts.xaxis!"
+      [legend]="waterChartOpts.legend!"
+      [grid]="waterChartOpts.grid!"
+      />
+    </div>
+  </div>
+</div>

@@ -1,0 +1,153 @@
+<page-title subtitle="Maps" title="Vector Maps"/>
+<div class="row">
+  <div class="col-lg-6">
+    <div class="card">
+      <div class="card-header border-0 border-bottom border-dashed">
+        <h4 class="header-title">World Vector Map</h4>
+      </div>
+      <div class="card-body">
+        <div id="world-map-markers" style="height: 360px">
+          <app-world-vector-map
+          mapId="world-map-markers"
+          type="world"
+          [options]="worldMapConfig"
+        ></app-world-vector-map>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-lg-6">
+    <div class="card">
+      <div class="card-header border-0 border-bottom border-dashed">
+        <h4 class="header-title">World Vector Map</h4>
+      </div>
+      <div class="card-body">
+        <div id="world-map-markers-line" style="height: 360px">
+          <app-world-vector-map
+          mapId="world-map-markers-line"
+          type="world"
+          [options]="worldLineMapConfig"
+        ></app-world-vector-map>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-lg-6">
+    <div class="card">
+      <div class="card-header border-0 border-bottom border-dashed">
+        <h4 class="header-title">USA Vector Map</h4>
+      </div>
+      <div class="card-body">
+        <div id="india-vector-map" style="height: 360px">
+          <app-world-vector-map
+          mapId="usa-vector-map"
+          type="us_merc_en"
+          [options]="usaMapConfig"
+          height="300px"
+          width="100%"
+        ></app-world-vector-map>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-lg-6">
+    <div class="card">
+      <div class="card-header border-0 border-bottom border-dashed">
+        <h4 class="header-title">Canada Vector Map</h4>
+      </div>
+      <div class="card-body">
+        <div id="canada-vector-map" style="height: 360px">
+          <app-world-vector-map
+            mapId="canada-map-markers"
+            type="canada"
+            [options]="canadaMapConfig"
+            height="300px"
+            width="100%"
+          ></app-world-vector-map>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+  <div class="col-lg-6">
+    <div class="card">
+      <div class="card-header border-0 border-bottom border-dashed">
+        <h4 class="header-title">Russia Vector Map</h4>
+      </div>
+      <div class="card-body">
+        <div id="russia-vector-map" style="height: 360px">
+          <app-world-vector-map
+            mapId="russia-map-markers"
+            type="russia"
+            [options]="russiaMapConfig"
+            height="300px"
+            width="100%"
+          ></app-world-vector-map>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+  <div class="col-lg-6">
+    <div class="card">
+      <div class="card-header border-0 border-bottom border-dashed">
+        <h4 class="header-title">Italy Vector Map</h4>
+      </div>
+      <div class="card-body">
+        <div id="usa-vector-map" style="height: 360px">
+          <app-world-vector-map
+          mapId="italy-map-markers"
+          type="italy"
+          [options]="italyMapConfig"
+          height="300px"
+          width="100%"
+        ></app-world-vector-map>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+  <div class="col-lg-6">
+    <div class="card">
+      <div class="card-header border-0 border-bottom border-dashed">
+        <h4 class="header-title">Iraq Vector Map</h4>
+      </div>
+      <div class="card-body">
+        <div id="iraq-vector-map" style="height: 360px">
+          <app-world-vector-map
+          mapId="iraq-map-markers"
+          type="iraq"
+          [options]="iraqMapConfig"
+          height="300px"
+          width="100%"
+        ></app-world-vector-map>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-lg-6">
+    <div class="card">
+      <div class="card-header border-0 border-bottom border-dashed">
+        <h4 class="header-title">Spain Vector Map</h4>
+      </div>
+      <div class="card-body">
+        <div id="spain-vector-map" style="height: 360px">
+          <app-world-vector-map
+            mapId="spain-map-markers"
+            type="spain"
+            [options]="spainMapConfig"
+            height="300px"
+            width="100%"
+          ></app-world-vector-map>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

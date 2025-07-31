@@ -1,0 +1,183 @@
+<page-title subtitle="eCommerce" title="Add Products" />
+<div class="row">
+  <div class="col-lg-7">
+    <div class="card">
+      <div class="card-header border-bottom border-dashed">
+        <h4 class="card-title">Product information</h4>
+        <p class="text-muted mb-0">Product Information encompasses all data within an organization pertaining to the
+          products it manufactures, procures, sells, or distributes.</p>
+      </div>
+      <div class="card-body">
+        <div class="row">
+          <div class="col-lg-6">
+            <div class="mb-3">
+              <label for="productName" class="form-label">Product Name</label>
+              <input type="text" class="form-control" id="productName" placeholder="Enter product name" required="">
+            </div>
+          </div>
+          <div class="col-lg-6">
+            <div class="mb-3">
+              <label for="skuId" class="form-label">SKU Id</label>
+              <input type="text" class="form-control" id="skuId" placeholder="#19588" required="">
+            </div>
+          </div>
+          <div class="col-lg-12">
+            <div class="mb-3">
+              <label for="description" class="form-label">Product Description</label>
+              <textarea class="form-control" id="description" rows="7"
+                placeholder="Short description about the product"></textarea>
+            </div>
+          </div>
+          <div class="col-lg-6">
+            <div class="mb-3">
+              <label for="productCode" class="form-label">Product Code</label>
+              <input type="text" class="form-control" id="productCode" placeholder="PC198866" required="">
+            </div>
+          </div>
+          <div class="col-lg-6">
+            <div class="mb-3">
+              <label for="productCategory" class="form-label">Product Category</label>
+              <select2 [data]="categoryOpts" class="my-1 my-md-0 me-sm-3" />
+            </div>
+          </div>
+          <div class="col-lg-6">
+            <div class="mb-3">
+              <label for="productType" class="form-label">Product Type</label>
+              <select2 [data]="categoryTypeOpts" class="my-1 my-md-0 me-sm-3" data-toggle="select2" id="productType"/>
+            </div>
+          </div>
+          <div class="col-lg-6">
+            <div class="mb-3">
+              <label for="productBrand" class="form-label">Product Brand</label>
+              <select2 [data]="productBrandOpts" class="my-1 my-md-0 me-sm-3" data-toggle="select2" id="productBrand"/>
+            </div>
+          </div>
+
+          <div class="col-lg-6">
+            <div class="mb-3">
+              <label for="productStatus" class="form-label">Status</label>
+              <select2 [data]="productStatsOpts" class="my-1 my-md-0 me-sm-3" data-toggle="select2" id="productStatus"/>
+     
+            </div>
+          </div>
+
+          <div class="col-lg-6">
+            <div class="mb-3">
+              <label for="productVisibility" class="form-label">Visibility</label>
+              <select2 [data]="visibilityOpts" class="my-1 my-md-0 me-sm-3" data-toggle="select2" id="productVisibility"/>
+            </div>
+          </div>
+
+          <div class="col-lg-6">
+            <div class="mb-3">
+              <label for="basic-datepicker" class="form-label">Publish Date & Time</label>
+              <input type="text" id="basic-datepicker" class="form-control" placeholder="Basic datepicker">
+            </div>
+          </div>
+
+          <div class="col-lg-6">
+            <div class="mb-3">
+              <label for="productPrice" class="form-label">Price</label>
+              <input type="number" class="form-control" id="productPrice" placeholder="{{currency}}00.00" required="">
+            </div>
+          </div>
+
+          <div class="col-lg-6">
+            <div class="mb-3">
+              <label for="productDiscounts" class="form-label">Discounts</label>
+              <input type="number" class="form-control" id="productDiscounts" placeholder="0%" required="">
+            </div>
+          </div>
+
+          <div class="col-lg-6">
+            <div class="mb-3">
+              <label for="productTax" class="form-label">Tax</label>
+              <select2 [data]="productTaxOpts" class="my-1 my-md-0 me-sm-3" data-toggle="select2" id="productTax"/>
+            </div>
+          </div>
+          <div class="col-lg-4">
+            <h5>Product Size</h5>
+            <div class="mb-3 pt-2">
+              <label for="productLength" class="form-label">Length</label>
+              <input type="number" class="form-control" id="productLength" placeholder="0.00cm" required="">
+            </div>
+          </div>
+          <div class="col-lg-4">
+            <div class="my-4">
+              <label for="productBreadth" class="form-label">Breadth</label>
+              <input type="number" class="form-control" id="productBreadth" placeholder="0.00cm" required="">
+            </div>
+          </div>
+          <div class="col-lg-4">
+            <div class="my-4">
+              <label for="productWidth" class="form-label">Width</label>
+              <input type="number" class="form-control" id="productWidth" placeholder="0.00cm" required="">
+            </div>
+          </div>
+          <div class="col-lg-6">
+            <h5>Colors</h5>
+            <div class="d-flex flex-wrap align-items-center gap-1 mt-2" role="group"
+              aria-label="Basic checkbox toggle button group">
+              <input type="checkbox" class="btn-check" id="color-dark2">
+              <label class="btn avatar btn-icon rounded-circle d-flex justify-content-center align-items-center"
+                for="color-dark2"> <i class="ti ti-circle-filled fs-28 border rounded-circle text-success"></i></label>
+
+              <input type="checkbox" class="btn-check" id="color-yellow2">
+              <label class="btn avatar btn-icon rounded-circle d-flex justify-content-center align-items-center"
+                for="color-yellow2"> <i
+                  class="ti ti-circle-filled fs-28 border rounded-circle text-warning"></i></label>
+
+              <input type="checkbox" class="btn-check" id="color-white2">
+              <label class="btn avatar btn-icon rounded-circle d-flex justify-content-center align-items-center"
+                for="color-white2"> <i class="ti ti-circle-filled fs-28 border rounded-circle text-primary"></i></label>
+
+              <input type="checkbox" class="btn-check" id="color-info">
+              <label class="btn avatar btn-icon rounded-circle d-flex justify-content-center align-items-center"
+                for="color-info"> <i class="ti ti-circle-filled fs-28 border rounded-circle text-info"></i></label>
+
+              <input type="checkbox" class="btn-check" id="color-danger">
+              <label class="btn avatar btn-icon rounded-circle d-flex justify-content-center align-items-center"
+                for="color-danger"> <i class="ti ti-circle-filled fs-28 border rounded-circle text-danger"></i></label>
+
+              <input type="checkbox" class="btn-check" id="color-black">
+              <label class="btn avatar btn-icon rounded-circle d-flex justify-content-center align-items-center"
+                for="color-black"> <i class="ti ti-circle-filled fs-28 border rounded-circle text-dark"></i></label>
+
+              <input type="checkbox" class="btn-check" id="color-light">
+              <label class="btn avatar btn-icon rounded-circle d-flex justify-content-center align-items-center"
+                for="color-light"> <i class="ti ti-circle-filled fs-28 border rounded-circle text-light"></i></label>
+
+              <input type="checkbox" class="btn-check" id="color-purple">
+              <label class="btn avatar btn-icon rounded-circle d-flex justify-content-center align-items-center"
+                for="color-purple"> <i
+                  class="ti ti-circle-filled fs-28 border rounded-circle text-secondary"></i></label>
+
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-lg-5">
+    <div class="card">
+      <div class="card-header border-bottom border-dashed">
+        <h4 class="card-title">Product Gallery</h4>
+        <p class="text-muted mb-0">You need at least 4 images. Pay attention to the quality of the pictures you add
+          (important)</p>
+      </div>
+      <div class="card-body">
+        <div class="col-12">
+          <FileUploader [showPreview]="true"/>
+
+        </div>
+      </div>
+      <div class="card-footer border-top border-dashed text-end">
+        <div class="d-flex justify-content-end gap-1">
+          <a href="javascript: void(0);" class="btn btn-primary">Create Product</a>
+          <a href="javascript: void(0);" class="btn btn-danger">Cancel</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

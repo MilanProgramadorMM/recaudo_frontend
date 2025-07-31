@@ -1,0 +1,18 @@
+<div class="card">
+  <div class="card-header border-bottom border-dashed">
+    <h4 class="card-title mb-0">Specialty</h4>
+  </div>
+  <div class="card-body">
+    @for (item of specialtyData; track $index; let idx = $index, first=$first) {
+    <div class="d-flex align-items-center gap-2" [ngClass]="!first ? 'mt-3' : ''">
+      <div class="avatar-lg bg-light d-flex align-items-center justify-content-center rounded">
+        <iconify-icon [icon]="item.icon" class="fs-28 text-primary"></iconify-icon>
+      </div>
+
+      <div>
+        <p class="fs-15 mb-0">{{item.title}}</p>
+      </div>
+    </div>
+    }
+  </div>
+</div>

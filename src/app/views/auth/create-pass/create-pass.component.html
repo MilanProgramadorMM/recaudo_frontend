@@ -1,0 +1,28 @@
+
+  <h3 class="fw-semibold mb-2">Create New Password</h3>
+
+  <p class="text-muted mb-2">Please create your new password.</p>
+  <p class="mb-4">Need password suggestion ? <a href="javascript: void(0);"
+      class="link-dark fw-semibold text-decoration-underline">Suggestion</a></p>
+
+  <third-party-login />
+
+  <p class="fs-13 fw-semibold">Or</p>
+
+  <form class="text-start mb-3">
+    <div class="mb-3">
+      <label class="form-label" for="new-password">Create New Password <small class="text-primary ms-1">Must be at least
+          8 characters</small></label>
+      <input type="password" id="new-password" name="new-password" class="form-control" placeholder="New Password">
+    </div>
+    <div class="mb-3">
+      <label class="form-label" for="re-password">Reenter New Password</label>
+      <input type="password" id="re-password" name="re-password" class="form-control" placeholder="Reenter Password">
+    </div>
+    <div class="mb-2 d-grid">
+      <button class="btn btn-primary" type="button">Create New Password</button>
+    </div>
+
+  </form>
+
+  <p class="text-danger fs-14 mb-4">Back To <a  routerLink="/auth/login" class="fw-semibold text-dark ms-1">Login !</a></p>

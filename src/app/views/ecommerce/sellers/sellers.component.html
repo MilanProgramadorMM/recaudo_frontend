@@ -1,0 +1,82 @@
+<page-title title="Sellers" subtitle="eCommerce" />
+<div class="row row-cols-1 row-cols-md-2 row-cols-lg-3">
+  @for (item of sellers; track $index) {
+    <div class="col-xl-4 col-lg-6">
+      <div class="card">
+        <div class="card-body">
+          <div class="d-flex flex-wrap gap-2 align-items-center">
+            <div class="avatar-xl bg-light d-flex align-items-center justify-content-center rounded-circle flex-shrink-0">
+              <img [src]="item.image" alt="" class="avatar-lg flex-shrink-0">
+            </div>
+            <div>
+              <h4 class="text-dark fw-semibold">{{item.brand}}</h4>
+              <div class="flex-grow-1 d-inline-flex align-items-center fs-18">
+                <span class="ti ti-star-filled text-warning"></span>
+                <span class="ti ti-star-filled text-warning"></span>
+                <span class="ti ti-star-filled text-warning"></span>
+                <span class="ti ti-star-filled text-warning"></span>
+                <span class="ti ti-star-half-filled text-warning"></span>
+                <span class="ms-1 fs-14 fw-medium">{{item.rating.review}}k</span>
+              </div>
+            </div>
+            <div class="ms-lg-auto">
+              <a href="javascript: void(0);" class="btn btn-primary btn-sm">Message</a>
+            </div>
+          </div>
+          <p class="my-3 fw-medium">{{item.description}} </p>
+          <p class="mb-1 fw-medium  d-flex align-items-center gap-2"><iconify-icon icon="solar:map-point-search-bold"
+              class="fs-20 text-danger"></iconify-icon> : <span class="fw-medium">{{item.location}}</span></p>
+          <p class="mb-3 text-dark fw-medium  d-flex align-items-center gap-2"><iconify-icon icon="solar:letter-bold"
+              class="fs-20 text-danger"></iconify-icon> : <a href="javascript: void(0);"
+              class="link-primary fw-medium">{{item.email}}</a></p>
+          <div class="border border-end-0 border-start-0 border-dashed p-2 mx-n3">
+            <div class="row text-center g-2">
+              <div class="col-lg-4 col-4 border-end">
+                <h4 class="mb-1">{{item.stock}}</h4>
+                <p class="text-muted mb-0">Item Stock</p>
+              </div>
+              <div class="col-lg-4 col-4 border-end">
+                <h4 class="mb-1">+{{item.sells}}k</h4>
+                <p class="text-muted mb-0">Sells</p>
+              </div>
+              <div class="col-lg-4 col-4">
+                <h4 class="mb-1">{{item.brand}}</h4>
+                <p class="text-muted mb-0">Brand</p>
+              </div>
+            </div>
+          </div>
+          <div class="row align-items-center justify-content-between my-4 text-center">
+            <div class="col-lg-8 border-end">
+              <apx-chart
+              [chart]="sellersChartOpts.chart!"
+              [series]="item.series!"
+              [stroke]="sellersChartOpts.stroke!"
+              [fill]="sellersChartOpts.fill!"
+              [markers]="sellersChartOpts.markers!"
+              [colors]="sellersChartOpts.colors!"
+              [tooltip]="sellersChartOpts.tooltip!"
+              />
+              <div id="sales1" data-colors="#ff6c2f" class="apex-charts pe-lg-3"></div>
+            </div>
+            <div class="col-lg-4">
+              <h3 class="mb-1 fw-semibold">{{currency}}{{item.revenue}}</h3>
+              <p class="text-muted mb-0 fs-14">Revenue</p>
+            </div>
+          </div>
+          <div class="gap-1 hstack">
+            <a href="javascript: void(0);" class="btn btn-primary w-100">Show Profile</a>
+            <a href="javascript: void(0);" class="btn btn-light w-100">Edit Profile</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  }
+
+</div>
+
+
+<div class="d-flex justify-content-end">
+  <ul class="pagination justify-content-center">
+    <ngb-pagination [page]="3" [collectionSize]="30"/>
+  </ul>
+</div>

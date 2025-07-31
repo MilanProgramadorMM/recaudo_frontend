@@ -1,0 +1,62 @@
+<div class="card">
+  <div class="card-header d-flex flex-wrap align-items-center gap-2">
+    <h4 class="header-title me-auto mb-0">Overview</h4>
+
+    <a href="javascript: void(0);" class="btn btn-soft-primary">
+      Export <i class="ti ti-file-export ms-1"></i>
+    </a>
+
+    <div>
+      <div class="input-group">
+        <input mwlFlatpickr [flatpickrOptions]="{dateFormat: 'd M', mode: 'range'}" type="text" class="form-control"
+          placeholder="Jun to Aug">
+        <span class="input-group-text bg-primary border-primary text-white">
+          <i class="ti ti-calendar fs-15"></i>
+        </span>
+      </div>
+    </div>
+  </div>
+
+  <div class="card-body p-0">
+    <div class="bg-light bg-opacity-50">
+      <div class="row text-center">
+        <div class="col-md col-6">
+          <p class="text-muted mt-3 mb-1">Revenue</p>
+          <h4 class="mb-3">
+            <span class="ti ti-square-rounded-arrow-down text-success me-1"></span>
+            <span class="fw-semibold">{{currency}}29.5k</span>
+          </h4>
+        </div>
+        <div class="col-md col-6">
+          <p class="text-muted mt-3 mb-1">Expenses</p>
+          <h4 class="mb-3">
+            <span class="ti ti-square-rounded-arrow-up text-danger me-1"></span>
+            <span class="fw-semibold">{{currency}}15.07k</span>
+          </h4>
+        </div>
+        <div class="col-md col-6">
+          <p class="text-muted mt-3 mb-1">Investment</p>
+          <h4 class="mb-3">
+            <span class="ti ti-chart-infographic me-1"></span>
+            <span class="fw-semibold">{{currency}}3.6k</span>
+          </h4>
+        </div>
+        <div class="col-md col-6">
+          <p class="text-muted mt-3 mb-1">Savings</p>
+          <h4 class="mb-3">
+            <span class="ti ti-pig me-1"></span>
+            <span class="fw-semibold">{{currency}}6.9k</span>
+          </h4>
+        </div>
+      </div>
+    </div>
+
+    <div dir="ltr" class="p-2 pb-0">
+      <apx-chart [chart]="overviewChartOpts.chart!" [series]="overviewChartOpts.series!"
+        [stroke]="overviewChartOpts.stroke!" [fill]="overviewChartOpts.fill!" [markers]="overviewChartOpts.markers!"
+        [xaxis]="overviewChartOpts.xaxis!" [yaxis]="overviewChartOpts.yaxis!" [grid]="overviewChartOpts.grid!"
+        [legend]="overviewChartOpts.legend!" [plotOptions]="overviewChartOpts.plotOptions!"
+        [colors]="overviewChartOpts.colors!" [tooltip]="overviewChartOpts.tooltip!" />
+    </div>
+  </div>
+</div>

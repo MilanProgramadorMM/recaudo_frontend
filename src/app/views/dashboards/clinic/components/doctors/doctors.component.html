@@ -1,0 +1,41 @@
+<div class="card">
+  <div class="d-flex card-header justify-content-between align-items-center border-bottom border-dashed">
+    <h4 class="header-title">Top Doctors <i class="ti ti-info-octagon text-muted ms-1" data-bs-toggle="tooltip"
+        data-bs-placement="top" data-bs-title="Based on user reviews and popularity."> </i></h4>
+    <div ngbDropdown>
+      <a ngbDropdownToggle class="drop-arrow-none card-drop cursor-pointer" data-bs-toggle="dropdown" aria-expanded="false">
+        <i class="ti ti-dots-vertical"></i>
+      </a>
+      <div ngbDropdownMenu class="dropdown-menu-end">
+
+        <a href="javascript:void(0);" ngbDropdownItem>Refresh Report</a>
+
+        <a href="javascript:void(0);" ngbDropdownItem>Export Report</a>
+      </div>
+    </div>
+  </div>
+
+  <div class="card-body">
+    <div class="row align-items-center g-3">
+      @for (doctor of doctors.slice(0,6); track $index) {
+        <div class="col-xxl-4 col-md-6">
+          <div class="bg-light bg-opacity-50 rounded-3 p-3">
+            <div class="d-flex align-items-center gap-2">
+              <img [src]="doctor.image" alt="user-image" class="me-1 avatar-xl rounded-circle">
+              <div>
+                <h4>{{doctor.name}}</h4>
+                <p class="text-muted">{{doctor.position}}</p>
+                <p class="m-0 fs-14"><i class="ti ti-star-filled text-warning"></i> {{doctor.rating.star}} &bull; <a href="javascript: void(0);"
+                    class="link-reset fw-medium">{{doctor.rating.review}}+ Reviews <i class="ti ti-arrow-right"></i></a></p>
+              </div>
+            </div>
+          </div>
+        </div>
+      }
+    </div>
+
+    <div class="text-center mt-3">
+      <a href="javascript: void(0);" class="btn btn-sm btn-secondary">See All Doctors <i class="ti ti-arrow-right ms-1"></i></a>
+    </div>
+  </div>
+</div>

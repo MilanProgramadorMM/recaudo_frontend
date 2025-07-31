@@ -1,0 +1,154 @@
+<div class="row">
+  <div class="col-lg-7">
+    <div class="card">
+      <div class="card-header border-bottom border-dashed">
+        <h4 class="card-title mb-0">Informacion Basíca</h4>
+      </div>
+      <div class="card-body">
+        <div class="row">
+          <div class="col-lg-6">
+            <div class="mb-3">
+              <label for="doctorFirst" class="form-label">Primer Nombre</label>
+              <input type="text" class="form-control" id="doctorFirst" placeholder="Ingresa Tu Primer Nombre"
+                required="">
+            </div>
+          </div>
+
+          <div class="col-lg-6">
+            <div class="mb-3">
+              <label for="doctorLast" class="form-label">Segundo Nombre</label>
+              <input type="text" class="form-control" id="doctorLast" placeholder="Ingresa Tu Segundo Nombre"
+                required="">
+            </div>
+          </div>
+
+          <div class="col-lg-6">
+            <div class="mb-3">
+              <label for="doctorFirst" class="form-label">Primer Apellido</label>
+              <input type="text" class="form-control" id="doctorFirst" placeholder="Ingresa Tu Primer Apellido"
+                required="">
+            </div>
+          </div>
+
+          <div class="col-lg-6">
+            <div class="mb-3">
+              <label for="doctorLast" class="form-label">Segundo Apellido</label>
+              <input type="text" class="form-control" id="doctorLast" placeholder="Ingresa Tu Segundo Apellido"
+                required="">
+            </div>
+          </div>
+
+          <div class="col-lg-12">
+            <div class="mb-3">
+              <label for="doctorFirst" class="form-label">Nombre Completo</label>
+              <input type="text" class="form-control" id="doctorFirst" placeholder="" required="" readonly>
+            </div>
+          </div>
+
+          <div class="col-lg-6">
+            <div class="mb-3">
+              <label for="education" class="form-label">Ocupacion</label>
+              <input type="text" class="form-control" id="education" placeholder="Ingresa Tu Ocupacion" required="">
+            </div>
+          </div>
+
+          <div class="col-lg-12">
+            <div>
+              <label for="about" class="form-label">Sobre La Persona</label>
+              <textarea class="form-control" id="about" rows="5"
+                placeholder="Escribe Algo Corto Sobre La Persona"></textarea>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+  <div class="col-lg-5">
+    <div class="card">
+      <div class="card-header border-bottom border-dashed">
+        <h4 class="card-title mb-0">Upload Profile Photo</h4>
+      </div>
+      <div class="card-body">
+        <div class="col-12">
+
+          <FileUploader [showPreview]="true" />
+
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-header border-bottom border-dashed">
+        <h4 class="card-title mb-0">Usuario</h4>
+      </div>
+      <div class="card-body">
+        <div class="row">
+          <div class="col-md-12 mb-3">
+            <label class="form-label d-block mb-2 fw-semibold">Available Days:</label>
+            <div class="form-check form-check-inline">
+              <input class="form-check-input" type="checkbox" id="inlineCheckbox1" value="0" name="sun">
+              <label class="form-check-label" for="inlineCheckbox1">Sun</label>
+            </div>
+            <div class="form-check form-check-inline">
+              <input class="form-check-input" type="checkbox" id="inlineCheckbox2" value="0" name="mon">
+              <label class="form-check-label" for="inlineCheckbox2">Mon</label>
+            </div>
+            <div class="form-check form-check-inline">
+              <input class="form-check-input" type="checkbox" id="inlineCheckbox3" value="0" name="tue">
+              <label class="form-check-label" for="inlineCheckbox3">Tue</label>
+            </div>
+            <div class="form-check form-check-inline">
+              <input class="form-check-input" type="checkbox" id="inlineCheckbox4" value="0" name="wen">
+              <label class="form-check-label" for="inlineCheckbox4">Wen</label>
+            </div>
+            <div class="form-check form-check-inline">
+              <input class="form-check-input" type="checkbox" id="inlineCheckbox5" value="0" name="thu">
+              <label class="form-check-label" for="inlineCheckbox5">Thu</label>
+            </div>
+            <div class="form-check form-check-inline">
+              <input class="form-check-input" type="checkbox" id="inlineCheckbox6" value="0" name="fri">
+              <label class="form-check-label" for="inlineCheckbox6">Fri</label>
+            </div>
+            <div class="form-check form-check-inline">
+              <input class="form-check-input" type="checkbox" id="inlineCheckbox7" value="0" name="sat">
+              <label class="form-check-label" for="inlineCheckbox7">Sat</label>
+            </div>
+          </div>
+        </div>
+        <div class="row g-3">
+          <div class="col-lg-6">
+            <div>
+              <label for="from-time" class="form-label fw-semibold">From Time:</label>
+              <input mwlFlatpickr [flatpickrOptions]="{noCalendar:true,enableTime:true}" type="text"
+                class="form-control flatpickr-input active" data-provider="timepickr" data-time-basic="true"
+                id="from-time" readonly="readonly" placeholder="12:00 PM">
+            </div>
+          </div>
+          <div class="col-lg-6">
+            <div>
+              <label for="to-time" class="form-label fw-semibold">To Time:</label>
+              <input mwlFlatpickr [flatpickrOptions]="{noCalendar:true,enableTime:true}" type="text"
+                class="form-control flatpickr-input active" data-provider="timepickr" data-time-basic="true"
+                id="to-time" readonly="readonly" placeholder="12:00 PM">
+            </div>
+          </div>
+          <div class="col-lg-12">
+            <div>
+              <label for="dateSelect" class="form-label fw-semibold">Available Date:</label>
+              <input mwlFlatpickr [flatpickrOptions]="{mode:'range',dateFormat:'d M, Y'}" type="text" id="dateSelect"
+                class="form-control flatpickr-input active" data-provider="flatpickr"
+                placeholder="dd-mm-yyyy to dd-mm-yyyy" readonly>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="text-end mb-3">
+      <button class="btn btn-primary me-1">Add Doctor</button>
+      <button class="btn btn-danger">Cancel</button>
+    </div>
+  </div>
+</div>

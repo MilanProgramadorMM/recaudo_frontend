@@ -1,0 +1,46 @@
+<page-title title="File Manager" subtitle="Apps" />
+<div class="card">
+  <div class="d-flex">
+    <div class="d-sm-none d-xl-block">
+      <side-panel />
+    </div>
+
+    <ng-template #sidebar let-offcanvas class="offcanvas-xl offcanvas-start file-manager" tabindex="-1"
+      id="fileManagerSidebar" aria-labelledby="fileManagerSidebarLabel">
+
+      <side-panel />
+    </ng-template>
+
+    <div class="w-100 border-start">
+      <div class="p-3">
+        <div class="d-flex align-items-center gap-1 mb-3">
+          <div class="flex-shrink-0 d-xl-none d-inline-flex">
+            <button (click)="openSidebar(sidebar)" class="btn btn-sm btn-icon btn-soft-primary align-items-center p-0"
+              type="button" data-bs-toggle="offcanvas" data-bs-target="#fileManagerSidebar"
+              aria-controls="fileManagerSidebar">
+              <i class="ti ti-menu-2 fs-20"></i>
+            </button>
+          </div>
+          <h4 class="header-title">Quick Access</h4>
+        </div>
+
+        <div class="row">
+          @for (file of allFiles; track $index) {
+          <div class="col-md-6 col-xxl-3" id="googleMedia">
+            <quick-access [file]="file" />
+          </div>
+          }
+        </div>
+
+      </div>
+
+      <div class="px-3 d-flex align-items-center justify-content-between mb-3">
+        <h4 class="header-title">Recent</h4>
+        <a href="javascript: void(0);" class="link-reset fw-semibold text-decoration-underline link-offset-2">View All
+          <i class="ti ti-arrow-right"></i></a>
+      </div>
+
+      <recent-files />
+    </div>
+  </div>
+</div>

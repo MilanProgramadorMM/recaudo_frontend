@@ -1,0 +1,174 @@
+<page-title subtitle="Extended UI" title="Dragula" />
+<div class="row">
+  <div class="col-12">
+    <div class="card">
+      <div class="card-header border-bottom border-dashed d-flex align-items-center">
+        <h4 class="header-title">Simple Drag and Drop Example</h4>
+      </div>
+
+      <div class="card-body">
+        <div class="row" id="simple-dragula" cdkDropList [cdkDropListData]="simpleList"
+          (cdkDropListDropped)="drop($event)">
+
+          @for (item of simpleList; track item.id) {
+          <div class="col-md-12" cdkDrag>
+            <div class="card mb-0 mt-3 text-white bg-{{item.variant}}">
+              <div class="card-body">
+                <blockquote class="card-bodyquote mb-0">
+                  <p class="mb-0">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer posuere
+                    erat a ante.</p>
+                </blockquote>
+              </div>
+            </div>
+          </div>
+          }
+
+
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<div class="row">
+  <div class="col-12">
+    <div class="card">
+      <div class="card-header border-bottom border-dashed d-flex align-items-center">
+        <h4 class="header-title">Move stuff between containers</h4>
+      </div>
+
+      <div class="card-body">
+
+        <div class="row" cdkDropListGroup>
+          <div class="col-md-6">
+            <div class="bg-light bg-opacity-50 p-2 p-lg-4">
+              <h5 class="mt-0">Part 1</h5>
+              <div class="py-2" cdkDropList [cdkDropListData]="list1" id="list-left"
+                (cdkDropListDropped)="drop($event)">
+
+                @for (item of list1; track item) {
+                <div class="card mb-0 mt-2" cdkDrag>
+                  <div class="card-body">
+                    <div class="d-flex align-items-start">
+                      <img [src]="item.image" alt="image" class="me-3 d-none d-sm-block avatar-sm rounded-circle">
+                      <div class="w-100 overflow-hidden">
+                        <h5 class="mb-1 mt-0">{{item.name}}</h5>
+                        <p> {{item.role}} </p>
+                        <p class="mb-0 text-muted">
+                          <span class="fst-italic"><b>"</b>Disrupt pork belly poutine, asymmetrical tousled succulents
+                            selfies. You probably haven't heard of them tattooed master cleanse live-edge
+                            keffiyeh.</span>
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                }
+
+              </div>
+            </div>
+          </div>
+
+          <div class="col-md-6">
+            <div class="bg-light bg-opacity-50 p-2 p-lg-4">
+              <h5 class="mt-0">Part 2</h5>
+              <div class="py-2" cdkDropList [cdkDropListData]="list2" id="list-right"
+                (cdkDropListDropped)="drop($event)">
+
+                @for (item of list2; track item) {
+                <div class="card mb-0 mt-2" cdkDrag>
+                  <div class="card-body">
+                    <div class="d-flex align-items-start">
+                      <img [src]="item.image" alt="image" class="me-3 d-none d-sm-block avatar-sm rounded-circle">
+                      <div class="w-100 overflow-hidden">
+                        <h5 class="mb-1 mt-0">{{item.name}}</h5>
+                        <p> {{item.role}} </p>
+                        <p class="mb-0 text-muted">
+                          <span class="fst-italic"><b>"</b>Disrupt pork belly poutine, asymmetrical tousled succulents
+                            selfies. You probably haven't heard of them tattooed master cleanse live-edge
+                            keffiyeh.</span>
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                }
+
+              </div>
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<div class="row">
+  <div class="col-12">
+    <div class="card">
+      <div class="card-header border-bottom border-dashed d-flex align-items-center">
+        <h4 class="header-title">Move stuff between containers using handle</h4>
+      </div>
+
+      <div class="card-body">
+
+        <div class="row" cdkDropListGroup>
+          <div class="col-md-6">
+            <div class="bg-light bg-opacity-50 p-2 p-lg-4">
+              <h5 class="mt-0">Part 1</h5>
+              <div id="handle-list-left" class="py-2" cdkDropList [cdkDropListData]="list3"
+                (cdkDropListDropped)="drop($event)">
+
+                @for (item of list3; track item) {
+                <div class="card mb-0 mt-2" cdkDrag>
+                  <div class="card-body">
+                    <div class="d-flex align-items-center">
+                      <img [src]="item.image" alt="image" class="me-3 d-none d-sm-block avatar-sm rounded-circle">
+                      <div class="w-100 overflow-hidden">
+                        <h5 class="mb-1">{{item.name}}</h5>
+                        <p class="mb-0"> {{item.role}} </p>
+                      </div>
+                      <span class="dragula-handle" cdkDragHandle></span>
+                    </div>
+                  </div>
+                </div>
+                }
+
+              </div>
+            </div>
+          </div>
+
+          <div class="col-md-6">
+            <div class="bg-light bg-opacity-50 p-2 p-lg-4">
+              <h5 class="mt-0">Part 2</h5>
+              <div id="handle-list-right" class="py-2" cdkDropList [cdkDropListData]="list4"
+                (cdkDropListDropped)="drop($event)">
+
+                @for (item of list4; track item) {
+                <div class="card mb-0 mt-2" cdkDrag>
+                  <div class="card-body">
+                    <div class="d-flex align-items-center">
+                      <img [src]="item.image" alt="image" class="me-3 d-none d-sm-block avatar-sm rounded-circle">
+                      <div class="w-100 overflow-hidden">
+                        <h5 class="mb-1">{{item.name}}</h5>
+                        <p class="mb-0"> {{item.role}} </p>
+                      </div>
+                      <span class="dragula-handle" cdkDragHandle></span>
+                    </div>
+                  </div>
+                </div>
+                }
+
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

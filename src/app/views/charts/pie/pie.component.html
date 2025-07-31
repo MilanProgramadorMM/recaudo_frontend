@@ -1,0 +1,163 @@
+<page-title subtitle="Apex" title="Pie Charts" />
+<div class="row">
+  <div class="col-xl-6">
+    <div class="card">
+      <div class="card-body">
+        <h4 class="header-title">Simple Pie Chart</h4>
+        <div dir="ltr">
+          <apx-chart 
+          [chart]="simplePieChart.chart!"
+          [series]="simplePieChart.series!"
+          [labels]="simplePieChart.labels!"
+          [colors]="simplePieChart.colors!"
+          [legend]="simplePieChart.legend!"
+          />
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+  <div class="col-xl-6">
+    <div class="card">
+      <div class="card-body">
+        <h4 class="header-title">Simple Donut Chart</h4>
+        <div dir="ltr">
+          <apx-chart 
+          [chart]="simpleDonutChart.chart!"
+          [series]="simpleDonutChart.series!"
+          [labels]="simpleDonutChart.labels!"
+          [colors]="simpleDonutChart.colors!"
+          [legend]="simpleDonutChart.legend!"
+          />
+        </div>
+      </div>
+
+    </div>
+
+  </div>
+
+</div>
+
+
+<div class="row">
+  <div class="col-xl-6">
+    <div class="card">
+      <div class="card-body">
+        <h4 class="header-title mb-4">Monochrome Pie Chart</h4>
+        <div dir="ltr">
+          <apx-chart 
+          [chart]="monochromePieChart.chart!"
+          [series]="monochromePieChart.series!"
+          [labels]="monochromePieChart.labels!"
+          [colors]="monochromePieChart.colors!"
+          [legend]="monochromePieChart.legend!"
+          [theme]="monochromePieChart.theme!"
+          />
+        </div>
+      </div>
+
+    </div>
+
+  </div>
+
+
+  <div class="col-xl-6">
+    <div class="card">
+      <div class="card-body">
+        <h4 class="header-title mb-4">Gradient Donut Chart</h4>
+        <div dir="ltr">
+          <apx-chart 
+          [chart]="gradientDonutChart.chart!"
+          [series]="gradientDonutChart.series!"
+          [labels]="gradientDonutChart.labels!"
+          [colors]="gradientDonutChart.colors!"
+          [legend]="gradientDonutChart.legend!"
+          [fill]="gradientDonutChart.fill!"
+          />
+        </div>
+      </div>
+
+    </div>
+
+  </div>
+
+</div>
+
+
+<div class="row">
+  <div class="col-xl-6">
+    <div class="card">
+      <div class="card-body">
+        <h4 class="header-title mb-4">Patterned Donut Chart</h4>
+        <div dir="ltr">
+          <apx-chart 
+          [chart]="patternedDonutChart.chart!"
+          [series]="patternedDonutChart.series!"
+          [dataLabels]="patternedDonutChart.dataLabels!"
+          [labels]="patternedDonutChart.labels!"
+          [colors]="patternedDonutChart.colors!"
+          [legend]="patternedDonutChart.legend!"
+          [states]="patternedDonutChart.states!"
+          [fill]="patternedDonutChart.fill!"
+          />
+        </div>
+      </div>
+
+    </div>
+
+  </div>
+
+
+  <div class="col-xl-6">
+    <div class="card">
+      <div class="card-body">
+        <h4 class="header-title mb-4">Pie Chart with Image fill</h4>
+        <div dir="ltr">
+          <apx-chart 
+          [chart]="imagePieChart.chart!"
+          [series]="imagePieChart.series!"
+          [dataLabels]="imagePieChart.dataLabels!"
+          [labels]="imagePieChart.labels!"
+          [colors]="imagePieChart.colors!"
+          [legend]="imagePieChart.legend!"
+          [states]="imagePieChart.states!"
+          [fill]="imagePieChart.fill!"
+          [stroke]="imagePieChart.stroke!"
+          />
+        </div>
+      </div>
+
+    </div>
+
+  </div>
+
+</div>
+
+
+<div class="row">
+  <div class="col-xl-6">
+    <div class="card">
+      <div class="card-body">
+        <h4 class="header-title mb-4">Donut Update</h4>
+        <div dir="ltr">
+          <div id="donut-chart">
+
+      
+          </div>
+        </div>
+
+        <div class="text-center mt-2">
+          <button class="btn btn-sm btn-primary me-1" (click)="randomizeChart()">RANDOMIZE</button>
+          <button class="btn btn-sm btn-primary me-1" (click)="addData()">ADD</button>
+          <button class="btn btn-sm btn-primary me-1" (click)="removeData()">REMOVE</button>
+          <button class="btn btn-sm btn-primary" (click)="resetChart()">RESET</button>
+          </div>
+
+      </div>
+
+    </div>
+
+  </div>
+
+</div>

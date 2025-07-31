@@ -1,0 +1,66 @@
+<page-title subtitle="Apex" title="Boxplot Charts"/>
+<div class="row">
+  <div class="col-xl-6">
+    <div class="card">
+      <div class="card-body">
+        <h4 class="header-title mb-4">Basic Boxplot</h4>
+        <div dir="ltr">
+         <apx-chart
+         [chart]="basicBoxplotChart.chart!"
+         [series]="basicBoxplotChart.series!"
+         [plotOptions]="basicBoxplotChart.plotOptions!"
+         [stroke]="basicBoxplotChart.stroke!"
+         />
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+  <div class="col-xl-6">
+    <div class="card">
+      <div class="card-body">
+        <h4 class="header-title mb-4">Scatter Boxplot </h4>
+        <div dir="ltr">
+          <apx-chart
+          [chart]="scatterBoxplotChart.chart!"
+          [series]="scatterBoxplotChart.series!"
+          [plotOptions]="scatterBoxplotChart.plotOptions!"
+          [stroke]="scatterBoxplotChart.stroke!"
+          [colors]="scatterBoxplotChart.colors!"
+          [legend]="scatterBoxplotChart.legend!"
+          [xaxis]="scatterBoxplotChart.xaxis!"
+          [grid]="scatterBoxplotChart.grid!"
+          [tooltip]="scatterBoxplotChart.tooltip!"
+          />
+        </div>
+      </div>
+
+    </div>
+
+  </div>
+
+</div>
+
+
+<div class="row">
+  <div class="col-xl-6">
+    <div class="card">
+      <div class="card-body">
+        <h4 class="header-title mb-4">Horizontal BoxPlot</h4>
+        <div dir="ltr">
+          <apx-chart
+          [chart]="horizontalBoxPlotChart.chart!"
+          [series]="horizontalBoxPlotChart.series!"
+          [plotOptions]="horizontalBoxPlotChart.plotOptions!"
+          [stroke]="horizontalBoxPlotChart.stroke!"
+          [xaxis]="horizontalBoxPlotChart.xaxis!"
+          />
+        </div>
+      </div>
+
+    </div>
+
+  </div>
+
+</div>

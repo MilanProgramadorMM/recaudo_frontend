@@ -1,0 +1,15 @@
+<div class="row">
+  @for (item of statData; track $index) {
+    <div class="col-lg-3">
+      <div class="card">
+        <div class="card-body text-center">
+          <div class="avatar-lg bg-light rounded d-flex align-items-center justify-content-center mx-auto mb-2">
+            <iconify-icon [icon]="item.icon" class="fs-32 text-warning"></iconify-icon>
+          </div>
+          <a href="javascript: void(0);" class="text-dark fs-16 fw-medium">{{item.title}}</a>
+          <p class="mt-1 mb-0">{{item.count}} Items Available</p>
+        </div>
+      </div>
+    </div>
+  }
+</div>

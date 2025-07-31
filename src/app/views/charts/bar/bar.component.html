@@ -1,0 +1,191 @@
+<page-title subtitle="Apex" title="Bar Charts" />
+<div class="row">
+  <div class="col-xl-6">
+    <div class="card">
+      <div class="card-body">
+        <h4 class="header-title">Basic Bar Chart</h4>
+        <div dir="ltr">
+          <div id="basic-bar" class="apex-charts" data-colors="#39afd1">
+            <apx-chart [chart]="basicBarChart.chart!" [plotOptions]="basicBarChart.plotOptions!"
+              [dataLabels]="basicBarChart.dataLabels!" [series]="basicBarChart.series!" [colors]="basicBarChart.colors!"
+              [xaxis]="basicBarChart.xaxis!" [states]="basicBarChart.states!" [grid]="basicBarChart.grid!" />
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-xl-6">
+    <div class="card">
+      <div class="card-body">
+        <h4 class="header-title">Grouped Bar Chart</h4>
+        <div dir="ltr">
+          <apx-chart [chart]="groupedChart.chart!" [plotOptions]="groupedChart.plotOptions!"
+            [dataLabels]="groupedChart.dataLabels!" [series]="groupedChart.series!" [colors]="groupedChart.colors!"
+            [stroke]="groupedChart.stroke!" [xaxis]="groupedChart.xaxis!" [states]="groupedChart.states!"
+            [legend]="groupedChart.legend!" [grid]="groupedChart.grid!" />
+        </div>
+      </div>
+
+    </div>
+
+  </div>
+
+</div>
+
+
+<div class="row">
+  <div class="col-xl-6">
+    <div class="card">
+      <div class="card-body">
+        <h4 class="header-title">Stacked Bar Chart</h4>
+        <div dir="ltr">
+          <apx-chart [chart]="stackedBarChart.chart!" [plotOptions]="stackedBarChart.plotOptions!"
+            [dataLabels]="stackedBarChart.dataLabels!" [series]="stackedBarChart.series!"
+            [colors]="stackedBarChart.colors!" [stroke]="stackedBarChart.stroke!" [xaxis]="stackedBarChart.xaxis!"
+            [yaxis]="stackedBarChart.yaxis!" [states]="stackedBarChart.states!" [fill]="stackedBarChart.fill!"
+            [tooltip]="stackedBarChart.tooltip!" [legend]="stackedBarChart.legend!" [grid]="stackedBarChart.grid!" />
+        </div>
+      </div>
+
+    </div>
+
+  </div>
+
+
+  <div class="col-xl-6">
+    <div class="card">
+      <div class="card-body">
+        <h4 class="header-title">100% Stacked Bar Chart</h4>
+        <div dir="ltr">
+          <apx-chart [chart]="fullStackedBarChart.chart!" [plotOptions]="fullStackedBarChart.plotOptions!"
+            [dataLabels]="fullStackedBarChart.dataLabels!" [series]="fullStackedBarChart.series!"
+            [colors]="fullStackedBarChart.colors!" [stroke]="fullStackedBarChart.stroke!"
+            [xaxis]="fullStackedBarChart.xaxis!" [states]="fullStackedBarChart.states!"
+            [fill]="fullStackedBarChart.fill!" [tooltip]="fullStackedBarChart.tooltip!"
+            [legend]="fullStackedBarChart.legend!" [grid]="fullStackedBarChart.grid!" />
+        </div>
+      </div>
+
+    </div>
+
+  </div>
+
+</div>
+
+
+<div class="row">
+  <div class="col-xl-6">
+    <div class="card">
+      <div class="card-body">
+        <h4 class="header-title">Bar with Negative Values</h4>
+        <div dir="ltr">
+          <apx-chart [chart]="negativeBarChart.chart!" [plotOptions]="negativeBarChart.plotOptions!"
+            [dataLabels]="negativeBarChart.dataLabels!" [series]="negativeBarChart.series!"
+            [colors]="negativeBarChart.colors!" [stroke]="negativeBarChart.stroke!" [xaxis]="negativeBarChart.xaxis!"
+            [yaxis]="negativeBarChart.yaxis!" [states]="negativeBarChart.states!" [fill]="negativeBarChart.fill!"
+            [tooltip]="negativeBarChart.tooltip!" [legend]="negativeBarChart.legend!" [grid]="negativeBarChart.grid!" />
+        </div>
+      </div>
+
+    </div>
+
+  </div>
+
+
+  <div class="col-xl-6">
+    <div class="card">
+      <div class="card-body">
+        <h4 class="header-title">Reversed Bar Chart</h4>
+        <div dir="ltr">
+          <apx-chart [chart]="reversedBarChart.chart!" [plotOptions]="reversedBarChart.plotOptions!"
+            [dataLabels]="reversedBarChart.dataLabels!" [series]="reversedBarChart.series!"
+            [colors]="reversedBarChart.colors!" [stroke]="reversedBarChart.stroke!" [xaxis]="reversedBarChart.xaxis!"
+            [yaxis]="reversedBarChart.yaxis!" [states]="reversedBarChart.states!" [fill]="reversedBarChart.fill!"
+            [tooltip]="reversedBarChart.tooltip!" [legend]="reversedBarChart.legend!" [grid]="reversedBarChart.grid!" />
+        </div>
+      </div>
+
+    </div>
+
+  </div>
+
+</div>
+
+
+<div class="row">
+  <div class="col-xl-6">
+    <div class="card">
+      <div class="card-body">
+        <h4 class="header-title">Bar with Image Fill</h4>
+        <div dir="ltr">
+          <apx-chart [chart]="imageBarChart.chart!" [plotOptions]="imageBarChart.plotOptions!"
+            [dataLabels]="imageBarChart.dataLabels!" [series]="imageBarChart.series!" [colors]="imageBarChart.colors!"
+            [stroke]="imageBarChart.stroke!" [xaxis]="imageBarChart.xaxis!" [yaxis]="imageBarChart.yaxis!"
+            [states]="imageBarChart.states!" [fill]="imageBarChart.fill!" [grid]="imageBarChart.grid!" />
+        </div>
+      </div>
+
+    </div>
+
+  </div>
+
+
+  <div class="col-xl-6">
+    <div class="card">
+      <div class="card-body">
+        <h4 class="header-title">Custom DataLabels Bar</h4>
+        <div dir="ltr">
+          <apx-chart [chart]="DataLabelsChartOpts.chart!" [plotOptions]="DataLabelsChartOpts.plotOptions!"
+            [dataLabels]="DataLabelsChartOpts.dataLabels!" [series]="DataLabelsChartOpts.series!"
+            [colors]="DataLabelsChartOpts.colors!" [stroke]="DataLabelsChartOpts.stroke!"
+            [xaxis]="DataLabelsChartOpts.xaxis!" [yaxis]="DataLabelsChartOpts.yaxis!"
+            [states]="DataLabelsChartOpts.states!" [fill]="DataLabelsChartOpts.fill!"
+            [grid]="DataLabelsChartOpts.grid!" />
+        </div>
+      </div>
+
+    </div>
+
+  </div>
+
+</div>
+
+
+<div class="row">
+  <div class="col-xl-6">
+    <div class="card">
+      <div class="card-body">
+        <h4 class="header-title">Patterned Bar Chart</h4>
+        <div dir="ltr">
+          <apx-chart [chart]="patternBarChart.chart!" [plotOptions]="patternBarChart.plotOptions!"
+            [dataLabels]="patternBarChart.dataLabels!" [series]="patternBarChart.series!"
+            [colors]="patternBarChart.colors!" [stroke]="patternBarChart.stroke!" [xaxis]="patternBarChart.xaxis!"
+            [yaxis]="patternBarChart.yaxis!" [states]="patternBarChart.states!" [fill]="patternBarChart.fill!"
+            [grid]="patternBarChart.grid!" />
+        </div>
+      </div>
+
+    </div>
+
+  </div>
+
+
+  <div class="col-xl-6">
+    <div class="card">
+      <div class="card-body">
+        <h4 class="header-title">Bar with Markers</h4>
+        <div dir="ltr">
+          <apx-chart [chart]="markersBarChart.chart!" [plotOptions]="markersBarChart.plotOptions!"
+            [dataLabels]="markersBarChart.dataLabels!" [series]="markersBarChart.series!"
+            [colors]="markersBarChart.colors!" [stroke]="markersBarChart.stroke!" [xaxis]="markersBarChart.xaxis!"
+            [yaxis]="markersBarChart.yaxis!" [states]="markersBarChart.states!" [fill]="markersBarChart.fill!"
+            [grid]="markersBarChart.grid!" />
+        </div>
+      </div>
+
+    </div>
+
+  </div>
+
+</div>

@@ -1,0 +1,120 @@
+<page-title title="Personas" subtitle="Configuracion" />
+<div class="row">
+  <div class="col-12">
+    <div class="card">
+      <div class="card-header d-flex align-items-center justify-content-between border-bottom border-light">
+        <h4 class="header-title">Usuarios</h4>
+        <div>
+          <a href="javascript:void(0);" class="btn btn-secondary bg-gradient">
+            <i class="ti ti-file-import me-1"></i> Importar
+          </a>
+        </div>
+
+        <!-- Modal 
+        <div class="modal fade show d-block" tabindex="-1" role="dialog" *ngIf="showModal"
+          style="background: rgba(0, 0, 0, 0.5);">
+          <div class="modal-dialog modal-xl" role="document">
+            <div class="modal-content">
+              <div class="modal-header">
+                <h5 class="modal-title">Agregar Persona</h5>
+                <button type="button" class="btn-close" (click)="closeModal()"></button>
+              </div>
+              <div class="modal-body">
+                <app-person-create></app-person-create>
+                <ng-container *ngComponentOutlet="PersonCreateComponent"></ng-container>
+              </div>
+            </div>
+          </div>
+        </div>
+        -->
+      </div>
+      <div class="mb-3 row align-items-center ms-3">
+        <label for="person-search" class="col-sm-auto col-form-label">Buscar usuario:</label>
+        <div class="col-6">
+          <input id="person-search" class="form-control" type="text" placeholder="Por nombre, apellido o documento..."
+            [(ngModel)]="searchTerm" (ngModelChange)="applyFilter()" />
+        </div>
+      </div>
+
+
+      <div class="table-responsive">
+        <table class="table table-nowrap mb-0">
+          <thead class="bg-light-subtle">
+            <tr>
+              <!--<th class="ps-3" style="width: 50px;">
+                <input type="checkbox" class="form-check-input" id="customCheck1">
+              </th>
+              -->
+              <th>Nombre</th>
+              <th>Usuario</th>
+              <th>Rol</th>
+              <th>Creado Por</th>
+              <th class="text-center" style="width: 120px;">Action</th>
+            </tr>
+          </thead>
+
+          <tbody>
+            @for (user of filteredUsers; track $index) {
+            <tr>
+              <!-- <td class="ps-3">
+                <input type="checkbox" class="form-check-input" id="customCheck2">
+              </td>
+              <td>
+                <img [src]="persons.image" class="avatar-sm rounded-circle me-2" alt="...">
+                <a routerLink="/hospital/doctor/details" class="text-dark fw-medium">{{persons.username}}</a>
+              </td> -->
+              <td>{{user.person_fullname}}</td>
+              <td>{{user.username}}</td>
+              <td>{{user.rol?.rol}}</td>
+              <td>{{user.user_create}}</td>
+
+              <td class="pe-3">
+                <div class="hstack gap-1 justify-content-end">
+                  <a (click)="openRoleModal(user)" class="btn btn-soft-warning btn-icon btn-sm rounded-circle">
+                    <i class="ti ti-user-shield fs-4"></i>
+                  </a>
+
+                  <a (click)="onDelete(person.id)" class="btn btn-soft-danger btn-icon btn-sm rounded-circle">
+                    <i class="ti ti-trash fs-4"></i>
+                  </a>
+
+                </div>
+              </td>
+            </tr>
+            }
+
+          </tbody>
+        </table>
+      </div>
+      <div class="card-footer">
+        <div class="d-flex justify-content-end">
+          <ngb-pagination [collectionSize]="30" [(page)]="page" aria-label="Default pagination" />
+        </div>
+      </div>
+    </div>
+    <!-- Modal template -->
+    <ng-template #userModal let-modal>
+      <div class="modal-header">
+        <h5 class="modal-title">Agregar Usuario</h5>
+        <button type="button" class="btn-close" aria-label="Close" (click)="modal.dismiss()"></button>
+      </div>
+      <div class="modal-body">
+        <form (ngSubmit)="saveUser()" #form="ngForm">
+          <div class="mb-3">
+            <label class="form-label">Nombre</label>
+            <input type="text" class="form-control" [(ngModel)]="newUser.name" name="name" required>
+          </div>
+          <div class="mb-3">
+            <label class="form-label">Correo</label>
+            <input type="email" class="form-control" [(ngModel)]="newUser.email" name="email" required>
+          </div>
+          <!-- Agrega más campos según necesites -->
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-secondary" (click)="modal.dismiss()">Cancelar</button>
+        <button class="btn btn-primary" (click)="saveUser()">Guardar</button>
+      </div>
+    </ng-template>
+  </div>
+</div>

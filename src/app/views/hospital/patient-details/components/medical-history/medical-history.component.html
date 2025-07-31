@@ -1,0 +1,42 @@
+<div class="card">
+  <div class="card-header border-bottom border-dashed">
+    <div class="d-flex align-items-center gap-2">
+      <div class="d-block">
+        <h4 class="card-title mb-0">Medical History</h4>
+      </div>
+      <div class="ms-auto">
+        <a href="javascript: void(0);" class="btn btn-soft-primary btn-sm">Edit</a>
+      </div>
+    </div>
+  </div>
+  <div class="card-body">
+    <div class="row g-3">
+      @for (item of medicalHistoryData; track $index) {
+        <div class="col-lg-6">
+          <div class="d-flex p-2 rounded align-items-center gap-2 border">
+            <div class="avatar avatar-lg bg-{{item.variant}}-subtle  d-flex align-items-center justify-content-center rounded">
+              <iconify-icon [icon]="item.icon" class="text-{{item.variant}} fs-32"></iconify-icon>
+            </div>
+            <div>
+              <p class="text-muted fw-medium mb-1 fs-15">{{item.title}}</p>
+              <p class="text-dark fw-medium mb-0 fs-15">{{item.description}}</p>
+            </div>
+          </div>
+        </div>
+      }
+      <div class="col-lg-12">
+        <div class="d-flex p-2 rounded align-items-center gap-2 border">
+          <div
+            class="avatar avatar-lg bg-success-subtle  d-flex align-items-center justify-content-center rounded flex-shrink-0">
+            <iconify-icon icon="solar:dropper-3-bold" class="text-success fs-32"></iconify-icon>
+          </div>
+          <div>
+            <p class="text-muted fw-medium mb-1 fs-15">Diabetes Related Complication</p>
+            <p class="text-dark fw-medium mb-0 fs-15">Nephropathy, Neuropathy, Retinopathy, Diabetic foot</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>

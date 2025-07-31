@@ -1,0 +1,81 @@
+<page-title title="Order Details" subtitle="eCommerce" />
+<div class="row">
+  <div class="col-lg-12">
+    <div class="card">
+      <div class="card-body">
+        <div class="row align-items-start justify-content-between">
+          <div class="col-lg-5">
+            <p class="text-dark fw-medium fs-15 d-flex align-items-center gap-1 mb-2">
+              <iconify-icon icon="solar:box-bold-duotone" class="text-danger"></iconify-icon>
+              Order
+              <i class="ti ti-arrow-right"></i>
+              <span class="badge bg-light-subtle rounded-pill text-dark border fs-12 py-1 px-2">
+                #OC3142-EN
+              </span>
+            </p>
+
+            <h3 class="mb-1 text-dark fw-semibold">Order ID : #OC3142-EN <span
+                class="badge bg-warning-subtle rounded-pill text-warning border border-warning fs-11 py-1 px-2 my-2 me-1">Shipping</span>
+              <span
+                class="badge bg-success-subtle rounded-pill text-success border border-success fs-11 py-1 px-2  my-2">
+                No Action Needed</span>
+            </h3>
+
+            <div class="d-flex flex-wrap align-items-center gap-2">
+              <p class="mb-0 fs-15">Order Date : 2 July 2024</p>
+              <div>|</div>
+              <div>
+                <p class="mb-0 fs-15 text-success fw-medium  d-flex align-items-center gap-1"><i
+                    class="ti ti-plane-tilt"></i>Estimated delivery: July 9, 2024</p>
+              </div>
+            </div>
+          </div>
+
+          <div class="col-lg-4 text-end">
+            <div class="d-flex gap-2 flex-wrap justify-content-end my-2">
+              <a href="javascript: void(0);" class="btn btn-soft-primary">Invoice</a>
+              <a href="javascript: void(0);" class="btn btn-primary">Edit Details</a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<order-stats />
+
+<div class="row">
+  <div class="col-xl-4 col-lg-6">
+    <order-timeline />
+  </div>
+  <div class="col-xl-4 col-lg-6">
+    <order-shipment />
+  </div>
+  <div class="col-xl-4 col-lg-12">
+    <div class="card">
+      <div class="card-body">
+        <div class="mapouter">
+          <div class="gmap_canvas"><iframe class="gmap_iframe rounded" width="100%" style="height: 264px;"
+              frameborder="0" scrolling="no" marginheight="0" marginwidth="0"
+              src="https://maps.google.com/maps?width=1980&amp;height=400&amp;hl=en&amp;q=University of Oxford&amp;t=&amp;z=14&amp;ie=UTF8&amp;iwloc=B&amp;output=embed"></iframe>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="row">
+  <div class="col-xl-8 col-lg-12">
+    <order-items />
+  </div>
+  <div class="col-xl-4 col-lg-12">
+    <order-summary />
+  </div>
+</div>
+
+<div class="d-flex justify-content-end gap-2 text-end mb-3">
+  <a href="javascript: void(0);" class="btn btn-primary">Contact To Seller</a>
+  <a href="javascript: void(0);" class="btn btn-outline-primary">Invoice</a>
+</div>

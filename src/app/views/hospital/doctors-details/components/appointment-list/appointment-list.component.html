@@ -1,0 +1,58 @@
+<div class="card">
+  <div class="card-header border-bottom border-dashed">
+    <h4 class="card-title mb-0">Today Appointment List</h4>
+  </div>
+  <div class="card-body p-0">
+    <div class="table-responsive">
+      <table class="table table-nowrap mb-0">
+        <thead class="bg-light bg-opacity-25">
+          <tr>
+            <th class="ps-3" style="width: 50px;">
+              <input type="checkbox" class="form-check-input" id="customCheck1">
+            </th>
+            <th>Patient Name</th>
+            <th>Appointment Date</th>
+            <th>Appointment Time</th>
+            <th>Phone Number</th>
+            <th>Reason for Visit</th>
+            <th class="text-center" style="width: 125px;">Action</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (item of appointments; track $index) {
+          <tr>
+            <td class="ps-3">
+              <input type="checkbox" class="form-check-input" id="customCheck2">
+            </td>
+            <td>
+              <h5 class="mb-0 text-dark">
+                <a href="javascript: void(0);" class="text-dark">{{item.name}}</a>
+              </h5>
+            </td>
+            <td>{{item.date| date:"MMM dd, YYYY"}}</td>
+            <td>
+              {{item.date | date:'shortTime'}}
+            </td>
+            <td>
+              {{item.phone}}
+            </td>
+            <td>
+              {{item.reasonVisit}}
+            </td>
+            <td class="pe-3">
+              <div class="d-flex gap-2">
+                <a href="javascript:void(0);" class="btn btn-soft-primary btn-icon btn-sm rounded-circle"> <i
+                    class="ti ti-eye"></i></a>
+                <a href="javascript:void(0);" class="btn btn-soft-success btn-icon btn-sm rounded-circle"> <i
+                    class="ti ti-edit"></i></a>
+                <a href="javascript:void(0);" class="btn btn-soft-danger btn-icon btn-sm rounded-circle"> <i
+                    class="ti ti-trash"></i></a>
+              </div>
+            </td>
+          </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>

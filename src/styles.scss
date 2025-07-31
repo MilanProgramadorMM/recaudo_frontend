@@ -1,0 +1,17 @@
+/* You can add global styles to this file, and also import other style files */
+// @import "../public/assets/scss/app.scss";
+// @import "../public/assets/scss/icons.scss";
+@use '../public/assets/scss/icons.scss' as *;
+@use '../public/assets/scss/app.scss' as *;
+@import "../node_modules/leaflet/dist/leaflet.css";
+@import "flatpickr/dist/flatpickr.css";
+@import "nouislider/dist/nouislider.css";
+@import "quill/dist/quill.snow.css";
+@import "quill/dist/quill.bubble.css";
+
+/* Importing Bootstrap SCSS file. */
+@import 'bootstrap/scss/bootstrap';
+
+.required {
+  color: rgb(213, 58, 58);
+}

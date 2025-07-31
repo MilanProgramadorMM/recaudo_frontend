@@ -1,0 +1,28 @@
+<div class="card card-h-100">
+
+  <div class="card-header d-flex flex-wrap border-bottom border-dashed align-items-center gap-3">
+    <h4 class="header-title me-auto">Patients Statistics <span class="text-muted fw-normal fs-14">(609.5k
+        Patients)</span></h4>
+
+    <div class="d-flex flex-wrap gap-1">
+      <button type="button" class="btn btn-light btn-sm">
+        All
+      </button>
+      <button type="button" class="btn btn-light active btn-sm">
+        1M
+      </button>
+      <button type="button" class="btn btn-light btn-sm">
+        6M
+      </button>
+      <button type="button" class="btn btn-light btn-sm">
+        1Y
+      </button>
+    </div>
+  </div>
+
+  <div class="card-body pt-1">
+    <div dir="ltr">
+      <apx-chart [dataLabels]="patientsChartOpts.dataLabels!" [plotOptions]="patientsChartOpts.plotOptions!" [xaxis]="patientsChartOpts.xaxis!" [yaxis]="patientsChartOpts.yaxis!" [chart]="patientsChartOpts.chart!" [series]="patientsChartOpts.series!" [stroke]="patientsChartOpts.stroke!" [fill]="patientsChartOpts.fill!"  [colors]="patientsChartOpts.colors!" [tooltip]="patientsChartOpts.tooltip!" />
+    </div>
+  </div>
+</div>

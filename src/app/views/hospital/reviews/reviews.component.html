@@ -1,0 +1,58 @@
+<page-title title="Reviews" subtitle="Hospital" />
+
+<div class="row">
+  @for (item of reviewData; track $index) {
+  <div class="col-xl-4 col-lg-6">
+    <div class="card overflow-hidden">
+      <div class="card-header d-flex align-items-center gap-2 border-bottom border-dashed bg-light-subtle">
+        <img [src]="item.avatar" alt="" class="avatar-xl rounded-circle border border-light border-2">
+        <div>
+          <p class="text-dark fw-medium fs-15 mb-1">{{item.name}}</p>
+          <p class="mb-0 text-muted">{{item.specialty}}</p>
+        </div>
+        <div class="ms-auto text-lg-end text-md-end text-sm-end">
+          <div class="flex-grow-1 d-inline-flex align-items-center fs-5 mb-2">
+            <span class="ti ti-star-filled text-warning"></span>
+            <span class="ti ti-star-filled text-warning"></span>
+            <span class="ti ti-star-filled text-warning"></span>
+            <span class="ti ti-star-filled text-warning"></span>
+            <span class="ti ti-star-filled text-warning"></span>
+          </div>
+          <p class="mb-0 fw-medium">Rating {{item.rating.star}}</p>
+        </div>
+      </div>
+      <div class="card-body">
+        <h4>{{item.rating.review}}k Reviews and ratings</h4>
+        @for (item of item.reviews; track $index;let first = $first) {
+        <div class="{{first ? 'mt-3' : 'mb-3' }} ">
+          <div class="d-flex justify-content-between">
+            <div>
+              <p class="mb-0 fs-15 fw-medium">{{item.name}}</p>
+              <div class="flex-grow-1 d-inline-flex align-items-center fs-14 mt-0">
+                <span class="ti ti-star-filled text-warning"></span>
+                <span class="ti ti-star-filled text-warning"></span>
+                <span class="ti ti-star-filled text-warning"></span>
+                <span class="ti ti-star-filled text-warning"></span>
+                <span class="ti ti-star-filled text-warning"></span>
+              </div>
+            </div>
+            <div>
+              <p class="mb-0 fs-13 fw-medium text-muted">{{item.date | date:"dd MMM yyyy"}}</p>
+            </div>
+          </div>
+          <p class="my-2">{{item.description}}</p>
+          <div>
+            <a href="javascript: void(0);" class="fs-13 me-2 link-reset"><i class="ti ti-thumb-up fs-16"></i> {{item.like}}</a>
+            <a href="javascript: void(0);" class="fs-13 me-3 link-reset"><i class="ti ti-thumb-down fs-16"></i> {{item.dislike}}</a>
+          </div>
+        </div>
+        @if (first) {
+        <hr>
+        }
+        }
+        <a href="javascript: void(0);" class="link-primary fw-medium">View More Review</a>
+      </div>
+    </div>
+  </div>
+  }
+</div>

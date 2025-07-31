@@ -1,0 +1,124 @@
+<page-title subtitle="eCommerce" title="Orders" />
+<div class="row">
+  <div class="col-12">
+    <div class="card">
+      <div class="card-header border-bottom border-light">
+        <div class="row justify-content-between g-3">
+          <div class="col-lg-6">
+            <div class="row g-3">
+              <div class="col-lg-4">
+                <div class="position-relative">
+                  <input type="text" class="form-control ps-4" placeholder="Search Order">
+                  <i class="ti ti-search position-absolute top-50 translate-middle-y ms-2"></i>
+                </div>
+              </div>
+              <div class="col-lg-4">
+                <div class="flex-grow-1 d-flex align-items-center">
+                  <label for="status-select" class="me-2">Status</label>
+
+                  <div class="flex-grow-1">
+                    <select2  [data]="statusOpts" class="my-1 my-md-0" data-toggle="select2" id="status-select"/>
+                  </div>
+                </div>
+              </div>
+              <div class="col-lg-4">
+                <div class="input-group">
+                  <input mwlFlatpickr  placeholder="01 May to 31 May" [flatpickrOptions]="{mode:'range'}" type="text" class="form-control" data-provider="flatpickr" data-deafult-date="01 May to 31 May"
+                    data-date-format="d M" data-range-date="true">
+                  <span class="input-group-text bg-primary border-primary text-white">
+                    <i class="ti ti-calendar fs-15"></i>
+                  </span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="col-lg-6">
+            <div class="text-md-end mt-3 mt-md-0">
+              <button type="button" class="btn btn-success waves-effect waves-light me-1"><i
+                  class="ti ti-settings me-1"></i>More Setting</button>
+              <button type="button" class="btn btn-dark waves-effect waves-light"><i class="ti ti-filter me-1"></i>
+                Filters</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="table-responsive">
+        <table class="table table-nowrap mb-0">
+          <thead class="bg-light-subtle">
+            <tr>
+              <th class="ps-3" style="width: 50px;">
+                <input type="checkbox" class="form-check-input" id="customCheck1">
+              </th>
+              <th>Order ID</th>
+              <th>Customer Name</th>
+              <th>Product</th>
+              <th>Quantity</th>
+              <th>Total</th>
+              <th>Order Date</th>
+              <th>Payment Status</th>
+              <th>Order Status</th>
+              <th class="text-center" style="width: 120px;">Action</th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (item of orders; track $index) {
+            <tr>
+              <td class="ps-3">
+                <input type="checkbox" class="form-check-input" id="customCheck2">
+              </td>
+              <td>
+                <a href="/ecommerce/orders" class="text-muted fw-medium">#BM{{item.id}}</a>
+              </td>
+              <td>
+                <h5 class="mb-0 text-dark"><img [src]="item.avatar" alt="" class="rounded-circle avatar-xs me-1"><a
+                    href="javascript: void(0);" class="text-dark">{{item.name}}</a></h5>
+              </td>
+              <td>
+                <p class="mb-1"><span class="text-dark fw-semibold">P1 -</span> {{item.product.p1}}</p>
+                <p class="mb-0"><span class="text-dark fw-semibold">P2 -</span> {{item.product.p2}}</p>
+              </td>
+              <td>
+                <p class="mb-1">{{item.quantity.p1}} Piece</p>
+                <p class="mb-0">{{item.quantity.p2}} Piece</p>
+              </td>
+
+              <td>
+                {{currency}}{{item.total}}
+              </td>
+              <td>
+                {{item.date | date:"MMMM dd YYYY"}}
+              </td>
+              <td>
+                <h5 class="mb-0"><span
+                    class="badge {{item.paymentStatus==='Failed' ? 'border-danger-subtle text-danger': item.paymentStatus==='Pending' ? 'border-warning-subtle text-warning' : 'border-success-subtle text-success'}} border fs-11 p-1">{{item.orderStatus}}</span>
+                </h5>
+              </td>
+              <td>
+                <h5 class="mb-0"><span class="badge badge-soft-{{item.orderStatus==='Cancel' ? 'danger' : item.orderStatus==='Dispatched' ? 'warning' : item.orderStatus==='Ready To Pick' ? 'dark' : 'info'}} fs-11 p-1"><i
+                      class="ti ti-checks me-1 align-middle"></i>{{item.orderStatus}}</span>
+                </h5>
+              </td>
+              <td class="pe-3">
+                <div class="hstack gap-1 justify-content-end">
+                  <a href="javascript:void(0);" class="btn btn-soft-primary btn-icon btn-sm rounded-circle"> <i
+                      class="ti ti-eye"></i></a>
+                  <a href="javascript:void(0);" class="btn btn-soft-danger btn-icon btn-sm rounded-circle"> <i
+                      class="ti ti-trash"></i></a>
+                </div>
+              </td>
+            </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+
+      <div class="card-footer d-flex align-items-center justify-content-end">
+        <ul class="pagination justify-content-center mb-0">
+          <ngb-pagination [collectionSize]="30" [page]="4" />
+        </ul>
+      </div>
+    </div>
+  </div>
+</div>

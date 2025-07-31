@@ -1,0 +1,29 @@
+<div class="card">
+  <div class="card-body p-0">
+    <div class="row row-cols-xxl-5 row-cols-md-3 row-cols-1 g-0 text-center align-items-center">
+      @for (item of invoiceStats; track $index) {
+      <div class="col border-end border-light border-dashed">
+        <div class="mt-3 mt-md-0 p-3">
+          <h5 class="text-muted fs-13 text-uppercase" title="Number of Orders">{{item.title}}</h5>
+          <div class="d-flex align-items-center justify-content-center gap-2 my-3">
+            <div class="avatar-sm flex-shrink-0">
+              <span class="avatar-title bg-{{item.variant}}-subtle text-{{item.variant}} rounded-circle fs-22">
+                <iconify-icon [icon]="item.icon"></iconify-icon>
+              </span>
+            </div>
+            <h3 class="mb-0 fw-bold">{{item.count}}</h3>
+          </div>
+          <p class="mb-0 text-muted">
+            @if (item.isUp) {
+              <span class="text-success me-2"><i class="ti ti-caret-up-filled"></i> {{item.change}}%</span>
+            }@else {
+              <span class="text-danger me-2"><i class="ti ti-caret-down-filled"></i> {{item.change}}%</span>
+            }
+            <span class="text-nowrap">Since last month</span>
+          </p>
+        </div>
+      </div>
+      }
+    </div>
+  </div>
+</div>

@@ -1,0 +1,82 @@
+<page-title title="Timeline Charts" subtitle="Apex" />
+<div class="row">
+  <div class="col-xl-6">
+    <div class="card">
+      <div class="card-body">
+        <h4 class="header-title mb-3">Basic Timeline</h4>
+        <div dir="ltr">
+          <apx-chart [chart]="basicTimelineChart.chart!" [series]="basicTimelineChart.series!"
+            [colors]="basicTimelineChart.colors!" [plotOptions]="basicTimelineChart.plotOptions!"
+            [xaxis]="basicTimelineChart.xaxis!" />
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-xl-6">
+    <div class="card">
+      <div class="card-body">
+        <h4 class="header-title mb-3">Distributed Timeline </h4>
+        <div dir="ltr">
+          <apx-chart [chart]="distributedTimelineChart.chart!" [series]="distributedTimelineChart.series!"
+            [plotOptions]="distributedTimelineChart.plotOptions!" [dataLabels]="distributedTimelineChart.dataLabels!"
+            [xaxis]="distributedTimelineChart.xaxis!" />
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<div class="row">
+  <div class="col-xl-6">
+    <div class="card">
+      <div class="card-body">
+        <h4 class="header-title mb-3">Multi Series Timeline</h4>
+
+        <div dir="ltr">
+          <apx-chart [chart]="multiSeriesTimelineChart.chart!" [series]="multiSeriesTimelineChart.series!"
+            [fill]="multiSeriesTimelineChart.fill!" [plotOptions]="multiSeriesTimelineChart.plotOptions!"
+            [dataLabels]="multiSeriesTimelineChart.dataLabels!" [colors]="multiSeriesTimelineChart.colors!"
+            [xaxis]="multiSeriesTimelineChart.xaxis!" [legend]="multiSeriesTimelineChart.legend!" />
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+  <div class="col-xl-6">
+    <div class="card">
+      <div class="card-body">
+        <h4 class="header-title mb-3">Advanced Timeline</h4>
+        <div dir="ltr">
+          <apx-chart [chart]="advancedTimelineChart.chart!" [series]="advancedTimelineChart.series!"
+            [fill]="advancedTimelineChart.fill!" [plotOptions]="advancedTimelineChart.plotOptions!"
+            [dataLabels]="advancedTimelineChart.dataLabels!" [colors]="advancedTimelineChart.colors!"
+            [xaxis]="advancedTimelineChart.xaxis!" [legend]="advancedTimelineChart.legend!"
+            [stroke]="advancedTimelineChart.stroke!" />
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<div class="row">
+  <div class="col-xl-6">
+    <div class="card">
+      <div class="card-body">
+        <h4 class="header-title mb-3">Multiple Series - Group Rows</h4>
+        <div dir="ltr">
+          <apx-chart [chart]="groupTimelineChart.chart!" [series]="groupTimelineChart.series!"
+            [fill]="groupTimelineChart.fill!" [plotOptions]="groupTimelineChart.plotOptions!"
+            [dataLabels]="groupTimelineChart.dataLabels!" [colors]="groupTimelineChart.colors!"
+            [xaxis]="groupTimelineChart.xaxis!" [legend]="groupTimelineChart.legend!" />
+        </div>
+      </div>
+
+    </div>
+
+  </div>
+
+</div>

@@ -1,0 +1,90 @@
+<page-title subtitle="eCommerce" title="Products Grid" />
+
+<div class="row">
+  <div class="col-xxl-3">
+    <product-filter />
+  </div>
+
+  <div class="col-xxl-9">
+    <stats />
+
+    <div class="row">
+      @for (product of products; track $index) {
+      <div class="col-lg-4 col-md-6">
+        <div class="card">
+          <img [src]="product.image" alt="product images" class="img-fluid">
+
+          <div class="card-body border-top border-dashed">
+            <h5 class="text-primary fw-medium">{{product.productName}}</h5>
+            <div>
+              <a href="javascript: void(0);" class="fw-semibold fs-16 text-dark">{{product.name}}</a>
+            </div>
+            <h5 class="my-1">{{product.size}}</h5>
+            <div class="flex-grow-1 d-inline-flex align-items-center fs-16 mt-1">
+              <ng-template #t let-fill="fill">
+                @if (fill > 0) {
+                  <span class="ti ti-star-filled text-warning"></span>
+                }@else {
+                  <span class="ti ti-star-half text-warning"></span>
+                }
+              </ng-template>
+              <ngb-rating [(rate)]="product.rating.star" [starTemplate]="t" [readonly]="true" [max]="5" />
+        
+              <span class="ms-1 fs-14">{{product.rating.review}}k Reviews </span>
+            </div>
+          </div>
+
+          <div class="card-footer d-flex flex-wrap align-items-center justify-content-between border-top border-dashed">
+            <h4 class="fw-semibold text-danger d-flex align-items-center gap-2 mb-0">
+              <span class="text-muted text-decoration-line-through">{{currency}}{{product.price}}</span>
+              {{currency}}{{product.discountPrice}}
+            </h4>
+
+            <a href="javascript:void(0);" class="btn btn-soft-primary px-2 fs-20">
+              <iconify-icon icon="solar:cart-3-bold-duotone"></iconify-icon>
+            </a>
+          </div>
+
+          <span class="position-absolute top-0 end-0 p-2">
+            <div data-toggler="on">
+              @if (product.isFavorite) {
+              <button type="button" class="btn btn-icon btn-light rounded-circle" data-toggler-on>
+                <iconify-icon icon="solar:heart-angle-bold-duotone" class="fs-22 text-danger"></iconify-icon>
+              </button>
+              }@else {
+              <button type="button" class="btn btn-icon btn-light rounded-circle" data-toggler-off>
+                <iconify-icon icon="solar:heart-angle-bold-duotone" class="fs-22"></iconify-icon>
+              </button>
+              }
+            </div>
+          </span>
+          @if (product.isDeal || product.isSell) {
+          <span class="position-absolute top-0 start-0 p-2">
+            <span class="badge bg-danger fs-11">On {{product.isDeal ? 'Deal' : 'Sell'}}</span>
+          </span>
+          }
+        </div>
+      </div>
+      }
+
+    </div>
+
+    <div class="row mb-4 align-items-center">
+      <div class="col-sm">
+        <div class="text-muted">
+          Showing <span class="fw-semibold">10</span> of <span class="fw-semibold">35</span> Results
+        </div>
+      </div>
+
+      <div class="col-sm-auto mt-3 mt-sm-0">
+        <nav>
+          <ngb-pagination [collectionSize]="30" [page]="page" >
+            <ng-template ngbPaginationPrevious>Previous</ng-template>
+            <ng-template ngbPaginationNext>Next</ng-template>
+          </ngb-pagination>
+        </nav>
+      </div>
+    </div>
+
+  </div>
+</div>

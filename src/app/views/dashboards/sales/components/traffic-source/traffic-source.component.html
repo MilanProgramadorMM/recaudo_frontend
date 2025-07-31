@@ -1,0 +1,61 @@
+<div class="card">
+  <div class="card-header d-flex justify-content-between align-items-center border-bottom border-dashed">
+    <h4 class="header-title">Top Traffic by Source</h4>
+    <div ngbDropdown >
+      <a  ngbDropdownToggle class="drop-arrow-none cursor-pointer card-drop p-0" data-bs-toggle="dropdown"
+        aria-expanded="false">
+        <i class="ti ti-dots-vertical"></i>
+      </a>
+      <div ngbDropdownMenu class="dropdown-menu-end">
+        <a href="javascript:void(0);" class="dropdown-item">Refresh Report</a>
+        <a href="javascript:void(0);" class="dropdown-item">Export Report</a>
+      </div>
+    </div>
+  </div>
+
+  <div class="card-body">
+    <apx-chart [xaxis]="trafficChartOpts.xaxis!" [yaxis]="trafficChartOpts.yaxis!" [grid]="trafficChartOpts.grid!" [legend]="trafficChartOpts.legend!" [plotOptions]="trafficChartOpts.plotOptions!"  [chart]="trafficChartOpts.chart!" [series]="trafficChartOpts.series!" [stroke]="trafficChartOpts.stroke!" [fill]="trafficChartOpts.fill!" [markers]="trafficChartOpts.markers!" [colors]="trafficChartOpts.colors!" [tooltip]="trafficChartOpts.tooltip!" />
+
+
+    <div class="row mt-2">
+      <div class="col">
+        <div class="d-flex justify-content-between align-items-center p-1">
+          <div>
+            <i class="ti ti-circle-filled fs-12 align-middle me-1 text-primary"></i>
+            <span class="align-middle fw-semibold">Direct</span>
+          </div>
+          <span class="fw-semibold text-muted float-end"><i class="ti ti-arrow-badge-down text-danger"></i>
+            965</span>
+        </div>
+
+        <div class="d-flex justify-content-between align-items-center p-1">
+          <div>
+            <i class="ti ti-circle-filled fs-12 text-success align-middle me-1"></i>
+            <span class="align-middle fw-semibold">Social</span>
+          </div>
+          <span class="fw-semibold text-muted float-end"><i class="ti ti-arrow-badge-up text-success"></i>
+            75</span>
+        </div>
+      </div>
+      <div class="col">
+        <div class="d-flex justify-content-between align-items-center p-1">
+          <div>
+            <i class="ti ti-circle-filled fs-12 text-secondary align-middle me-1"></i>
+            <span class="align-middle fw-semibold"> Marketing</span>
+          </div>
+          <span class="fw-semibold text-muted float-end"><i class="ti ti-arrow-badge-up text-success"></i>
+            102</span>
+        </div>
+
+        <div class="d-flex justify-content-between align-items-center p-1">
+          <div>
+            <i class="ti ti-circle-filled fs-12 text-danger align-middle me-1"></i>
+            <span class="align-middle fw-semibold">Affiliates</span>
+          </div>
+          <span class="fw-semibold text-muted float-end"><i class="ti ti-arrow-badge-down text-danger"></i>
+            96</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

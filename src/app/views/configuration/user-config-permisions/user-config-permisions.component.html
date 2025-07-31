@@ -1,0 +1,40 @@
+<div class="modal-header">
+    <h5 class="modal-title">Permisos del Rol</h5>
+    <button type="button" class="btn-close" (click)="close()" aria-label="Close"></button>
+</div>
+
+<div class="modal-body">
+    <div class="table-responsive">
+        <table class="table table-sm table-hover">
+            <thead class="table-light" class="text-center align-middle">
+                <tr>
+                    <th>MÓDULO</th>
+                    <th>ACCIÓN</th>
+                    <th>PERMISO</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr *ngFor="let permiso of permissions" class="text-center align-middle">
+                    <td>{{ permiso.modulo }}</td>
+                    <td>{{ permiso.accion }}</td>
+                    <td>
+                        <div class="form-check form-switch d-flex justify-content-center align-items-center gap-2">
+                            <input class="form-check-input" type="checkbox" [checked]="permiso.permiso"
+                                (change)="onTogglePermission(permiso)">
+                            <label class="form-check-label">
+                                {{ permiso.permiso ? 'Permitido' : 'Denegado' }}
+                            </label>
+                        </div>
+                    </td>
+                </tr>
+
+                <tr *ngIf="permissions.length === 0">
+                    <td colspan="3" class="text-center text-muted">
+                        <i class="bi bi-exclamation-circle me-2"></i>
+                        No hay permisos registrados para este rol.
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>

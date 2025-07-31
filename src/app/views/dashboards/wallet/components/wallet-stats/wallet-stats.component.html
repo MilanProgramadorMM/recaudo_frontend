@@ -1,0 +1,71 @@
+<div class="row">
+  <div class="col-xl-4">
+    <div class="card">
+      <div class="d-flex card-header justify-content-between align-items-center">
+        <h4 class="header-title">Total Balance</h4>
+        <div ngbDropdown>
+          <a ngbDropdownToggle class="cursor-pointer bg-light-subtle rounded drop-arrow-none card-drop"
+            data-bs-toggle="dropdown" aria-expanded="false">
+            <i class="ti ti-dots-vertical"></i>
+          </a>
+          <div ngbDropdownMenu class="dropdown-menu-end">
+
+            <a href="javascript:void(0);" ngbDropdownItem>Sales Report</a>
+
+            <a href="javascript:void(0);" ngbDropdownItem>Export Report</a>
+
+            <a href="javascript:void(0);" ngbDropdownItem>Profit</a>
+
+            <a href="javascript:void(0);" ngbDropdownItem>Action</a>
+          </div>
+        </div>
+      </div>
+
+      <div class="card-body pt-0">
+        <h2 class="fw-bold">{{currency}}92,652.36 <a href="javascript: void(0);" class="text-muted"><i class="ti ti-eye"></i></a></h2>
+
+        <div class="row g-2 mt-2 pt-1">
+          <div class="col">
+            <a href="javascript: void(0);" class="btn btn-primary w-100"><i class="ti ti-coin me-1"></i> Transfer</a>
+          </div>
+          <div class="col">
+            <a href="javascript: void(0);" class="btn btn-info w-100"><i class="ti ti-coin me-1"></i> Request</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div *ngFor="let item of statsData" class="col-xl-4">
+    <div class="card">
+      <div class="card-body">
+
+        <div class="row justify-content-between">
+          <div class="col-sm-5">
+            <iconify-icon [icon]="item.icon" class="fs-36 text-muted"></iconify-icon>
+            <h3 class="mb-0 fw-bold mt-2 mb-1">{{currency}}{{item.count}}</h3>
+              <p class="text-muted">{{item.title}}</p>
+              <span class="badge fs-12 badge-soft-{{item.variant}}">
+                @if (item.variant==="danger") {
+                <i class="ti ti-arrow-badge-down"></i>
+                }@else {
+                <i class="ti ti-arrow-badge-up"></i>
+                }
+                {{item.change}}
+              </span>
+          </div>
+
+          <div class="col-sm-7 text-end d-flex flex-column">
+            <a href="javascript:void(0);" class="link-reset text-decoration-underline link-offset-2 fw-medium pb-2">
+              View Details
+            </a>
+            <div class="text-end mt-auto">
+              <apx-chart [chart]="item.chartOptions.chart!" [series]="item.chartOptions.series!" [stroke]="item.chartOptions.stroke!" [fill]="item.chartOptions.fill!"  [colors]="item.chartOptions.colors!" [markers]="item.chartOptions.markers!" [tooltip]="item.chartOptions.tooltip!"  [plotOptions]="item.chartOptions.plotOptions!"/>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</div>

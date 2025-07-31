@@ -1,0 +1,212 @@
+<div class="border-start border-light h-100">
+  <div class="card-body py-2">
+    <div class="d-flex align-items-center gap-2">
+      <button (click)="openComposeSidebar()" type="button" class="btn btn-light d-xxl-none d-flex p-1"
+        data-bs-toggle="offcanvas" data-bs-target="#email-sidebar" aria-controls="email-sidebar">
+        <i class="ti ti-menu-2 fs-17"></i>
+      </button>
+
+      <div class="form-check">
+        <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault">
+      </div>
+
+      <div class="d-flex align-items-center">
+        <button type="button" class="btn btn-sm btn-icon btn-ghost-light text-dark rounded-circle"
+          data-bs-toggle="tooltip" data-bs-html="true" data-bs-trigger="hover" placement="top"
+          ngbTooltip="Mark as read">
+          <i class="ti ti-mail-opened fs-18"></i>
+        </button>
+
+        <button type="button" class="btn btn-sm btn-icon btn-ghost-light text-dark rounded-circle"
+          data-bs-toggle="tooltip" data-bs-html="true" data-bs-trigger="hover" placement="top" ngbTooltip="Archive">
+          <i class="ti ti-archive fs-18"></i>
+        </button>
+
+        <button type="button" class="btn btn-sm btn-icon btn-ghost-light text-dark rounded-circle"
+          data-bs-toggle="tooltip" data-bs-html="true" data-bs-trigger="hover" placement="top" ngbTooltip="Delete">
+          <i class="ti ti-trash fs-18"></i>
+        </button>
+
+        <button type="button" class="btn btn-icon btn-sm btn-ghost-light text-dark rounded-circle"
+          data-bs-toggle="tooltip" data-bs-html="true" data-bs-trigger="hover" placement="top" ngbTooltip="Report spam">
+          <i class="ti ti-info-hexagon fs-18"></i>
+        </button>
+      </div>
+
+      <div class="ms-auto d-xl-flex d-none">
+        <div class="app-search">
+          <input type="text" class="form-control rounded-pill" placeholder="Search mail...">
+          <i class="ti ti-mail-search fs-18 app-search-icon text-muted"></i>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="border-top border-light">
+    <div class="table-responsive">
+      <table class="table table-hover mail-list mb-0">
+        <tbody>
+          @for (item of emails; track $index) {
+          <tr class="position-relative" >
+            <td class="ps-3">
+              <input class="form-check-input position-relative z-2" type="checkbox">
+            </td>
+
+            <td>
+              <button class="btn p-0 text-warning fs-16 flex-shrink-0">
+                @if (item.isStar) {
+                <i class="ti ti-star"></i>
+                }@else {
+                <i class="ti ti-star-filled"></i>
+                }
+              </button>
+
+            </td>
+
+            <td>
+              <div class="d-flex align-items-center gap-2">
+                <img [src]="item.image" alt="user avatar" class="avatar-md rounded-circle">
+
+                <h5 class="fs-14 mb-0 fw-medium">
+                  <a href="javascript: void(0);" class="link-reset text-truncate">{{item.name}}</a>
+                </h5>
+              </div>
+            </td>
+
+            <td>
+              <a data-bs-toggle="modal" (click)="openModal(detailmodal,{size:'lg',centered:true})" href="javascript: void(0);" role="button" aria-controls="email-details-modal"
+                class="link-reset text-truncate fs-14 fw-semibold stretched-link">{{item.subTitle}} </a>
+            </td>
+
+            <td>
+              <div>
+                <span class="fs-14 text-muted text-truncate mb-0"> {{item.description}}</span>
+              </div>
+            </td>
+            @if (item.isAttachment) {
+            <td>
+              <a href="javascript: void(0);" class="link-reset text-truncate text-nowrap"> <i class="ti ti-paperclip"></i> 2 </a>
+            </td>
+            }@else {
+            <td>
+              <a href="javascript: void(0);" class="link-reset text-truncate text-nowrap"> &nbsp; </a>
+            </td>
+            }
+
+            <td>
+              <p class="fs-12 text-muted mb-0 text-end text-truncate">
+                {{item.date | date:"MMM dd, HH:mm"}}
+              </p>
+            </td>
+
+            <td class="pe-3">
+              <iconify-icon icon="solar:bolt-circle-bold-duotone"
+                class="text-danger fs-16 ms-2 align-middle"></iconify-icon>
+            </td>
+          </tr>
+          }
+
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<ng-template id="email-details-modal" #detailmodal let-modal class="modal fade" tabindex="-1" role="dialog"
+  aria-labelledby="email-details-modalLabel" aria-hidden="true">
+
+  <div class="modal-header d-flex flex-wrap gap-2 align-items-start">
+    <img class="me-2 rounded-circle" src="assets/images/users/avatar-2.jpg" alt="placeholder image" height="40">
+    <div class="flex-grow-1">
+      <h6 class="fs-16">Steven Smith</h6>
+      <p class="text-muted mb-0">From: jonathan&#64;domain.com</p>
+    </div>
+
+    <div>
+      <button type="button" class="btn-close" data-bs-dismiss="modal" (click)="modal.close()"></button>
+    </div>
+  </div>
+
+  <div class="modal-body">
+    <h5 class="fs-18">Your elite author Graphic Optimization reward is ready!</h5>
+
+    <hr>
+
+    <p>Hi Coderthemes!</p>
+    <p>Clicking ‘Order Service’ on the right-hand side of the above page will present you with an order page. This
+      service has the following Briefing Guidelines that will need to be filled before placing your order:</p>
+    <ol>
+      <li>Your design preferences (Color, style, shapes, Fonts, others) </li>
+      <li>Tell me, why is your item different? </li>
+      <li>Do you want to bring up a specific feature of your item? If yes, please tell me </li>
+      <li>Do you have any preference or specific thing you would like to change or improve on your item page? </li>
+      <li>Do you want to include your item's or your provider's logo on the page? if yes, please send it to me in vector
+        format (Ai or EPS) </li>
+      <li>Please provide me with the copy or text to display</li>
+    </ol>
+
+    <p>Filling in this form with the above information will ensure that they will be able to start work quickly.</p>
+    <p>You can complete your order by putting your coupon code into the Promotional code box and clicking ‘Apply
+      Coupon’.</p>
+    <p><b>Best,</b> <br> Graphic Studio</p>
+    <hr>
+
+    <h5 class="mb-3">Attachments</h5>
+
+    <div class="row">
+      <div class="col-xl-6">
+        <div class="card mb-1 shadow-none border border-light">
+          <div class="p-2">
+            <div class="row align-items-center">
+              <div class="col-auto">
+                <div class="avatar-lg">
+                  <span class="avatar-title bg-soft-primary text-primary rounded">
+                    .ZIP
+                  </span>
+                </div>
+              </div>
+              <div class="col ps-0">
+                <a href="javascript:void(0);" class="text-muted fw-bold">Osen-admin-design.zip</a>
+                <p class="mb-0">2.3 MB</p>
+              </div>
+              <div class="col-auto">
+                
+                <a href="javascript:void(0);" class="btn btn-link btn-lg text-muted">
+                  <i class="ti ti-download"></i>
+                </a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div> 
+
+      <div class="col-xl-6">
+        <div class="card mb-1 shadow-none border border-light">
+          <div class="p-2">
+            <div class="row align-items-center">
+              <div class="col-auto">
+                <img src="assets/images/sellers/s-6.svg" class="avatar-lg rounded" alt="file-image">
+              </div>
+              <div class="col ps-0">
+                <a href="javascript:void(0);" class="text-muted fw-bold">Dashboard-design.jpg</a>
+                <p class="mb-0">3.25 MB</p>
+              </div>
+              <div class="col-auto">
+                <a href="javascript:void(0);" class="btn btn-link btn-lg text-muted">
+                  <i class="ti ti-download"></i>
+                </a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal-footer gap-1 py-2">
+    <button class="btn btn-primary" data-bs-target="#email-compose-modal" data-bs-toggle="modal"><i
+        class="align-text-bottom me-1 ti ti-arrow-back-up"></i> Reply</button>
+    <button class="btn btn-primary" data-bs-target="#email-compose-modal" data-bs-toggle="modal"><i
+        class="align-text-bottom me-1 ti ti-arrow-big-right"></i> Forward</button>
+  </div>
+</ng-template>

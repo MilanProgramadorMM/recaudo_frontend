@@ -1,0 +1,23 @@
+<div class="card">
+  <div class="card-header border-bottom">
+    <h5 class="mb-0 card-title">Order Items</h5>
+  </div>
+  <div class="card-body">
+    <div class="row g-3">
+      @for (item of orderItems; track $index) {
+        <div class="col-lg-6">
+          <div class="d-flex align-items-center border border-dashed rounded p-2 gap-3">
+            <div class="rounded bg-light avatar-xl d-flex align-items-center justify-content-center">
+              <img [src]="item.image" alt="" class="avatar-xl">
+            </div>
+            <div>
+              <a href="javascript: void(0);" class="text-dark fw-medium fs-15">{{item.title}}</a>
+              <p class="text-muted fw-medium fs-14 my-1"><span class="text-dark">Price : </span> {{currency}}{{item.price}}</p>
+              <p class="text-muted fw-medium fs-14 my-1"><span class="text-dark">Size : </span>{{item.size}}</p>
+            </div>
+          </div>
+        </div>
+      }
+    </div>
+  </div>
+</div>

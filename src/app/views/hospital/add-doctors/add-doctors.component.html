@@ -1,0 +1,166 @@
+<page-title title="Add Doctors" subtitle="Hospital" />
+
+<div class="row">
+  <div class="col-lg-7">
+    <div class="card">
+      <div class="card-header border-bottom border-dashed">
+        <h4 class="card-title mb-0">Basic information</h4>
+      </div>
+      <div class="card-body">
+        <div class="row">
+          <div class="col-lg-6">
+            <div class="mb-3">
+              <label for="doctorFirst" class="form-label">Doctor First Name</label>
+              <input type="text" class="form-control" id="doctorFirst" placeholder="Enter First Name" required="">
+            </div>
+          </div>
+          <div class="col-lg-6">
+            <div class="mb-3">
+              <label for="doctorLast" class="form-label">Doctor Last Name</label>
+              <input type="text" class="form-control" id="doctorLast" placeholder="Enter Last Name" required="">
+            </div>
+          </div>
+          <div class="col-lg-6">
+            <div class="mb-3">
+              <label for="email" class="form-label">Email Address</label>
+              <input type="email" class="form-control" id="email" placeholder="Enter Email" required="">
+            </div>
+          </div>
+          <div class="col-lg-6">
+            <div class="mb-3">
+              <label for="phoneNumber" class="form-label">Phone Number</label>
+              <input type="number" class="form-control" id="phoneNumber" placeholder="Enter Number" required="">
+            </div>
+          </div>
+          <div class="col-lg-6">
+            <div class="mb-3">
+              <label class="form-label">Birth Date</label>
+              <input mwlFlatpickr type="text" class="form-control flatpickr-input" data-provider="flatpickr"
+                data-date-format="d M, Y" placeholder="dd-mm-yyyy" readonly="readonly">
+            </div>
+          </div>
+
+          <div class="col-lg-6">
+            <div class="mb-3">
+              <label for="gender" class="form-label">Gender</label>
+              <select2 [data]="genderOpts" placeholder="Select Gender" class="my-1 my-md-0 me-sm-3"
+                data-toggle="select2" id="gender" />
+            </div>
+          </div>
+          <div class="col-lg-6">
+            <div class="mb-3">
+              <label for="education" class="form-label">Education</label>
+              <input type="text" class="form-control" id="education" placeholder="Enter Education" required="">
+            </div>
+          </div>
+
+
+          <div class="col-lg-6">
+            <div class="mb-3">
+              <label for="department" class="form-label">Department</label>
+              <select2 [data]="departmentOpts" placeholder="Select Departments" class="my-1 my-md-0 me-sm-3"
+                data-toggle="select2" id="department" />
+            </div>
+          </div>
+          <div class="col-lg-12">
+            <div class="mb-3">
+              <label for="address" class="form-label">Doctor Address</label>
+              <textarea class="form-control" id="address" rows="3" placeholder="Full Address"></textarea>
+            </div>
+          </div>
+          <div class="col-lg-12">
+            <div>
+              <label for="about" class="form-label">About Doctor</label>
+              <textarea class="form-control" id="about" rows="5" placeholder="Write short line about doctor"></textarea>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-lg-5">
+    <div class="card">
+      <div class="card-header border-bottom border-dashed">
+        <h4 class="card-title mb-0">Upload Profile Photo</h4>
+      </div>
+      <div class="card-body">
+        <div class="col-12">
+
+          <FileUploader [showPreview]="true" />
+
+        </div>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-header border-bottom border-dashed">
+        <h4 class="card-title mb-0">Doctor Availability</h4>
+      </div>
+      <div class="card-body">
+        <div class="row">
+          <div class="col-md-12 mb-3">
+            <label class="form-label d-block mb-2 fw-semibold">Available Days:</label>
+            <div class="form-check form-check-inline">
+              <input class="form-check-input" type="checkbox" id="inlineCheckbox1" value="0" name="sun">
+              <label class="form-check-label" for="inlineCheckbox1">Sun</label>
+            </div>
+            <div class="form-check form-check-inline">
+              <input class="form-check-input" type="checkbox" id="inlineCheckbox2" value="0" name="mon">
+              <label class="form-check-label" for="inlineCheckbox2">Mon</label>
+            </div>
+            <div class="form-check form-check-inline">
+              <input class="form-check-input" type="checkbox" id="inlineCheckbox3" value="0" name="tue">
+              <label class="form-check-label" for="inlineCheckbox3">Tue</label>
+            </div>
+            <div class="form-check form-check-inline">
+              <input class="form-check-input" type="checkbox" id="inlineCheckbox4" value="0" name="wen">
+              <label class="form-check-label" for="inlineCheckbox4">Wen</label>
+            </div>
+            <div class="form-check form-check-inline">
+              <input class="form-check-input" type="checkbox" id="inlineCheckbox5" value="0" name="thu">
+              <label class="form-check-label" for="inlineCheckbox5">Thu</label>
+            </div>
+            <div class="form-check form-check-inline">
+              <input class="form-check-input" type="checkbox" id="inlineCheckbox6" value="0" name="fri">
+              <label class="form-check-label" for="inlineCheckbox6">Fri</label>
+            </div>
+            <div class="form-check form-check-inline">
+              <input class="form-check-input" type="checkbox" id="inlineCheckbox7" value="0" name="sat">
+              <label class="form-check-label" for="inlineCheckbox7">Sat</label>
+            </div>
+          </div>
+        </div>
+        <div class="row g-3">
+          <div class="col-lg-6">
+            <div>
+              <label for="from-time" class="form-label fw-semibold">From Time:</label>
+              <input mwlFlatpickr [flatpickrOptions]="{noCalendar:true,enableTime:true}" type="text"
+                class="form-control flatpickr-input active" data-provider="timepickr" data-time-basic="true"
+                id="from-time" readonly="readonly" placeholder="12:00 PM">
+            </div>
+          </div>
+          <div class="col-lg-6">
+            <div>
+              <label for="to-time" class="form-label fw-semibold">To Time:</label>
+              <input mwlFlatpickr [flatpickrOptions]="{noCalendar:true,enableTime:true}" type="text" class="form-control flatpickr-input active" data-provider="timepickr"
+                data-time-basic="true" id="to-time" readonly="readonly" placeholder="12:00 PM">
+            </div>
+          </div>
+          <div class="col-lg-12">
+            <div>
+              <label for="dateSelect" class="form-label fw-semibold">Available Date:</label>
+              <input mwlFlatpickr [flatpickrOptions]="{mode:'range',dateFormat:'d M, Y'}" type="text" id="dateSelect" class="form-control flatpickr-input active" data-provider="flatpickr"
+                placeholder="dd-mm-yyyy to dd-mm-yyyy" 
+                readonly>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="text-end mb-3">
+      <button class="btn btn-primary me-1">Add Doctor</button>
+      <button class="btn btn-danger">Cancel</button>
+    </div>
+  </div>
+</div>

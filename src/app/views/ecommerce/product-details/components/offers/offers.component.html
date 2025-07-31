@@ -1,0 +1,41 @@
+<div class="tab-pane" id="offer-warranty">
+  <h4 class="card-title">Available Offers : </h4>
+  <div class="row mt-3 g-2">
+    <div class="col-lg-6">
+      <div class="border rounded p-2 text-center">
+        <p class="fw-semibold text-dark fs-20 my-1">To Get This Price , Use Code : <span
+            class="text-primary fw-semibold">WINTER2024</span></p>
+        <p class="fs-15 text-muted fw-medium">Fast & Free Delivery</p>
+        <a href="javascript: void(0);" class="btn btn-primary">Show Offers</a>
+      </div>
+    </div>
+    <div class="col-lg-6">
+      <div class="border rounded p-2 text-center">
+        <p class="fw-semibold text-dark fs-20 my-1">Enjoy an Additional 20% Discount on Your Purchase : <span
+            class="text-primary fw-semibold">OCEN24</span></p>
+        <p class="fs-15 text-muted fw-medium">Fast & Free Delivery</p>
+        <a href="javascript: void(0);" class="btn btn-primary">Show Offers</a>
+      </div>
+    </div>
+  </div>
+  <h4 class="card-title my-3">Shop Offers : </h4>
+  <div class="row g-3">
+    @for (item of shopOffersData; track $index) {
+    <div class="col-lg-3">
+      <div class="d-flex align-items-center gap-2">
+        <div class="avatar-lg bg-light d-flex align-items-center justify-content-center rounded">
+          <iconify-icon [icon]="item.icon" class="fs-28 text-primary"></iconify-icon>
+        </div>
+
+        <div>
+          <p class="text-dark fw-medium fs-16 mb-0">{{item.title}}</p>
+        </div>
+      </div>
+    </div>
+    }
+  </div>
+  <div class="alert alert-success d-flex align-items-center mt-4 mb-0" role="alert">
+    <iconify-icon icon="solar:shield-check-bold" class="fs-20 me-1"></iconify-icon>
+    <div class="lh-1"><strong>3 Years - </strong>Guaranteed Product Global Warranty</div>
+  </div>
+</div>

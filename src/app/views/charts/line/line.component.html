@@ -1,0 +1,197 @@
+<page-title subtitle="Apex" title="Line Charts" />
+<div class="row">
+  <div class="col-xl-6">
+    <div class="card">
+      <div class="card-body">
+        <h4 class="header-title mb-4">Simple line chart</h4>
+        <div dir="ltr">
+          <apx-chart [chart]="simpleLineChartOpts.chart!" [dataLabels]="simpleLineChartOpts.dataLabels!"
+            [colors]="simpleLineChartOpts.colors!" [series]="simpleLineChartOpts.series!"
+            [title]="simpleLineChartOpts.title!" [grid]="simpleLineChartOpts.grid!"
+            [labels]="simpleLineChartOpts.labels!" [xaxis]="simpleLineChartOpts.xaxis!" />
+        </div>
+      </div>
+
+    </div>
+
+  </div>
+
+
+  <div class="col-xl-6">
+    <div class="card">
+      <div class="card-body">
+        <h4 class="header-title mb-4">Line with Data Labels</h4>
+        <div dir="ltr">
+          <apx-chart [chart]="lineWithDataChartOpts.chart!" [dataLabels]="lineWithDataChartOpts.dataLabels!"
+            [stroke]="lineWithDataChartOpts.stroke!" [colors]="lineWithDataChartOpts.colors!"
+            [series]="lineWithDataChartOpts.series!" [title]="lineWithDataChartOpts.title!"
+            [grid]="lineWithDataChartOpts.grid!" [markers]="lineWithDataChartOpts.markers!"
+            [labels]="lineWithDataChartOpts.labels!" [xaxis]="lineWithDataChartOpts.xaxis!"
+            [yaxis]="lineWithDataChartOpts.yaxis!" [legend]="lineWithDataChartOpts.legend!" />
+        </div>
+      </div>
+
+    </div>
+
+  </div>
+
+</div>
+
+
+<div class="row">
+  <div class="col-xl-6">
+    <div class="card">
+      <div class="card-body">
+        <h4 class="header-title mb-4">Zoomable Timeseries</h4>
+        <div dir="ltr">
+          <apx-chart [chart]="zoomableTimeseriesChartOpts.chart!" [dataLabels]="zoomableTimeseriesChartOpts.dataLabels!"
+            [stroke]="zoomableTimeseriesChartOpts.stroke!" [colors]="zoomableTimeseriesChartOpts.colors!"
+            [series]="zoomableTimeseriesChartOpts.series!" [title]="zoomableTimeseriesChartOpts.title!"
+            [grid]="zoomableTimeseriesChartOpts.grid!" [markers]="zoomableTimeseriesChartOpts.markers!"
+            [labels]="zoomableTimeseriesChartOpts.labels!" [xaxis]="zoomableTimeseriesChartOpts.xaxis!"
+            [yaxis]="zoomableTimeseriesChartOpts.yaxis!" [legend]="zoomableTimeseriesChartOpts.legend!" />
+        </div>
+      </div>
+
+    </div>
+
+  </div>
+
+
+  <div class="col-xl-6">
+    <div class="card">
+      <div class="card-body">
+        <h4 class="header-title mb-4">Line Chart with Annotations</h4>
+        <div dir="ltr">
+          <apx-chart [chart]="annotationsChartOpts.chart!" [dataLabels]="annotationsChartOpts.dataLabels!"
+            [annotations]="annotationsChartOpts.annotations!" [stroke]="annotationsChartOpts.stroke!"
+            [colors]="annotationsChartOpts.colors!" [series]="annotationsChartOpts.series!"
+            [title]="annotationsChartOpts.title!" [grid]="annotationsChartOpts.grid!"
+            [labels]="annotationsChartOpts.labels!" [xaxis]="annotationsChartOpts.xaxis!" />
+        </div>
+      </div>
+
+    </div>
+
+  </div>
+
+</div>
+
+
+<div class="row">
+  <div class="col-xl-6">
+    <div class="card">
+      <div class="card-body">
+        <h4 class="header-title mb-4">Syncing charts</h4>
+        <apx-chart [chart]="syncingChartOpts2.chart!" [dataLabels]="syncingChartOpts2.dataLabels!"
+          [stroke]="syncingChartOpts2.stroke!" [colors]="syncingChartOpts2.colors!" [series]="syncingChartOpts2.series!"
+          [fill]="syncingChartOpts2.fill!" [title]="syncingChartOpts2.title!" [grid]="syncingChartOpts2.grid!"
+          [xaxis]="syncingChartOpts2.xaxis!" [legend]="syncingChartOpts2.legend!" />
+        <div dir="ltr">
+          <apx-chart [chart]="syncingChartOpts.chart!" [dataLabels]="syncingChartOpts.dataLabels!"
+            [stroke]="syncingChartOpts.stroke!" [colors]="syncingChartOpts.colors!" [series]="syncingChartOpts.series!"
+            [fill]="syncingChartOpts.fill!" [title]="syncingChartOpts.title!" [grid]="syncingChartOpts.grid!"
+            [xaxis]="syncingChartOpts.xaxis!" [legend]="syncingChartOpts.legend!" />
+        </div>
+      </div>
+
+    </div>
+
+  </div>
+
+
+  <div class="col-xl-6">
+    <div class="card">
+      <div class="card-body">
+        <h4 class="header-title mb-4">Gradient Line Chart</h4>
+        <div dir="ltr">
+          <apx-chart [chart]="gradientLineChartOpts.chart!" [stroke]="gradientLineChartOpts.stroke!"
+            [colors]="gradientLineChartOpts.colors!" [fill]="gradientLineChartOpts.fill!"
+            [series]="gradientLineChartOpts.series!" [title]="gradientLineChartOpts.title!"
+            [grid]="gradientLineChartOpts.grid!" [labels]="gradientLineChartOpts.labels!"
+            [xaxis]="gradientLineChartOpts.xaxis!" />
+        </div>
+      </div>
+
+    </div>
+
+  </div>
+
+</div>
+
+
+<div class="row">
+  <div class="col-xl-6">
+    <div class="card">
+      <div class="card-body">
+        <h4 class="header-title mb-4">Missing / Null values</h4>
+        <div dir="ltr">
+          <apx-chart [chart]="missingNullValuesChartOpts.chart!" [stroke]="missingNullValuesChartOpts.stroke!"
+            [colors]="missingNullValuesChartOpts.colors!" [fill]="missingNullValuesChartOpts.fill!"
+            [series]="missingNullValuesChartOpts.series!" [title]="missingNullValuesChartOpts.title!"
+            [grid]="missingNullValuesChartOpts.grid!" [labels]="missingNullValuesChartOpts.labels!"
+            [xaxis]="missingNullValuesChartOpts.xaxis!" />
+        </div>
+      </div>
+
+    </div>
+
+  </div>
+
+
+  <div class="col-xl-6">
+    <div class="card">
+      <div class="card-body">
+        <h4 class="header-title mb-4">Dashed Line Chart</h4>
+        <div dir="ltr">
+          <apx-chart [chart]="dashedLineChartOpts.chart!" [stroke]="dashedLineChartOpts.stroke!"
+            [colors]="dashedLineChartOpts.colors!" [fill]="dashedLineChartOpts.fill!"
+            [series]="dashedLineChartOpts.series!" [title]="dashedLineChartOpts.title!"
+            [grid]="dashedLineChartOpts.grid!" [labels]="dashedLineChartOpts.labels!"
+            [xaxis]="dashedLineChartOpts.xaxis!" />
+        </div>
+      </div>
+
+    </div>
+
+  </div>
+
+</div>
+
+
+<div class="row">
+  <div class="col-xl-6">
+    <div class="card">
+      <div class="card-body">
+        <h4 class="header-title mb-3">Stepline Chart</h4>
+        <div dir="ltr">
+          <apx-chart [chart]="stepLineChartOpts.chart!" [stroke]="stepLineChartOpts.stroke!"
+            [colors]="stepLineChartOpts.colors!" [fill]="stepLineChartOpts.fill!" [series]="stepLineChartOpts.series!"
+            [title]="stepLineChartOpts.title!" [grid]="stepLineChartOpts.grid!" [labels]="stepLineChartOpts.labels!"
+            [xaxis]="stepLineChartOpts.xaxis!" />
+        </div>
+      </div>
+
+    </div>
+
+  </div>
+
+
+  <div class="col-xl-6">
+    <div class="card">
+      <div class="card-body">
+        <h4 class="header-title">Brush Chart</h4>
+        <div dir="ltr">
+          <apx-chart [series]="brushChartOpts.series!" [chart]="brushChartOpts.chart!" [colors]="brushChartOpts.colors!"
+            [stroke]="brushChartOpts.stroke!" [dataLabels]="brushChartOpts.dataLabels!" [fill]="brushChartOpts.fill!"
+            [markers]="brushChartOpts.markers!" [xaxis]="brushChartOpts.xaxis!" />
+          <apx-chart [chart]="brushChartOpts2.chart!" [colors]="brushChartOpts2.colors!" [fill]="brushChartOpts2.fill!"
+            [series]="brushChartOpts2.series!" [xaxis]="brushChartOpts2.xaxis!" [yaxis]="brushChartOpts2.yaxis!" />
+        </div>
+      </div>
+
+    </div>
+
+  </div>
+
+</div>

@@ -1,0 +1,29 @@
+<div class="row row-cols-xxl-4 row-cols-md-2 row-cols-1 text-center">
+  @for (item of statData; track $index) {
+  <div class="col">
+    <div class="card">
+      <div class="card-body">
+        <h5 class="text-muted fs-13 text-uppercase" title="Number of Orders">{{item.title}}</h5>
+        <div class="d-flex align-items-center justify-content-center gap-2 my-2 py-1">
+          <div class="user-img fs-42 flex-shrink-0">
+            <span class="avatar-title text-bg-primary rounded-circle fs-22">
+              <iconify-icon [icon]="item.icon"></iconify-icon>
+            </span>
+          </div>
+          <h3 class="mb-0 fw-bold">{{item.count}}</h3>
+        </div>
+        <p class="mb-0 text-muted">
+          <span class="text-{{item.variant}} me-2">
+            @if (item.variant==="danger") {
+            <i class="ti ti-caret-down-filled"></i>
+            }@else {
+            <i class="ti ti-caret-up-filled"></i>
+            }
+            {{item.change}}%</span>
+          <span class="text-nowrap">Since last month</span>
+        </p>
+      </div>
+    </div>
+  </div>
+  }
+</div>

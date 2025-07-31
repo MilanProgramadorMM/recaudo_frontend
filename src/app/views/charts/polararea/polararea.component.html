@@ -1,0 +1,51 @@
+<page-title subtitle="Apex" title="Polar Area Charts" />
+<div class="row">
+  <div class="col-xl-6">
+    <div class="card">
+      <div class="card-body">
+        <h4 class="header-title">Basic Polar Area Chart</h4>
+        <div dir="ltr">
+          <apx-chart 
+          [chart]="basicPolarChartOpts.chart!"
+          [series]="basicPolarChartOpts.series!"
+          [stroke]="basicPolarChartOpts.stroke!"
+          [fill]="basicPolarChartOpts.fill!"
+          [labels]="basicPolarChartOpts.labels!"
+          [legend]="basicPolarChartOpts.legend!"
+          [colors]="basicPolarChartOpts.colors!"
+          [responsive]="basicPolarChartOpts.responsive!"
+          />
+        </div>
+      </div>
+
+    </div>
+
+  </div>
+
+
+  <div class="col-xl-6">
+    <div class="card">
+      <div class="card-body">
+        <h4 class="header-title">Monochrome Polar Area</h4>
+        <div dir="ltr">
+          <apx-chart 
+          [chart]="MonochromePolarChartOpts.chart!"
+          [series]="MonochromePolarChartOpts.series!"
+          [stroke]="MonochromePolarChartOpts.stroke!"
+          [fill]="MonochromePolarChartOpts.fill!"
+          [labels]="MonochromePolarChartOpts.labels!"
+          [legend]="MonochromePolarChartOpts.legend!"
+          [colors]="MonochromePolarChartOpts.colors!"
+          [plotOptions]="MonochromePolarChartOpts.plotOptions!"
+          [theme]="MonochromePolarChartOpts.theme!"
+          [yaxis]="MonochromePolarChartOpts.yaxis!"
+          [legend]="MonochromePolarChartOpts.legend!"
+          />
+        </div>
+      </div>
+
+    </div>
+
+  </div>
+
+</div>

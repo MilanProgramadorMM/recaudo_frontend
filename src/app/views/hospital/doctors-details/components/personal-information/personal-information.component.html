@@ -1,0 +1,83 @@
+<div class="card">
+  <div class="card-body">
+    <div class="row">
+      <div class="col-xl-6 col-lg-12">
+        <div>
+          <h4 class="card-title">Personal Information :</h4>
+          <div class="table-responsive mt-3 border border-dashed rounded px-2 py-1">
+            <table class="table table-borderless m-0">
+              <tbody>
+                <tr>
+                  <td>
+                    <p class="mb-0"> Doctor Name : </p>
+                  </td>
+                  <td class="px-2 text-dark fw-medium fs-14">James D. Roger</td>
+                </tr>
+                <tr>
+                  <td>
+                    <p class="mb-0"> Position : </p>
+                  </td>
+                  <td class="px-2 text-dark fw-medium fs-14">General Cardiology , CHO</td>
+                </tr>
+                <tr>
+                  <td>
+                    <p class="mb-0"> Mobile Number : </p>
+                  </td>
+                  <td class="px-2 text-dark fw-medium fs-14">+96 303-975-3491</td>
+                </tr>
+                <tr>
+                  <td>
+                    <p class="mb-0">Email Address : </p>
+                  </td>
+                  <td class="px-2 text-dark fw-medium fs-14">jamesdroger&#64;armyspy.com</td>
+                </tr>
+                <tr>
+                  <td>
+                    <p class="mb-0">Location : </p>
+                  </td>
+                  <td class="px-2 text-dark fw-medium fs-14">1971 Carter Street Stoups, IL 63101, USA</td>
+                </tr>
+                <tr>
+                  <td>
+                    <p class="d-flex mb-0 align-items-center gap-1">Web Site : </p>
+                  </td>
+                  <td class="px-2 text-dark fw-medium fs-14"><a href="javascript: void(0);">www.coderthemes.com </a></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+      <div class="col-xl-6 col-lg-12">
+        <div>
+          <h4 class="card-title">Abilities :</h4>
+          @for (item of abilities; track $index) {
+          <div class="d-flex align-items-center justify-content-between mt-4 mb-1">
+            <p class="mb-0 fs-15 fw-medium text-dark">{{item.title}}</p>
+            <div>
+              <p class="mb-0 fs-15 fw-medium text-dark">{{item.progress}}%</p>
+            </div>
+          </div>
+          <ngb-progressbar [value]="item.progress" [type]="item.variant" class="progress-soft progress-md" />
+          }
+        </div>
+      </div>
+    </div>
+    <h4 class="card-title mt-3 pt-2">Experience :</h4>
+    <div class="row g-3 mt-1">
+      @for (item of experienceData; track $index) {
+      <div class="col-xl-6 col-lg-12">
+        <div class="d-flex flex-wrap p-2 align-items-center rounded gap-3 border">
+          <img [src]="item.image" alt="" class="avatar-xl">
+          <div>
+            <p class="text-dark fw-semibold mb-1 fs-16">{{item.title}}</p>
+            <p class="text-dark fw-medium mb-1 fs-14">ETN Doctor - {{item.subTitle}}</p>
+            <p class="mb-1">{{item.description}}</p>
+            <p class="mb-1">{{item.address}}</p>
+          </div>
+        </div>
+      </div>
+      }
+    </div>
+  </div>
+</div>

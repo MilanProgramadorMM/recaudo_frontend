@@ -1,0 +1,342 @@
+<page-title title="Column Charts" subtitle="Apex" />
+<div class="row">
+  <div class="col-xl-6">
+    <div class="card">
+      <div class="card-body">
+        <h4 class="header-title">Basic Column Chart</h4>
+        <div dir="ltr">
+          <apx-chart 
+          [chart]="basicColumnChart.chart!"
+          [plotOptions]="basicColumnChart.plotOptions!"
+          [dataLabels]="basicColumnChart.dataLabels!"
+          [stroke]="basicColumnChart.stroke!"
+          [colors]="basicColumnChart.colors!"
+          [series]="basicColumnChart.series!"
+          [xaxis]="basicColumnChart.xaxis!"
+          [legend]="basicColumnChart.legend!"
+          [yaxis]="basicColumnChart.yaxis!"
+          [fill]="basicColumnChart.fill!"
+          [grid]="basicColumnChart.grid!"
+          [tooltip]="basicColumnChart.tooltip!"
+          />
+        </div>
+      </div>
+
+    </div>
+
+  </div>
+
+
+  <div class="col-xl-6">
+    <div class="card">
+      <div class="card-body">
+        <h4 class="header-title mb-3">Column Chart with Datalabels</h4>
+        <div dir="ltr">
+          <apx-chart 
+          [chart]="datalabelsColumnChart.chart!"
+          [plotOptions]="datalabelsColumnChart.plotOptions!"
+          [dataLabels]="datalabelsColumnChart.dataLabels!"
+          [stroke]="datalabelsColumnChart.stroke!"
+          [colors]="datalabelsColumnChart.colors!"
+          [series]="datalabelsColumnChart.series!"
+          [xaxis]="datalabelsColumnChart.xaxis!"
+          [legend]="datalabelsColumnChart.legend!"
+          [yaxis]="datalabelsColumnChart.yaxis!"
+          [fill]="datalabelsColumnChart.fill!"
+          [grid]="datalabelsColumnChart.grid!"
+          [tooltip]="datalabelsColumnChart.tooltip!"
+          />
+        </div>
+      </div>
+
+    </div>
+
+  </div>
+
+</div>
+
+
+<div class="row">
+  <div class="col-xl-6">
+    <div class="card">
+      <div class="card-body">
+        <h4 class="header-title">Stacked Column Chart</h4>
+        <div dir="ltr">
+          <apx-chart 
+          [chart]="stackedColumnChart.chart!"
+          [plotOptions]="stackedColumnChart.plotOptions!"
+          [dataLabels]="stackedColumnChart.dataLabels!"
+          [stroke]="stackedColumnChart.stroke!"
+          [colors]="stackedColumnChart.colors!"
+          [series]="stackedColumnChart.series!"
+          [xaxis]="stackedColumnChart.xaxis!"
+          [legend]="stackedColumnChart.legend!"
+          [yaxis]="stackedColumnChart.yaxis!"
+          [fill]="stackedColumnChart.fill!"
+          [grid]="stackedColumnChart.grid!"
+          [tooltip]="stackedColumnChart.tooltip!"
+          />
+        </div>
+      </div>
+
+    </div>
+
+  </div>
+
+
+  <div class="col-xl-6">
+    <div class="card">
+      <div class="card-body">
+        <h4 class="header-title">100% Stacked Column Chart</h4>
+        <div dir="ltr">
+          <apx-chart 
+          [chart]="fullStackedColumnChart.chart!"
+          [plotOptions]="fullStackedColumnChart.plotOptions!"
+          [dataLabels]="fullStackedColumnChart.dataLabels!"
+          [stroke]="fullStackedColumnChart.stroke!"
+          [colors]="fullStackedColumnChart.colors!"
+          [series]="fullStackedColumnChart.series!"
+          [xaxis]="fullStackedColumnChart.xaxis!"
+          [legend]="fullStackedColumnChart.legend!"
+          [yaxis]="fullStackedColumnChart.yaxis!"
+          [fill]="fullStackedColumnChart.fill!"
+          [grid]="fullStackedColumnChart.grid!"
+          [tooltip]="fullStackedColumnChart.tooltip!"
+          />
+        </div>
+      </div>
+
+    </div>
+
+  </div>
+
+</div>
+
+
+<div class="row">
+  <div class="col-xl-6">
+    <div class="card">
+      <div class="card-body">
+        <h4 class="header-title">Column with Markers</h4>
+        <div dir="ltr">
+          <apx-chart 
+          [chart]="columnMarkersChart.chart!"
+          [plotOptions]="columnMarkersChart.plotOptions!"
+          [dataLabels]="columnMarkersChart.dataLabels!"
+          [stroke]="columnMarkersChart.stroke!"
+          [colors]="columnMarkersChart.colors!"
+          [series]="columnMarkersChart.series!"
+          [xaxis]="columnMarkersChart.xaxis!"
+          [legend]="columnMarkersChart.legend!"
+          [yaxis]="columnMarkersChart.yaxis!"
+          [fill]="columnMarkersChart.fill!"
+          [grid]="columnMarkersChart.grid!"
+          [tooltip]="columnMarkersChart.tooltip!"
+          />
+        </div>
+      </div>
+
+    </div>
+
+  </div>
+
+
+  <div class="col-xl-6">
+    <div class="card">
+      <div class="card-body">
+        <h4 class="header-title">Column with Group Label</h4>
+        <div dir="ltr">
+          <apx-chart 
+          [chart]="columnGroupChart.chart!"
+          [plotOptions]="columnGroupChart.plotOptions!"
+          [dataLabels]="columnGroupChart.dataLabels!"
+          [stroke]="columnGroupChart.stroke!"
+          [colors]="columnGroupChart.colors!"
+          [series]="columnGroupChart.series!"
+          [xaxis]="columnGroupChart.xaxis!"
+          [legend]="columnGroupChart.legend!"
+          [yaxis]="columnGroupChart.yaxis!"
+          [fill]="columnGroupChart.fill!"
+          [grid]="columnGroupChart.grid!"
+          [tooltip]="columnGroupChart.tooltip!"
+          />
+        </div>
+      </div>
+
+    </div>
+
+  </div>
+
+</div>
+
+
+<div class="row">
+  <div class="col-xl-6">
+    <div class="card">
+      <div class="card-body">
+        <h4 class="header-title">Column Chart with rotated labels & Annotations</h4>
+        <div dir="ltr">
+          <apx-chart 
+          [chart]="rotateColumnChart.chart!"
+          [plotOptions]="rotateColumnChart.plotOptions!"
+          [dataLabels]="rotateColumnChart.dataLabels!"
+          [stroke]="rotateColumnChart.stroke!"
+          [colors]="rotateColumnChart.colors!"
+          [series]="rotateColumnChart.series!"
+          [xaxis]="rotateColumnChart.xaxis!"
+          [legend]="rotateColumnChart.legend!"
+          [yaxis]="rotateColumnChart.yaxis!"
+          [fill]="rotateColumnChart.fill!"
+          [grid]="rotateColumnChart.grid!"
+          [tooltip]="rotateColumnChart.tooltip!"
+          />
+        </div>
+      </div>
+
+    </div>
+
+  </div>
+
+
+  <div class="col-xl-6">
+    <div class="card">
+      <div class="card-body">
+        <h4 class="header-title">Column Chart with negative values</h4>
+        <div dir="ltr">
+          <apx-chart 
+          [chart]="negativeColumnChart.chart!"
+          [plotOptions]="negativeColumnChart.plotOptions!"
+          [dataLabels]="negativeColumnChart.dataLabels!"
+          [stroke]="negativeColumnChart.stroke!"
+          [colors]="negativeColumnChart.colors!"
+          [series]="negativeColumnChart.series!"
+          [xaxis]="negativeColumnChart.xaxis!"
+          [legend]="negativeColumnChart.legend!"
+          [yaxis]="negativeColumnChart.yaxis!"
+          [fill]="negativeColumnChart.fill!"
+          [grid]="negativeColumnChart.grid!"
+          [tooltip]="negativeColumnChart.tooltip!"
+          />
+        </div>
+      </div>
+
+    </div>
+
+  </div>
+
+</div>
+
+
+<div class="row">
+  <div class="col-xl-6">
+    <div class="card">
+      <div class="card-body">
+        <h4 class="header-title">Distributed Column Chart</h4>
+        <div dir="ltr">
+          <apx-chart 
+          [chart]="distributedColumnChart.chart!"
+          [plotOptions]="distributedColumnChart.plotOptions!"
+          [dataLabels]="distributedColumnChart.dataLabels!"
+          [stroke]="distributedColumnChart.stroke!"
+          [colors]="distributedColumnChart.colors!"
+          [series]="distributedColumnChart.series!"
+          [xaxis]="distributedColumnChart.xaxis!"
+          [legend]="distributedColumnChart.legend!"
+          [yaxis]="distributedColumnChart.yaxis!"
+          [fill]="distributedColumnChart.fill!"
+          [grid]="distributedColumnChart.grid!"
+          [tooltip]="distributedColumnChart.tooltip!"
+          />
+        </div>
+      </div>
+
+    </div>
+
+  </div>
+
+
+  <div class="col-xl-6">
+    <div class="card">
+      <div class="card-body">
+        <h4 class="header-title">Range Column Chart</h4>
+        <div dir="ltr">
+          <apx-chart 
+          [chart]="rangeColumnChart.chart!"
+          [plotOptions]="rangeColumnChart.plotOptions!"
+          [dataLabels]="rangeColumnChart.dataLabels!"
+          [stroke]="rangeColumnChart.stroke!"
+          [colors]="rangeColumnChart.colors!"
+          [series]="rangeColumnChart.series!"
+          [xaxis]="rangeColumnChart.xaxis!"
+          [legend]="rangeColumnChart.legend!"
+          [yaxis]="rangeColumnChart.yaxis!"
+          [fill]="rangeColumnChart.fill!"
+          [grid]="rangeColumnChart.grid!"
+          [tooltip]="rangeColumnChart.tooltip!"
+          />
+        </div>
+      </div>
+
+    </div>
+
+  </div>
+
+</div>
+
+
+<div class="row">
+  <div class="col-12">
+    <div class="card">
+      <div class="d-flex card-header justify-content-between align-items-center">
+        <h4 class="header-title">Dynamic Loaded Chart</h4>
+        <div class="flex-shrink-0">
+          <select id="model" (change)="updateQuarter()" class="form-select form-select-sm">
+            <option value="iphone5">iPhone 5</option>
+            <option value="iphone6">iPhone 6</option>
+            <option value="iphone7">iPhone 7</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="card-body pt-0">
+        <h4 class="header-title"></h4>
+        <div dir="ltr">
+          <div class="row">
+            <div class="col-sm-6">
+              <apx-chart
+              [chart]="yearColumnChart.chart!"
+              [series]="yearColumnChart.series!"
+              [plotOptions]="yearColumnChart.plotOptions!"
+              [dataLabels]="yearColumnChart.dataLabels!"
+              [legend]="yearColumnChart.legend!"
+              [colors]="yearColumnChart.colors!"
+              [states]="yearColumnChart.states!"
+              [tooltip]="yearColumnChart.tooltip!"
+              [title]="yearColumnChart.title!"
+              [subtitle]="yearColumnChart.subtitle!"
+              [yaxis]="yearColumnChart.yaxis!"
+            />
+            </div>
+            <div class="col-sm-6">
+              <apx-chart
+              [chart]="quarterChart.chart!"
+              [plotOptions]="quarterChart.plotOptions!"
+              [dataLabels]="quarterChart.dataLabels!"
+              [legend]="quarterChart.legend!"
+              [grid]="quarterChart.grid!"
+              [series]="quarterChart.series!"
+              [xaxis]="quarterChart.xaxis!"
+              [yaxis]="quarterChart.yaxis!"
+              [title]="quarterChart.title!"
+              [tooltip]="quarterChart.tooltip!"
+            />
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+  </div>
+
+</div>

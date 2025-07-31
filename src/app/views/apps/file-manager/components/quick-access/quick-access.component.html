@@ -1,0 +1,51 @@
+<div class="card border border-light">
+  <div class="card-body">
+    <div class="d-flex align-items-start justify-content-between gap-2">
+      <div
+        class="flex-shrink-0 avatar-md bg-{{file.variant}}-subtle d-inline-flex align-items-center justify-content-center rounded-2">
+        <iconify-icon [icon]="file.icon" class="fs-18"></iconify-icon>
+      </div>
+      <div class="d-flex align-items-center gap-2">
+        <span (click)="toggle()" data-toggler="on">
+          @if(isActive){
+          <a  href="javascript:void(0);" data-toggler-on>
+            <i class="ti ti-star-filled text-warning fs-16"></i>
+          </a>
+          }@else{
+          <a  href="javascript:void(0);" data-toggler-off>
+            <i class="ti ti-star-filled text-muted fs-16"></i>
+          </a>
+          }
+        </span>
+        <div ngbDropdown class="flex-shrink-0 text-muted">
+          <a ngbDropdownToggle class="cursor-pointer drop-arrow-none fs-20 link-reset p-0" data-bs-toggle="dropdown"
+            aria-expanded="false">
+            <i class="ti ti-dots-vertical"></i>
+          </a>
+          <div ngbDropdownMenu class="dropdown-menu-end">
+            <a href="javascript:void(0);" ngbDropdownItem><i class="ti ti-share me-1"></i> Share</a>
+            <a href="javascript:void(0);" ngbDropdownItem><i class="ti ti-link me-1"></i> Get Sharable
+              Link</a>
+            <a href="assets/images/users/avatar-1.jpg" download ngbDropdownItem><i
+                class="ti ti-download me-1"></i> Download</a>
+            <a href="javascript:void(0);" ngbDropdownItem><i class="ti ti-pin me-1"></i> Pin</a>
+            <a href="javascript:void(0);" ngbDropdownItem><i class="ti ti-edit me-1"></i> Edit</a>
+            <a href="javascript:void(0);" ngbDropdownItem data-dismissible="#googleMedia"><i
+                class="ti ti-trash me-1"></i> Delete</a>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="flex-grow-1 mt-3">
+      <h5 class="mb-1"><a href="javascript: void(0);" class="link-reset">{{file.title}}</a></h5>
+      <p class="text-muted mb-0">{{file.files}} Files</p>
+    </div>
+    <div class="d-flex align-items-center justify-content-between mt-3 mb-1">
+      <p class="fs-14 mb-0">{{file.storage}}GB</p>
+      <p class="fs-14 mb-0">50GB</p>
+    </div>
+    <ngb-progressbar [striped]="true" [animated]="true" class="progress-sm" [type]="file.variant" [value]="file.progress" />
+   
+  </div>
+</div>

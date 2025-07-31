@@ -1,0 +1,47 @@
+<div class="card">
+  <div class="card-header border-bottom">
+    <h5 class="card-title mb-0">Purchase Summary</h5>
+  </div>
+  <div class="card-body">
+    <div class="table-responsive">
+      <table class="table mb-0 table-borderless">
+        <tbody>
+          <tr>
+            <td class="px-0">
+              <p class="mb-0 fs-15 fw-medium"> Sub Total : </p>
+            </td>
+            <td class="text-end text-dark fs-14 fw-medium px-0">{{currency}}1001.8</td>
+          </tr>
+          <tr>
+            <td class="px-0">
+              <p class="mb-0 fs-15 fw-medium">Discount : </p>
+            </td>
+            <td class="text-end text-dark fs-14 fw-medium px-0">-{{currency}}120.00</td>
+          </tr>
+          <tr>
+            <td class="px-0">
+              <p class="mb-0 fs-15 fw-medium">Delivery Charge : </p>
+            </td>
+            <td class="text-end text-success fs-14 fw-medium px-0">Free</td>
+          </tr>
+          <tr>
+            <td class="px-0">
+              <p class="mb-0 fs-15 fw-medium">Estimated Tax (18.5%) : </p>
+            </td>
+            <td class="text-end text-dark fs-14 fw-medium px-0">{{currency}}30.00</td>
+          </tr>
+
+        </tbody>
+      </table>
+    </div>
+  </div>
+  <div class="card-footer d-flex align-items-center justify-content-between border-top">
+    <div>
+      <p class="fw-medium text-dark mb-0 fs-15">Grand Amount</p>
+    </div>
+    <div>
+      <p class="fw-medium fs-14 text-dark mb-0">{{currency}}911.8</p>
+    </div>
+
+  </div>
+</div>

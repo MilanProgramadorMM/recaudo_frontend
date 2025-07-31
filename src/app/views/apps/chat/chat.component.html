@@ -1,0 +1,11 @@
+<page-title title="Chat" />
+
+<div class="card">
+  <div class="chat d-flex">
+    <div class="offcanvas-xxl" tabindex="-1" aria-labelledby="chatUserListLabel">
+      <chat-left-side-bar (profileDetail)="receiveDataFromChild($event)" [collapseToggle]="isCollapsed"/>
+    </div>
+
+    <chat-area class="w-100" [profileDetail]="profileDetail" [collapseToggle]="isCollapsed" (sidebarButtonClicked)="onSidebarButtonClicked()"/>
+  </div>
+</div>

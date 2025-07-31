@@ -1,0 +1,75 @@
+<page-title title="Payments" subtitle="Hospital" />
+<div class="row">
+  @for (stats of statsData; track $index) {
+  <div class="col-xxl-3 col-xl-6 col-md-6">
+    <stat-card [stats]="stats" />
+  </div>
+  }
+</div>
+
+<div class="row">
+  <div class="col-12">
+    <div class="card">
+      <div class="card-header d-flex align-items-center justify-content-between border-bottom border-light">
+        <h4 class="header-title">Payment List</h4>
+
+        <div class="d-flex flex-wrap gap-1">
+          <a href="javascript: void(0);" class="btn btn-success bg-gradient"><i class="ti ti-plus me-1"></i> Add Payment</a>
+          <a href="javascript: void(0);" class="btn btn-secondary bg-gradient"><i class="ti ti-file-import me-1"></i> Import</a>
+        </div>
+      </div>
+
+      <div class="table-responsive">
+        <table class="table table-hover text-nowrap mb-0">
+          <thead class="bg-light-subtle">
+            <tr>
+              <th class="ps-3" style="width: 50px;">
+                <input type="checkbox" class="form-check-input" id="customCheck1">
+              </th>
+              <th>Bill No</th>
+              <th>Patient Name</th>
+              <th>Doctor Name</th>
+              <th>Insurance Company</th>
+              <th>Payment</th>
+              <th>Bill Date</th>
+              <th>Charge</th>
+              <th>Tax</th>
+              <th>Discount</th>
+              <th class="text-end pe-3">Total</th>
+            </tr>
+          </thead>
+
+          <tbody>
+            @for (item of payments; track $index) {
+            <tr>
+              <td class="ps-3">
+                <input type="checkbox" class="form-check-input" id="customCheck2">
+              </td>
+              <td>{{item.id}}</td>
+              <td>
+                <a href="javascript: void(0);">{{item.patientName}}</a>
+              </td>
+              <td>{{item.doctor}}</td>
+              <td>{{item.insurance}}</td>
+              <td>{{item.paymentType}}</td>
+              <td>{{item.date| date:"dd/MM/yyyy"}}</td>
+              <td>{{currency}}{{item.amount}}</td>
+              <td>{{item.tax}}%</td>
+              <td>{{item.discount}}%</td>
+              <td class="text-end fw-semibold pe-3">{{currency}} {{item.total}}</td>
+            </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+
+      <div class="card-footer">
+        <div class="d-flex justify-content-end">
+          <ul class="pagination mb-0 justify-content-center">
+            <ngb-pagination [collectionSize]="40" [page]="page"/>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

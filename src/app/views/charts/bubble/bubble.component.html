@@ -1,0 +1,44 @@
+<page-title subtitle="Apex" title="Bubble Charts" />
+
+<div class="row">
+  <div class="col-xl-6">
+    <div class="card">
+      <div class="card-body">
+        <h4 class="header-title">Simple Bubble Chart</h4>
+        <div dir="ltr">
+          <apx-chart [chart]="simpleBubbleChart.chart!" [dataLabels]="simpleBubbleChart.dataLabels!"
+            [series]="simpleBubbleChart.series!" [fill]="simpleBubbleChart.fill!" [colors]="simpleBubbleChart.colors!"
+            [xaxis]="simpleBubbleChart.xaxis!" [yaxis]="simpleBubbleChart.yaxis!" [grid]="simpleBubbleChart.grid!"
+            [legend]="simpleBubbleChart.legend!" />
+        </div>
+      </div>
+
+    </div>
+
+  </div>
+
+
+  <div class="col-xl-6">
+    <div class="card">
+      <div class="card-body">
+        <h4 class="header-title">3D Bubble Chart</h4>
+        <div dir="ltr">
+          <apx-chart
+          [chart]="bubble3dChart.chart!"
+          [dataLabels]="bubble3dChart.dataLabels!"
+          [series]="bubble3dChart.series!"
+          [fill]="bubble3dChart.fill!"
+          [colors]="bubble3dChart.colors!"
+          [xaxis]="bubble3dChart.xaxis!"
+          [yaxis]="bubble3dChart.yaxis!"
+          [grid]="bubble3dChart.grid!"
+          [legend]="bubble3dChart.legend!"
+          />
+        </div>
+      </div>
+
+    </div>
+
+  </div>
+
+</div>

@@ -1,0 +1,20 @@
+<div class="card-body p-0 border-top border-dashed">
+  <h4 class="header-title px-3 mb-2 mt-3">Recent Activity:</h4>
+  <ngx-simplebar class="my-3 px-3" data-simplebar style="max-height: 370px;">
+    <div class="timeline-alt py-0">
+      @for (item of activityData; track $index) {
+      <div class="timeline-item">
+        <i class="ti {{item.icon}} bg-{{item.variant}}-subtle text-{{item.variant}} timeline-icon"></i>
+        <div class="timeline-item-info">
+          <a href="javascript:void(0);" class="link-reset fw-semibold mb-1 d-block">{{item.title}}</a>
+          <span class="mb-1">{{item.description}}</span>
+          <p class="mb-0 pb-3">
+            <small class="text-muted">{{item.time | date:"shortTime"}}</small>
+          </p>
+        </div>
+      </div>
+      }
+    </div>
+
+  </ngx-simplebar>
+</div>

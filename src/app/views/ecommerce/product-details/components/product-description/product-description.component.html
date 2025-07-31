@@ -1,0 +1,139 @@
+<div class="card">
+  <div class="card-header p-0">
+    <ul ngbNav [activeId]="1" #navTabs="ngbNav" class="nav nav-tabs nav-bordered">
+      <li class="nav-item px-3" [ngbNavItem]="1">
+        <a ngbNavLink data-bs-toggle="tab" aria-expanded="false" class="nav-link py-2">
+          <span class="d-block d-sm-none"><iconify-icon icon="solar:notebook-bold" class="fs-20"></iconify-icon></span>
+          <span class="d-none d-sm-block"><iconify-icon icon="solar:notebook-bold"
+              class="fs-14 me-1 align-middle"></iconify-icon> Description</span>
+        </a>
+        <ng-template ngbNavContent>
+          <div class="tab-pane" id="description">
+            <div class="row">
+              <div class="col-lg-6">
+                <p>Modern designer chair with a frame made of a metal profile. The minimalist style will work in any
+                  modern and loft interior. The furniture is characterized by high durability and solid workmanship, so
+                  you can be sure that it will serve you for many years.</p>
+              </div>
+            </div>
+            <div class="row g-4">
+              <div class="col-lg-6">
+                <h4 class="card-title my-2">Dimension :</h4>
+                <div class="table-responsive">
+                  <table class="table mb-0">
+                    <tbody>
+                      <tr>
+                        <td class="px-0">
+                          <p class="d-flex mb-0 align-items-center gap-1">Width : </p>
+                        </td>
+                        <td class="text-end text-dark fw-medium px-0">54 cm</td>
+                      </tr>
+                      <tr>
+                        <td class="px-0">
+                          <p class="d-flex mb-0 align-items-center gap-1">Length : </p>
+                        </td>
+                        <td class="text-end text-dark fw-medium px-0">50 cm</td>
+                      </tr>
+                      <tr>
+                        <td class="px-0">
+                          <p class="d-flex mb-0 align-items-center gap-1">Seat Width : </p>
+                        </td>
+                        <td class="text-end text-dark fw-medium px-0">67 cm</td>
+                      </tr>
+                      <tr>
+                        <td class="px-0">
+                          <p class="d-flex mb-0 align-items-center gap-1">Seat Length : </p>
+                        </td>
+                        <td class="text-end text-dark fw-medium px-0">65 cm</td>
+                      </tr>
+                      <tr>
+                        <td class="px-0">
+                          <p class="d-flex mb-0 align-items-center gap-1">Seat Height : </p>
+                        </td>
+                        <td class="text-end text-dark fw-medium px-0">40 cm</td>
+                      </tr>
+                      <tr>
+                        <td class="px-0">
+                          <p class="d-flex mb-0 align-items-center gap-1">Backrest Height : </p>
+                        </td>
+                        <td class="text-end text-dark fw-medium px-0">50 cm</td>
+                      </tr>
+                      <tr>
+                        <td class="px-0">
+                          <p class="d-flex mb-0 align-items-center gap-1">Armrest Height From THe Ground : </p>
+                        </td>
+                        <td class="text-end text-dark fw-medium px-0">58 cm</td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+              <div class="col-lg-6">
+                <h4 class="card-title my-2">Material :</h4>
+                <div class="table-responsive">
+                  <table class="table mb-0">
+                    <tbody>
+                      <tr>
+                        <td class="px-0">
+                          <p class="d-flex mb-0 align-items-center gap-1">Material Seat : </p>
+                        </td>
+                        <td class="text-end text-dark fw-medium px-0">Velor Fabric</td>
+                      </tr>
+                      <tr>
+                        <td class="px-0">
+                          <p class="d-flex mb-0 align-items-center gap-1">Material Base : </p>
+                        </td>
+                        <td class="text-end text-dark fw-medium px-0">Steel Powder Coated</td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+                <h4 class="card-title mb-1 mt-3">Colors :</h4>
+                <div class="table-responsive">
+                  <table class="table mb-0">
+                    <tbody>
+                      <tr>
+                        <td class="px-0">
+                          <p class="d-flex mb-0 align-items-center gap-1">Seat Color : </p>
+                        </td>
+                        <td class="text-end text-dark fw-medium px-0">Sky Blue</td>
+                      </tr>
+                      <tr>
+                        <td class="px-0">
+                          <p class="d-flex mb-0 align-items-center gap-1">Base Color : </p>
+                        </td>
+                        <td class="text-end text-dark fw-medium px-0">Wooden Brown</td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+          </div>
+        </ng-template>
+      </li>
+      <li class="nav-item px-3" [ngbNavItem]="2">
+        <a ngbNavLink data-bs-toggle="tab" aria-expanded="true" class="nav-link py-2">
+          <span class="d-block d-sm-none"><iconify-icon icon="solar:chat-dots-bold" class="fs-20"></iconify-icon></span>
+          <span class="d-none d-sm-block"><iconify-icon icon="solar:chat-dots-bold"
+              class="fs-14 me-1 align-middle"></iconify-icon> Review</span>
+        </a>
+        <ng-template ngbNavContent>
+          <product-review />
+        </ng-template>
+      </li>
+      <li [ngbNavItem]="3" class="nav-item px-3">
+        <a ngbNavLink data-bs-toggle="tab" aria-expanded="false" class="nav-link py-2">
+          <span class="d-block d-sm-none"><iconify-icon icon="solar:ticket-sale-bold"
+              class="fs-20"></iconify-icon></span>
+          <span class="d-none d-sm-block"><iconify-icon icon="solar:ticket-sale-bold"
+              class="fs-14 me-1 align-middle"></iconify-icon> Offers & Warranty</span>
+        </a>
+        <ng-template ngbNavContent>
+          <offers />
+        </ng-template>
+      </li>
+    </ul>
+    <div class="tab-content card-body" [ngbNavOutlet]="navTabs"></div>
+  </div>
+</div>

@@ -1,0 +1,294 @@
+<page-title subtitle="Configuracion" title="Maestro de módulos" />
+<div class="row">
+  <div class="col-xl-6">
+    <div class="card">
+      <div class="card-header border-0 border-bottom border-dashed">
+        <h4 class="header-title">Default Accordions</h4>
+      </div>
+      <div class="card-body">
+        <p class="text-muted">Click the accordions below to expand/collapse the accordion content.</p>
+
+        <div ngbAccordion [closeOthers]="true" class="accordion" id="accordionExample">
+          @for (item of accordionData; track $index;let first=$first;let id=$index) {
+          <div ngbAccordionItem [collapsed]="first ? false : true">
+            <h2 ngbAccordionHeader id="headingOne">
+              <button ngbAccordionButton type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne"
+                aria-expanded="true" aria-controls="collapseOne">
+                Accordion Item #{{id + 1}}
+              </button>
+            </h2>
+            <div id="collapseOne" ngbAccordionCollapse aria-labelledby="headingOne" data-bs-parent="#accordionExample">
+              <div ngbAccordionBody>
+                <strong>This is the {{item}} item's accordion body.</strong> It is {{first ? 'shown' : 'hidden'}} by
+                default, until the collapse
+                plugin adds the appropriate classes that we use to style each element. These classes control the overall
+                appearance, as well as the showing and hiding via CSS transitions. You can modify any of this with
+                custom CSS or overriding our default variables. It's also worth noting that just about any HTML can go
+                within the <code>.accordion-body</code>, though the transition does limit overflow.
+              </div>
+            </div>
+          </div>
+          }
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <div class="col-xl-6">
+    <div class="card">
+      <div class="card-header border-0 border-bottom border-dashed">
+        <h4 class="header-title mb-0">Flush Accordions</h4>
+      </div>
+      <div class="card-body">
+        <p class="text-muted">Add <code>.accordion-flush</code> to remove the default <code>background-color</code>,
+          some borders, and some rounded corners to render accordions edge-to-edge with their parent container.</p>
+
+        <div ngbAccordion [closeOthers]="true" class="accordion-flush" id="accordionFlushExample">
+          <div ngbAccordionItem [collapsed]="false">
+            <h2 ngbAccordionHeader id="flush-headingOne">
+              <button ngbAccordionButton type="button" data-bs-toggle="collapse" data-bs-target="#flush-collapseOne"
+                aria-expanded="false" aria-controls="flush-collapseOne">
+                Accordion Item #1
+              </button>
+            </h2>
+            <div id="flush-collapseOne" ngbAccordionCollapse aria-labelledby="flush-headingOne"
+              data-bs-parent="#accordionFlushExample">
+              <div ngbAccordionBody>
+                <p>Placeholder content for this accordion, which is intended to demonstrate the
+                  <code>.accordion-flush</code> class. This is the first item's accordion body.
+                </p>
+                <button type="button" class="btn btn-primary btn-sm">Click Me</button>
+              </div>
+            </div>
+          </div>
+          <div ngbAccordionItem>
+            <h2 ngbAccordionHeader id="flush-headingTwo">
+              <button ngbAccordionButton type="button" data-bs-toggle="collapse" data-bs-target="#flush-collapseTwo"
+                aria-expanded="false" aria-controls="flush-collapseTwo">
+                Accordion Item #2
+              </button>
+            </h2>
+            <div id="flush-collapseTwo" ngbAccordionCollapse aria-labelledby="flush-headingTwo"
+              data-bs-parent="#accordionFlushExample">
+              <div ngbAccordionBody>Placeholder content for this accordion, which is intended to demonstrate the
+                <code>.accordion-flush</code> class. This is the second item's accordion body. Let's imagine this being
+                filled with some actual content.
+              </div>
+            </div>
+          </div>
+          <div ngbAccordionItem>
+            <h2 ngbAccordionHeader id="flush-headingThree">
+              <button ngbAccordionButton type="button" data-bs-toggle="collapse" data-bs-target="#flush-collapseThree"
+                aria-expanded="false" aria-controls="flush-collapseThree">
+                Accordion Item #3
+              </button>
+            </h2>
+            <div ngbAccordionCollapse id="flush-collapseThree" aria-labelledby="flush-headingThree"
+              data-bs-parent="#accordionFlushExample">
+              <div ngbAccordionBody>Placeholder content for this accordion, which is intended to demonstrate the
+                <code>.accordion-flush</code> class. This is the third item's accordion body. Nothing more exciting
+                happening here in terms of content, but just filling up the space to make it look, at least at first
+                glance, a bit more representative of how this would look in a real-world application.
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <div class="col-xl-6">
+    <div class="card">
+      <div class="card-header border-0 border-bottom border-dashed">
+        <h4 class="header-title">Bordered Accordions</h4>
+      </div>
+      <div class="card-body">
+        <p class="text-muted">
+          Using the card component, you can
+          extend the default collapse behavior to create an accordion. To properly achieve
+          the accordion style, be sure to use <code>.accordion</code> as a wrapper.
+        </p>
+        <div ngbAccordion [closeOthers]="true" class="accordion-bordered" id="BorderedaccordionExample">
+          @for (item of accordionData; track $index;let first=$first;let id=$index) {
+          <div ngbAccordionItem [collapsed]="first ? false : true">
+            <h2 ngbAccordionHeader id="BorderedheadingOne">
+              <button ngbAccordionButton type="button" data-bs-toggle="collapse" data-bs-target="#BorderedcollapseOne"
+                aria-expanded="true" aria-controls="BorderedcollapseOne">
+                Accordion Item #{{id +1}}
+              </button>
+            </h2>
+            <div ngbAccordionCollapse aria-labelledby="BorderedheadingOne" data-bs-parent="#BorderedaccordionExample">
+              <div ngbAccordionBody>
+                <strong>This is the {{item}} item's accordion body.</strong> It is {{first ? 'shown' : 'hidden'}} by
+                default, until the collapse
+                plugin adds the appropriate classes that we use to style each element. These classes control the overall
+                appearance, as well as the showing and hiding via CSS transitions. You can modify any of this with
+                custom CSS or overriding our default variables. It's also worth noting that just about any HTML can go
+                within the <code>.accordion-body</code>, though the transition does limit overflow.
+              </div>
+            </div>
+          </div>
+          }
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-xl-6">
+    <div class="card">
+      <div class="card-header border-0 border-bottom border-dashed">
+        <h4 class="header-title">Custom Icon Accordion</h4>
+      </div>
+      <div class="card-body">
+        <p class="text-muted">
+          Using the card component, you can
+          extend the default collapse behavior to create an accordion. To properly achieve
+          the accordion style, be sure to use <code>.accordion</code> as a wrapper.
+        </p>
+
+        <div ngbAccordion [closeOthers]="true" class="accordion-bordered accordion-custom-icon accordion-arrow-none"
+          id="CustomIconaccordionExample">
+          <div ngbAccordionItem [collapsed]="false">
+            <h2 ngbAccordionHeader id="CustomIconheadingOne">
+              <button ngbAccordionButton type="button" data-bs-toggle="collapse" data-bs-target="#CustomIconcollapseOne"
+                aria-expanded="true" aria-controls="CustomIconcollapseOne">
+                Accordion item with tabler icons
+                <i class="ti ti-plus accordion-icon accordion-icon-on"></i>
+                <i class="ti ti-minus accordion-icon accordion-icon-off"></i>
+              </button>
+            </h2>
+            <div ngbAccordionCollapse aria-labelledby="CustomIconheadingOne"
+              data-bs-parent="#CustomIconaccordionExample">
+              <div class="accordion-body">
+                <strong>This is the first item's accordion body.</strong> It is shown by default, until the collapse
+                plugin adds the appropriate classes that we use to style each element. These classes control the overall
+                appearance, as well as the showing and hiding via CSS transitions. You can modify any of this with
+                custom CSS or overriding our default variables. It's also worth noting that just about any HTML can go
+                within the <code>.accordion-body</code>, though the transition does limit overflow.
+              </div>
+            </div>
+          </div>
+          <div ngbAccordionItem>
+            <h2 ngbAccordionHeader id="CustomIconheadingTwo">
+              <button ngbAccordionButton type="button" data-bs-toggle="collapse" data-bs-target="#CustomIconcollapseTwo"
+                aria-expanded="false" aria-controls="CustomIconcollapseTwo">
+                Accordion item with lucid icons
+                <iconify-icon icon="solar:add-circle-outline"
+                  class="accordion-icon fs-18 accordion-icon-on avatar-xxs me-n1"></iconify-icon>
+                <iconify-icon icon="solar:minus-circle-outline"
+                  class="accordion-icon fs-18 accordion-icon-off avatar-xxs me-n1"></iconify-icon>
+              </button>
+            </h2>
+            <div ngbAccordionCollapse aria-labelledby="CustomIconheadingTwo"
+              data-bs-parent="#CustomIconaccordionExample">
+              <div class="accordion-body">
+                <strong>This is the second item's accordion body.</strong> It is hidden by default, until the collapse
+                plugin adds the appropriate classes that we use to style each element. These classes control the overall
+                appearance, as well as the showing and hiding via CSS transitions. You can modify any of this with
+                custom CSS or overriding our default variables. It's also worth noting that just about any HTML can go
+                within the <code>.accordion-body</code>, though the transition does limit overflow.
+              </div>
+            </div>
+          </div>
+          <div ngbAccordionItem>
+            <h2 ngbAccordionHeader id="CustomIconheadingThree">
+              <button ngbAccordionButton type="button" data-bs-toggle="collapse"
+                data-bs-target="#CustomIconcollapseThree" aria-expanded="false" aria-controls="CustomIconcollapseThree">
+                Accordion item with solar duotone icons
+                <iconify-icon icon="solar:add-square-bold-duotone"
+                  class="accordion-icon text-secondary accordion-icon-on fs-24 me-n2"></iconify-icon>
+                <iconify-icon icon="solar:minus-square-bold-duotone"
+                  class="accordion-icon text-danger accordion-icon-off fs-24 me-n2"></iconify-icon>
+              </button>
+            </h2>
+            <div ngbAccordionCollapse aria-labelledby="CustomIconheadingThree"
+              data-bs-parent="#CustomIconaccordionExample">
+              <div class="accordion-body">
+                <strong>This is the third item's accordion body.</strong> It is hidden by default, until the collapse
+                plugin adds the appropriate classes that we use to style each element. These classes control the overall
+                appearance, as well as the showing and hiding via CSS transitions. You can modify any of this with
+                custom CSS or overriding our default variables. It's also worth noting that just about any HTML can go
+                within the <code>.accordion-body</code>, though the transition does limit overflow.
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-xl-6">
+    <div class="card">
+      <div class="card-header border-0 border-bottom border-dashed">
+        <h4 class="header-title">Always Open Accordions</h4>
+      </div>
+      <div class="card-body">
+        <p class="text-muted">Omit the <code>data-bs-parent</code> attribute on each <code>.accordion-collapse</code> to
+          make accordion items stay open when another item is opened.</p>
+
+        <div ngbAccordion  id="accordionPanelsStayOpenExample">
+          @for (item of accordionData; track $index;let first=$first;let id=$index) {
+          <div  ngbAccordionItem [collapsed]="first ? false : true">
+            <h2 ngbAccordionHeader id="headingOne">
+              <button ngbAccordionButton type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne"
+                aria-expanded="true" aria-controls="collapseOne">
+                Accordion Item #{{id + 1}}
+              </button>
+            </h2>
+            <div id="collapseOne" ngbAccordionCollapse aria-labelledby="headingOne" data-bs-parent="#accordionExample">
+              <div ngbAccordionBody>
+                <strong>This is the {{item}} item's accordion body.</strong> It is {{first ? 'shown' : 'hidden'}} by
+                default, until the collapse
+                plugin adds the appropriate classes that we use to style each element. These classes control the overall
+                appearance, as well as the showing and hiding via CSS transitions. You can modify any of this with
+                custom CSS or overriding our default variables. It's also worth noting that just about any HTML can go
+                within the <code>.accordion-body</code>, though the transition does limit overflow.
+              </div>
+            </div>
+          </div>
+          }
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-xl-6">
+    <div class="card">
+      <div class="card-header border-0 border-bottom border-dashed">
+        <h4 class="header-title">Accordion Without Arrow </h4>
+      </div>
+      <div class="card-body">
+        <p class="text-muted">
+          Using the card component, you can
+          extend the default collapse behavior to create an accordion. To properly achieve
+          the accordion style, be sure to use <code>.accordion</code> as a wrapper.
+        </p>
+
+        <div ngbAccordion [closeOthers]="true" class="accordion-arrow-none" id="withoutarrowaccordionExample">
+          @for (item of accordionData; track $index;let first=$first;let id=$index) {
+            <div  ngbAccordionItem [collapsed]="first ? false : true">
+              <h2 ngbAccordionHeader id="headingOne">
+                <button ngbAccordionButton type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne"
+                  aria-expanded="true" aria-controls="collapseOne">
+                  Accordion Item #{{id + 1}}
+                </button>
+              </h2>
+              <div id="collapseOne" ngbAccordionCollapse aria-labelledby="headingOne" data-bs-parent="#accordionExample">
+                <div ngbAccordionBody>
+                  <strong>This is the {{item}} item's accordion body.</strong> It is {{first ? 'shown' : 'hidden'}} by
+                  default, until the collapse
+                  plugin adds the appropriate classes that we use to style each element. These classes control the overall
+                  appearance, as well as the showing and hiding via CSS transitions. You can modify any of this with
+                  custom CSS or overriding our default variables. It's also worth noting that just about any HTML can go
+                  within the <code>.accordion-body</code>, though the transition does limit overflow.
+                </div>
+              </div>
+            </div>
+            }
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,77 @@
+<page-title subtitle="Apex" title="Scatter Charts" />
+<div class="row">
+  <div class="col-xl-6">
+    <div class="card">
+      <div class="card-body">
+        <h4 class="header-title">Scatter (XY) Chart</h4>
+        <div dir="ltr">
+          <apx-chart 
+          [chart]="scatterChartOpts.chart!"
+          [series]="scatterChartOpts.series!"
+          [xaxis]="scatterChartOpts.xaxis!"
+          [yaxis]="scatterChartOpts.yaxis!"
+          [colors]="scatterChartOpts.colors!"
+          [grid]="scatterChartOpts.grid!"
+          [legend]="scatterChartOpts.legend!"
+          [responsive]="scatterChartOpts.responsive!"
+          />
+        </div>
+      </div>
+
+    </div>
+
+  </div>
+
+
+  <div class="col-xl-6">
+    <div class="card">
+      <div class="card-body">
+        <h4 class="header-title">Scatter Chart - Datetime</h4>
+        <div dir="ltr">
+          <apx-chart 
+          [chart]="dateTimeScatterChartOpts.chart!"
+          [series]="dateTimeScatterChartOpts.series!"
+          [dataLabels]="dateTimeScatterChartOpts.dataLabels!"
+          [xaxis]="dateTimeScatterChartOpts.xaxis!"
+          [yaxis]="dateTimeScatterChartOpts.yaxis!"
+          [colors]="dateTimeScatterChartOpts.colors!"
+          [grid]="dateTimeScatterChartOpts.grid!"
+          [legend]="dateTimeScatterChartOpts.legend!"
+          [responsive]="dateTimeScatterChartOpts.responsive!"
+          />
+        </div>
+      </div>
+
+    </div>
+
+  </div>
+
+</div>
+
+
+<div class="row">
+  <div class="col-xl-6">
+    <div class="card">
+      <div class="card-body">
+        <h4 class="header-title">Scatter - Images</h4>
+        <div dir="ltr">
+          <apx-chart 
+          [chart]="scatterImagesChartOpts.chart!"
+          [series]="scatterImagesChartOpts.series!"
+          [markers]="scatterImagesChartOpts.markers!"
+          [xaxis]="scatterImagesChartOpts.xaxis!"
+          [yaxis]="scatterImagesChartOpts.yaxis!"
+          [colors]="scatterImagesChartOpts.colors!"
+          [grid]="scatterImagesChartOpts.grid!"
+          [legend]="scatterImagesChartOpts.legend!"
+          [markers]="scatterImagesChartOpts.markers!"
+          [fill]="scatterImagesChartOpts.fill!"
+          />
+        </div>
+      </div>
+
+    </div>
+
+  </div>
+
+</div>

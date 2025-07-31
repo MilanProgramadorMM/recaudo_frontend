@@ -1,0 +1,45 @@
+<div class="card">
+  <div class="d-flex card-header justify-content-between border-bottom border-dashed align-items-center">
+    <h4 class="header-title">Gender</h4>
+    <a href="javascript:void(0);" class="btn btn-sm btn-soft-primary">Generate Report <i
+        class="ti ti-file-export ms-1"></i></a>
+  </div>
+
+  <div class="card-body">
+    <div id="gender-chart" class="apex-charts" data-colors="#465dff,#6ac75a,#67baf1">
+      <apx-chart [xaxis]="genderChartOpts.xaxis!" [yaxis]="genderChartOpts.yaxis!" [grid]="genderChartOpts.grid!"
+      [legend]="genderChartOpts.legend!" [plotOptions]="genderChartOpts.plotOptions!"
+      [chart]="genderChartOpts.chart!" [series]="genderChartOpts.series!" [stroke]="genderChartOpts.stroke!"
+      [fill]="genderChartOpts.fill!" [markers]="genderChartOpts.markers!" [colors]="genderChartOpts.colors!"
+      [tooltip]="genderChartOpts.tooltip!" [dataLabels]="genderChartOpts.dataLabels!"/>
+    </div>
+
+    <div class="row mt-3">
+      <div class="col-sm-4 text-start">
+        <p class="text-muted mb-1">Male Patient</p>
+        <h4 class="mb-2">
+          <span class="ti ti-man text-primary"></span>
+          <span>159.5k</span>
+        </h4>
+        <span class="badge fs-12 badge-soft-danger"><i class="ti ti-arrow-badge-down"></i> 3.91%</span>
+      </div>
+      <div class="col-sm-4 text-center">
+        <p class="text-muted mb-1">Female Patient</p>
+        <h4 class="mb-2">
+          <span class="ti ti-woman text-success"></span>
+          <span>148.56k</span>
+        </h4>
+        <span class="badge fs-12 badge-soft-success"><i class="ti ti-arrow-badge-up"></i> 8.72%</span>
+      </div>
+      <div class="col-sm-4 text-end">
+        <p class="text-muted mb-1">Child Patient</p>
+        <h4 class="mb-2">
+          <span class="ti ti-baby-carriage text-info"></span>
+          <span>45.2k</span>
+        </h4>
+        <span class="badge fs-12 badge-soft-success"><i class="ti ti-arrow-badge-up"></i> 1.05%</span>
+      </div>
+    </div>
+  </div>
+
+</div>

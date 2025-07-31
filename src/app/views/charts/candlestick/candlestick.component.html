@@ -1,0 +1,71 @@
+<page-title title="Candlestick Charts" subtitle="Apex"/>
+
+<div class="row">
+  <div class="col-xl-6">
+    <div class="card">
+      <div class="card-body">
+        <h4 class="header-title">Simple Candlestick Chart</h4>
+        <div dir="ltr">
+          <apx-chart [chart]="simpleChart.chart!" [plotOptions]="simpleChart.plotOptions!"
+            [series]="simpleChart.series!" [stroke]="simpleChart.stroke!" [xaxis]="simpleChart.xaxis!"
+            [grid]="simpleChart.grid!" />
+        </div>
+      </div>
+
+    </div>
+
+  </div>
+
+
+  <div class="col-xl-6">
+    <div class="card">
+      <div class="card-body">
+        <h4 class="header-title">Combo Candlestick Chart</h4>
+        <div dir="ltr">
+            <apx-chart [chart]="comboChart.chart!" [plotOptions]="comboChart.plotOptions!"
+              [series]="comboChart.series!" [xaxis]="comboChart.xaxis!" [grid]="comboChart.grid!" />
+            <apx-chart [chart]="combobarChart.chart!" [dataLabels]="combobarChart.dataLabels!"
+              [plotOptions]="combobarChart.plotOptions!" [series]="combobarChart.series!"
+              [xaxis]="combobarChart.xaxis!" [yaxis]="combobarChart.yaxis!" [grid]="combobarChart.grid!" />
+        </div>
+      </div>
+
+    </div>
+
+  </div>
+
+</div>
+
+<div class="row">
+  <div class="col-xl-6">
+    <div class="card">
+      <div class="card-body">
+        <h4 class="header-title mb-3">Category X-Axis</h4>
+        <div dir="ltr">
+          <apx-chart [chart]="categoryChartChart.chart!" [plotOptions]="categoryChartChart.plotOptions!"
+            [series]="categoryChartChart.series!" [stroke]="categoryChartChart.stroke!"
+            [xaxis]="categoryChartChart.xaxis!" [grid]="categoryChartChart.grid!" />
+        </div>
+      </div>
+
+    </div>
+
+  </div>
+
+
+  <div class="col-xl-6">
+    <div class="card">
+      <div class="card-body">
+        <h4 class="header-title mb-3">Candlestick with Line</h4>
+        <div dir="ltr">
+          <apx-chart [chart]="candlestickLineChart.chart!" [plotOptions]="candlestickLineChart.plotOptions!"
+            [series]="candlestickLineChart.series!" [stroke]="candlestickLineChart.stroke!"
+            [xaxis]="candlestickLineChart.xaxis!" [grid]="candlestickLineChart.grid!" />
+        </div>
+      </div>
+
+    </div>
+
+  </div>
+
+</div>

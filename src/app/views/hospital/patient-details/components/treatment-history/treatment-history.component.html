@@ -1,0 +1,48 @@
+<div class="card">
+  <div class="card-header border-bottom border-dashed">
+    <h4 class="card-title mb-0">Treatment History </h4>
+  </div>
+
+  <div class="table-responsive">
+    <table class="table table-sm table-nowrap mb-0">
+      <thead class="bg-light bg-opacity-25">
+        <tr>
+          <th class="ps-3">ID</th>
+          <th>Type Treatment</th>
+          <th>Date</th>
+          <th>Result Treatment</th>
+          <th>Payment Status</th>
+          <th class="text-center" style="width: 120px;">Action</th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (item of treatmentHistoryData; track $index) {
+        <tr>
+          <td class="ps-3">ID3524</td>
+          <td>{{item.TreatmentType}}</td>
+          <td>
+            {{item.date | date:"MMMM dd, YYYY"}}
+          </td>
+          <td>
+            <span class="badge bg-light text-dark p-1 fs-11"><i class="ti ti-check text-success"></i> Wll
+              Done</span>
+          </td>
+          <td><span
+              class="badge bg-{{item.paymentStatus==='Paid' ? 'success': 'warning'}} p-1 fs-11">{{item.paymentStatus}}</span>
+          </td>
+          <td class="pe-3">
+            <div class="hstack gap-1 justify-content-end">
+              <a href="javascript:void(0);" class="btn btn-soft-primary btn-icon btn-sm rounded-circle"> <i
+                  class="ti ti-eye"></i></a>
+              <a href="javascript:void(0);" class="btn btn-soft-success btn-icon btn-sm rounded-circle"> <i
+                  class="ti ti-edit fs-16"></i></a>
+              <a href="javascript:void(0);" class="btn btn-soft-danger btn-icon btn-sm rounded-circle"> <i
+                  class="ti ti-trash"></i></a>
+            </div>
+          </td>
+        </tr>
+        }
+      </tbody>
+    </table>
+  </div>
+</div>

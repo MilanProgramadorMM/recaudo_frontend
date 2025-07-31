@@ -1,0 +1,37 @@
+<div class="row row-cols-xxl-5 row-cols-md-3 row-cols-1 align-items-center">
+  @for (item of statData; track $index) {
+  <div class="col">
+    <div class="card">
+      <div class="card-body">
+        <a href="javascript: void(0);" class="text-muted float-end mt-n1 fs-18"><i class="ti ti-external-link"></i></a>
+        <h5 class="text-muted fs-13 text-uppercase" title="Number of Orders">{{item.title}}</h5>
+        <div class="d-flex align-items-center gap-2 my-3">
+          <div class="avatar-md flex-shrink-0">
+            <span class="avatar-title bg-primary-subtle text-primary rounded fs-22">
+              <i class="ti {{item.icon}}"></i>
+            </span>
+          </div>
+          <h3 class="mb-0 fw-bold">{{item.count}}
+            @if (item.label) {
+            <span class="badge text-bg-success fw-medium ms-2 fs-12">{{item.label}}</span>
+            }
+          </h3>
+        </div>
+        @for (detail of item.details; track $index) {
+          <p class="mb-1">
+            <span class="text-primary me-1">
+              @if (item.isDot) {
+                <i class="ti ti-point-filled"></i>
+              }@else {
+                <i class="ti ti-minus"></i>
+              }
+            </span>
+            <span class="text-nowrap text-muted">{{detail.title}}</span>
+            <span class="float-end"><b>{{detail.count}}</b></span>
+          </p>
+        }
+      </div>
+    </div>
+  </div>
+  }
+</div>

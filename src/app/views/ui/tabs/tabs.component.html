@@ -1,0 +1,533 @@
+<page-title title="Tabs" subtitle="Base UI" />
+
+<div class="row">
+  <div class="col-xl-6">
+    <div class="card">
+      <div class="card-header border-bottom border-dashed d-flex align-items-center">
+        <h4 class="header-title">Default Tabs</h4>
+      </div>
+
+      <div class="card-body">
+        <p class="text-muted">Simple widget of tabbable panes of local content.</p>
+
+        <ul ngbNav #nav="ngbNav" [activeId]="2" class="nav nav-tabs mb-3">
+          <li [ngbNavItem]="1">
+            <a ngbNavLink data-bs-toggle="tab" aria-expanded="false" class="nav-link">
+              Home
+            </a>
+            <ng-template ngbNavContent>
+              <p class="mb-0"><span
+                  class="px-1 rounded me-1 fw-semibold d-inline-block bg-info-subtle text-info float-start">H</span>Welcome
+                to our website! We are dedicated to providing you with the best products and services to enhance your
+                home. Whether you're looking to spruce up your living space with stylish furniture, create a cozy
+                atmosphere with our selection of home decor, or tackle those DIY projects with our range of tools and
+                supplies.</p>
+            </ng-template>
+          </li>
+          <li [ngbNavItem]="2">
+            <a ngbNavLink data-bs-toggle="tab" aria-expanded="true" class="nav-link">
+              Profile
+            </a>
+            <ng-template ngbNavContent>
+              <p class="mb-0"><span
+                  class="px-1 rounded me-1 fw-semibold d-inline-block bg-danger-subtle text-danger float-start">P</span>
+                "Hi there! I'm a passionate individual who loves to explore new ideas and connect with like-minded
+                people.
+                My interests span a wide range of topics including technology, literature, travel, and fitness. I
+                believe
+                in the power of continuous learning and enjoy challenging myself to grow both personally and
+                professionally.</p>
+            </ng-template>
+          </li>
+          <li [ngbNavItem]="3">
+            <a ngbNavLink data-bs-toggle="tab" aria-expanded="false" class="nav-link">
+              Settings
+            </a>
+            <ng-template ngbNavContent>
+              <p class="mb-0"><span
+                  class="px-1 rounded me-1 fw-semibold d-inline-block bg-secondary-subtle text-secondary float-start">S</span>In
+                the heart of a bustling city lies a quaint little cafe, nestled between towering skyscrapers and
+                historic
+                buildings. Its cozy interior boasts warm, earthy tones accented with splashes of vibrant colors,
+                creating
+                a welcoming atmosphere that beckons passersby to step inside.</p>
+            </ng-template>
+          </li>
+          <li [ngbNavItem]="4">
+            <a href="javascript: void(0);" data-bs-toggle="tab" aria-expanded="false" class="nav-link disabled">
+              Disabled
+            </a>
+          </li>
+        </ul>
+
+        <div [ngbNavOutlet]="nav" class="tab-content"></div>
+
+      </div>
+    </div>
+  </div>
+
+  <div class="col-xl-6">
+    <div class="card">
+      <div class="card-header border-bottom border-dashed d-flex align-items-center">
+        <h4 class="header-title">Tabs Justified</h4>
+      </div>
+
+      <div class="card-body">
+        <p class="text-muted">Using class <code>.nav-justified</code>, you can force your <code>tab menu items</code> to
+          use the full available width.</p>
+
+        <ul ngbNav #justifiedNav="ngbNav" [activeId]="2" class="nav nav-pills bg-nav-pills nav-justified mb-3">
+          <li [ngbNavItem]="1">
+            <a ngbNavLink data-bs-toggle="tab" aria-expanded="false" class="nav-link rounded-0">
+              Home
+            </a>
+            <ng-template ngbNavContent>
+              <p class="mb-0"><span
+                  class="px-1 rounded me-1 fw-semibold d-inline-block bg-info-subtle text-info float-start">H</span>Welcome
+                to our website! We are dedicated to providing you with the best products and services to enhance your
+                home. Whether you're looking to spruce up your living space with stylish furniture, create a cozy
+                atmosphere with our selection of home decor, or tackle those DIY projects with our range of tools and
+                supplies.</p>
+            </ng-template>
+          </li>
+          <li [ngbNavItem]="2">
+            <a ngbNavLink data-bs-toggle="tab" aria-expanded="true" class="nav-link rounded-0">
+              Profile
+            </a>
+            <ng-template ngbNavContent>
+              <p class="mb-0"><span
+                  class="px-1 rounded me-1 fw-semibold d-inline-block bg-danger-subtle text-danger float-start">P</span>
+                "Hi there! I'm a passionate individual who loves to explore new ideas and connect with like-minded
+                people.
+                My interests span a wide range of topics including technology, literature, travel, and fitness. I
+                believe
+                in the power of continuous learning and enjoy challenging myself to grow both personally and
+                professionally.</p>
+            </ng-template>
+          </li>
+          <li [ngbNavItem]="3">
+            <a ngbNavLink data-bs-toggle="tab" aria-expanded="false" class="nav-link rounded-0">
+              Settings
+            </a>
+            <ng-template ngbNavContent>
+              <p class="mb-0"><span
+                  class="px-1 rounded me-1 fw-semibold d-inline-block bg-secondary-subtle text-secondary float-start">S</span>In
+                the heart of a bustling city lies a quaint little cafe, nestled between towering skyscrapers and
+                historic
+                buildings. Its cozy interior boasts warm, earthy tones accented with splashes of vibrant colors,
+                creating
+                a welcoming atmosphere that beckons passersby to step inside.</p>
+            </ng-template>
+          </li>
+        </ul>
+
+        <div [ngbNavOutlet]="justifiedNav" class="tab-content"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<div class="row">
+  <div class="col-xl-6">
+    <div class="card">
+      <div class="card-header border-bottom border-dashed d-flex align-items-center">
+        <h4 class="header-title">Tabs Vertical Left</h4>
+      </div>
+
+      <div class="card-body">
+        <p class="text-muted">
+          You can stack your navigation by changing the flex item direction with the <code>.flex-column</code> utility.
+        </p>
+        <div class="row">
+          <div class="col-sm-3 mb-2 mb-sm-0">
+            <div ngbNav #verticalnav="ngbNav" class="nav flex-column nav-pills" id="v-pills-tab" role="tablist"
+              aria-orientation="vertical">
+              <ng-container ngbNavItem>
+                <a id="v-pills-home-tab" data-bs-toggle="pill" ngbNavLink role="tab" aria-controls="v-pills-home"
+                  aria-selected="true">
+                  <i class="ti ti-home fs-18 me-1"></i> Home
+                </a>
+                <ng-template ngbNavContent>
+                  <p class="mb-0"><span
+                      class="px-1 rounded me-1 fw-semibold d-inline-block bg-info-subtle text-info float-start">H</span>Welcome
+                    to our website! We are dedicated to providing you with the best products and services to enhance
+                    your
+                    home. Whether you're looking to spruce up your living space with stylish furniture, create a cozy
+                    atmosphere with our selection of home decor, or tackle those DIY projects with our range of tools
+                    and
+                    supplies. Explore our wide variety of products and find exactly what you need to make your house
+                    feel
+                    like a home. With our affordable prices and high-quality items.</p>
+                </ng-template>
+              </ng-container>
+              <ng-container ngbNavItem>
+                <a id="v-pills-profile-tab" data-bs-toggle="pill" ngbNavLink role="tab" aria-controls="v-pills-profile"
+                  aria-selected="false">
+                  <i class="ti ti-user-circle fs-18 me-1"></i> Profile
+                </a>
+                <ng-template ngbNavContent>
+                  <p class="mb-0"><span
+                      class="px-1 rounded me-1 fw-semibold d-inline-block bg-danger-subtle text-danger float-start">P</span>Hi
+                    there! I'm a passionate individual who loves to explore new ideas and connect with like-minded
+                    people.
+                    My interests span a wide range of topics including technology, literature, travel, and fitness. I
+                    believe in the power of continuous learning and enjoy challenging myself to grow both personally and
+                    professionally. Outside of my pursuits, you can often find me immersed in a good book, exploring the
+                    outdoors, or experimenting in the kitchen.</p>
+                </ng-template>
+              </ng-container>
+              <ng-container ngbNavItem>
+                <a id="v-pills-settings-tab" data-bs-toggle="pill" ngbNavLink role="tab"
+                  aria-controls="v-pills-settings" aria-selected="false">
+                  <i class="ti ti-settings fs-18 me-1"></i> Settings
+                </a>
+                <ng-template ngbNavContent>
+                  <p class="mb-0"><span
+                      class="px-1 rounded me-1 fw-semibold d-inline-block bg-secondary-subtle text-secondary float-start">S</span>In
+                    the heart of a bustling city lies a quaint little cafe, nestled between towering skyscrapers and
+                    historic buildings. Its cozy interior boasts warm, earthy tones accented with splashes of vibrant
+                    colors, creating a welcoming atmosphere that beckons passersby to step inside.</p>
+                </ng-template>
+              </ng-container>
+            </div>
+          </div>
+
+          <div class="col-sm-9">
+            <div [ngbNavOutlet]="verticalnav" class="tab-content" id="v-pills-tabContent"></div>
+          </div>
+        </div>
+
+
+      </div>
+    </div>
+  </div>
+
+  <div class="col-xl-6">
+    <div class="card">
+      <div class="card-header border-bottom border-dashed d-flex align-items-center">
+        <h4 class="header-title">Tabs Vertical Right</h4>
+      </div>
+
+      <div class="card-body">
+        <p class="text-muted">
+          You can stack your navigation by changing the flex item direction with the <code>.flex-column</code> utility.
+        </p>
+        <div class="row">
+          <div class="col-sm-9">
+            <div [ngbNavOutlet]="verticalRight" class="tab-content" id="v-pills-tabContent-right"></div>
+          </div>
+
+          <div class="col-sm-3 mt-2 mt-sm-0">
+            <div ngbNav #verticalRight="ngbNav" class="nav flex-column nav-pills nav-pills-secondary" id="v-pills-tab"
+              role="tablist" aria-orientation="vertical">
+              <ng-container ngbNavItem>
+                <a id="v-pills-home-tab" data-bs-toggle="pill" ngbNavLink role="tab" aria-controls="v-pills-home"
+                  aria-selected="true">
+                  <i class="ti ti-home fs-18 me-1"></i> Home
+                </a>
+                <ng-template ngbNavContent>
+                  <p class="mb-0"><span
+                      class="px-1 rounded me-1 fw-semibold d-inline-block bg-info-subtle text-info float-start">H</span>Welcome
+                    to our website! We are dedicated to providing you with the best products and services to enhance
+                    your
+                    home. Whether you're looking to spruce up your living space with stylish furniture, create a cozy
+                    atmosphere with our selection of home decor, or tackle those DIY projects with our range of tools
+                    and
+                    supplies. Explore our wide variety of products and find exactly what you need to make your house
+                    feel
+                    like a home. With our affordable prices and high-quality items.</p>
+                </ng-template>
+              </ng-container>
+              <ng-container ngbNavItem>
+                <a id="v-pills-profile-tab" data-bs-toggle="pill" ngbNavLink role="tab" aria-controls="v-pills-profile"
+                  aria-selected="false">
+                  <i class="ti ti-user-circle fs-18 me-1"></i> Profile
+                </a>
+                <ng-template ngbNavContent>
+                  <p class="mb-0"><span
+                      class="px-1 rounded me-1 fw-semibold d-inline-block bg-danger-subtle text-danger float-start">P</span>Hi
+                    there! I'm a passionate individual who loves to explore new ideas and connect with like-minded
+                    people.
+                    My interests span a wide range of topics including technology, literature, travel, and fitness. I
+                    believe in the power of continuous learning and enjoy challenging myself to grow both personally and
+                    professionally. Outside of my pursuits, you can often find me immersed in a good book, exploring the
+                    outdoors, or experimenting in the kitchen.</p>
+                </ng-template>
+              </ng-container>
+              <ng-container ngbNavItem>
+                <a id="v-pills-settings-tab" data-bs-toggle="pill" ngbNavLink role="tab"
+                  aria-controls="v-pills-settings" aria-selected="false">
+                  <i class="ti ti-settings fs-18 me-1"></i> Settings
+                </a>
+                <ng-template ngbNavContent>
+                  <p class="mb-0"><span
+                      class="px-1 rounded me-1 fw-semibold d-inline-block bg-secondary-subtle text-secondary float-start">S</span>In
+                    the heart of a bustling city lies a quaint little cafe, nestled between towering skyscrapers and
+                    historic buildings. Its cozy interior boasts warm, earthy tones accented with splashes of vibrant
+                    colors, creating a welcoming atmosphere that beckons passersby to step inside.</p>
+                </ng-template>
+              </ng-container>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<div class="row">
+  <div class="col-xl-6">
+    <div class="card">
+      <div class="card-header border-bottom border-dashed d-flex align-items-center">
+        <h4 class="header-title">Tabs Bordered</h4>
+      </div>
+
+      <div class="card-body">
+        <p class="text-muted">
+          The navigation item can have a simple bottom border as well. Just specify the class
+          <code>.nav-bordered</code>.
+        </p>
+        <ul ngbNav #bordernav="ngbNav" [activeId]="2" class="nav nav-tabs nav-bordered mb-3">
+          <li [ngbNavItem]="1">
+            <a ngbNavLink data-bs-toggle="tab" aria-expanded="false" class="nav-link">
+              <i class="ti ti-home fs-18 me-md-1"></i>
+              <span class="d-none d-md-inline-block">Home</span>
+            </a>
+            <ng-template ngbNavContent>
+              <p class="mb-0"><span
+                  class="px-1 rounded me-1 fw-semibold d-inline-block bg-info-subtle text-info float-start">H</span>Welcome
+                to our website! We are dedicated to providing you with the best products and services to enhance your
+                home. Whether you're looking to spruce up your living space with stylish furniture, create a cozy
+                atmosphere with our selection of home decor, or tackle those DIY projects with our range of tools and
+                supplies.</p>
+            </ng-template>
+          </li>
+          <li [ngbNavItem]="2">
+            <a ngbNavLink data-bs-toggle="tab" aria-expanded="true" class="nav-link">
+              <i class="ti ti-user-circle fs-18 me-md-1"></i>
+              <span class="d-none d-md-inline-block">Profile</span>
+            </a>
+            <ng-template ngbNavContent>
+              <p class="mb-0"><span
+                  class="px-1 rounded me-1 fw-semibold d-inline-block bg-danger-subtle text-danger float-start">P</span>
+                "Hi there! I'm a passionate individual who loves to explore new ideas and connect with like-minded
+                people.
+                My interests span a wide range of topics including technology, literature, travel, and fitness. I
+                believe
+                in the power of continuous learning and enjoy challenging myself to grow both personally and
+                professionally.</p>
+            </ng-template>
+          </li>
+          <li [ngbNavItem]="3">
+            <a ngbNavLink data-bs-toggle="tab" aria-expanded="false" class="nav-link">
+              <i class="ti ti-settings fs-18 me-md-1"></i>
+              <span class="d-none d-md-inline-block">Settings</span>
+            </a>
+            <ng-template ngbNavContent>
+              <p class="mb-0"><span
+                  class="px-1 rounded me-1 fw-semibold d-inline-block bg-secondary-subtle text-secondary float-start">S</span>In
+                the heart of a bustling city lies a quaint little cafe, nestled between towering skyscrapers and
+                historic
+                buildings. Its cozy interior boasts warm, earthy tones accented with splashes of vibrant colors,
+                creating
+                a welcoming atmosphere that beckons passersby to step inside.</p>
+            </ng-template>
+          </li>
+        </ul>
+
+        <div [ngbNavOutlet]="bordernav" class="tab-content"></div>
+
+
+      </div>
+    </div>
+  </div>
+
+  <div class="col-xl-6">
+    <div class="card">
+      <div class="card-header border-bottom border-dashed d-flex align-items-center">
+        <h4 class="header-title">Tabs Bordered Justified</h4>
+      </div>
+
+      <div class="card-body">
+        <p class="text-muted">
+          The navigation item with a simple bottom border and justified
+        </p>
+        <ul ngbNav #justifyBorder="ngbNav" [activeId]="2"
+          class="nav nav-tabs nav-justified nav-bordered nav-bordered-danger mb-3">
+          <li [ngbNavItem]="1">
+            <a ngbNavLink data-bs-toggle="tab" aria-expanded="false" class="nav-link">
+              <i class="ti ti-home fs-18 me-md-1"></i>
+              <span class="d-none d-md-inline-block">Home</span>
+            </a>
+            <ng-template ngbNavContent>
+              <p class="mb-0"><span
+                  class="px-1 rounded me-1 fw-semibold d-inline-block bg-info-subtle text-info float-start">H</span>Welcome
+                to our website! We are dedicated to providing you with the best products and services to enhance your
+                home. Whether you're looking to spruce up your living space with stylish furniture, create a cozy
+                atmosphere with our selection of home decor, or tackle those DIY projects with our range of tools and
+                supplies.</p>
+            </ng-template>
+          </li>
+          <li [ngbNavItem]="2">
+            <a ngbNavLink data-bs-toggle="tab" aria-expanded="true" class="nav-link">
+              <i class="ti ti-user-circle fs-18 me-md-1"></i>
+              <span class="d-none d-md-inline-block">Profile</span>
+            </a>
+            <ng-template ngbNavContent>
+              <p class="mb-0"><span
+                  class="px-1 rounded me-1 fw-semibold d-inline-block bg-danger-subtle text-danger float-start">P</span>
+                "Hi there! I'm a passionate individual who loves to explore new ideas and connect with like-minded
+                people.
+                My interests span a wide range of topics including technology, literature, travel, and fitness. I
+                believe
+                in the power of continuous learning and enjoy challenging myself to grow both personally and
+                professionally.</p>
+            </ng-template>
+          </li>
+          <li [ngbNavItem]="3">
+            <a ngbNavLink data-bs-toggle="tab" aria-expanded="false" class="nav-link">
+              <i class="ti ti-settings fs-18 me-md-1"></i>
+              <span class="d-none d-md-inline-block">Settings</span>
+            </a>
+            <ng-template ngbNavContent>
+              <p class="mb-0"><span
+                  class="px-1 rounded me-1 fw-semibold d-inline-block bg-secondary-subtle text-secondary float-start">S</span>In
+                the heart of a bustling city lies a quaint little cafe, nestled between towering skyscrapers and
+                historic
+                buildings. Its cozy interior boasts warm, earthy tones accented with splashes of vibrant colors,
+                creating
+                a welcoming atmosphere that beckons passersby to step inside.</p>
+            </ng-template>
+          </li>
+        </ul>
+        <div [ngbNavOutlet]="justifyBorder" class="tab-content"></div>
+
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<div class="row">
+  <div class="col-xl-6">
+    <div class="card">
+      <div class="card-header border-bottom border-dashed d-flex align-items-center">
+        <h4 class="header-title">Icons Tabs</h4>
+      </div>
+
+      <div class="card-body">
+        <p class="text-muted">
+          The navigation item can have a simple bottom border as well. Just specify the class
+          <code>.nav-bordered</code>.
+        </p>
+        <ul ngbNav #iconTab="ngbNav" [activeId]="2" class="nav nav-tabs nav-bordered nav-bordered-success mb-3">
+          <li [ngbNavItem]="1">
+            <a ngbNavLink data-bs-toggle="tab" aria-expanded="false" class="nav-link">
+              <iconify-icon icon="solar:home-2-bold-duotone" class="fs-24 align-middle"></iconify-icon>
+            </a>
+            <ng-template ngbNavContent>
+              <p class="mb-0"><span
+                  class="px-1 rounded me-1 fw-semibold d-inline-block bg-info-subtle text-info float-start">H</span>Welcome
+                to our website! We are dedicated to providing you with the best products and services to enhance your
+                home. Whether you're looking to spruce up your living space with stylish furniture, create a cozy
+                atmosphere with our selection of home decor, or tackle those DIY projects with our range of tools and
+                supplies.</p>
+            </ng-template>
+          </li>
+          <li [ngbNavItem]="2">
+            <a ngbNavLink data-bs-toggle="tab" aria-expanded="true" class="nav-link">
+              <iconify-icon icon="solar:user-id-bold-duotone" class="fs-24 align-middle"></iconify-icon>
+            </a>
+            <ng-template ngbNavContent>
+              <p class="mb-0"><span
+                  class="px-1 rounded me-1 fw-semibold d-inline-block bg-danger-subtle text-danger float-start">P</span>
+                "Hi there! I'm a passionate individual who loves to explore new ideas and connect with like-minded
+                people.
+                My interests span a wide range of topics including technology, literature, travel, and fitness. I
+                believe
+                in the power of continuous learning and enjoy challenging myself to grow both personally and
+                professionally.</p>
+            </ng-template>
+          </li>
+          <li [ngbNavItem]="3">
+            <a ngbNavLink data-bs-toggle="tab" aria-expanded="false" class="nav-link">
+              <iconify-icon icon="solar:settings-bold-duotone" class="fs-24 align-middle"></iconify-icon>
+            </a>
+            <ng-template ngbNavContent>
+              <p class="mb-0"><span
+                  class="px-1 rounded me-1 fw-semibold d-inline-block bg-secondary-subtle text-secondary float-start">S</span>In
+                the heart of a bustling city lies a quaint little cafe, nestled between towering skyscrapers and
+                historic
+                buildings. Its cozy interior boasts warm, earthy tones accented with splashes of vibrant colors,
+                creating
+                a welcoming atmosphere that beckons passersby to step inside.</p>
+            </ng-template>
+          </li>
+        </ul>
+
+        <div [ngbNavOutlet]="iconTab" class="tab-content"></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-xl-6">
+    <div class="card">
+      <div class="card-header card-tabs d-flex align-items-center">
+        <div class="flex-grow-1">
+          <h4 class="header-title">Card with Tabs</h4>
+        </div>
+        <ul ngbNav #cardTab="ngbNav" [activeId]="2" class="nav nav-tabs nav-justified card-header-tabs nav-bordered">
+          <li [ngbNavItem]="1">
+            <a ngbNavLink data-bs-toggle="tab" aria-expanded="false" class="nav-link">
+              <i class="ti ti-home d-md-none d-block"></i>
+              <span class="d-none d-md-block">Home</span>
+            </a>
+            <ng-template ngbNavContent>
+              <p class="mb-0"><span
+                class="px-1 rounded me-1 fw-semibold d-inline-block bg-info-subtle text-info float-start">H</span>Welcome
+              to our website! We are dedicated to providing you with the best products and services to enhance your
+              home. Whether you're looking to spruce up your living space with stylish furniture, create a cozy
+              atmosphere with our selection of home decor, or tackle those DIY projects with our range of tools and
+              supplies.</p>
+            </ng-template>
+          </li>
+          <li [ngbNavItem]="2">
+            <a ngbNavLink data-bs-toggle="tab" aria-expanded="true" class="nav-link">
+              <i class="ti ti-user-circle d-md-none d-block"></i>
+              <span class="d-none d-md-block">Profile</span>
+            </a>
+            <ng-template ngbNavContent>
+              <p class="mb-0"><span
+                class="px-1 rounded me-1 fw-semibold d-inline-block bg-danger-subtle text-danger float-start">P</span>
+              "Hi there! I'm a passionate individual who loves to explore new ideas and connect with like-minded people.
+              My interests span a wide range of topics including technology, literature, travel, and fitness. I believe
+              in the power of continuous learning and enjoy challenging myself to grow both personally and
+              professionally.</p>
+            </ng-template>
+          </li>
+          <li [ngbNavItem]="3">
+            <a ngbNavLink data-bs-toggle="tab" aria-expanded="false" class="nav-link">
+              <i class="ti ti-settings d-md-none d-block"></i>
+              <span class="d-none d-md-block">Settings</span>
+            </a>
+            <ng-template ngbNavContent>
+              <p class="mb-0"><span
+                class="px-1 rounded me-1 fw-semibold d-inline-block bg-secondary-subtle text-secondary float-start">S</span>In
+              the heart of a bustling city lies a quaint little cafe, nestled between towering skyscrapers and historic
+              buildings. Its cozy interior boasts warm, earthy tones accented with splashes of vibrant colors, creating
+              a welcoming atmosphere that beckons passersby to step inside.</p>
+            </ng-template>
+          </li>
+        </ul>
+      </div>
+
+      <div class="card-body">
+        <div [ngbNavOutlet]="cardTab" class="tab-content"></div>
+
+      </div>
+    </div>
+  </div>
+</div>

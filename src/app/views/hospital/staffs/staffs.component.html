@@ -1,0 +1,69 @@
+<page-title title="Staffs" subtitle="Hospital" />
+
+<div class="row">
+  <div class="col-12">
+    <div class="card">
+      <div class="card-header d-flex align-items-center justify-content-between border-bottom border-light">
+        <h4 class="header-title">Hospital Staffs</h4>
+
+        <div class="d-flex flex-wrap gap-1">
+          <a href="javascript: void(0);" class="btn btn-success bg-gradient"><i class="ti ti-plus me-1"></i> Add Staffs</a>
+          <a href="javascript: void(0);" class="btn btn-secondary bg-gradient"><i class="ti ti-file-import me-1"></i> Import</a>
+        </div>
+      </div>
+
+      <div class="table-responsive">
+        <table class="table table-hover text-nowrap mb-0">
+          <thead class="bg-light-subtle">
+            <tr>
+              <th class="ps-3" style="width: 50px;">
+                <input type="checkbox" class="form-check-input" id="customCheck1">
+              </th>
+              <th>Staff Name</th>
+              <th>Title/Position</th>
+              <th>Department</th>
+              <th>Contact Information</th>
+              <th>Phone Number</th>
+              <th>Special Notes</th>
+              <th class="text-center" style="width: 120px;">Action</th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (item of staffData; track $index) {
+            <tr>
+              <td class="ps-3">
+                <input type="checkbox" class="form-check-input" id="customCheck2">
+              </td>
+              <td>
+                <img [src]="item.avatar" class="avatar-sm rounded-circle me-2" alt="...">
+                <a href="javascript: void(0);" class="text-dark fw-medium">{{item.name}}</a>
+              </td>
+              <td>{{item.position}}</td>
+              <td>{{item.specialty}}</td>
+              <td>{{item.email}}</td>
+              <td>{{item.number}}</td>
+              <td>{{item.specialNotes}} </td>
+              <td class="pe-3">
+                <div class="hstack gap-1 justify-content-end">
+                  <a href="javascript:void(0);" class="btn btn-soft-primary btn-icon btn-sm rounded-circle"> <i
+                      class="ti ti-eye"></i></a>
+                  <a href="javascript:void(0);" class="btn btn-soft-success btn-icon btn-sm rounded-circle"> <i
+                      class="ti ti-edit fs-16"></i></a>
+                  <a href="javascript:void(0);" class="btn btn-soft-danger btn-icon btn-sm rounded-circle"> <i
+                      class="ti ti-trash"></i></a>
+                </div>
+              </td>
+            </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+
+      <div class="card-footer">
+        <div class="d-flex justify-content-end">
+          <ngb-pagination [collectionSize]="30" [page]="page"/>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

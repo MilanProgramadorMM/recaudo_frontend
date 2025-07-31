@@ -1,0 +1,115 @@
+<page-title subtitle="Maps" title="Leaflet Maps"/>
+<div class="row">
+  <div class="col-12">
+    <div class="card">
+      <div class="card-header border-bottom border-dashed d-flex align-items-center">
+        <h4 class="header-title">Basic Map</h4>
+      </div>
+
+      <div class="card-body">
+        <div
+        leaflet
+        [leafletLayers]="markersLayers"
+        [leafletOptions]="simpleMarker"
+        style="height: 300px"
+      ></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-12">
+    <div class="card">
+      <div class="card-header border-bottom border-dashed d-flex align-items-center">
+        <h4 class="header-title">Bounds Extend</h4>
+      </div>
+
+      <div class="card-body">
+        <div class="leaflet-map" id="shapeMap">
+          <div
+          id="Bounds_Extend"
+          class=""
+          leaflet
+          [leafletOptions]="boundExtend"
+          style="height: 300px"
+        ></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+
+  <div class="col-12">
+    <div class="card">
+      <div class="card-header border-bottom border-dashed d-flex align-items-center">
+        <h4 class="header-title">Vector Bounds</h4>
+      </div>
+
+      <div class="card-body">
+        <div class="leaflet-map" id="dragMap">
+          <div
+          id="Vector_bounds"
+          class=""
+          leaflet
+          [leafletOptions]="mapOptions"
+          style="height: 300px"
+        ></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-12">
+    <div class="card">
+      <div class="card-header border-bottom border-dashed d-flex align-items-center">
+        <h4 class="header-title">Moov Canvas</h4>
+      </div>
+
+      <div class="card-body">
+        <div id="Moov_Canvas" class="" style="height: 300px"></div>
+      </div>
+    </div>
+  </div>
+
+
+  <div class="col-12">
+    <div class="card">
+      <div class="card-header border-bottom border-dashed d-flex align-items-center">
+        <h4 class="header-title">Array Map</h4>
+      </div>
+
+      <div class="card-body">
+        <div
+        id="Array_Map"
+        class=""
+        leaflet
+        [leafletOptions]="arrayMap"
+        style="height: 300px"
+      ></div>
+      </div>
+    </div>
+  </div>
+
+
+  <div class="col-12">
+    <div class="card">
+      <div class="card-header border-bottom border-dashed d-flex align-items-center">
+        <h4 class="header-title">Simple Vector Map</h4>
+      </div>
+
+      <div class="card-body">
+        <div class="leaflet-map" id="layerControl">
+          <div
+          id="V_Simple"
+          class=""
+          leaflet
+          [leafletLayers]="markersLayers"
+          [leafletOptions]="simpleMarker"
+          style="height: 300px"
+        ></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
