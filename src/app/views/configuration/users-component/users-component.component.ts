@@ -5,9 +5,9 @@ import { NgbModalModule, NgbPaginationModule } from '@ng-bootstrap/ng-bootstrap'
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { FormsModule } from '@angular/forms';
 import { UserDto, UserService } from '@core/services/user.service';
-import { PersonRegisterDto } from '@core/services/person.service';
-import { PatientDetailsComponent } from '@views/hospital/patient-details/patient-details.component';
 import { UserConfigPermisionsComponent } from '../user-config-permisions/user-config-permisions.component';
+import { MaestroRolesComponent } from '../maestro-roles/maestro-roles.component';
+import { UserAssignRolComponent } from '../user-assign-rol/user-assign-rol.component';
 
 
 @Component({
@@ -70,8 +70,8 @@ export class UsersComponentComponent {
     );
   }
 
-  openRoleModal(person: any): void {
-    if (!person.rol || !person.rol.id) {
+  openPermissionsModal(user: any): void {
+    if (!user.rol || !user.rol.id) {
       console.error('Este usuario no tiene un rol asignado.');
       return;
     }
@@ -80,7 +80,27 @@ export class UsersComponentComponent {
       centered: true,      // centrado vertical
       scrollable: true     // permite scroll interno si el contenido excede
     });
-    modalRef.componentInstance.roleId = person.rol.id;
+    modalRef.componentInstance.id = user.id;
+    modalRef.componentInstance.type = 'USERS';
+    modalRef.componentInstance.nombreUsuario = user.person_fullname; // <-- Aquí lo pasas
+
   }
+
+  openRoleUpdateModal(user: any): void {
+    if (!user.rol || !user.rol.id) {
+      console.error('Este usuario no tiene un rol asignado.');
+      return;
+    }
+    const modalRef = this.modalService.open(UserAssignRolComponent, {
+      size: 'xl',
+      centered: true,
+      scrollable: true
+    });
+    modalRef.componentInstance.userId = user.id;
+    modalRef.closed.subscribe(() => {
+      this.fetchUsers(); // vuelve a cargar la lista de usuarios
+    });
+  }
+
 
 }

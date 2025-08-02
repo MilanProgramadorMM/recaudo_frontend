@@ -1,10 +1,9 @@
-import { HttpClient } from '@angular/common/http';
 import { Component, Input } from '@angular/core';
 import { CommonModule } from '@angular/common';
 
-import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
-import { treatmentData } from '@views/hospital/patient-details/data';
-import { PermissionDto, UserService } from '@core/services/user.service';
+import { NgbActiveModal, NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import { UserPermissionDto, UserService } from '@core/services/user.service';
+import { RolePermissionDto, RoleService } from '@core/services/role.service';
 
 @Component({
   selector: 'app-user-config-permisions',
@@ -13,37 +12,66 @@ import { PermissionDto, UserService } from '@core/services/user.service';
   styleUrl: './user-config-permisions.component.scss'
 })
 export class UserConfigPermisionsComponent {
-  treatmentHistoryData = treatmentData
 
-  @Input() roleId!: number;
-  permissions: PermissionDto[] = [];
+  @Input() id!: number;
+  @Input() type!: String;
+  @Input() nombreUsuario!: string;
+
+  permissionsUser: UserPermissionDto[] = [];
+  permissionsRole: RolePermissionDto[] = [];
 
   constructor(
     public activeModal: NgbActiveModal,
-    private userService: UserService
+    private userService: UserService,
+    private roleService: RoleService,
   ) { }
 
   ngOnInit(): void {
-    if (!this.roleId) {
-      console.error('No se recibió un roleId');
+    if (!this.id) {
+      console.error('No se recibió id de rol o usuario');
       return;
     }
 
-    this.userService.getPermissionsByRole(this.roleId).subscribe({
-      next: (data) => this.permissions = data,
-      error: (err) => console.error('Error al obtener permisos', err)
-    });
+    if (this.type === 'USERS') {
+      this.userService.getUserPermissions(this.id).subscribe({
+        next: (data) => this.permissionsUser = data,
+        error: (err) => console.error('Error al obtener permisos', err)
+      });
+    } else if (this.type === 'ROLES') {
+      this.roleService.getRolePermissions(this.id).subscribe({
+        next: (data) => this.permissionsRole = data,
+        error: (err) => console.error('Error al obtener permisos', err)
+      });
+    } else {
+      console.error('Tipo no reconocido:', this.type);
+    }
   }
 
-  onTogglePermission(permiso: PermissionDto) {
-  const nuevoEstado = !permiso.permiso;
-  this.userService.updatePermission(permiso.id, nuevoEstado).subscribe({
-    next: () => permiso.permiso = nuevoEstado,
-    error: (err) => {
-      console.error('Error actualizando permiso', err);
+  onTogglePermission(permiso: UserPermissionDto | RolePermissionDto): void {
+    const updatedValue = !permiso.permiso;
+
+    if (this.type === 'USERS') {
+      this.userService.updateUserPermission(permiso.id, updatedValue).subscribe({
+        next: () => {
+          permiso.permiso = updatedValue;
+        },
+        error: (err) => {
+          console.error('Error actualizando permiso de usuario', err);
+          // opcional: revertir el valor si falla
+        }
+      });
+    } else if (this.type === 'ROLES') {
+      this.roleService.updateRolePermission(permiso.id, updatedValue).subscribe({
+        next: () => {
+          permiso.permiso = updatedValue;
+        },
+        error: (err) => {
+          console.error('Error actualizando permiso de rol', err);
+          // opcional: revertir el valor si falla
+        }
+      });
     }
-  });
-}
+  }
 
 
   close(): void {

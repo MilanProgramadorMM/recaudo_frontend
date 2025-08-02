@@ -9,7 +9,7 @@ export interface UserDto {
     id?: number;
     username: number;
     person_fullname?: string;
-    rol?: RoleDto; // ahora es un objeto
+    rol?: RoleDto;
     userCreate?: string;
     createdAt?: string;
 }
@@ -17,14 +17,18 @@ export interface UserDto {
 export interface RoleDto {
     id: number;
     rol: string;
+    description: string;
 }
 
-export interface PermissionDto {
+export interface UserPermissionDto {
     id: number;
+    moduleId: number;
     modulo: string;
+    actionId: number;
     accion: string;
     permiso: boolean;
 }
+
 
 
 export interface DefaultResponseDto<T> {
@@ -51,18 +55,18 @@ export class UserService {
         return this.http.get<DefaultResponseDto<UserDto[]>>(`${baseUrl}user/get-all`, { headers });
     }
 
-    getPermissionsByRole(roleId: number): Observable<PermissionDto[]> {
+    getUserPermissions(userId: number): Observable<UserPermissionDto[]> {
         const token = this.cookieService.get('_OSEN_AUTH_SESSION_KEY_');
         const headers = new HttpHeaders({
             Authorization: `Bearer ${token}`
         });
 
         return this.http
-            .get<DefaultResponseDto<PermissionDto[]>>(`${baseUrl}user/permissions/role/${roleId}`, { headers })
-            .pipe(map(res => res.data)); // <- Aquí extraes solo el array de permisos
+            .get<DefaultResponseDto<UserPermissionDto[]>>(`${baseUrl}user/permissions/user/${userId}`, { headers })
+            .pipe(map(res => res.data));
     }
 
-    updatePermission(id: number, allow: boolean): Observable<any> {
+    updateUserPermission(id: number, allow: boolean): Observable<any> {
         const token = this.cookieService.get('_OSEN_AUTH_SESSION_KEY_');
         const headers = new HttpHeaders({
             Authorization: `Bearer ${token}`
@@ -72,5 +76,28 @@ export class UserService {
             headers
         });
     }
+
+    getUserById(userId: number): Observable<DefaultResponseDto<UserDto>> {
+        const token = this.cookieService.get('_OSEN_AUTH_SESSION_KEY_');
+        const headers = new HttpHeaders({
+            Authorization: `Bearer ${token}`
+        });
+
+        return this.http.get<DefaultResponseDto<UserDto>>(`${baseUrl}user/get/${userId}`, { headers });
+    }
+
+
+
+    assignUserRole(userId: number, roleId: number): Observable<any> {
+        const token = this.cookieService.get('_OSEN_AUTH_SESSION_KEY_');
+        const headers = new HttpHeaders({
+            Authorization: `Bearer ${token}`
+        });
+
+        const body = { userId, roleId };
+
+        return this.http.put(`${baseUrl}rol/assign-role`, body, { headers });
+    }
+
 
 }

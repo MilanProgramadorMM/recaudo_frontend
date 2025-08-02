@@ -3,10 +3,11 @@ import { UsersComponentComponent } from "./users-component/users-component.compo
 import { UserCreateComponent } from "./user-create/user-create.component";
 import { PersonComponentComponent } from "./person-component/person-component.component";
 import { PersonCreateComponent } from "./person-create/person-create.component";
+import { MaestroRolesComponent } from "./maestro-roles/maestro-roles.component";
 
 export const CONFIGURATION_ROUTES: Route[] = [
   {
-    path: 'users',
+    path: 'usuarios',
     component: UsersComponentComponent,
     data: { title: 'Usuarios' }
   },
@@ -16,7 +17,7 @@ export const CONFIGURATION_ROUTES: Route[] = [
     data: { title: 'Crear Usuarios' }
   },
   {
-    path: 'person',
+    path: 'personas',
     component: PersonComponentComponent,
     data: { title: 'Personas' }
   },
@@ -24,5 +25,11 @@ export const CONFIGURATION_ROUTES: Route[] = [
     path: 'person/create',
     component: PersonCreateComponent,
     data: { title: 'Crear Personas' }
+  },
+  {
+    path: 'roles',
+    component: MaestroRolesComponent,
+    data: { title: 'Maestro de Roles' }
   }
+
 ]

@@ -1,7 +1,7 @@
-import {inject, Inject, Injectable} from '@angular/core'
-import {ActivatedRoute, Router} from '@angular/router'
-import {Actions, createEffect, ofType} from '@ngrx/effects'
-import {catchError, exhaustMap, map, of} from 'rxjs'
+import { inject, Inject, Injectable } from '@angular/core'
+import { ActivatedRoute, Router } from '@angular/router'
+import { Actions, createEffect, ofType } from '@ngrx/effects'
+import { catchError, exhaustMap, map, of } from 'rxjs'
 import {
   login,
   loginFailure,
@@ -9,7 +9,7 @@ import {
   logout,
   logoutSuccess,
 } from './authentication.actions'
-import {AuthenticationService} from '@core/services/auth.service'
+import { AuthenticationService } from '@core/services/auth.service'
 
 @Injectable()
 export class AuthenticationEffects {
@@ -26,7 +26,7 @@ export class AuthenticationEffects {
   login$ = createEffect(() =>
     this.actions$.pipe(
       ofType(login),
-      exhaustMap(({username, password}) => {
+      exhaustMap(({ username, password }) => {
         return this.authService.login(username, password).pipe(
           map((user) => {
             if (user) {
@@ -34,9 +34,9 @@ export class AuthenticationEffects {
                 this.route.snapshot.queryParams['returnUrl'] || '/'
               this.router.navigateByUrl(returnUrl)
             }
-            return loginSuccess({user})
+            return loginSuccess({ user })
           }),
-          catchError((error) => of(loginFailure({error})))
+          catchError((error) => of(loginFailure({ error })))
         )
       })
     )
@@ -46,11 +46,16 @@ export class AuthenticationEffects {
     this.actions$.pipe(
       ofType(logout),
       exhaustMap(() => {
-        this.authService.logout()
-        this.router.navigate(['/auth/login'])
-        return of(logoutSuccess())
+        this.authService.logout(); // borra cookie
+        return of(logoutSuccess()).pipe(
+          map(() => {
+            this.router.navigate(['/auth/login']);
+            return logoutSuccess();
+          })
+        );
       })
     )
-  )
+  );
+
 
 }

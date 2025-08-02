@@ -8,17 +8,17 @@
 
 <p *ngIf="errorMessage.length>0" class="fs-14 text-danger">{{ errorMessage }}</p>
 
-<form [formGroup]="signInForm" (ngSubmit)="login()" class="text-start mb-3">
+<form [formGroup]="signInForm" class="text-start mb-3">
   <div class="mb-3">
     <label class="form-label" for="example-username">Usuario</label>
     <input formControlName="username" type="text" id="example-username" class="form-control"
-           placeholder="Ingresa tu usuario" [ngClass]="{ 'is-invalid': submitted && formValues?.['username'].errors }">
+           placeholder="Ingresa tu usuario" [ngClass]="{ 'is-invalid': formValues?.['username'].errors }">
   </div>
 
   <div class="mb-3">
     <label class="form-label" for="example-password">Contraseña</label>
     <input type="password" formControlName="password" id="example-password" class="form-control"
-           placeholder="Ingresa tu contraseña" [ngClass]="{ 'is-invalid': submitted && formValues?.['password'].errors }">
+           placeholder="Ingresa tu contraseña" [ngClass]="{ 'is-invalid': formValues?.['password'].errors }">
   </div>
 
   <div class="d-flex justify-content-between mb-3">
@@ -31,7 +31,7 @@
   </div>
 
   <div class="d-grid">
-    <button class="btn btn-primary" type="submit">Ingresar</button>
+    <button class="btn btn-primary" [disabled]="!signInForm.valid" type="button" (click)="login()">Ingresar</button>
   </div>
 </form>
 

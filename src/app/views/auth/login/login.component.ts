@@ -19,7 +19,6 @@ export class LoginComponent {
 
   currentYear = currentYear
   signInForm!: UntypedFormGroup;
-  submitted: boolean = false
 
   errorMessage: string = ''
 
@@ -39,7 +38,6 @@ export class LoginComponent {
   }
 
   login() {
-    this.submitted = true
     if (this.signInForm.valid) {
       const username = this.formValues['username'].value // Get the username from the form
       const password = this.formValues['password'].value // Get the password from the form

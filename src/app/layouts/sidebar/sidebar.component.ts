@@ -10,6 +10,7 @@ import { NgbCollapseModule, type NgbCollapse } from '@ng-bootstrap/ng-bootstrap'
 import { CommonModule } from '@angular/common';
 import { changesidebarsize } from '@/store/layout/layout-action';
 import { getSidebarsize } from '@/store/layout/layout-selector';
+import { MenuItemBD, ModuleService } from '@core/services/module.service';
 
 @Component({
   selector: 'app-sidebar',
@@ -20,7 +21,9 @@ import { getSidebarsize } from '@/store/layout/layout-selector';
 })
 export class SidebarComponent implements OnInit {
 
+  
   menuItems: MenuItemType[] = [];
+  menuItemsBd: MenuItemBD[] = [];
   activeMenuItems: string[] = [];
 
   router = inject(Router);
@@ -31,7 +34,7 @@ export class SidebarComponent implements OnInit {
 
   store = inject(Store);
 
-  constructor() {
+  constructor(private moduleService : ModuleService) {
     this.router.events.forEach((event) => {
       if (event instanceof NavigationEnd) {
         this.trimmedURL = this.router.url?.replaceAll(
@@ -50,8 +53,15 @@ export class SidebarComponent implements OnInit {
     this.initMenu();
   }
 
-  initMenu(): void {
-    this.menuItems = MENU_ITEMS;
+   initMenu(): void {
+    this.moduleService.getMenu().subscribe({
+      next: (items) => {
+        this.menuItems = items;
+      },
+      error: (err) => {
+        console.error('Error loading menu:', err);
+      }
+    });
   }
 
   ngAfterViewInit() {

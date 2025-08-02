@@ -4,6 +4,6 @@ export class User {
   password?: string
   firstName?: string
   lastName?: string
-  role?: 'admin' | 'user'
+  role?: string
   token?: string
 }

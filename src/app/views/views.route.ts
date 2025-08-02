@@ -7,7 +7,7 @@ export const VIEWS_ROUTES: Route[] = [
       import('./dashboards/dashboard.route').then((mod) => mod.DASHBOARD_ROUTES),
   },
   {
-    path: 'configuration',
+    path: 'maestros',
     loadChildren: () =>
       import('./configuration/configuration.route').then((mod) => mod.CONFIGURATION_ROUTES),
   },

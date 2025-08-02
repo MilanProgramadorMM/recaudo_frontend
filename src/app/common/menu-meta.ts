@@ -54,9 +54,9 @@ export const MENU_ITEMS: MenuItemType[] = [
         parentKey: 'configuration'
       },
       {
-        key: 'maestro-roles',
+        key: 'consiguration-maestro-roles',
         label: 'Maestro de roles',
-        url: '/maestros/roles',
+        url: '/configuration/roles', // <-- corregido
         parentKey: 'configuration',
       },
       {

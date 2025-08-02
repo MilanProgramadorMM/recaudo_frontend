@@ -1,4 +1,4 @@
-<page-title title="Personas" subtitle="Configuracion" />
+<page-title title="Usuarios" subtitle="Configuracion" />
 <div class="row">
   <div class="col-12">
     <div class="card">
@@ -70,11 +70,20 @@
 
               <td class="pe-3">
                 <div class="hstack gap-1 justify-content-end">
-                  <a (click)="openRoleModal(user)" class="btn btn-soft-warning btn-icon btn-sm rounded-circle">
-                    <i class="ti ti-user-shield fs-4"></i>
+
+                  <a (click)="openPermissionsModal(user)" class="btn btn-soft-warning btn-icon btn-sm rounded-circle"
+                    title="Actualizar permisos de usuario">
+                    <i class="ti ti-lock-access fs-4"></i>
                   </a>
 
-                  <a (click)="onDelete(person.id)" class="btn btn-soft-danger btn-icon btn-sm rounded-circle">
+
+                  <a (click)="openRoleUpdateModal(user)" class="btn btn-soft-info btn-icon btn-sm rounded-circle"
+                    title="Actualizar rol de usuario">
+                    <i class="ti ti-user-cog fs-4"></i>
+                  </a>
+
+                  <a (click)="onDelete(person.id)" class="btn btn-soft-danger btn-icon btn-sm rounded-circle"
+                    title="Eliminar usuario">
                     <i class="ti ti-trash fs-4"></i>
                   </a>
 

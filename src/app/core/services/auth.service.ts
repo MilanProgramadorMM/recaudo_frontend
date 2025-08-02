@@ -5,10 +5,13 @@ import { map } from 'rxjs/operators'
 import { CookieService } from 'ngx-cookie-service'
 import type { Observable } from 'rxjs'
 import type { User } from '@core/helper/fake-backend'
+import { personData } from '@views/configuration/person-component/data'
 
 @Injectable({ providedIn: 'root' })
 export class AuthenticationService {
   user: User | null = null
+
+  
 
   public readonly authSessionKey = '_OSEN_AUTH_SESSION_KEY_'
 
@@ -17,6 +20,8 @@ export class AuthenticationService {
     private cookieService: CookieService
   ) {}
 
+  
+
   login(username: string, password: string): Observable<User> {
     return this.http.post<any>(`http://localhost:8081/api/auth/login`, { username, password }).pipe(
       map((response) => {
@@ -24,6 +29,7 @@ export class AuthenticationService {
         const user: User = {
           username: response.data.user,
           token: token,
+          role: response.data.role
         };
         this.user = user;
         this.saveSession(token);
@@ -43,7 +49,7 @@ export class AuthenticationService {
   }
 
   saveSession(token: string): void {
-    this.cookieService.set(this.authSessionKey, token)
+    this.cookieService.set(this.authSessionKey, token, (2/24), '/', '', false, 'Lax')
   }
 
   removeSession(): void {

@@ -15,16 +15,16 @@ export class JwtInterceptor implements HttpInterceptor {
     next: HttpHandler
   ): Observable<HttpEvent<Event>> {
     const authenticationService = inject(AuthenticationService)
-    const token = authenticationService.session
-    const isAuthEndpoint = request.url.includes('/api/auth/login') || request.url.includes('/api/auth/register')
+    const token = authenticationService.session;
+    const isAuthEndpoint = request.url.includes('/api/auth/login');
     if (token && !isAuthEndpoint) {
       request = request.clone({
         setHeaders: {
           Authorization: `Bearer ${token}`,
         },
-      })
+      });
     }
 
-    return next.handle(request)
+    return next.handle(request);
   }
 }

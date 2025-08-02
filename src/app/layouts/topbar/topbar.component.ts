@@ -11,6 +11,8 @@ import { splitArray } from '@core/helper/utils';
 import { LogoBoxComponent } from "@components/logo-box.component";
 import { currency } from '@common/constants';
 import { logout } from '@/store/authentication/authentication.actions';
+import { User } from '@core/helper/fake-backend';
+import { AuthenticationService } from '@core/services/auth.service';
 
 @Component({
   selector: 'app-topbar',
@@ -22,11 +24,16 @@ import { logout } from '@/store/authentication/authentication.actions';
 })
 export class TopbarComponent implements OnInit {
 
-  currency=currency
+  currency = currency
+  user: User | null = null; // Añade esta propiedad
 
+
+  constructor(
+    private authService: AuthenticationService,
+  ) { }
   languageList = languages
   appsChunks = splitArray(appData, 3);
-  
+
   @Output() settingsButtonClicked = new EventEmitter();
   @Output() mobileMenuButtonClicked = new EventEmitter();
 
@@ -39,12 +46,13 @@ export class TopbarComponent implements OnInit {
   color!: string;
 
   open(content: TemplateRef<any>) {
-    this.modalService.open(content,{size:"lg"})
+    this.modalService.open(content, { size: "lg" })
   }
 
   ngOnInit(): void {
     this.store.select('layout').subscribe((data: LayoutState) => {
       this.color = data.LAYOUT_THEME;
+      this.user = this.authService.user;
     });
   }
 
@@ -70,7 +78,10 @@ export class TopbarComponent implements OnInit {
   }
 
   logout() {
-    this.store.dispatch(logout())
+    this.store.dispatch(logout());
+    this.router.navigate(['/auth/login']); // Redirige a la página de inicio de sesión
   }
+
+
 
 }

@@ -48,11 +48,12 @@
                 <input type="checkbox" class="form-check-input" id="customCheck1">
               </th>
               -->
-              <th>Id</th>
-              <th>Nombre</th>
-              <th>Apellido</th>
-              <th>Fecha de creacion</th>
               <th>Identificaci&oacute;n</th>
+              <th>Primer Apellido</th>
+              <th>Segundo Apellido</th>
+              <th>Primer Nombre</th>
+              <th>Segundo Nombre</th>
+              <th>Ocupaci&oacute;n</th>
               <th class="text-center" style="width: 120px;">Action</th>
             </tr>
           </thead>
@@ -67,11 +68,12 @@
                 <img [src]="persons.image" class="avatar-sm rounded-circle me-2" alt="...">
                 <a routerLink="/hospital/doctor/details" class="text-dark fw-medium">{{persons.username}}</a>
               </td> -->
-              <td>{{person.id}}</td>
-              <td>{{person.first_name}}</td>
-              <td>{{person.last_name}}</td>
-              <td>{{person.created_at}}</td>
               <td>{{person.document}}</td>
+              <td>{{person.last_name}}</td>
+              <td>{{person.maternal_lastname}}</td>
+              <td>{{person.first_name}}</td>
+              <td>{{person.middlename}}</td>
+              <td>{{person.occupation}}</td>
 
               <td class="pe-3">
                 <div class="hstack gap-1 justify-content-end">
