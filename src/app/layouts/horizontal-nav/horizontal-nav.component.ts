@@ -3,6 +3,7 @@ import { Component, type OnInit } from '@angular/core';
 import { NavigationEnd, RouterModule,  Router } from '@angular/router';
 import { HORIZONTAL_MENU_ITEM, type MenuItemType } from '@common/menu-meta';
 import { findAllParent, findMenuItem } from '@core/helper/utils';
+import { ModuleService } from '@core/services/module.service';
 import { NgbDropdownModule } from '@ng-bootstrap/ng-bootstrap';
 
 @Component({
@@ -16,7 +17,7 @@ export class HorizontalNavComponent implements OnInit{
   menuItems: MenuItemType[] = []
   activeMenuItems: string[] = []
 
-  constructor(router: Router) {
+  constructor(router: Router, private moduleService : ModuleService) {
     router.events.forEach((event) => {
       if (event instanceof NavigationEnd) {
         this._activateMenu()
@@ -25,7 +26,15 @@ export class HorizontalNavComponent implements OnInit{
   }
 
   ngOnInit(): void {
-    this.menuItems = HORIZONTAL_MENU_ITEM
+    //this.menuItems = HORIZONTAL_MENU_ITEM
+    this.moduleService.getMenu().subscribe({
+      next: (items) => {
+        this.menuItems = items;
+      },
+      error: (err) => {
+        console.error('Error loading menu:', err);
+      }
+    });
   }
 
   ngAfterViewInit() {

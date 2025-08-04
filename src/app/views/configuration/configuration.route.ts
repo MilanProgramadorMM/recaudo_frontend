@@ -7,7 +7,7 @@ import { MaestroRolesComponent } from "./maestro-roles/maestro-roles.component";
 
 export const CONFIGURATION_ROUTES: Route[] = [
   {
-    path: 'usuarios',
+    path: 'users',
     component: UsersComponentComponent,
     data: { title: 'Usuarios' }
   },

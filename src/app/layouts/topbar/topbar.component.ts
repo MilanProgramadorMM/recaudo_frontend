@@ -52,7 +52,7 @@ export class TopbarComponent implements OnInit {
   ngOnInit(): void {
     this.store.select('layout').subscribe((data: LayoutState) => {
       this.color = data.LAYOUT_THEME;
-      this.user = this.authService.user;
+      this.user = this.authService.loggedUser;
     });
   }
 
@@ -79,7 +79,7 @@ export class TopbarComponent implements OnInit {
 
   logout() {
     this.store.dispatch(logout());
-    this.router.navigate(['/auth/login']); // Redirige a la página de inicio de sesión
+    //this.router.navigate(['/auth/login']); // Redirige a la página de inicio de sesión
   }
 
 

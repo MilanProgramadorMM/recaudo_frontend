@@ -54,6 +54,7 @@ export class SidebarComponent implements OnInit {
   }
 
    initMenu(): void {
+    //this.menuItems = MENU_ITEMS;
     this.moduleService.getMenu().subscribe({
       next: (items) => {
         this.menuItems = items;

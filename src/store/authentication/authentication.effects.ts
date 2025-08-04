@@ -1,7 +1,7 @@
 import { inject, Inject, Injectable } from '@angular/core'
 import { ActivatedRoute, Router } from '@angular/router'
 import { Actions, createEffect, ofType } from '@ngrx/effects'
-import { catchError, exhaustMap, map, of } from 'rxjs'
+import { catchError, exhaustMap, map, of, tap } from 'rxjs'
 import {
   login,
   loginFailure,
@@ -31,7 +31,7 @@ export class AuthenticationEffects {
           map((user) => {
             if (user) {
               const returnUrl =
-                this.route.snapshot.queryParams['returnUrl'] || '/'
+                this.route.snapshot.queryParams['returnUrl'] || '/dashboards/sales'
               this.router.navigateByUrl(returnUrl)
             }
             return loginSuccess({ user })
@@ -45,16 +45,12 @@ export class AuthenticationEffects {
   logout$ = createEffect(() =>
     this.actions$.pipe(
       ofType(logout),
-      exhaustMap(() => {
-        this.authService.logout(); // borra cookie
-        return of(logoutSuccess()).pipe(
-          map(() => {
-            this.router.navigate(['/auth/login']);
-            return logoutSuccess();
-          })
-        );
+      tap(() => {
+        this.authService.logout(); // Limpia la sesión
+        this.router.navigate(['/auth/login']); // Redirige
       })
-    )
+    ),
+    { dispatch: false } // No emite ninguna acción
   );
 
 
