@@ -31,6 +31,7 @@ export const AUTH_ROUTES: Route[] = [
     component: RecoverPassComponent,
     data: { title: 'Recover Password' }
   },
+
   {
     path: 'create-password',
     component: CreatePassComponent,

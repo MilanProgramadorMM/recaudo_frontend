@@ -17,8 +17,6 @@ export interface PersonRegisterDto {
     gender: number;
     occupation?: string;
     description?: string;
-    user_create?: string;
-    user_edit?: string;
 }
 
 export interface DefaultResponseDto<T> {
@@ -45,6 +43,15 @@ export class PersonService {
         return this.http.get<DefaultResponseDto<PersonRegisterDto[]>>(`${baseUrl}person/get-all`, { headers });
     }
 
+    getPersonById(personId: number): Observable<DefaultResponseDto<PersonRegisterDto>> {
+        const token = this.cookieService.get('_OSEN_AUTH_SESSION_KEY_');
+        const headers = new HttpHeaders({
+            Authorization: `Bearer ${token}`
+        });
+
+        return this.http.get<DefaultResponseDto<PersonRegisterDto>>(`${baseUrl}person/get/${personId}`, { headers });
+    }
+
     registerPerson(data: PersonRegisterDto): Observable<DefaultResponseDto<PersonRegisterDto>> {
         const token = this.cookieService.get('_OSEN_AUTH_SESSION_KEY_');
         const headers = new HttpHeaders({
@@ -61,13 +68,13 @@ export class PersonService {
         return this.http.put<DefaultResponseDto<PersonRegisterDto>>(`${baseUrl}person/update`, data, { headers });
     }
 
-    deletePerson(id: number, userDelete: string): Observable<DefaultResponseDto<string>> {
+    deletePerson(id: number): Observable<DefaultResponseDto<string>> {
         const token = this.cookieService.get('_OSEN_AUTH_SESSION_KEY_');
         const headers = new HttpHeaders({
             Authorization: `Bearer ${token}`
         });
         return this.http.put<DefaultResponseDto<string>>(
-            `${baseUrl}person/delete/${id}?userDelete=${userDelete}`,
+            `${baseUrl}person/delete/${id}`,
             null, 
             { headers }
         );

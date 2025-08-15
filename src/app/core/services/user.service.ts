@@ -13,6 +13,11 @@ export interface UserDto {
     userCreate?: string;
     createdAt?: string;
 }
+export interface UserRegisterDto {
+    username: string;
+    password: string;
+    rolId: number;
+}
 
 export interface RoleDto {
     id: number;
@@ -66,16 +71,22 @@ export class UserService {
             .pipe(map(res => res.data));
     }
 
-    updateUserPermission(id: number, allow: boolean): Observable<any> {
+    updateUserPermission(body: {
+        userId: number,
+        actionId: number,
+        moduleId: number,
+        permiso: boolean
+    }): Observable<any> {
         const token = this.cookieService.get('_OSEN_AUTH_SESSION_KEY_');
         const headers = new HttpHeaders({
             Authorization: `Bearer ${token}`
         });
 
-        return this.http.put(`${baseUrl}user/permissions/update/${id}`, allow, {
+        return this.http.put(`${baseUrl}user/permissions/upsert`, body, {
             headers
         });
     }
+
 
     getUserById(userId: number): Observable<DefaultResponseDto<UserDto>> {
         const token = this.cookieService.get('_OSEN_AUTH_SESSION_KEY_');
@@ -97,6 +108,37 @@ export class UserService {
         const body = { userId, roleId };
 
         return this.http.put(`${baseUrl}rol/assign-role`, body, { headers });
+    }
+
+    updateUserRoles(userId: number, roleIds: number[]) {
+        const token = this.cookieService.get('_OSEN_AUTH_SESSION_KEY_');
+        const headers = new HttpHeaders({
+            Authorization: `Bearer ${token}`,
+            'Content-Type': 'application/json'
+        });
+
+        const body = { roleIds }; // coincide con UserRoleUpdateDto.roleIds
+        return this.http.put(`${baseUrl}rol/${userId}/assign-role`, body, { headers });
+    }
+
+    createUser(user: { username: string; password: string; roles: number[] }) {
+        const token = this.cookieService.get('_OSEN_AUTH_SESSION_KEY_');
+        const headers = new HttpHeaders({
+            Authorization: `Bearer ${token}`,
+            'Content-Type': 'application/json'
+        });
+
+        return this.http.post(`${baseUrl}user/register`, user, { headers });
+    }
+
+    updateLoggedUserPassword(newPassword: string) {
+        const token = this.cookieService.get('_OSEN_AUTH_SESSION_KEY_');
+        const headers = new HttpHeaders({
+            Authorization: `Bearer ${token}`,
+            'Content-Type': 'application/json'
+        });
+
+        return this.http.post(`${baseUrl}user/update-password`, { newPassword }, { headers });
     }
 
 

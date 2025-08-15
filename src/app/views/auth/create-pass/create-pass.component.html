@@ -1,28 +1,39 @@
+<div class="container d-flex align-items-center justify-content-center">
+  <!--style="background-color: #f8f9fa;"-->
 
-  <h3 class="fw-semibold mb-2">Create New Password</h3>
-
-  <p class="text-muted mb-2">Please create your new password.</p>
-  <p class="mb-4">Need password suggestion ? <a href="javascript: void(0);"
-      class="link-dark fw-semibold text-decoration-underline">Suggestion</a></p>
-
-  <third-party-login />
-
-  <p class="fs-13 fw-semibold">Or</p>
-
-  <form class="text-start mb-3">
-    <div class="mb-3">
-      <label class="form-label" for="new-password">Create New Password <small class="text-primary ms-1">Must be at least
-          8 characters</small></label>
-      <input type="password" id="new-password" name="new-password" class="form-control" placeholder="New Password">
-    </div>
-    <div class="mb-3">
-      <label class="form-label" for="re-password">Reenter New Password</label>
-      <input type="password" id="re-password" name="re-password" class="form-control" placeholder="Reenter Password">
-    </div>
-    <div class="mb-2 d-grid">
-      <button class="btn btn-primary" type="button">Create New Password</button>
+  <div class="card p-4 shadow" style="max-width: 700px; width: 500px;">
+    <div class="text-center mb-4">
+      <img src="assets/images/Movil.png" alt="Logo" height="100" class="mb-2">
+      <h3 class="fw-semibold mb-2">Crear nueva contraseña</h3>
+      <p class="text-muted mb-1">Por favor crea tu nueva contraseña.</p>
     </div>
 
-  </form>
+    <form class="text-start" (ngSubmit)="changePassword()">
+      <div class="mb-3">
+        <label class="form-label" for="new-password">
+          Crear nueva contraseña
+          <small class="text-primary ms-1">Debe tener al menos 8 caracteres</small>
+        </label>
+        <input type="password" id="new-password" class="form-control" [(ngModel)]="newPassword" name="newPassword"
+          placeholder="Nueva contraseña" required>
+      </div>
+      <div class="mb-3">
+        <label class="form-label" for="re-password">Reingresa la nueva contraseña</label>
+        <input type="password" id="re-password" class="form-control" [(ngModel)]="confirmPassword"
+          name="confirmPassword" placeholder="Reingresa la contraseña" required>
+      </div>
 
-  <p class="text-danger fs-14 mb-4">Back To <a  routerLink="/auth/login" class="fw-semibold text-dark ms-1">Login !</a></p>
+      <div *ngIf="errorMessage" class="text-danger mb-2">{{ errorMessage }}</div>
+
+      <div class="mb-2 d-grid">
+        <button class="btn btn-primary" type="submit">Crear contraseña</button>
+      </div>
+    </form>
+
+
+    <!--<p class="text-center text-danger fs-14 mt-4 mb-0">
+      Volver a
+      <a routerLink="/auth/login" class="fw-semibold text-dark ms-1">¡Iniciar sesión!</a>
+    </p> -->
+  </div>
+</div>

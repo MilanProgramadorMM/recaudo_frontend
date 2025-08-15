@@ -18,7 +18,7 @@ export class SelectFormInputDirective implements OnInit {
     const choices = new Choices(this.eleRef.nativeElement, {
       ...this.options,
       placeholder: true,
-      placeholderValue: 'Escriba para buscar',
+      placeholderValue: 'Filtre por zona',
       allowHTML: true,
       shouldSort: false,
     })

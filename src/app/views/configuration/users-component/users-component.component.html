@@ -5,9 +5,9 @@
       <div class="card-header d-flex align-items-center justify-content-between border-bottom border-light">
         <h4 class="header-title">Usuarios</h4>
         <div>
-          <a href="javascript:void(0);" class="btn btn-secondary bg-gradient">
-            <i class="ti ti-file-import me-1"></i> Importar
-          </a>
+          <button (click)="openUserModal()" class="btn btn-success bg-gradient me-1">
+            <i class="ti ti-plus me-1"></i> Agregar
+          </button>
         </div>
 
         <!-- Modal 
@@ -65,7 +65,7 @@
               </td> -->
               <td>{{user.person_fullname}}</td>
               <td>{{user.username}}</td>
-              <td>{{user.rol?.rol}}</td>
+              <td>{{ user.rol && user.rol.length ? user.rol[0].rol : 'Sin rol' }}</td>
               <td>{{user.user_create}}</td>
 
               <td class="pe-3">

@@ -55,15 +55,20 @@ export class RoleService {
             .get<DefaultResponseDto<RolePermissionDto[]>>(`${baseUrl}role/permissions/role/${roleId}`, { headers })
             .pipe(map(res => res.data)); // <- Aquí extraes solo el array de permisos
     }
-    updateRolePermission(id: number, allow: boolean): Observable<any> {
+    
+    updateRolePermission(dto: {
+        rolId: number;
+        moduleId: number;
+        actionId: number;
+        permiso: boolean;
+    }): Observable<any> {
         const token = this.cookieService.get('_OSEN_AUTH_SESSION_KEY_');
         const headers = new HttpHeaders({
             Authorization: `Bearer ${token}`
         });
 
-        return this.http.put(`${baseUrl}role/permissions/update/${id}`, allow, {
-            headers
-        });
+        return this.http.put(`${baseUrl}role/permissions/update`, dto, { headers });
     }
+
 
 }

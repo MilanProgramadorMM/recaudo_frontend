@@ -51,27 +51,44 @@ export class UserConfigPermisionsComponent {
     const updatedValue = !permiso.permiso;
 
     if (this.type === 'USERS') {
-      this.userService.updateUserPermission(permiso.id, updatedValue).subscribe({
+      const body = {
+        userId: this.id,
+        actionId: permiso.actionId,
+        moduleId: permiso.moduleId,
+        permiso: updatedValue
+      };
+
+      this.userService.updateUserPermission(body).subscribe({
         next: () => {
           permiso.permiso = updatedValue;
         },
         error: (err) => {
           console.error('Error actualizando permiso de usuario', err);
-          // opcional: revertir el valor si falla
+          // opcional: revertir si falla
         }
       });
     } else if (this.type === 'ROLES') {
-      this.roleService.updateRolePermission(permiso.id, updatedValue).subscribe({
+
+
+      const body = {
+        rolId: this.id,
+        moduleId: permiso.moduleId,
+        actionId: permiso.actionId,
+        permiso: updatedValue
+      };
+
+      this.roleService.updateRolePermission(body).subscribe({
         next: () => {
           permiso.permiso = updatedValue;
         },
-        error: (err) => {
+          error: (err) => {
           console.error('Error actualizando permiso de rol', err);
-          // opcional: revertir el valor si falla
+          // opcional: revertir si falla
         }
       });
     }
   }
+
 
 
   close(): void {

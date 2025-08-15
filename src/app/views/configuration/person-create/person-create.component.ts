@@ -1,9 +1,10 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input, OnInit, TemplateRef, ViewChild } from '@angular/core';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule, FormsModule } from '@angular/forms';
-import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
+import { NgbActiveModal, NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { PersonRegisterDto, PersonService } from '@core/services/person.service';
 import { FileUploaderComponent } from '@components/file-uploader.component';
 import { NgIf, NgClass, NgForOf, NgFor } from '@angular/common';
+import { Glotypes, GlotypesService } from '@core/services/glotypes.service';
 
 @Component({
   selector: 'app-person-create',
@@ -23,28 +24,35 @@ import { NgIf, NgClass, NgForOf, NgFor } from '@angular/common';
 export class PersonCreateComponent implements OnInit {
   @Input() personData: PersonRegisterDto | null = null;
 
+  @ViewChild('successalert', { static: true }) successAlertTpl!: TemplateRef<any>;
+  @ViewChild('erroralert', { static: true }) errorAlertTpl!: TemplateRef<any>;
+
+
   form!: FormGroup;
   submitted = false;
   errorMessage = '';
+  lastErrorMessage = '';
 
-  documentTypeOpt = [
-    { value: 1, label: 'Cédula de Ciudadanía' },
-    { value: 2, label: 'Tarjeta de Identidad' },
-    { value: 3, label: 'Pasaporte' }
-  ];
-  genderOpt = [
-    { value: 1, label: 'Masculino' },
-    { value: 2, label: 'Femenino' },
-    { value: 3, label: 'Otro' }
-  ];
+
+  genderGlotypes: Glotypes[] = [];
+  documentTypes: Glotypes[] = [];
+
+
 
   constructor(
     public activeModal: NgbActiveModal,
     private personService: PersonService,
-    private fb: FormBuilder
+    private fb: FormBuilder,
+    private modalService: NgbModal,
+    private glotypesService: GlotypesService
+
   ) { }
 
   ngOnInit(): void {
+
+    this.loadDocumentTypes();
+    this.loadGender();
+
     this.form = this.fb.group({
       firstName: ['', Validators.required],
       secondName: ['', Validators.required],
@@ -111,8 +119,6 @@ export class PersonCreateComponent implements OnInit {
       gender: formValues.gender,
       occupation: formValues.occupation,
       description: formValues.description,
-      user_create: this.personData ? undefined : 'admin_user',
-      user_edit: this.personData ? 'admin_user' : undefined,
     };
 
     const action = this.personData?.id
@@ -120,10 +126,64 @@ export class PersonCreateComponent implements OnInit {
       : this.personService.registerPerson(person);
 
     action.subscribe({
-      next: (response) => this.activeModal.close(response.data),
+      next: (response) => {
+        // Mostrar modal de éxito
+        const modalRef = this.modalService.open(this.successAlertTpl, {
+          centered: true,
+          size: 'sm',
+          backdrop: 'static'
+        });
+
+        // Guardamos la respuesta en caso que quieras devolverla luego
+        modalRef.result.then(
+          () => {
+            // cuando el usuario hace click en "Continuar" (onSuccessContinue cierra el modal de alerta)
+            this.activeModal.close(response.data); // cierra modal principal devolviendo data
+          },
+          () => {
+            // dismissed -> también cerramos el modal principal
+            this.activeModal.close(response.data);
+          }
+        );
+      },
       error: (err) => {
         console.error(err);
         this.errorMessage = 'Error al guardar la persona.';
+        this.lastErrorMessage = err?.error?.message || err?.message || null;
+
+        // Mostrar modal de error (color rojo)
+        this.modalService.open(this.errorAlertTpl, {
+          centered: true,
+          size: 'sm'
+        });
+      }
+    });
+  }
+
+  onSuccessContinue(alertModalRef: any) {
+    // cerramos el modal de alerta y luego el modal principal en el flow next
+    alertModalRef.close();
+    // NOTA: el cierre definitivo del modal principal lo maneja modalRef.result.then en savePerson()
+  }
+
+  loadGender() {
+    this.glotypesService.getGlotypesByKey('TIPGEN').subscribe({
+      next: (data) => {
+        this.genderGlotypes = data;
+      },
+      error: (err) => {
+        console.error('Error cargando opciones:', err);
+      }
+    });
+  }
+
+  loadDocumentTypes() {
+    this.glotypesService.getGlotypesByKey('TIPDOC').subscribe({
+      next: (data) => {
+        this.documentTypes = data;
+      },
+      error: (err) => {
+        console.error('Error cargando tipos de documento:', err);
       }
     });
   }

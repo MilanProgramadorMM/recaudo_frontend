@@ -1,0 +1,70 @@
+<div class="modal-header">
+    <h5 class="modal-title">
+        Actualizar {{ getTypeLabel(contactInfo.typeCode) }}
+    </h5>
+    <button type="button" class="btn-close" aria-label="Close" (click)="activeModal.dismiss()"></button>
+</div>
+
+<div class="modal-body" *ngIf="form" [formGroup]="form">
+    <!-- Dirección -->
+    <div *ngIf="form.value.typeInfo === 'DIR'">
+        <div class="mb-2">
+            <label>Dirección</label>
+            <input type="text" formControlName="direccion" class="form-control" />
+        </div>
+
+        <div class="mb-2">
+            <label>País</label>
+            <select formControlName="pais" class="form-control">
+                <option value="">Seleccione</option>
+                <option *ngFor="let p of paises" [value]="p.id">{{ p.label }}</option>
+            </select>
+        </div>
+
+        <div class="mb-2">
+            <label>Departamento</label>
+            <select formControlName="departamento" class="form-control">
+                <option value="">Seleccione</option>
+                <option *ngFor="let d of departamentos" [value]="d.id">{{ d.label }}</option>
+            </select>
+        </div>
+
+        <div class="mb-2">
+            <label>Ciudad / Municipio</label>
+            <select formControlName="ciudad" class="form-control">
+                <option value="">Seleccione</option>
+                <option *ngFor="let c of ciudades" [value]="c.id">{{ c.label }}</option>
+            </select>
+        </div>
+
+        <div class="mb-2">
+            <label>Barrio</label>
+            <select formControlName="barrio" class="form-control">
+                <option value="">Seleccione</option>
+                <option *ngFor="let b of barrios" [value]="b.id">{{ b.label }}</option>
+            </select>
+        </div>
+
+        <div class="mb-2">
+            <label>Descripción</label>
+            <input type="text" formControlName="descripcion" class="form-control" />
+        </div>
+    </div>
+
+    <!-- Teléfono o Celular -->
+    <div *ngIf="form.value.typeInfo === 'TEL' || form.value.typeInfo === 'CEL'">
+        <label>{{ form.value.typeInfo === 'TEL' ? 'Teléfono' : 'Celular' }}</label>
+        <input type="tel" formControlName="telefono" class="form-control" />
+    </div>
+
+    <!-- Correo -->
+    <div *ngIf="form.value.typeInfo === 'COR'">
+        <label>Correo</label>
+        <input type="email" formControlName="correo" class="form-control" />
+    </div>
+</div>
+
+<div class="modal-footer">
+    <button type="button" class="btn btn-secondary" (click)="activeModal.dismiss()">Cancelar</button>
+    <button type="button" class="btn btn-primary" (click)="onSubmit()">Guardar</button>
+</div>

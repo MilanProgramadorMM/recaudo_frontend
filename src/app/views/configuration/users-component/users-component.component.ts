@@ -4,10 +4,10 @@ import { PageTitleComponent } from '@components/page-title.component';
 import { NgbModalModule, NgbPaginationModule } from '@ng-bootstrap/ng-bootstrap';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { FormsModule } from '@angular/forms';
-import { UserDto, UserService } from '@core/services/user.service';
+import { UserDto, UserRegisterDto, UserService } from '@core/services/user.service';
 import { UserConfigPermisionsComponent } from '../user-config-permisions/user-config-permisions.component';
-import { MaestroRolesComponent } from '../maestro-roles/maestro-roles.component';
 import { UserAssignRolComponent } from '../user-assign-rol/user-assign-rol.component';
+import { UserCreateComponent } from '../user-create/user-create.component';
 
 
 @Component({
@@ -24,9 +24,11 @@ import { UserAssignRolComponent } from '../user-assign-rol/user-assign-rol.compo
 })
 export class UsersComponentComponent {
   users: UserDto[] = [];
+  //userCreate: UserRegisterDto = [];
   filteredUsers: UserDto[] = [];
   searchTerm: string = '';
   page = 1;
+  loadingUpdateRoles = false; 
 
 
   showModal = false;
@@ -40,11 +42,30 @@ export class UsersComponentComponent {
   }
 
 
-  constructor(private modalService: NgbModal, private userService: UserService) { }
+  constructor(
+    private modalService: NgbModal,
+    private userService: UserService  ) { }
 
   ngOnInit(): void {
     this.fetchUsers();
   }
+
+  //LLAMADA AL MODAL PARA CREAR UN USUARIO
+  openUserModal(user?: UserRegisterDto) {
+      const modalRef = this.modalService.open(UserCreateComponent, {
+        centered: true,
+        backdrop: 'static',
+        windowClass: 'custom-modal-size modal-xl'
+      });
+  
+      if (user) {
+        modalRef.componentInstance.userData = user;
+      }
+  
+      modalRef.result.then(() => {
+        this.fetchUsers(); // Se refresca lista después de editar
+      }).catch(() => { });
+    }
 
   fetchUsers() {
     this.userService.getAllUsers().subscribe({
@@ -71,10 +92,11 @@ export class UsersComponentComponent {
   }
 
   openPermissionsModal(user: any): void {
-    if (!user.rol || !user.rol.id) {
+    /*if (!user.rol || !user.rol.id) {
       console.error('Este usuario no tiene un rol asignado.');
       return;
     }
+      */
     const modalRef = this.modalService.open(UserConfigPermisionsComponent, {
       size: 'xl',          // ancho extra grande
       centered: true,      // centrado vertical
@@ -87,20 +109,41 @@ export class UsersComponentComponent {
   }
 
   openRoleUpdateModal(user: any): void {
-    if (!user.rol || !user.rol.id) {
-      console.error('Este usuario no tiene un rol asignado.');
-      return;
+  const modalRef = this.modalService.open(UserAssignRolComponent, {
+    size: 'xl',
+    centered: true,
+    scrollable: true
+  });
+  modalRef.componentInstance.userId = user.id;
+
+  // Usar promise result para capturar el payload del close()
+  modalRef.result.then((result: any) => {
+    console.log('[UsersComponent] modal closed with result:', result);
+
+    if (result?.success) {
+      const roleIds: number[] = result.selectedRoleIds ?? [];
+      console.log('[UsersComponent] calling updateUserRoles', user.id, roleIds);
+
+      this.loadingUpdateRoles = true;
+      this.userService.updateUserRoles(user.id, roleIds).subscribe({
+        next: (res) => {
+          this.loadingUpdateRoles = false;
+          console.log('[UsersComponent] updateUserRoles success', res);
+          this.fetchUsers();
+        },
+        error: (err) => {
+          this.loadingUpdateRoles = false;
+          console.error('[UsersComponent] updateUserRoles error', err);
+        }
+      });
+    } else {
+      console.log('[UsersComponent] modal closed without success flag');
     }
-    const modalRef = this.modalService.open(UserAssignRolComponent, {
-      size: 'xl',
-      centered: true,
-      scrollable: true
-    });
-    modalRef.componentInstance.userId = user.id;
-    modalRef.closed.subscribe(() => {
-      this.fetchUsers(); // vuelve a cargar la lista de usuarios
-    });
-  }
+  }).catch((reason) => {
+    // dismiss (esc, backdrop click o activeModal.dismiss())
+    console.log('[UsersComponent] modal dismissed:', reason);
+  });
+}
 
 
 }

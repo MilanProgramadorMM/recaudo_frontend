@@ -5,7 +5,6 @@ import { RoleService } from '@core/services/role.service';
 import { CommonModule } from '@angular/common';
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 
-
 @Component({
   selector: 'app-user-assign-rol',
   templateUrl: './user-assign-rol.component.html',
@@ -16,9 +15,9 @@ export class UserAssignRolComponent implements OnInit {
   @Input() userId!: number;
 
   roles: RoleDto[] = [];
-  selectedRoleId: number | null = null;
+  // Array local con los ids seleccionados visualmente
+  selectedRoleIds: number[] = [];
   nombreUsuario: string = '';
-
 
   constructor(
     private roleService: RoleService,
@@ -41,37 +40,47 @@ export class UserAssignRolComponent implements OnInit {
   }
 
   fetchUserRole() {
-  this.userService.getUserById(this.userId).subscribe({
-    next: (response) => {
-      const user = response.data;
-      this.selectedRoleId = user?.rol?.id || null;
-      this.nombreUsuario = `${user.person_fullname}`; // Ajusta si tu modelo difiere
-    },
-    error: (error) => console.error('Error al obtener rol actual', error)
-  });
-}
+    this.userService.getUserById(this.userId).subscribe({
+      next: (response) => {
+        const user = response.data;
+        if (Array.isArray(user?.rol)) {
+          this.selectedRoleIds = user.rol.map((r: any) => r.id);
+        } else if (user?.rol) {
+          this.selectedRoleIds = [user.rol.id];
+        } else {
+          this.selectedRoleIds = [];
+        }
 
+        this.nombreUsuario = `${user.person_fullname}`;
 
-  onToggleRole(roleId: number) {
-    if (this.selectedRoleId === roleId) return;
-
-    // 🔥 Cambia el rol seleccionado inmediatamente
-    this.selectedRoleId = roleId;
-
-    this.userService.assignUserRole(this.userId, roleId).subscribe({
-      next: () => {
-        // Ya se actualizó visualmente
       },
-      error: (err) => {
-        console.error('Error al asignar rol', err);
-        // ⚠️ Podrías revertir visualmente si falla
-        this.fetchUserRole(); // Opcional: restaurar estado anterior
+      error: (error) => {
+        console.error('Error al obtener rol actual', error);
+        this.selectedRoleIds = [];
       }
     });
+  }
+
+  isSelected(roleId: number): boolean {
+    return this.selectedRoleIds.includes(roleId);
+  }
+
+  onToggleRole(roleId: number, checked: boolean) {
+    if (checked) {
+      if (!this.selectedRoleIds.includes(roleId)) {
+        this.selectedRoleIds.push(roleId);
+      }
+    } else {
+      this.selectedRoleIds = this.selectedRoleIds.filter(id => id !== roleId);
+    }
+  }
+
+  save() {
+    console.log('[UserAssignRol] save() - selectedRoleIds =', this.selectedRoleIds);
+    this.activeModal.close({ success: true, selectedRoleIds: this.selectedRoleIds });
   }
 
   close(): void {
     this.activeModal.dismiss();
   }
-
 }

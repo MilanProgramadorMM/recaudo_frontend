@@ -2,22 +2,22 @@ import { changetheme } from '@/store/layout/layout-action';
 import type { LayoutState } from '@/store/layout/layout-reducers';
 import { getLayoutColor } from '@/store/layout/layout-selector';
 import { Component, CUSTOM_ELEMENTS_SCHEMA, EventEmitter, inject, Output, type OnInit, type TemplateRef } from '@angular/core';
-import { Router, RouterLink } from '@angular/router';
+import { Router, RouterLink  } from '@angular/router';
 import { NgbDropdownModule, NgbModal, NgbModalModule, NgbOffcanvasModule } from '@ng-bootstrap/ng-bootstrap';
 import { Store } from '@ngrx/store';
 import { appData, languages } from './data';
 import { SimplebarAngularModule } from 'simplebar-angular';
 import { splitArray } from '@core/helper/utils';
-import { LogoBoxComponent } from "@components/logo-box.component";
 import { currency } from '@common/constants';
 import { logout } from '@/store/authentication/authentication.actions';
 import { User } from '@core/helper/fake-backend';
 import { AuthenticationService } from '@core/services/auth.service';
+import { CreatePassComponent } from '@views/auth/create-pass/create-pass.component';
 
 @Component({
   selector: 'app-topbar',
   standalone: true,
-  imports: [NgbOffcanvasModule, NgbDropdownModule, SimplebarAngularModule, NgbModalModule, RouterLink, LogoBoxComponent],
+  imports: [NgbOffcanvasModule, NgbDropdownModule, SimplebarAngularModule, NgbModalModule],
   templateUrl: './topbar.component.html',
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
   styles: ``
@@ -82,6 +82,10 @@ export class TopbarComponent implements OnInit {
     //this.router.navigate(['/auth/login']); // Redirige a la página de inicio de sesión
   }
 
+  openChangePasswordModal() {
+    const modalRef = this.modalService.open(CreatePassComponent);
+    modalRef.componentInstance.user = this.user; // Pasa el usuario al componente del modal
+  }
 
 
 }

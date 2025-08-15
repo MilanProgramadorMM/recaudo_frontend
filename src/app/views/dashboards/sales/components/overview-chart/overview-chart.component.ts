@@ -18,26 +18,21 @@ export class OverviewChartComponent {
   overViewChartOpts: Partial<ChartOptions> = {
     series: [
       {
-        name: "Total Income",
+        name: "Recaudo",
         type: "bar",
         data: [
           89.25, 98.58, 68.74, 108.87, 77.54, 84.03, 51.24, 28.57, 92.57, 42.36, 88.51, 36.57,
         ],
       }, {
-        name: "Total Expenses",
+        name: "No pago",
         type: "bar",
         data: [
           22.25, 24.58, 36.74, 22.87, 19.54, 25.03, 29.24, 10.57, 24.57, 35.36, 20.51, 17.57,
         ],
       }, {
-        name: "Investments",
+        name: "Debido a cobrar",
         type: "area",
         data: [34, 65, 46, 68, 49, 61, 42, 44, 78, 52, 63, 67],
-      },
-      {
-        name: "Savings",
-        type: "line",
-        data: [8, 12, 7, 17, 21, 11, 5, 9, 7, 29, 12, 35],
       },
     ],
     chart: {
@@ -147,7 +142,7 @@ export class OverviewChartComponent {
         borderRadius: 3,
       },
     },
-    colors: ["#6ac75a", "#465dff", "#783bff", "#f7577e"],
+    colors: ["#6ac75a", "#465dff", "#f8023fd8"],
     tooltip: {
       shared: true,
       y: [{

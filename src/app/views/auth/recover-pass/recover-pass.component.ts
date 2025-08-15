@@ -6,7 +6,6 @@ import { ThirdPartyLoginComponent } from "../../../components/third-party-login.
 @Component({
   selector: 'recover-pass',
   standalone: true,
-  imports: [ RouterLink, ThirdPartyLoginComponent],
   templateUrl: './recover-pass.component.html',
   styles: ``
 })

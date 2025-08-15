@@ -8,8 +8,8 @@ import { RouterLink } from "@angular/router";
   imports: [RouterLink, CommonModule],
   template: `
    <a routerLink="/" class="auth-brand mb-3">
-    <img src="assets/images/logo-dark.png" alt="dark logo" height="24" class="logo-dark">
-    <img src="assets/images/logo.png" alt="logo light" height="24" class="logo-light">
+    <img src="assets/images/Movil.png" alt="dark logo" height="100" class="logo-dark">
+    <img src="assets/images/Movil.png" alt="logo light" height="24" class="logo-light">
   </a>`,
 })
 

@@ -1,4 +1,4 @@
-<page-title title="Personas" subtitle="Configuracion" />
+<page-title title="Personas" subtitle="Maestros" />
 <div class="row">
   <div class="col-12">
     <div class="card">
@@ -12,24 +12,6 @@
             <i class="ti ti-file-import me-1"></i> Importar
           </a>
         </div>
-
-        <!-- Modal 
-        <div class="modal fade show d-block" tabindex="-1" role="dialog" *ngIf="showModal"
-          style="background: rgba(0, 0, 0, 0.5);">
-          <div class="modal-dialog modal-xl" role="document">
-            <div class="modal-content">
-              <div class="modal-header">
-                <h5 class="modal-title">Agregar Persona</h5>
-                <button type="button" class="btn-close" (click)="closeModal()"></button>
-              </div>
-              <div class="modal-body">
-                <app-person-create></app-person-create>
-                <ng-container *ngComponentOutlet="PersonCreateComponent"></ng-container>
-              </div>
-            </div>
-          </div>
-        </div>
-        -->
       </div>
       <div class="mb-3 row align-items-center">
         <label for="person-search" class="col-sm-auto col-form-label">Buscar persona:</label>
@@ -44,10 +26,6 @@
         <table class="table table-nowrap mb-0">
           <thead class="bg-light-subtle">
             <tr>
-              <!--<th class="ps-3" style="width: 50px;">
-                <input type="checkbox" class="form-check-input" id="customCheck1">
-              </th>
-              -->
               <th>Identificaci&oacute;n</th>
               <th>Primer Apellido</th>
               <th>Segundo Apellido</th>
@@ -61,13 +39,6 @@
           <tbody>
             @for (person of filteredPersons; track $index) {
             <tr>
-              <!-- <td class="ps-3">
-                <input type="checkbox" class="form-check-input" id="customCheck2">
-              </td>
-              <td>
-                <img [src]="persons.image" class="avatar-sm rounded-circle me-2" alt="...">
-                <a routerLink="/hospital/doctor/details" class="text-dark fw-medium">{{persons.username}}</a>
-              </td> -->
               <td>{{person.document}}</td>
               <td>{{person.last_name}}</td>
               <td>{{person.maternal_lastname}}</td>

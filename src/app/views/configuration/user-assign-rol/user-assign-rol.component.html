@@ -1,6 +1,6 @@
 <div class="modal-header">
     <h5 class="modal-title">
-        Asignar Rol al Usuario: {{ nombreUsuario |uppercase}}
+        Asignar Rol al Usuario: {{ nombreUsuario | uppercase }}
     </h5>
     <button type="button" class="btn-close" (click)="close()" aria-label="Close"></button>
 </div>
@@ -22,17 +22,23 @@
                             <td>
                                 <div
                                     class="form-check form-switch d-flex justify-content-center align-items-center gap-2">
-                                    <input class="form-check-input" type="radio" name="userRole" [value]="role.id"
-                                        [checked]="selectedRoleId === role.id" (change)="onToggleRole(role.id)" />
-                                    <label class="form-check-label">
-                                        {{ selectedRoleId === role.id ? 'Asignado' : 'Sin asignar' }}
+                                    <input class="form-check-input" type="checkbox" role="switch"
+                                        [id]="'roleSwitch' + role.id" [checked]="isSelected(role.id)"
+                                        (change)="onToggleRole(role.id, $event.target.checked)"
+                                        aria-checked="{{ isSelected(role.id) }}"
+                                        aria-label="Asignar rol {{ role.rol }}" />
+                                    <label class="form-check-label" [for]="'roleSwitch' + role.id">
+                                        {{ isSelected(role.id) ? 'Asignado' : 'Sin asignar' }}
                                     </label>
                                 </div>
                             </td>
                         </tr>
-
                     </tbody>
                 </table>
+            </div>
+            <div class="card-footer d-flex justify-content-end gap-2">
+                <button class="btn btn-danger" (click)="close()">Cerrar</button>
+                <button class="btn btn-primary" type="button" (click)="save()">Guardar</button>
             </div>
         </div>
     </div>

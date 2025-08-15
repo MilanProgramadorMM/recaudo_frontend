@@ -6,19 +6,25 @@
 
 <!-- <p class="fs-13 fw-semibold">Or Login With Email</p> -->
 
-<p *ngIf="errorMessage.length>0" class="fs-14 text-danger">{{ errorMessage }}</p>
+<!--<p *ngIf="errorMessage.length>0" class="fs-14 text-danger">{{ errorMessage }}</p>-->
+
+<div *ngFor="let alert of alertData" class="alert alert-{{alert.variant}} alert-dismissible fade show" role="alert">
+  <i class="bi bi-{{alert.icon}} me-2"></i>
+  {{alert.message}}
+  <button type="button" class="btn-close" (click)="alertData = []" aria-label="Close"></button>
+</div>
 
 <form [formGroup]="signInForm" class="text-start mb-3">
   <div class="mb-3">
     <label class="form-label" for="example-username">Usuario</label>
     <input formControlName="username" type="text" id="example-username" class="form-control"
-           placeholder="Ingresa tu usuario" [ngClass]="{ 'is-invalid': formValues?.['username'].errors }">
+      placeholder="Ingresa tu usuario" [ngClass]="{ 'is-invalid': formValues?.['username'].errors }">
   </div>
 
   <div class="mb-3">
     <label class="form-label" for="example-password">Contraseña</label>
     <input type="password" formControlName="password" id="example-password" class="form-control"
-           placeholder="Ingresa tu contraseña" [ngClass]="{ 'is-invalid': formValues?.['password'].errors }">
+      placeholder="Ingresa tu contraseña" [ngClass]="{ 'is-invalid': formValues?.['password'].errors }">
   </div>
 
   <div class="d-flex justify-content-between mb-3">
@@ -31,8 +37,15 @@
   </div>
 
   <div class="d-grid">
-    <button class="btn btn-primary" [disabled]="!signInForm.valid" type="button" (click)="login()">Ingresar</button>
+    <button class="btn btn-primary" type="button" [disabled]="!signInForm.valid || loading" (click)="login()">
+      <ng-container *ngIf="!loading; else loadingTpl">Ingresar</ng-container>
+      <ng-template #loadingTpl>
+        <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+        <span class="visually-hidden">Loading...</span>
+      </ng-template>
+    </button>
   </div>
+
 </form>
 
 <!-- <p class="text-danger fs-14 mb-4">Don't have an account? <a routerLink="/auth/register"

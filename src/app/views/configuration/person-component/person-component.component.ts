@@ -9,6 +9,7 @@ import Swal from 'sweetalert2';
 import { FormsModule } from '@angular/forms';
 import { PersonRegisterDto, PersonService } from '@core/services/person.service';
 import { PatientDetailsComponent } from '@views/hospital/patient-details/patient-details.component';
+import { PersonDatilsComponent } from '../person-datils/person-datils.component';
 
 @Component({
   selector: 'app-person-component',
@@ -52,16 +53,12 @@ export class PersonComponentComponent {
     this.fetchPersons();
   }
 
-  /*openUserModal(content: any) {
-    this.modalService.open(content, { centered: true });
-  }
-    */
 
   fetchPersons() {
     this.personService.getAllPersons().subscribe({
       next: (response) => {
         this.persons = response.data;
-        this.filteredPersons = [...this.persons]; // inicializa filtrado
+        this.filteredPersons = [...this.persons]; 
       },
       error: (error) => {
         console.error('Error al obtener personas', error);
@@ -93,7 +90,7 @@ export class PersonComponentComponent {
   }
 
   openInfoUserModal(person?: PersonRegisterDto) {
-    const modalRef = this.modalService.open(PatientDetailsComponent, {
+    const modalRef = this.modalService.open(PersonDatilsComponent, {
       centered: true,
       backdrop: 'static',
       windowClass: 'custom-modal-size modal-xl'
@@ -109,7 +106,6 @@ export class PersonComponentComponent {
   }
 
   onDelete(id: number): void {
-    const userDelete = 'admin'; // Aquí debe ser el user del token o usuario logueado
     Swal.fire({
       title: '¿Estás seguro?',
       text: 'Esta acción inactivará a la persona y al usuario asociado.',
@@ -121,7 +117,7 @@ export class PersonComponentComponent {
       cancelButtonColor: '#3085d6'
     }).then((result) => {
       if (result.isConfirmed) {
-        this.personService.deletePerson(id, userDelete).subscribe({
+        this.personService.deletePerson(id).subscribe({
           next: (res) => {
             Swal.fire('¡Eliminado!', res.message, 'success');
             this.fetchPersons();

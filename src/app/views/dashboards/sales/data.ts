@@ -7,10 +7,10 @@ const productLogo5 = 'assets/images/products/logo/logo-5.svg'
 const productLogo6 = 'assets/images/products/logo/logo-6.svg'
 const productLogo8 = 'assets/images/products/logo/logo-8.svg'
 
-const product1 = 'assets/images/products/p-1.png';
-const product4 = 'assets/images/products/p-4.png';
+const product1 = 'assets/images/user.png';
+const product4 = 'assets/images/user.png';
 const product5 = 'assets/images/products/p-5.png';
-const product7 = 'assets/images/products/p-7.png';
+const product7 = 'assets/images/user.png';
 const product6 = 'assets/images/products/p-6.png';
 
 
@@ -18,8 +18,8 @@ export type StatType = {
   title: string
   icon: string
   count: string
-  change: number
-  variant: string
+  change?: number
+  variant?: string
 }
 
 export type OverViewChartType = {
@@ -110,30 +110,25 @@ export const brandListData: BrandListType[] = [
 
 export const statData: StatType[] = [
   {
-    title: 'Total Orders',
+    title: 'Debido a Cobrar',
     icon: 'solar:case-round-minimalistic-bold-duotone',
-    count: '687.3k',
-    change: 9.19,
-    variant: 'danger'
+    count: `${currency}90.24 USD`,
   },
   {
-    title: 'Total Returns',
+    title: 'Recaudo',
     icon: 'solar:bill-list-bold-duotone',
-    count: '9.62k',
-    change: 26.87,
-    variant: 'success'
+    count: `${currency}98.24 USD`,
   },
   {
-    title: 'Avg. Sales Earnings',
+    title: 'No pago',
     icon: 'solar:wallet-money-bold-duotone',
     count: `${currency}98.24 USD`,
-    change: 3.51,
     variant: 'success'
   },
   {
-    title: 'Number of Visits',
+    title: 'Total cartera',
     icon: 'solar:eye-bold-duotone',
-    count: '87.94M',
+    count: `${currency}98.24 USD`,
     change: 1.05,
     variant: 'danger'
   },
@@ -141,84 +136,59 @@ export const statData: StatType[] = [
 
 export const overViewChartData: OverViewChartType[] = [
   {
-    title: 'Revenue',
+    title: 'Recaudo',
     count: 29.5,
     icon: 'ti-square-rounded-arrow-down',
     variant: 'success'
   },
   {
-    title: 'Expenses',
+    title: 'Debido a cobrar',
     count: 15.07,
     icon: 'ti-square-rounded-arrow-up',
     variant: 'danger'
   },
   {
-    title: 'Investment',
-    count: 3.6,
-    icon: 'ti-chart-infographic',
-  },
-  {
-    title: 'Savings',
+    title: 'No pago',
     count: 6.9,
-    icon: 'ti-pig',
+    icon: 'ti-square-rounded-arrow-up',
+    variant: 'info'
+
   },
 ]
 
 export const productData: ProductType[] = [
   {
     id: '1',
-    name: '	ASOS High Waist Tshirt',
+    name: '	Cliente 1',
     image: product1,
     date: addOrSubtractDaysFromDate(50),
     price: 79.49,
     quantity: 82,
     amount: '6,518.18',
-    orderQuantity:1,
-    status:"Sold",
+    orderQuantity: 1,
+    status: "Sold",
   },
   {
     id: '2',
-    name: '	Marco Single Sofa',
+    name: '	Cliente 2',
     image: product7,
     date: addOrSubtractDaysFromDate(150),
     price: 128.50,
     quantity: 37,
     amount: '4,754.50',
-    orderQuantity:3,
-    status:"Sold",
+    orderQuantity: 3,
+    status: "Sold",
   },
   {
     id: '3',
-    name: 'Smart Headphone',
+    name: 'Cliente 3',
     image: product4,
     date: addOrSubtractDaysFromDate(180),
     price: 39.99,
     quantity: 64,
     amount: '2,559.36',
-    orderQuantity:1,
-    status:"Return",
-  },
-  {
-    id: '4',
-    name: 'Lightweight Jacket',
-    image: product5,
-    date: addOrSubtractDaysFromDate(250),
-    price: 20.00,
-    quantity: 184,
-    amount: '3,680.00',
-    orderQuantity:4,
-    status:"Sold",
-  },
-  {
-    id: '5',
-    name: 'Marco Shoes',
-    image: product6,
-    date: addOrSubtractDaysFromDate(350),
-    price: 28.49,
-    quantity: 69,
-    amount: '1,965.81',
-    orderQuantity:1,
-    status:"Sold",
+    orderQuantity: 1,
+    status: "Return",
   },
 ]
 
