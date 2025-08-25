@@ -31,7 +31,6 @@ export class LoginComponent {
 
 
   constructor(
-    // ...
     private actions$: Actions
   ) { }
 

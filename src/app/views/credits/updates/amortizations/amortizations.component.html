@@ -1,0 +1,51 @@
+<page-title title="Amortizaciones" subtitle="Actualizaciones" />
+
+<div class="row">
+  <div class="col-12">
+    <div class="card">
+      <div
+        class="card-header d-flex align-items-center justify-content-between border-bottom border-light"
+      >
+        <h4 class="header-title">Amortizaciones</h4>
+      </div>
+
+      <div class="mb-3 row align-items-center ms-3">
+        <label for="period-search" class="col-sm-auto col-form-label"
+          >Buscar:</label
+        >
+        <div class="col-6">
+          <input
+            id="period-search"
+            class="form-control"
+            type="text"
+            placeholder="Por nombre de amortizacion..."
+            [(ngModel)]="searchTerm"
+            (ngModelChange)="applyFilter()"
+          />
+        </div>
+      </div>
+
+      <div class="table-responsive">
+        <table class="table table-hover table-nowrap mb-0">
+          <thead class="table-dark bg-light-subtle">
+            <tr>
+              <th>Nombre</th>
+              <th>Procedimiento</th>
+              <th>Estado</th>
+            </tr>
+          </thead>
+
+          <tbody>
+            @for (p of filteredAmortizations; track $index) {
+            <tr>
+              <td>{{ p.name }}</td>
+              <td>{{ p.procedure}}</td>
+              <td>{{ p.status  }}</td>
+            </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>

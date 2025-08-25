@@ -5,6 +5,7 @@ import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { RoleDto, RoleService } from '@core/services/role.service';
 import { UserConfigPermisionsComponent } from '../user-config-permisions/user-config-permisions.component';
+import { CreateRoleComponent } from './create-rol/create-role/create-role.component';
 
 @Component({
   selector: 'app-maestro-roles',
@@ -70,6 +71,20 @@ export class MaestroRolesComponent {
     });
     modalRef.componentInstance.id = roleId;
     modalRef.componentInstance.type = 'ROLES';
-
   }
+
+  openRolModal() {
+    const modalRef = this.modalService.open(CreateRoleComponent, {
+      centered: true,
+      backdrop: 'static',
+      size: 'lg'
+    });
+
+    modalRef.result.then((res) => {
+      if (res) {
+        this.fetchRoles();
+      }
+    }).catch(() => { });
+  }
+
 }

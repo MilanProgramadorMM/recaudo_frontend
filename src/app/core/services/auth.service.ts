@@ -6,6 +6,7 @@ import { CookieService } from 'ngx-cookie-service'
 import type { Observable } from 'rxjs'
 import type { User } from '@core/helper/fake-backend'
 import { personData } from '@views/configuration/person-component/data'
+import baseUrl from './api';
 import { jwtDecode } from 'jwt-decode';
 
 
@@ -31,7 +32,7 @@ export class AuthenticationService {
   
 
   login(username: string, password: string): Observable<User> {
-    return this.http.post<any>(`http://localhost:8081/api/auth/login`, { username, password }).pipe(
+    return this.http.post<any>(`${baseUrl}auth/login`, { username, password }).pipe(
       map((response) => {
         const token = response.data.token;
         const user: User = {

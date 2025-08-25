@@ -131,15 +131,19 @@ export class UserService {
         return this.http.post(`${baseUrl}user/register`, user, { headers });
     }
 
-    updateLoggedUserPassword(newPassword: string) {
+    updateLoggedUserPassword(currentPassword: string, newPassword: string) {
         const token = this.cookieService.get('_OSEN_AUTH_SESSION_KEY_');
         const headers = new HttpHeaders({
             Authorization: `Bearer ${token}`,
             'Content-Type': 'application/json'
         });
 
-        return this.http.post(`${baseUrl}user/update-password`, { newPassword }, { headers });
+        return this.http.post(`${baseUrl}user/update-password`, {
+            currentPassword,
+            newPassword
+        }, { headers });
     }
+
 
 
 }

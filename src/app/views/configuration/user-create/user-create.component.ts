@@ -30,16 +30,15 @@ export class UserCreateComponent {
 
   @ViewChild('stepper') stepper!: NgStepperComponent
   @ViewChild('cdkSteppers') cdkSteppers!: CdkStepper
+  
   constructor(
     private formBuilder: FormBuilder,
     private cdr: ChangeDetectorRef,
     public activeModal: NgbActiveModal,
     private roleService: RoleService,
     private userService: UserService,
-
-
-
   ) { }
+
   ngOnInit(): void {
     this.fetchRoles();
 

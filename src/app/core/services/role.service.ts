@@ -10,6 +10,7 @@ export interface RoleDto {
     rol: string;
 }
 
+
 export interface RolePermissionDto {
     id: number;
     moduleId: number;
@@ -55,7 +56,7 @@ export class RoleService {
             .get<DefaultResponseDto<RolePermissionDto[]>>(`${baseUrl}role/permissions/role/${roleId}`, { headers })
             .pipe(map(res => res.data)); // <- Aquí extraes solo el array de permisos
     }
-    
+
     updateRolePermission(dto: {
         rolId: number;
         moduleId: number;
@@ -69,6 +70,16 @@ export class RoleService {
 
         return this.http.put(`${baseUrl}role/permissions/update`, dto, { headers });
     }
+
+    createRole(dto: { name: string; description: string }): Observable<any> {
+        const token = this.cookieService.get('_OSEN_AUTH_SESSION_KEY_');
+        const headers = new HttpHeaders({
+            Authorization: `Bearer ${token}`
+        });
+
+        return this.http.post(`${baseUrl}rol/create`, dto, { headers });
+    }
+
 
 
 }

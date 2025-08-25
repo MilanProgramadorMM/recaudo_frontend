@@ -12,7 +12,7 @@
           <cdk-step class="nav-justified mb-4">
             <ng-template cdkStepLabel>
               <li class="nav-item form-wizard-header" (click)="$event.preventDefault(); $event.stopPropagation()">
-                <span class="nav-link rounded-0 py-2">
+                <span class="nav-link rounded-0 py-2 bg-dark text-white">
                   <i class="bi bi-person-circle fs-18 align-middle me-1"></i>
                   <span class="d-none d-sm-inline">Datos del usuario</span>
                 </span>
@@ -21,19 +21,19 @@
 
             <div class="tab-pane" id="basictab1">
               <form [formGroup]="myForm" id="accountForm" method="post" action="#" class="form-horizontal">
-                <div class="row">
-                  <div class="col-12">
-                    <div class="row mb-3">
-                      <label class="col-md-3 col-form-label" for="userName">Usuario</label>
-                      <div class="col-md-9">
+                <div class="row d-flex justify-content-center">
+                  <div class="col-6">
+                    <div class="row mb-2">
+                      <label class="col-md-6 col-form-label" for="userName">Usuario</label>
+                      <div class="col-md-12">
                         <input formControlName="userName" [ngClass]="{
                               'is-invalid': submit && form['userName'].errors,
                             }" type="text" class="form-control" id="userName" name="userName" required>
                       </div>
                     </div>
-                    <div class="row mb-3">
-                      <label class="col-md-3 col-form-label" for="password">Contraseña</label>
-                      <div class="col-md-9">
+                    <div class="row mb-2">
+                      <label class="col-md-6 col-form-label" for="password">Contraseña</label>
+                      <div class="col-md-12">
                         <input formControlName="password" [ngClass]="{
         'is-invalid': submit && (form['password'].errors?.['required'] || form['repassword'].errors?.['mismatch'])
       }" type="password" id="password" name="password" class="form-control" />
@@ -51,9 +51,9 @@
                     </div>
 
 
-                    <div class="row mb-3">
-                      <label class="col-md-3 col-form-label" for="confirm">Confirmar contraseña</label>
-                      <div class="col-md-9">
+                    <div class="row mb-6">
+                      <label class="col-md-9 col-form-label" for="confirm">Confirmar contraseña</label>
+                      <div class="col-md-12">
                         <input formControlName="repassword" [ngClass]="{
         'is-invalid': submit && (form['repassword'].errors?.['required'] || form['repassword'].errors?.['mismatch'])
       }" type="password" id="confirm" name="confirm" class="form-control" />
@@ -84,7 +84,7 @@
           <cdk-step>
             <ng-template cdkStepLabel>
               <li class="nav-item form-wizard-header" (click)="$event.preventDefault(); $event.stopPropagation()">
-                <span class="nav-link rounded-0 py-2">
+                <span class="nav-link rounded-0 py-2 bg-dark text-white">
                   <i class="bi bi-emoji-smile fs-18 align-middle me-1"></i>
                   <span class="d-none d-sm-inline">Roles</span>
                 </span>
@@ -146,7 +146,7 @@
           <cdk-step>
             <ng-template cdkStepLabel>
               <li class="nav-item form-wizard-header" (click)="$event.preventDefault(); $event.stopPropagation()">
-                <span class="nav-link rounded-0 py-2">
+                <span class="nav-link rounded-0 py-2 bg-dark text-white">
                   <i class="bi bi-check2-circle fs-18 align-middle me-1"></i>
                   <span class="d-none d-sm-inline">Comfirmacion</span>
                 </span>

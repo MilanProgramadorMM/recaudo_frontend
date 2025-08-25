@@ -4,12 +4,12 @@ import { PersonCreateComponent } from "../configuration/person-create/person-cre
 
 export const MASTER_ROUTES: Route[] = [
   {
-    path: 'persons',
+    path: 'asesores',
     component: PersonComponentComponent,
     data: { title: 'Personas' }
   },
   {
-    path: 'person/create',
+    path: 'asesores/create',
     component: PersonCreateComponent,
     data: { title: 'Crear Personas' }
   }

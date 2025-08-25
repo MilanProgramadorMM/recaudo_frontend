@@ -17,6 +17,11 @@ export const VIEWS_ROUTES: Route[] = [
       import('./configuration/configuration.route').then((mod) => mod.CONFIGURATION_ROUTES),
   },
   {
+    path: 'actualizaciones',
+    loadChildren: () =>
+      import('./credits/credits.route').then((mod) => mod.CREDITS_ROUTES),
+  },
+  {
     path: 'master',
     loadChildren: () =>
       import('./master/master.route').then((mod) => mod.MASTER_ROUTES),

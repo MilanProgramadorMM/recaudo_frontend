@@ -32,6 +32,8 @@ export class PersonCreateComponent implements OnInit {
   submitted = false;
   errorMessage = '';
   lastErrorMessage = '';
+  successDetails: string = '';
+
 
 
   genderGlotypes: Glotypes[] = [];
@@ -55,14 +57,14 @@ export class PersonCreateComponent implements OnInit {
 
     this.form = this.fb.group({
       firstName: ['', Validators.required],
-      secondName: ['', Validators.required],
+      secondName: [''],
       firstSurname: ['', Validators.required],
-      secondSurname: ['', Validators.required],
+      secondSurname: [''],
       identification: ['', Validators.required],
       documentType: [null, Validators.required],
       gender: [null, Validators.required],
       occupation: ['', Validators.required],
-      description: ['', [Validators.required, Validators.minLength(10)]],
+      description: [''],
       fullName: [{ value: '', disabled: true }],
     });
 
@@ -92,7 +94,15 @@ export class PersonCreateComponent implements OnInit {
   }
 
   updateFullName() {
-    const value = `${this.form.value.firstName} ${this.form.value.secondName} ${this.form.value.firstSurname} ${this.form.value.secondSurname}`.trim();
+    const { firstName, secondName, firstSurname, secondSurname } = this.form.value;
+
+    // Construir con los campos que no estén vacíos
+    const parts = [firstName, secondName, firstSurname, secondSurname]
+      .filter((v: string | null | undefined) => v && v.trim() !== '');
+
+    // Unir y convertir a MAYÚSCULAS
+    const value = parts.join(' ').toUpperCase();
+
     this.form.get('fullName')?.setValue(value, { emitEvent: false });
   }
 
@@ -127,6 +137,7 @@ export class PersonCreateComponent implements OnInit {
 
     action.subscribe({
       next: (response) => {
+        this.successDetails = response.details; // 👈 guardamos el detalle
         // Mostrar modal de éxito
         const modalRef = this.modalService.open(this.successAlertTpl, {
           centered: true,
@@ -147,9 +158,8 @@ export class PersonCreateComponent implements OnInit {
         );
       },
       error: (err) => {
-        console.error(err);
         this.errorMessage = 'Error al guardar la persona.';
-        this.lastErrorMessage = err?.error?.message || err?.message || null;
+        this.lastErrorMessage = err?.error?.details || err?.message || null;
 
         // Mostrar modal de error (color rojo)
         this.modalService.open(this.errorAlertTpl, {

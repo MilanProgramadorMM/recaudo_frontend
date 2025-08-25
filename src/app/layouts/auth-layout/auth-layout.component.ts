@@ -20,7 +20,7 @@ import { credits, currentYear } from '@common/constants';
       <app-auth-logo class="mb-3"/>
       <router-outlet></router-outlet>
       <p class="mt-auto mb-0">
-    {{currentYear}} © Osen - By <span
+    {{currentYear}} By <span
       class="fw-bold text-decoration-underline text-uppercase text-reset fs-12">{{credits.name}}</span>
   </p>
       </div>

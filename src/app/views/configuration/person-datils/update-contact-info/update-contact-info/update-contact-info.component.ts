@@ -1,19 +1,20 @@
 import { CommonModule } from '@angular/common';
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input, OnInit, OnDestroy } from '@angular/core';
 import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 import { ContactInfoService } from '@core/services/contactInfo.service';
 import { GlotypesService } from '@core/services/glotypes.service';
 import { UbicacionService } from '@core/services/ubicacion.service';
+import { of, Subject, switchMap, tap, distinctUntilChanged, takeUntil } from 'rxjs';
 
 @Component({
   selector: 'app-update-contact-info',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule,FormsModule ],
+  imports: [CommonModule, ReactiveFormsModule, FormsModule],
   templateUrl: './update-contact-info.component.html',
   styleUrls: ['./update-contact-info.component.scss']
 })
-export class UpdateContactInfoComponent implements OnInit {
+export class UpdateContactInfoComponent implements OnInit, OnDestroy {
   @Input() contactInfo: any;
   @Input() person: any;
 
@@ -24,36 +25,47 @@ export class UpdateContactInfoComponent implements OnInit {
   ciudades: any[] = [];
   barrios: any[] = [];
 
+  private destroy$ = new Subject<void>();
+
   constructor(
     public activeModal: NgbActiveModal,
     private fb: FormBuilder,
     private contactInfoService: ContactInfoService,
     private glotypesService: GlotypesService,
     private ubicacionService: UbicacionService
-
   ) { }
 
   ngOnInit() {
-    // Evitar que form sea undefined en el render inicial
+    // 1) Crear UNA SOLA VEZ el form (no volver a reasignarlo)
     this.form = this.fb.group({
-      typeInfo: [''],
+      typeInfo: ['', Validators.required],
       direccion: [''],
-      pais: [''],
-      ciudad: [''],
-      barrio: [''],
-      departamento: [''],
+      pais: [null],
+      ciudad: [null],
+      barrio: [null],
+      departamento: [null],
       telefono: [''],
       correo: [''],
       descripcion: ['']
     });
 
-    this.loadTypes();
-    this.loadUbicacion();
+    // 2) Cargar tipos y setear valores iniciales SIN reconstruir el form
+    this.loadTypesAndPatchInitial();
 
+    // 3) Cargar ubicación y preseleccionar valores iniciales SIN disparar valueChanges
+    this.loadUbicacionInicial();
+
+    // 4) Registrar listeners (sobre la instancia actual del form)
+    this.setupListeners();
   }
 
+  ngOnDestroy() {
+    this.destroy$.next();
+    this.destroy$.complete();
+  }
 
-  loadTypes() {
+  // ---------- Carga de tipos y patch inicial ----------
+  private loadTypesAndPatchInitial() {
     this.glotypesService.getGlotypesByKey('TIPUBI').subscribe(types => {
       this.parametersGlotypes = types.map(d => {
         if (d.name.toUpperCase().includes('DIRECCIÓN')) return { ...d, key: 'DIR' };
@@ -63,24 +75,16 @@ export class UpdateContactInfoComponent implements OnInit {
         return d;
       });
 
-      this.buildForm();
+      // Parchear valores base (NO reconstruir form)
+      this.form.patchValue({
+        typeInfo: this.contactInfo?.typeCode || '',
+        direccion: this.contactInfo?.typeCode === 'DIR' ? this.contactInfo?.value : '',
+        telefono: (this.contactInfo?.typeCode === 'TEL' || this.contactInfo?.typeCode === 'CEL') ? this.contactInfo?.value : '',
+        correo: this.contactInfo?.typeCode === 'COR' ? this.contactInfo?.value : '',
+        descripcion: this.contactInfo?.description || ''
+      }, { emitEvent: false });
     });
   }
-
-  buildForm() {
-    this.form = this.fb.group({
-      typeInfo: [this.contactInfo?.typeCode || '', Validators.required],
-      direccion: [this.contactInfo?.typeCode === 'DIR' ? this.contactInfo?.value : ''],
-      pais: [this.contactInfo?.country || ''],
-      ciudad: [this.contactInfo?.city || ''],
-      barrio: [this.contactInfo?.neighborhood || ''],
-      departamento: [this.contactInfo?.department || ''],
-      telefono: [(this.contactInfo?.typeCode === 'TEL' || this.contactInfo?.typeCode === 'CEL') ? this.contactInfo?.value : ''],
-      correo: [this.contactInfo?.typeCode === 'COR' ? this.contactInfo?.value : ''],
-      descripcion: [this.contactInfo?.description || '']
-    });
-  }
-
 
   getTypeLabel(code: string): string {
     switch (code) {
@@ -96,77 +100,100 @@ export class UpdateContactInfoComponent implements OnInit {
     if (!label) return null;
     const match = list.find(item => item.label?.toLowerCase() === label.toLowerCase());
     return match ? match.id : null;
+    // Si tu backend expone también 'code' o 'value', ajusta aquí.
   }
 
-  loadUbicacion() {
-    this.ubicacionService.getPaises().subscribe(paises => {
-      this.paises = paises;
+  // ---------- Carga inicial en cascada (sin disparar listeners) ----------
+  private loadUbicacionInicial() {
+    this.ubicacionService.getPaises().pipe(
+      tap(paises => this.paises = paises),
+      switchMap((paises) => {
+        const paisId = this.findIdByLabel(paises, this.contactInfo?.country);
+        if (paisId) this.form.patchValue({ pais: paisId }, { emitEvent: false });
+        return paisId ? this.ubicacionService.getDepartamentos(paisId) : of([]);
+      }),
+      tap(deps => this.departamentos = deps),
+      switchMap((deps) => {
+        const depId = this.findIdByLabel(deps, this.contactInfo?.department);
+        if (depId) this.form.patchValue({ departamento: depId }, { emitEvent: false });
+        return depId ? this.ubicacionService.getMunicipios(depId) : of([]);
+      }),
+      tap(muns => this.ciudades = muns),
+      switchMap((muns) => {
+        const munId = this.findIdByLabel(muns, this.contactInfo?.city);
+        if (munId) this.form.patchValue({ ciudad: munId }, { emitEvent: false });
+        return munId ? this.ubicacionService.getBarrios(munId) : of([]);
+      }),
+      tap(bars => this.barrios = bars),
+      tap((bars) => {
+        const barId = this.findIdByLabel(bars || [], this.contactInfo?.neighborhood);
+        if (barId) this.form.patchValue({ barrio: barId }, { emitEvent: false });
+      })
+    ).subscribe();
+  }
 
-      const paisId = this.findIdByLabel(paises, this.contactInfo?.country);
-      if (paisId) {
-        this.form.patchValue({ pais: paisId });
-
-        this.ubicacionService.getDepartamentos(paisId).subscribe(deps => {
-          this.departamentos = deps;
-
-          const depId = this.findIdByLabel(deps, this.contactInfo?.department);
-          if (depId) {
-            this.form.patchValue({ departamento: depId });
-
-            this.ubicacionService.getMunicipios(depId).subscribe(muns => {
-              this.ciudades = muns;
-
-              const munId = this.findIdByLabel(muns, this.contactInfo?.city);
-              if (munId) {
-                this.form.patchValue({ ciudad: munId });
-
-                this.ubicacionService.getBarrios(munId).subscribe(bars => {
-                  this.barrios = bars;
-
-                  const barId = this.findIdByLabel(bars, this.contactInfo?.neighborhood);
-                  if (barId) {
-                    this.form.patchValue({ barrio: barId });
-                  }
-                });
-              }
-            });
-          }
-        });
-      }
-    });
-
-    // Listeners de cambios
-    this.form.get('pais')?.valueChanges.subscribe(paisId => {
-      if (paisId) {
-        this.ubicacionService.getDepartamentos(paisId).subscribe(data => {
-          this.departamentos = data;
+  // ---------- Listeners en cascada ----------
+  private setupListeners() {
+    // País → Departamentos
+    this.form.get('pais')?.valueChanges.pipe(
+      distinctUntilChanged(),
+      takeUntil(this.destroy$),
+      switchMap((paisId: number | null) => {
+        if (!paisId) {
+          this.departamentos = [];
           this.ciudades = [];
           this.barrios = [];
-          this.form.patchValue({ departamento: '', ciudad: '', barrio: '' });
-        });
-      }
+          this.form.patchValue({ departamento: null, ciudad: null, barrio: null }, { emitEvent: false });
+          return of([]);
+        }
+        return this.ubicacionService.getDepartamentos(paisId);
+      })
+    ).subscribe(deps => {
+      this.departamentos = deps;
+      this.ciudades = [];
+      this.barrios = [];
+      // Limpiar hijos sin disparar más eventos
+      this.form.patchValue({ departamento: null, ciudad: null, barrio: null }, { emitEvent: false });
     });
 
-    this.form.get('departamento')?.valueChanges.subscribe(depId => {
-      if (depId) {
-        this.ubicacionService.getMunicipios(depId).subscribe(data => {
-          this.ciudades = data;
+    // Departamento → Municipios/Ciudades
+    this.form.get('departamento')?.valueChanges.pipe(
+      distinctUntilChanged(),
+      takeUntil(this.destroy$),
+      switchMap((depId: number | null) => {
+        if (!depId) {
+          this.ciudades = [];
           this.barrios = [];
-          this.form.patchValue({ ciudad: '', barrio: '' });
-        });
-      }
+          this.form.patchValue({ ciudad: null, barrio: null }, { emitEvent: false });
+          return of([]);
+        }
+        return this.ubicacionService.getMunicipios(depId);
+      })
+    ).subscribe(muns => {
+      this.ciudades = muns;
+      this.barrios = [];
+      this.form.patchValue({ ciudad: null, barrio: null }, { emitEvent: false });
     });
 
-    this.form.get('ciudad')?.valueChanges.subscribe(munId => {
-      if (munId) {
-        this.ubicacionService.getBarrios(munId).subscribe(data => {
-          this.barrios = data;
-          this.form.patchValue({ barrio: '' });
-        });
-      }
+    // Ciudad/Municipio → Barrios
+    this.form.get('ciudad')?.valueChanges.pipe(
+      distinctUntilChanged(),
+      takeUntil(this.destroy$),
+      switchMap((munId: number | null) => {
+        if (!munId) {
+          this.barrios = [];
+          this.form.patchValue({ barrio: null }, { emitEvent: false });
+          return of([]);
+        }
+        return this.ubicacionService.getBarrios(munId);
+      })
+    ).subscribe(bars => {
+      this.barrios = bars;
+      this.form.patchValue({ barrio: null }, { emitEvent: false });
     });
   }
 
+  // ---------- Guardado ----------
   onSubmit() {
     if (this.form.invalid) return;
 
@@ -197,8 +224,6 @@ export class UpdateContactInfoComponent implements OnInit {
     }
 
     this.contactInfoService.updateContactInfo(this.contactInfo.id, payload)
-      .subscribe(() => {
-        this.activeModal.close(true);
-      });
+      .subscribe(() => this.activeModal.close(true));
   }
 }

@@ -10,8 +10,15 @@
 
     <form class="text-start" (ngSubmit)="changePassword()">
       <div class="mb-3">
+        <label class="form-label" for="password">
+          Contraseña actual
+        </label>
+        <input type="password" id="password" class="form-control" [(ngModel)]="passwordActual" name="Password"
+          placeholder="Ingrese contraseña actual" required>
+      </div>
+      <div class="mb-3">
         <label class="form-label" for="new-password">
-          Crear nueva contraseña
+          Nueva contraseña
           <small class="text-primary ms-1">Debe tener al menos 8 caracteres</small>
         </label>
         <input type="password" id="new-password" class="form-control" [(ngModel)]="newPassword" name="newPassword"

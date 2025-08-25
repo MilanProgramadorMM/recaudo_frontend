@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { Observable } from 'rxjs';
+import { catchError, Observable, throwError } from 'rxjs';
 import baseUrl from './api';
 import { CookieService } from 'ngx-cookie-service';
 
@@ -65,7 +65,15 @@ export class PersonService {
         const headers = new HttpHeaders({
             Authorization: `Bearer ${token}`
         });
-        return this.http.put<DefaultResponseDto<PersonRegisterDto>>(`${baseUrl}person/update`, data, { headers });
+        return this.http.put<DefaultResponseDto<PersonRegisterDto>>(`${baseUrl}person/update`, data, { headers }).pipe(
+            catchError((error) => {
+            debugger
+            // Aquí puedes mapear el error del backend
+            const backendError = error?.error?.data || error?.error || { message: 'Error desconocido' };
+
+            return throwError(() => backendError);
+            })
+        );
     }
 
     deletePerson(id: number): Observable<DefaultResponseDto<string>> {

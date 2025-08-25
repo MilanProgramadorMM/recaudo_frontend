@@ -25,6 +25,8 @@ export class PersonInfoComponent implements OnInit {
 
   form!: FormGroup;
   submitted = false;
+  errorMessage = '';
+  lastErrorMessage = '';
 
   parametersGlotypes: Glotypes[] = [];
   contactInfoList: any[] = [];
@@ -193,10 +195,12 @@ export class PersonInfoComponent implements OnInit {
         this.submitted = false;
       },
       error: (err) => {
-        //this.errorMessage = 'Error al guardar la información de contacto.';
-        //this.lastErrorMessage = err?.error?.message || err?.message || null;
+
+        this.errorMessage = err?.error?.details || 'Error inesperado';
+
         this.modalService.open(this.errorAlertTpl, { centered: true, size: 'sm' });
       }
+
     });
   }
 

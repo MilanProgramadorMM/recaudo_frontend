@@ -4,10 +4,15 @@
         <div class="card">
             <div class="card-header d-flex align-items-center justify-content-between border-bottom border-light">
                 <h4 class="header-title">Roles</h4>
-
+                <div>
+                    <button (click)="openRolModal()" class="btn btn-success bg-gradient me-1">
+                        <i class="ti ti-plus me-1"></i> Agregar
+                    </button>
+                </div>
             </div>
+
             <div class="mb-3 row align-items-center ms-3">
-                <label for="person-search" class="col-sm-auto col-form-label">Buscar Rol:</label>
+                <label for="person-search" class="col-sm-auto col-form-label">Buscar:</label>
                 <div class="col-6">
                     <input id="person-search" class="form-control" type="text" placeholder="Por nombre de Rol..."
                         [(ngModel)]="searchTerm" (ngModelChange)="applyFilter()" />
@@ -34,7 +39,8 @@
                             <td class="pe-3">
                                 <div class="hstack gap-1 justify-content-center">
                                     <a (click)="openPermissionsModal(roles.id)"
-                                        class="btn btn-soft-warning btn-icon btn-sm rounded-circle">
+                                        class="btn btn-soft-warning btn-icon btn-sm rounded-circle"
+                                        title="Actualizar permisos del Rol">
                                         <i class="ti ti-user-shield fs-4"></i>
                                     </a>
                                 </div>

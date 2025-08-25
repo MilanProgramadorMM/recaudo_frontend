@@ -1,5 +1,5 @@
 <div class="modal-header">
-  <h5 class="modal-title">{{ personData?.id ? 'Editar' : 'Registrar' }} Persona</h5>
+  <h5 class="modal-title">{{ personData?.id ? 'Editar' : 'Registrar' }} Asesor</h5>
   <button type="button" class="btn-close" (click)="cancel()"></button>
 </div>
 
@@ -16,7 +16,7 @@
           <div class="row">
             <div class="col-lg-3 mb-3">
               <label class="form-label">Primer nombre <span class="required">*</span></label>
-              <input formControlName="firstName" type="text" class="form-control"
+              <input formControlName="firstName" type="text" class="form-control text-uppercase"
                 [ngClass]="{ 'is-invalid': submitted && form.get('firstName')?.invalid }">
               <div class="invalid-feedback" *ngIf="submitted && form.get('firstName')?.errors?.['required']">
                 Campo obligatorio
@@ -25,7 +25,7 @@
 
             <div class="col-lg-3 mb-3">
               <label class="form-label">Segundo nombre</label>
-              <input formControlName="secondName" type="text" class="form-control"
+              <input formControlName="secondName" type="text" class="form-control text-uppercase"
                 [ngClass]="{ 'is-invalid': submitted && form.get('secondName')?.invalid }">
               <div class="invalid-feedback" *ngIf="submitted && form.get('secondName')?.errors?.['required']">
                 Campo obligatorio
@@ -34,7 +34,7 @@
 
             <div class="col-lg-3 mb-3">
               <label class="form-label">Primer apellido <span class="required">*</span></label>
-              <input formControlName="firstSurname" type="text" class="form-control"
+              <input formControlName="firstSurname" type="text" class="form-control text-uppercase"
                 [ngClass]="{ 'is-invalid': submitted && form.get('firstSurname')?.invalid }">
               <div class="invalid-feedback" *ngIf="submitted && form.get('firstSurname')?.errors?.['required']">
                 Campo obligatorio
@@ -43,7 +43,7 @@
 
             <div class="col-lg-3 mb-3">
               <label class="form-label">Segundo apellido</label>
-              <input formControlName="secondSurname" type="text" class="form-control"
+              <input formControlName="secondSurname" type="text" class="form-control text-uppercase"
                 [ngClass]="{ 'is-invalid': submitted && form.get('secondSurname')?.invalid }">
               <div class="invalid-feedback" *ngIf="submitted && form.get('secondSurname')?.errors?.['required']">
                 Campo obligatorio
@@ -101,15 +101,8 @@
             </div>
 
             <div class="col-lg-12 mb-3">
-              <label class="form-label">Sobre la persona</label>
-              <textarea formControlName="description" class="form-control" rows="3"
-                [ngClass]="{ 'is-invalid': submitted && form.get('description')?.invalid }"></textarea>
-              <div class="invalid-feedback" *ngIf="submitted && form.get('description')?.errors?.['required']">
-                Campo obligatorio
-              </div>
-              <div class="invalid-feedback" *ngIf="submitted && form.get('description')?.errors?.['minlength']">
-                Debe tener al menos 10 caracteres.
-              </div>
+              <label class="form-label">Observaciones</label>
+              <textarea formControlName="description" class="form-control" rows="3"></textarea>
             </div>
 
           </div>
@@ -145,7 +138,7 @@
       <div class="text-center">
         <i class="ti ti-check h1"></i>
         <h4 class="mt-2">¡Bien hecho!</h4>
-        <p class="mt-3">¡Persona creada correctamente! 🎉</p>
+        <p class="mt-3">{{ successDetails }}</p>
         <button (click)="onSuccessContinue(modal)" type="button" class="btn btn-light my-2"
           data-bs-dismiss="modal">Continuar</button>
       </div>

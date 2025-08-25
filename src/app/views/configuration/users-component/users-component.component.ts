@@ -55,7 +55,7 @@ export class UsersComponentComponent {
       const modalRef = this.modalService.open(UserCreateComponent, {
         centered: true,
         backdrop: 'static',
-        windowClass: 'custom-modal-size modal-xl'
+        windowClass: 'custom-modal-size modal-lg'
       });
   
       if (user) {
@@ -104,7 +104,7 @@ export class UsersComponentComponent {
     });
     modalRef.componentInstance.id = user.id;
     modalRef.componentInstance.type = 'USERS';
-    modalRef.componentInstance.nombreUsuario = user.person_fullname; // <-- Aquí lo pasas
+    modalRef.componentInstance.nombreUsuario = user.person_fullname; 
 
   }
 
