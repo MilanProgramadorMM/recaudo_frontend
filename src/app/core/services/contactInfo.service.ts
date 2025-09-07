@@ -45,6 +45,13 @@ export class ContactInfoService {
     });
   }
 
+  deleteContactInfo(contactInfoId: number): Observable<any> {
+    return this.http.delete<any>(`${baseUrl}contact/info/${contactInfoId}`, {
+      headers: this.getAuthHeaders()
+    });
+  }
+
+
 
 
 }

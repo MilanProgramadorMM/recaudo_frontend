@@ -17,6 +17,7 @@ export interface PersonRegisterDto {
     gender: number;
     occupation?: string;
     description?: string;
+    type_person : string;
 }
 
 export interface DefaultResponseDto<T> {
@@ -43,6 +44,16 @@ export class PersonService {
         return this.http.get<DefaultResponseDto<PersonRegisterDto[]>>(`${baseUrl}person/get-all`, { headers });
     }
 
+    getPersonsByType(type: string): Observable<DefaultResponseDto<PersonRegisterDto[]>> {
+        const token = this.cookieService.get('_OSEN_AUTH_SESSION_KEY_');
+        const headers = new HttpHeaders({ Authorization: `Bearer ${token}` });
+        return this.http.get<DefaultResponseDto<PersonRegisterDto[]>>(
+            `${baseUrl}person/get-by-type/${type}`,
+            { headers }
+        );
+    }
+
+
     getPersonById(personId: number): Observable<DefaultResponseDto<PersonRegisterDto>> {
         const token = this.cookieService.get('_OSEN_AUTH_SESSION_KEY_');
         const headers = new HttpHeaders({
@@ -67,11 +78,11 @@ export class PersonService {
         });
         return this.http.put<DefaultResponseDto<PersonRegisterDto>>(`${baseUrl}person/update`, data, { headers }).pipe(
             catchError((error) => {
-            debugger
-            // Aquí puedes mapear el error del backend
-            const backendError = error?.error?.data || error?.error || { message: 'Error desconocido' };
+                debugger
+                // Aquí puedes mapear el error del backend
+                const backendError = error?.error?.data || error?.error || { message: 'Error desconocido' };
 
-            return throwError(() => backendError);
+                return throwError(() => backendError);
             })
         );
     }
@@ -83,10 +94,23 @@ export class PersonService {
         });
         return this.http.put<DefaultResponseDto<string>>(
             `${baseUrl}person/delete/${id}`,
-            null, 
+            null,
             { headers }
         );
     }
+
+    reactivatePerson(id: number): Observable<DefaultResponseDto<PersonRegisterDto>> {
+        const token = this.cookieService.get('_OSEN_AUTH_SESSION_KEY_');
+        const headers = new HttpHeaders({
+            Authorization: `Bearer ${token}`
+        });
+        return this.http.put<DefaultResponseDto<PersonRegisterDto>>(
+            `${baseUrl}person/person/reactivate/${id}`,
+            null,
+            { headers }
+        );
+    }
+
 
 
 }

@@ -44,3 +44,14 @@
     </p> -->
   </div>
 </div>
+
+<ng-template #passwordChanged let-modal>
+  <div class="modal-body text-center">
+    <i class="ti ti-check-circle h1 text-success"></i>
+    <h4 class="mt-2">¡Contraseña actualizada!</h4>
+    <p class="mt-3">Tu contraseña se cambió correctamente.  
+      Necesitas iniciar sesión nuevamente.</p>
+    <button (click)="onConfirmPasswordChange(modal)" type="button"
+            class="btn btn-primary mt-2">OK</button>
+  </div>
+</ng-template>

@@ -1,14 +1,13 @@
-import { CommonModule } from '@angular/common';
-import { Component, Input } from '@angular/core';
+import { Component, Input, TemplateRef, ViewChild } from '@angular/core';
+import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { ContactInfoService } from '@core/services/contactInfo.service';
 import { PersonRegisterDto } from '@core/services/person.service';
-import { ModalDismissReasons, NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { UpdateContactInfoComponent } from '../../update-contact-info/update-contact-info/update-contact-info.component';
 
 @Component({
   selector: 'app-list-contact-info',
   standalone: true,
-  imports: [CommonModule],
+  imports: [],
   templateUrl: './list-contact-info.component.html',
   styleUrls: ['./list-contact-info.component.scss'],
 })
@@ -17,6 +16,14 @@ export class ListContactInfoComponent {
   contactInfoList: any[] = [];
   noContactInfoMessage: string = '';
 
+  // 👇 referencias a los templates
+  @ViewChild('confirmDelete', { static: true }) confirmDeleteTpl!: TemplateRef<any>;
+  @ViewChild('successalert', { static: true }) successAlertTpl!: TemplateRef<any>;
+  @ViewChild('erroralert', { static: true }) errorAlertTpl!: TemplateRef<any>;
+
+  deleteTarget: any = null;
+  successDetails: string = '';
+  lastErrorMessage: string = '';
 
   constructor(
     private contactInfoService: ContactInfoService,
@@ -24,31 +31,27 @@ export class ListContactInfoComponent {
   ) { }
 
   ngOnInit() {
-
     if (this.person?.id) {
       this.loadContactInfoList(this.person.id);
     }
   }
 
   loadContactInfoList(personId?: number) {
-    if (personId == null) {
+    if (!personId) {
       this.noContactInfoMessage = 'No se ha seleccionado una persona.';
       return;
     }
     this.contactInfoService.getContactInfoByPersonId(personId).subscribe({
       next: (res) => {
-        if (!res.data || res.data.length === 0) {
-          this.contactInfoList = [];
-          this.noContactInfoMessage = 'La persona no tiene aún información de contacto registrada.';
-        } else {
-          this.contactInfoList = res.data;
-          this.noContactInfoMessage = '';
-        }
+        this.contactInfoList = res.data || [];
+        this.noContactInfoMessage =
+          this.contactInfoList.length === 0
+            ? 'La persona no tiene aún información de contacto registrada.'
+            : '';
       },
-      error: (err) => {
-        console.error(err);
+      error: () => {
         this.noContactInfoMessage = 'Ocurrió un error al cargar la información de contacto.';
-      }
+      },
     });
   }
 
@@ -73,6 +76,36 @@ export class ListContactInfoComponent {
       () => { /* cerrado sin guardar */ }
     );
   }
+  // Abre modal de confirmación
+  deleteContactInfo(item: any) {
+    this.deleteTarget = item;
+    this.modalService.open(this.confirmDeleteTpl, {
+      centered: true,
+      size: 'sm',
+      backdrop: 'static',
+    });
+  }
 
+  // Acción al confirmar
+  onConfirmDelete(modalRef: any) {
+    if (!this.deleteTarget) return;
+    const id = this.deleteTarget.id;
 
+    this.contactInfoService.deleteContactInfo(id).subscribe({
+      next: (res) => {
+        modalRef.close(); // cerramos confirm
+        this.successDetails = res.details || 'Información eliminada correctamente';
+        this.modalService.open(this.successAlertTpl, { centered: true, size: 'sm', backdrop: 'static' });
+
+        if (this.person?.id) {
+          this.loadContactInfoList(this.person.id);
+        }
+      },
+      error: (err) => {
+        modalRef.close(); // cerramos confirm
+        this.lastErrorMessage = err?.error?.details || 'Error eliminando contacto';
+        this.modalService.open(this.errorAlertTpl, { centered: true, size: 'sm' });
+      },
+    });
+  }
 }

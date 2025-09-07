@@ -1,9 +1,9 @@
-import { Component } from '@angular/core';
+import { Component, TemplateRef, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
 import { UserService } from '@core/services/user.service';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
-import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
+import { NgbActiveModal, NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { AuthenticationService } from '@core/services/auth.service';
 
 @Component({
@@ -18,12 +18,16 @@ export class CreatePassComponent {
   newPassword = '';
   confirmPassword = '';
   errorMessage = '';
+  @ViewChild('passwordChanged') passwordChangedTpl!: TemplateRef<any>;
+
 
   constructor(
     private userService: UserService,
     private router: Router,
     public activeModal: NgbActiveModal,
-    private AuthService: AuthenticationService
+    private AuthService: AuthenticationService,
+    private modalService: NgbModal
+
 
   ) { }
 
@@ -46,9 +50,8 @@ export class CreatePassComponent {
 
     this.userService.updateLoggedUserPassword(this.passwordActual, this.newPassword).subscribe({
       next: () => {
-        this.activeModal.close();
-        this.AuthService.logout();
-        this.router.navigate(['/auth/login']);
+        // Abrir modal de confirmación en lugar de cerrar directo
+        this.modalService.open(this.passwordChangedTpl, { centered: true, backdrop: 'static', keyboard: false });
       },
       error: (err) => {
         this.errorMessage = err.error?.details || 'Error al cambiar la contraseña';
@@ -56,7 +59,13 @@ export class CreatePassComponent {
     });
   }
 
-
+  onConfirmPasswordChange(modal: any) {
+    modal.close();
+    this.AuthService.logout();
+    this.router.navigate(['/auth/login']);
+  }
 }
+
+
 
 

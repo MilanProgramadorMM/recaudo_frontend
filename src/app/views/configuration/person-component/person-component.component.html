@@ -1,12 +1,14 @@
-<page-title title="Asesores" subtitle="Maestros" />
+<page-title [title]="personType === 'ASESOR' ? 'Asesores' : 'Clientes'" subtitle="Maestros" />
 <div class="row">
   <div class="col-12">
     <div class="card">
       <div class="card-header d-flex align-items-center justify-content-between border-bottom border-light">
-        <h4 class="header-title">Asesores</h4>
+        <h4 class="header-title">
+          {{ personType === 'ASESOR' ? 'Asesores' : 'Clientes' }}
+        </h4>
         <div>
           <button (click)="openUserModal()" class="btn btn-success bg-gradient me-1">
-            <i class="ti ti-plus me-1"></i> Agregar
+            <i class="ti ti-plus me-1"></i> Agregar {{ personType | lowercase }}
           </button>
           <!-- <a href="javascript:void(0);" class="btn btn-secondary bg-gradient">
             <i class="ti ti-file-import me-1"></i> Importar
@@ -16,8 +18,9 @@
       <div class="mb-3 row align-items-center">
         <label for="person-search" class="col-sm-auto col-form-label">Buscar:</label>
         <div class="col-6">
-          <input id="person-search" class="form-control" type="text" placeholder="Por nombre, apellido o documento..."
-            [(ngModel)]="searchTerm" (ngModelChange)="applyFilter()" />
+          <input id="person-search" class="form-control text-uppercase" type="text"
+            placeholder="Por nombre, apellido o documento..." [(ngModel)]="searchTerm"
+            (ngModelChange)="applyFilter()" />
         </div>
       </div>
 
@@ -32,7 +35,7 @@
               <th>Primer Nombre</th>
               <th>Segundo Nombre</th>
               <th>Ocupaci&oacute;n</th>
-              <th class="text-center" style="width: 120px;">Action</th>
+              <th class="text-center" style="width: 120px;">Acciones</th>
             </tr>
           </thead>
 
@@ -48,13 +51,15 @@
 
               <td class="pe-3">
                 <div class="hstack gap-1 justify-content-end">
-                  <a (click)="openInfoUserModal(person)" class="btn btn-soft-primary btn-icon btn-sm rounded-circle" title="Actualizar informacion de contacto"><i
-                      class="ti ti-id-badge fs-4"></i>
+                  <a (click)="openInfoUserModal(person)" class="btn btn-soft-primary btn-icon btn-sm rounded-circle"
+                    title="Actualizar informacion de contacto"><i class="ti ti-id-badge fs-4"></i>
                   </a>
-                  <a (click)="openUserModal(person)" class="btn btn-soft-success btn-icon btn-sm rounded-circle" title="Actualizar persona">
+                  <a (click)="openUserModal(person)" class="btn btn-soft-success btn-icon btn-sm rounded-circle"
+                    title="Actualizar persona">
                     <i class="ti ti-edit fs-4"></i>
                   </a>
-                  <a (click)="onDelete(person.id)" class="btn btn-soft-danger btn-icon btn-sm rounded-circle" title="Eliminar persona">
+                  <a (click)="onDelete(person.id)" class="btn btn-soft-danger btn-icon btn-sm rounded-circle"
+                    title="Eliminar persona">
                     <i class="ti ti-trash fs-4"></i>
                   </a>
 

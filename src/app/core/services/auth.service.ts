@@ -5,7 +5,6 @@ import { map } from 'rxjs/operators'
 import { CookieService } from 'ngx-cookie-service'
 import type { Observable } from 'rxjs'
 import type { User } from '@core/helper/fake-backend'
-import { personData } from '@views/configuration/person-component/data'
 import baseUrl from './api';
 import { jwtDecode } from 'jwt-decode';
 
@@ -15,7 +14,7 @@ interface JwtPayload {
   name: string;
   role: string;
   exp: number;
-  [key: string]: any; // por si vienen más claims
+  [key: string]: any;
 }
 
 @Injectable({ providedIn: 'root' })
@@ -27,9 +26,9 @@ export class AuthenticationService {
   constructor(
     private http: HttpClient,
     private cookieService: CookieService
-  ) {}
+  ) { }
 
-  
+
 
   login(username: string, password: string): Observable<User> {
     return this.http.post<any>(`${baseUrl}auth/login`, { username, password }).pipe(
@@ -73,7 +72,7 @@ export class AuthenticationService {
   }
 
   saveSession(token: string): void {
-    this.cookieService.set(this.authSessionKey, token, (2/24), '/', '', false, 'Lax');
+    this.cookieService.set(this.authSessionKey, token, (2 / 24), '/', '', false, 'Lax');
   }
 
   removeSession(): void {

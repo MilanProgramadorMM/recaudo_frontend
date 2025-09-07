@@ -1,0 +1,67 @@
+<page-title title="Municipios" subtitle="Maestros" />
+
+<div class="row">
+  <div class="col-12">
+    <div class="card">
+      <div class="card-header d-flex align-items-center justify-content-between border-bottom border-light">
+        <h4 class="header-title">Municipios</h4>
+        <div>
+          <button (click)="openCityModal()" class="btn btn-success bg-gradient me-1">
+            <i class="ti ti-plus me-1"></i> Agregar
+          </button>
+        </div>
+      </div>
+
+      <div class="mb-3 row align-items-center">
+        <label for="city-search" class="col-sm-auto col-form-label">Buscar:</label>
+        <div class="col-6">
+          <input id="city-search" class="form-control" type="text" placeholder="Por nombre o departamento..."
+            [(ngModel)]="searchTerm" (ngModelChange)="applyFilter()" />
+        </div>
+      </div>
+
+      <div class="table-responsive">
+        <div *ngIf="loading" class="text-center my-3">
+          <div class="spinner-border spinner-border-sm text-primary" role="status"></div>
+          <span class="ms-2">Cargando municipios..</span>
+        </div>
+        <table *ngIf="!loading" class="table table-nowrap mb-0">
+          <thead class="table-dark bg-light-subtle">
+            <tr>
+              <th>Nombre</th>
+              <th>Departamento</th>
+              <th>País</th>
+              <th class="text-center" style="width: 120px;">Acciones</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let muni of filteredMunicipios">
+              <td>{{muni.nombre}}</td>
+              <td>{{muni.nombreDepartamento}}</td>
+              <td>{{muni.nombrePais}}</td>
+              <td class="pe-3">
+                <div class="hstack gap-1 justify-content-center">
+                  <a (click)="openCityModal(muni)" class="btn btn-soft-success btn-icon btn-sm rounded-circle"
+                    title="Actualizar municipio">
+                    <i class="ti ti-edit fs-4"></i>
+                  </a>
+                  <!-- <a (click)="onDeleteMunicipio(muni.id)" class="btn btn-soft-danger btn-icon btn-sm rounded-circle"
+                    title="Eliminar municipio">
+                    <i class="ti ti-trash fs-4"></i>
+                  </a> -->
+                </div>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="card-footer">
+        <div class="d-flex justify-content-end">
+          <ngb-pagination [collectionSize]="municipios.length" [(page)]="page"
+            aria-label="Default pagination"></ngb-pagination>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
