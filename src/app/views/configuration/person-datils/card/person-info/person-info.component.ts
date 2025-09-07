@@ -167,12 +167,12 @@ export class PersonInfoComponent implements OnInit {
 
     switch (this.form.value.typeInfo) {
       case 'DIR':
-        payload.value = this.form.value.direccion;
+        payload.value = this.form.value.direccion.toUpperCase() || '';
         payload.country = this.form.value.pais;
         payload.department = this.form.value.departamento;
         payload.city = this.form.value.ciudad;
         payload.neighborhood = this.form.value.barrio;
-        payload.description = this.form.value.descripcion;
+        payload.description = this.form.value.descripcion.toUpperCase() || '';
         break;
       case 'TEL':
       case 'CEL':

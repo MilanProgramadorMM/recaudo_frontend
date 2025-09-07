@@ -59,6 +59,21 @@ export const calculateTimeToEvent = () => {
   return { days, hours, minutes, seconds }
 }
 
+// utils.ts
+export const Util = {
+  normalizeText: (value: string | null | undefined): string =>
+    value ? value.trim().replace(/\s+/g, ' ') : '',
+
+  // puedes agregar otras funciones aquí también
+  splitArray: (array: Array<any>, chunkSize: number) => {
+    const chunks = Array(Math.ceil(array.length / chunkSize))
+      .fill(1)
+      .map((_, index) => index * chunkSize)
+      .map((begin) => array.slice(begin, begin + chunkSize));
+    return chunks;
+  }
+};
+
 
 export const splitArray = (array: Array<any>, chunkSize: number) => {
   const chunks = Array(Math.ceil(array.length / chunkSize))

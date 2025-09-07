@@ -36,7 +36,11 @@ export class AuthenticationEffects {
             }
             return loginSuccess({ user })
           }),
-          catchError((error) => of(loginFailure({ error })))
+          catchError((error) => {
+            // Si el backend devuelve JSON con message
+            const backendError = error.error?.message || 'Error desconocido';
+            return of(loginFailure({ error: backendError }));
+          })
         )
       })
     )

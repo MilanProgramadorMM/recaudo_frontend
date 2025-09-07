@@ -36,8 +36,8 @@ export class CreateRoleComponent implements OnInit {
 
   ngOnInit(): void {
     this.form = this.fb.group({
-      name: ['', Validators.required], // ✅ obligatorio
-      description: ['']                // ✅ opcional
+      name: ['', Validators.required], 
+      description: ['']                
     });
   }
 
@@ -70,7 +70,7 @@ export class CreateRoleComponent implements OnInit {
       error: (err) => {
         this.loading = false;
         this.errorMessage = 'Error al crear el rol.';
-        this.lastErrorMessage = err?.error?.message || err?.message || null;
+        this.lastErrorMessage = err?.error?.details || err?.details || null;
 
         this.modalService.open(this.errorAlertTpl, {
           centered: true,

@@ -15,7 +15,7 @@
                 <div class="card-body">
                     <div class="mb-3">
                         <label class="form-label">Nombre del rol <span class="required">*</span></label>
-                        <input formControlName="name" type="text" class="form-control"
+                        <input formControlName="name" type="text" class="form-control text-uppercase"
                             [ngClass]="{ 'is-invalid': submitted && form.get('name')?.invalid }">
                         <div class="invalid-feedback" *ngIf="submitted && form.get('name')?.errors?.['required']">
                             Campo obligatorio
@@ -24,7 +24,7 @@
 
                     <div class="mb-3">
                         <label class="form-label">Descripción</label>
-                        <input formControlName="description" type="text" class="form-control">
+                        <input formControlName="description" type="text" class="form-control text-uppercase">
                     </div>
                     <div class="modal-footer">
                         <button class="btn btn-danger" (click)="cancel()">Cancelar</button>

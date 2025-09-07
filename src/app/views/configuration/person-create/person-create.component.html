@@ -1,7 +1,11 @@
 <div class="modal-header">
-  <h5 class="modal-title">{{ personData?.id ? 'Editar' : 'Registrar' }} Asesor</h5>
+  <h5 class="modal-title">
+    {{ personData?.id ? 'Editar' : 'Registrar' }}
+    {{ personType | lowercase }}
+  </h5>
   <button type="button" class="btn-close" (click)="cancel()"></button>
 </div>
+
 
 <div class="modal-body">
   <p *ngIf="errorMessage" class="fs-14 text-danger">{{ errorMessage }}</p>
@@ -93,7 +97,7 @@
 
             <div class="col-lg-6 mb-3">
               <label class="form-label">Ocupación <span class="required">*</span></label>
-              <input formControlName="occupation" type="text" class="form-control"
+              <input formControlName="occupation" type="text" class="form-control text-uppercase"
                 [ngClass]="{ 'is-invalid': submitted && form.get('occupation')?.invalid }">
               <div class="invalid-feedback" *ngIf="submitted && form.get('occupation')?.errors?.['required']">
                 Campo obligatorio
@@ -102,7 +106,7 @@
 
             <div class="col-lg-12 mb-3">
               <label class="form-label">Observaciones</label>
-              <textarea formControlName="description" class="form-control" rows="3"></textarea>
+              <textarea formControlName="description" class="form-control text-uppercase" rows="3"></textarea>
             </div>
 
           </div>
@@ -157,6 +161,23 @@
         <p class="mt-3">{{ lastErrorMessage || 'No se pudo crear la persona. Intenta nuevamente.' }}</p>
         <button (click)="modal.dismiss()" type="button" class="btn btn-light my-2"
           data-bs-dismiss="modal">Cerrar</button>
+      </div>
+    </div>
+  </div>
+</ng-template>
+
+<!-- CONFIRMACIÓN REACTIVAR -->
+<ng-template #confirmReactivate let-modal id="confirm-reactivate-modal" class="modal fade" tabindex="-1" role="dialog"
+  aria-hidden="true">
+  <div class="modal-filled bg-light">
+    <div class="modal-body p-4">
+      <div class="text-center text-dark">
+        <i class="ti ti-alert-triangle h1"></i>
+        <h4 class="mt-2">La persona ya existe pero está inactiva</h4>
+        <p class="mt-3">¿Desea reactivarla en lugar de crear una nueva?</p>
+        <button (click)="onConfirmReactivate(modal)" type="button" class="btn btn-primary my-2 me-2"
+          data-bs-dismiss="modal">Sí, reactivar</button>
+        <button (click)="modal.dismiss()" type="button" class="btn btn-danger my-2" data-bs-dismiss="modal">No</button>
       </div>
     </div>
   </div>

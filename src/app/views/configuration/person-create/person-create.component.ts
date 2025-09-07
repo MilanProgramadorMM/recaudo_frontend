@@ -3,7 +3,7 @@ import { FormBuilder, FormGroup, Validators, ReactiveFormsModule, FormsModule } 
 import { NgbActiveModal, NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { PersonRegisterDto, PersonService } from '@core/services/person.service';
 import { FileUploaderComponent } from '@components/file-uploader.component';
-import { NgIf, NgClass, NgForOf, NgFor } from '@angular/common';
+import { NgIf, NgClass, NgForOf, NgFor, CommonModule, LowerCasePipe } from '@angular/common';
 import { Glotypes, GlotypesService } from '@core/services/glotypes.service';
 
 @Component({
@@ -16,16 +16,24 @@ import { Glotypes, GlotypesService } from '@core/services/glotypes.service';
     NgIf,
     NgForOf,
     NgFor,
-    NgClass
+    NgClass,
+    CommonModule,
+    LowerCasePipe
   ],
   templateUrl: './person-create.component.html',
   styleUrl: './person-create.component.scss'
 })
 export class PersonCreateComponent implements OnInit {
   @Input() personData: PersonRegisterDto | null = null;
+  @Input() personType!: string; // ASESOR | CLIENTE
+
+  modalTitle = '';
+
 
   @ViewChild('successalert', { static: true }) successAlertTpl!: TemplateRef<any>;
   @ViewChild('erroralert', { static: true }) errorAlertTpl!: TemplateRef<any>;
+  @ViewChild('confirmReactivate', { static: true }) confirmReactivateTpl!: TemplateRef<any>;
+
 
 
   form!: FormGroup;
@@ -38,8 +46,6 @@ export class PersonCreateComponent implements OnInit {
 
   genderGlotypes: Glotypes[] = [];
   documentTypes: Glotypes[] = [];
-
-
 
   constructor(
     public activeModal: NgbActiveModal,
@@ -87,7 +93,8 @@ export class PersonCreateComponent implements OnInit {
       documentType: Number(data.document_type),
       gender: Number(data.gender),
       occupation: data.occupation,
-      description: data.description,
+      description: data.description
+
     });
 
     this.updateFullName();
@@ -116,6 +123,11 @@ export class PersonCreateComponent implements OnInit {
     }
 
     const formValues = this.form.getRawValue();
+    Object.keys(formValues).forEach(key => {
+      if (typeof formValues[key] === 'string') {
+        formValues[key] = formValues[key].toUpperCase();
+      }
+    });
 
     const person: PersonRegisterDto = {
       id: this.personData?.id,
@@ -129,6 +141,8 @@ export class PersonCreateComponent implements OnInit {
       gender: formValues.gender,
       occupation: formValues.occupation,
       description: formValues.description,
+      type_person: this.personType
+
     };
 
     const action = this.personData?.id
@@ -137,31 +151,63 @@ export class PersonCreateComponent implements OnInit {
 
     action.subscribe({
       next: (response) => {
-        this.successDetails = response.details; // 👈 guardamos el detalle
-        // Mostrar modal de éxito
+        this.successDetails = response.details;
         const modalRef = this.modalService.open(this.successAlertTpl, {
           centered: true,
           size: 'sm',
           backdrop: 'static'
         });
-
-        // Guardamos la respuesta en caso que quieras devolverla luego
         modalRef.result.then(
-          () => {
-            // cuando el usuario hace click en "Continuar" (onSuccessContinue cierra el modal de alerta)
-            this.activeModal.close(response.data); // cierra modal principal devolviendo data
-          },
-          () => {
-            // dismissed -> también cerramos el modal principal
-            this.activeModal.close(response.data);
-          }
+          () => this.activeModal.close(response.data),
+          () => this.activeModal.close(response.data)
         );
       },
       error: (err) => {
-        this.errorMessage = 'Error al guardar la persona.';
-        this.lastErrorMessage = err?.error?.details || err?.message || null;
+        // 👇 aquí validamos si viene INACTIVE desde el backend
+        if (err?.status === 'INACTIVE' || err?.error?.status === 'INACTIVE') {
+          const personId = err.personId || err?.error?.personId;
+          // Guardamos en memoria para usarlo al confirmar
+          this.pendingReactivateId = personId;
 
-        // Mostrar modal de error (color rojo)
+          this.modalService.open(this.confirmReactivateTpl, {
+            centered: true,
+            size: 'sm',
+            backdrop: 'static'
+          });
+        } else {
+          this.errorMessage = 'Error al guardar la persona.';
+          this.lastErrorMessage = err?.error?.details || err?.message || null;
+          this.modalService.open(this.errorAlertTpl, {
+            centered: true,
+            size: 'sm'
+          });
+        }
+      }
+    });
+  }
+
+  pendingReactivateId: number | null = null;
+
+  onConfirmReactivate(modal: any) {
+    modal.close();
+    if (!this.pendingReactivateId) return;
+
+    this.personService.reactivatePerson(this.pendingReactivateId).subscribe({
+      next: (response) => {
+        this.successDetails = response.details;
+        const modalRef = this.modalService.open(this.successAlertTpl, {
+          centered: true,
+          size: 'sm',
+          backdrop: 'static'
+        });
+        modalRef.result.then(
+          () => this.activeModal.close(response.data),
+          () => this.activeModal.close(response.data)
+        );
+      },
+      error: (err) => {
+        this.errorMessage = 'No se pudo reactivar la persona.';
+        this.lastErrorMessage = err?.error?.details || err?.message || null;
         this.modalService.open(this.errorAlertTpl, {
           centered: true,
           size: 'sm'

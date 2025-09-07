@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, TemplateRef, ViewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { PageTitleComponent } from '@components/page-title.component';
 import { NgbModalModule, NgbPaginationModule } from '@ng-bootstrap/ng-bootstrap';
@@ -28,7 +28,14 @@ export class UsersComponentComponent {
   filteredUsers: UserDto[] = [];
   searchTerm: string = '';
   page = 1;
-  loadingUpdateRoles = false; 
+  loadingUpdateRoles = false;
+
+  successDetails = '';
+  lastErrorMessage = '';
+
+  @ViewChild('confirmDeleteTpl', { static: true }) confirmDeleteTpl!: TemplateRef<any>;
+  @ViewChild('successAlertTpl', { static: true }) successAlertTpl!: TemplateRef<any>;
+  @ViewChild('errorAlertTpl', { static: true }) errorAlertTpl!: TemplateRef<any>;
 
 
   showModal = false;
@@ -44,7 +51,7 @@ export class UsersComponentComponent {
 
   constructor(
     private modalService: NgbModal,
-    private userService: UserService  ) { }
+    private userService: UserService) { }
 
   ngOnInit(): void {
     this.fetchUsers();
@@ -52,20 +59,20 @@ export class UsersComponentComponent {
 
   //LLAMADA AL MODAL PARA CREAR UN USUARIO
   openUserModal(user?: UserRegisterDto) {
-      const modalRef = this.modalService.open(UserCreateComponent, {
-        centered: true,
-        backdrop: 'static',
-        windowClass: 'custom-modal-size modal-lg'
-      });
-  
-      if (user) {
-        modalRef.componentInstance.userData = user;
-      }
-  
-      modalRef.result.then(() => {
-        this.fetchUsers(); // Se refresca lista después de editar
-      }).catch(() => { });
+    const modalRef = this.modalService.open(UserCreateComponent, {
+      centered: true,
+      backdrop: 'static',
+      windowClass: 'custom-modal-size modal-lg'
+    });
+
+    if (user) {
+      modalRef.componentInstance.userData = user;
     }
+
+    modalRef.result.then(() => {
+      this.fetchUsers(); // Se refresca lista después de editar
+    }).catch(() => { });
+  }
 
   fetchUsers() {
     this.userService.getAllUsers().subscribe({
@@ -104,46 +111,71 @@ export class UsersComponentComponent {
     });
     modalRef.componentInstance.id = user.id;
     modalRef.componentInstance.type = 'USERS';
-    modalRef.componentInstance.nombreUsuario = user.person_fullname; 
+    modalRef.componentInstance.nombreUsuario = user.person_fullname;
 
   }
 
   openRoleUpdateModal(user: any): void {
-  const modalRef = this.modalService.open(UserAssignRolComponent, {
-    size: 'xl',
-    centered: true,
-    scrollable: true
-  });
-  modalRef.componentInstance.userId = user.id;
+    const modalRef = this.modalService.open(UserAssignRolComponent, {
+      size: 'xl',
+      centered: true,
+      scrollable: true
+    });
+    modalRef.componentInstance.userId = user.id;
 
-  // Usar promise result para capturar el payload del close()
-  modalRef.result.then((result: any) => {
-    console.log('[UsersComponent] modal closed with result:', result);
+    // Usar promise result para capturar el payload del close()
+    modalRef.result.then((result: any) => {
+      console.log('[UsersComponent] modal closed with result:', result);
 
-    if (result?.success) {
-      const roleIds: number[] = result.selectedRoleIds ?? [];
-      console.log('[UsersComponent] calling updateUserRoles', user.id, roleIds);
+      if (result?.success) {
+        const roleIds: number[] = result.selectedRoleIds ?? [];
+        console.log('[UsersComponent] calling updateUserRoles', user.id, roleIds);
 
-      this.loadingUpdateRoles = true;
-      this.userService.updateUserRoles(user.id, roleIds).subscribe({
-        next: (res) => {
-          this.loadingUpdateRoles = false;
-          console.log('[UsersComponent] updateUserRoles success', res);
-          this.fetchUsers();
-        },
-        error: (err) => {
-          this.loadingUpdateRoles = false;
-          console.error('[UsersComponent] updateUserRoles error', err);
-        }
-      });
-    } else {
-      console.log('[UsersComponent] modal closed without success flag');
-    }
-  }).catch((reason) => {
-    // dismiss (esc, backdrop click o activeModal.dismiss())
-    console.log('[UsersComponent] modal dismissed:', reason);
-  });
-}
+        this.loadingUpdateRoles = true;
+        this.userService.updateUserRoles(user.id, roleIds).subscribe({
+          next: (res) => {
+            this.loadingUpdateRoles = false;
+            console.log('[UsersComponent] updateUserRoles success', res);
+            this.fetchUsers();
+          },
+          error: (err) => {
+            this.loadingUpdateRoles = false;
+            console.error('[UsersComponent] updateUserRoles error', err);
+          }
+        });
+      } else {
+        console.log('[UsersComponent] modal closed without success flag');
+      }
+    }).catch((reason) => {
+      // dismiss (esc, backdrop click o activeModal.dismiss())
+      console.log('[UsersComponent] modal dismissed:', reason);
+    });
+  }
+
+  onDelete(user: UserDto) {
+    const modalRef = this.modalService.open(this.confirmDeleteTpl, {
+      centered: true,
+      size: 'sm',
+      backdrop: 'static'
+    });
+
+    modalRef.result.then((confirmed) => {
+      if (confirmed) {
+        this.userService.deleteUser(user.id!).subscribe({
+          next: (res: any) => {
+            this.successDetails = res.details || 'Usuario eliminado correctamente';
+            this.modalService.open(this.successAlertTpl, { centered: true, size: 'sm', backdrop: 'static' });
+            this.fetchUsers();
+          },
+          error: (err) => {
+            // 👇 aquí guardamos el detalle real del backend
+            this.lastErrorMessage = err?.error?.details || err?.details || 'Error al eliminar usuario';
+            this.modalService.open(this.errorAlertTpl, { centered: true, size: 'sm' });
+          }
+        });
+      }
+    }).catch(() => { /* modal cerrado sin confirmar */ });
+  }
 
 
 }
