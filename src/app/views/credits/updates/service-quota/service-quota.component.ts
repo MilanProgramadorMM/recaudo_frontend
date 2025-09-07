@@ -14,7 +14,6 @@ import Swal from 'sweetalert2';
     FormsModule,
     PageTitleComponent],
   templateUrl: './service-quota.component.html',
-  styleUrl: './service-quota.component.scss'
 })
 export class ServiceQuotaComponent {
   serviceQuotaResponse: ServiceQuotaResponseDto[] = [];

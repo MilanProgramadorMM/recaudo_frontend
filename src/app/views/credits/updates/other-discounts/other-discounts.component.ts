@@ -14,7 +14,6 @@ import Swal from 'sweetalert2';
     FormsModule,
     PageTitleComponent],
   templateUrl: './other-discounts.component.html',
-  styleUrl: './other-discounts.component.scss'
 })
 export class OtherDiscountsComponent {
   otherDiscounts: OtherDiscountsDto[] = [];

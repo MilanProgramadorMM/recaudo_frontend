@@ -15,7 +15,6 @@ import { FormComponent } from '../form/form.component';
     PageTitleComponent
   ],
   templateUrl: './tax.component.html',
-  styleUrl: './tax.component.scss'
 })
 export class TaxComponent {
   taxtype: TaxTypeDto[] = [];

@@ -15,7 +15,6 @@ import { FormComponent } from '../form/form.component';
     FormsModule,
     PageTitleComponent],
   templateUrl: './amortizations.component.html',
-  styleUrl: './amortizations.component.scss'
 })
 export class AmortizationsComponent {
   amortizations: AmortizationDto[] = [];
