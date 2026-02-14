@@ -1,3 +1,7 @@
 .text-uppercase {
   text-transform: uppercase;
 }
+
+.cdk-overlay-container {
+    z-index: 9999 !important; 
+}

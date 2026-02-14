@@ -8,6 +8,7 @@ import { UserDto, UserRegisterDto, UserService } from '@core/services/user.servi
 import { UserConfigPermisionsComponent } from '../user-config-permisions/user-config-permisions.component';
 import { UserAssignRolComponent } from '../user-assign-rol/user-assign-rol.component';
 import { UserCreateComponent } from '../user-create/user-create.component';
+import Swal from 'sweetalert2';
 
 
 @Component({
@@ -70,7 +71,7 @@ export class UsersComponentComponent {
     }
 
     modalRef.result.then(() => {
-      this.fetchUsers(); // Se refresca lista después de editar
+      this.fetchUsers(); 
     }).catch(() => { });
   }
 
@@ -123,7 +124,6 @@ export class UsersComponentComponent {
     });
     modalRef.componentInstance.userId = user.id;
 
-    // Usar promise result para capturar el payload del close()
     modalRef.result.then((result: any) => {
       console.log('[UsersComponent] modal closed with result:', result);
 
@@ -147,7 +147,6 @@ export class UsersComponentComponent {
         console.log('[UsersComponent] modal closed without success flag');
       }
     }).catch((reason) => {
-      // dismiss (esc, backdrop click o activeModal.dismiss())
       console.log('[UsersComponent] modal dismissed:', reason);
     });
   }
@@ -168,13 +167,52 @@ export class UsersComponentComponent {
             this.fetchUsers();
           },
           error: (err) => {
-            // 👇 aquí guardamos el detalle real del backend
             this.lastErrorMessage = err?.error?.details || err?.details || 'Error al eliminar usuario';
             this.modalService.open(this.errorAlertTpl, { centered: true, size: 'sm' });
           }
         });
       }
-    }).catch(() => { /* modal cerrado sin confirmar */ });
+    }).catch(() => { });
+  }
+
+  changeStatusUser(event: Event, user: UserDto) {
+    // Bloqueamos el cambio visual inmediato
+    event.preventDefault();
+    event.stopPropagation();
+
+    const action = user.status ? 'inactivar' : 'activar';
+
+    Swal.fire({
+      title: `¿Quieres ${action} a este usuario?`,
+      text: `El usuario quedará ${user.status ? 'inactivo' : 'activo'}.`,
+      icon: 'question',
+      showCancelButton: true,
+      confirmButtonText: `Sí, ${action}`,
+      cancelButtonText: 'Cancelar',
+      confirmButtonColor: '#198754',
+      cancelButtonColor: '#6c757d'
+    }).then((result) => {
+      if (result.isConfirmed) {
+        this.userService.updateUserStatus(user.id!, !user.status).subscribe({
+          next: (res) => {
+            user.status = !user.status; // aquí sí actualizamos el modelo y la UI
+            Swal.fire(
+              '¡Actualizado!',
+              res.message || 'Estado actualizado correctamente',
+              'success'
+            );
+          },
+          error: (err) => {
+            Swal.fire(
+              'Error',
+              err.error?.details || 'No se pudo actualizar el estado',
+              'error'
+            );
+          }
+        });
+      }
+      // si cancela: no hacemos nada, el switch se queda como estaba
+    });
   }
 
 

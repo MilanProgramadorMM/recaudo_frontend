@@ -17,7 +17,17 @@
         </tr>
       </thead>
       <tbody>
-        @if (contactInfoList.length > 0) {
+        <!-- BLOQUE 1: CARGANDO -->
+        @if (loading) {
+        <tr>
+          <td colspan="7" class="text-center py-4">
+            <div class="spinner-border spinner-border-sm text-primary" role="status"></div>
+            <span class="ms-2">Cargando...</span>
+          </td>
+        </tr>
+        }
+        <!-- BLOQUE 2: MOSTRAR DATOS -->
+        @else if (contactInfoList.length > 0) {
         @for (item of contactInfoList; track item.id) {
         <tr>
           <td>{{item.typeName}}</td>
@@ -28,31 +38,32 @@
           <td>{{item.description || '—'}}</td>
           <td class="pe-3">
             <div class="hstack gap-1 justify-content-end">
-
               <a href="javascript:void(0);" class="btn btn-soft-success btn-icon btn-sm rounded-circle"
                 (click)="editContactInfo(item)">
                 <i class="ti ti-edit fs-16"></i>
               </a>
-
               <a href="javascript:void(0);" class="btn btn-soft-danger btn-icon btn-sm rounded-circle"
-                (click)="deleteContactInfo(item)">
+                [class.disabled]="isPrincipal(item.typeName)"
+                (click)="!isPrincipal(item.typeName) && deleteContactInfo(item)">
                 <i class="ti ti-trash"></i>
               </a>
-
             </div>
           </td>
         </tr>
         }
-        } @else {
+        }
+        <!-- BLOQUE 3: SIN DATOS -->
+        @else {
         <tr>
           <td colspan="7" class="text-center text-muted py-3">
-            La persona no tiene aún información de contacto registrada.
+            {{ noContactInfoMessage || 'No hay información de contacto registrada.' }}
           </td>
         </tr>
         }
       </tbody>
     </table>
   </div>
+
 </div>
 
 <!-- CONFIRMACIÓN DE ELIMINACIÓN -->

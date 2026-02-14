@@ -8,6 +8,8 @@ import { TaxTypeDto, TaxTypeService } from '@core/services/tax-type.service';
 import { Observable } from 'rxjs';
 import { ServiceQuotaResponseDto, ServiceQuotaService } from '@core/services/service-quota.service';
 import { Util } from '@core/helper/utils';
+import { DocumentService, DocumentTypeResponseDto } from '@core/services/documentType.service';
+import { InsuranceResponseDto, InsuranceService } from '@core/services/insurance.service';
 
 @Component({
   selector: 'app-form',
@@ -16,8 +18,8 @@ import { Util } from '@core/helper/utils';
   styleUrl: './form.component.scss'
 })
 export class FormComponent {
-  @Input() type!: 'tax_type' | 'amortization_type' | 'other_discounts' | 'service_quota';
-  @Input() entityToEdit?: AmortizationDto | TaxTypeDto | OtherDiscountsDto | ServiceQuotaResponseDto;
+  @Input() type!: 'tax_type' | 'amortization_type' | 'other_discounts' | 'service_quota' | 'document_type' | 'insurance';
+  @Input() entityToEdit?: AmortizationDto | TaxTypeDto | OtherDiscountsDto | ServiceQuotaResponseDto | DocumentTypeResponseDto | InsuranceResponseDto;
 
   submitted = false;
   loading = false;
@@ -46,7 +48,10 @@ export class FormComponent {
     private amortizationService: AmortizationService,
     private taxTypeService: TaxTypeService,
     private otherDiscountsService: OtherDiscountsService,
-    private serviceQuotaService: ServiceQuotaService
+    private serviceQuotaService: ServiceQuotaService,
+    private documentService: DocumentService,
+    private insuranceService: InsuranceService
+
   ) { }
 
   ngOnInit(): void {
@@ -55,21 +60,26 @@ export class FormComponent {
       this.code = (this.entityToEdit as any).code || '';
       this.name = this.entityToEdit.name;
       this.description = this.entityToEdit.description || '';
-      this.procedure = this.entityToEdit.procedure || '';
+      if (
+        this.type === 'amortization_type' || this.type === 'tax_type' || this.type === 'other_discounts' || this.type === 'service_quota' || this.type === 'insurance'
+      ) {
+        this.procedure = (this.entityToEdit as AmortizationDto | TaxTypeDto | OtherDiscountsDto | ServiceQuotaResponseDto | InsuranceResponseDto).procedure || '';
+      } else {
+        this.procedure = '';
+      }
     }
   }
 
   save(form: NgForm) {
     this.submitted = true;
 
-    // 🔹 Normalizar todos los campos de texto
     this.code = Util.normalizeText(this.code);
     this.name = Util.normalizeText(this.name);
     this.description = Util.normalizeText(this.description);
     this.procedure = Util.normalizeText(this.procedure);
 
     if (form.invalid) {
-      this.errorMessage = 'Por favor completa los campos obligatorios.';
+      this.errorMessage = 'Por favor completa los campos obligatorios(*).';
       setTimeout(() => (this.errorMessage = ''), 3000);
       return;
     }
@@ -84,7 +94,7 @@ export class FormComponent {
         code: this.code,
         name: this.name,
         description: this.description,
-        procedure: this.procedure,
+        procedure: 'NA'// this.procedure,
       };
 
       if (this.isEditMode) {
@@ -97,7 +107,7 @@ export class FormComponent {
       payload = {
         name: this.name,
         description: this.description,
-        procedure: this.procedure,
+        procedure: 'NA' //this.procedure,
       };
 
       if (this.isEditMode) {
@@ -110,7 +120,7 @@ export class FormComponent {
       payload = {
         name: this.name,
         description: this.description,
-        procedure: this.procedure,
+        procedure: 'NA'//this.procedure,
       };
 
       if (this.isEditMode) {
@@ -122,13 +132,24 @@ export class FormComponent {
       payload = {
         name: this.name,
         description: this.description,
-        procedure: this.procedure,
+        procedure: 'NA' //this.procedure,
       };
 
       if (this.isEditMode) {
         request$ = this.serviceQuotaService.edit((this.entityToEdit as ServiceQuotaResponseDto).id!, payload);
       } else {
         request$ = this.serviceQuotaService.create(payload);
+      }
+    } else if (this.type === 'document_type') {
+      payload = {
+        name: this.name,
+        description: this.description,
+      };
+
+      if (this.isEditMode) {
+        request$ = this.documentService.edit((this.entityToEdit as ServiceQuotaResponseDto).id!, payload);
+      } else {
+        request$ = this.documentService.create(payload);
       }
     } else {
       this.loading = false;

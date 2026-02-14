@@ -1,0 +1,18 @@
+// request-recaudo.component.scss
+.table {
+  th {
+    font-weight: 600;
+    font-size: 0.875rem;
+  }
+  
+  td {
+    vertical-align: middle;
+  }
+}
+
+.btn-success {
+  &:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  }
+}

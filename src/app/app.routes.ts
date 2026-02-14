@@ -5,6 +5,7 @@ import { inject } from '@angular/core'
 import { AuthenticationService } from '@core/services/auth.service'
 import { AuthGuard } from '@/store/authentication/guards/guard.guard'
 import { LoginGuard } from '@/store/authentication/guards/login.guard'
+import { CreditApprovalComponent } from '@views/credit-approval/credit-approval.component'
 
 export const routes: Routes = [
 
@@ -46,5 +47,10 @@ export const routes: Routes = [
       import('./views/error-pages/error-pages.route').then(
         (mod) => mod.ERROR_PAGES_ROUTES
       ),
+  },
+
+  {
+    path: 'public/credit-approval/:token',
+    component: CreditApprovalComponent,
   },
 ];

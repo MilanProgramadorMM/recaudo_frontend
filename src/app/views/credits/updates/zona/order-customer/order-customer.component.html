@@ -1,0 +1,83 @@
+<div class="modal-header">
+  <h5 class="modal-title">
+    <i class="bi bi-layout-text-sidebar me-2"></i>
+    Ordenar clientes por zona: {{ zonaValue }}
+  </h5>
+  <button type="button" class="btn-close" aria-label="Close" (click)="activeModal.dismiss('Cross click')"></button>
+</div>
+
+<div class="modal-body">
+  <!-- Loading -->
+  <div *ngIf="loading" class="text-center py-4">
+    <div class="spinner-border text-primary" role="status">
+      <span class="visually-hidden">Cargando...</span>
+    </div>
+  </div>
+
+  <!-- Contenido principal -->
+  <div *ngIf="!loading" class="clientes-container row g-3">
+    <!-- CLIENTES CON ORDEN -->
+    <div class="col-12 col-md-6">
+      <h5 class="text-center text-md-start">Clientes con orden</h5>
+      <div cdkDropList id="clientesConOrden" [cdkDropListData]="clientesConOrden"
+        [cdkDropListConnectedTo]="['sinOrden']" class="list-group shadow-sm p-1 cliente-list"
+        (cdkDropListDropped)="dropToLeft($event)">
+        <div *ngFor="let cliente of clientesConOrden" cdkDrag
+          class="list-group-item d-flex align-items-center draggable-item">
+          <div class="orden-number">{{ cliente?.orden || 0 }}</div>
+          <div class="flex-grow-1">
+            <i class="bi bi-person-circle me-2 text-primary"></i>{{ cliente?.fullName || 'Sin nombre' }}
+          </div>
+          <div class="cliente-documento">{{ cliente?.document || '' }}</div>
+          <i class="bi bi-arrows-move text-muted ms-2"></i>
+        </div>
+      </div>
+    </div>
+
+    <!-- CLIENTES SIN ORDEN -->
+    <div class="col-12 col-md-6">
+      <h5 class="text-center text-md-start">Clientes sin orden</h5>
+      <div cdkDropList id="sinOrden" [cdkDropListData]="clientesSinOrden"
+        [cdkDropListConnectedTo]="['clientesConOrden']" class="list-group shadow-sm p-1 cliente-list"
+        (cdkDropListDropped)="dropToLeft($event)">
+        <div *ngFor="let cliente of clientesSinOrden" cdkDrag
+          class="list-group-item d-flex align-items-center draggable-item">
+          <div class="flex-grow-1">
+            <i class="bi bi-person-circle me-2 text-primary"></i>{{ cliente.fullName }}
+          </div>
+          <div class="cliente-documento">{{ cliente.document }}</div>
+          <i class="bi bi-arrows-move text-muted ms-2"></i>
+        </div>
+
+        <div *ngIf="clientesSinOrden.length === 0" class="text-center text-muted py-2">
+          No hay clientes por asignar orden
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal-footer flex-wrap justify-content-center justify-content-md-end">
+  <button type="button" class="btn btn-danger me-2" (click)="activeModal.close('cancel')">Cancelar</button>
+  <button type="button" class="btn btn-primary" (click)="guardarOrden()">Guardar</button>
+</div>
+
+<!-- ALERTA DE ÉXITO -->
+<ng-template #successalert let-modal>
+  <div class="modal-filled bg-success text-white text-center p-4">
+    <i class="ti ti-check h1"></i>
+    <h4 class="mt-2">¡Bien hecho!</h4>
+    <p class="mt-3">Orden establecido correctamente!</p>
+    <button (click)="onSuccessContinue(modal)" type="button" class="btn btn-light my-2">Continuar</button>
+  </div>
+</ng-template>
+
+<!-- ALERTA DE ERROR -->
+<ng-template #erroralert let-modal>
+  <div class="modal-filled bg-danger text-white text-center p-4">
+    <i class="ti ti-alert-circle h1"></i>
+    <h4 class="mt-2">Ocurrió un error</h4>
+    <p class="mt-3">{{ lastErrorMessage || 'No se pudo establecer orden correctamente. Intenta nuevamente.' }}</p>
+    <button (click)="modal.dismiss()" type="button" class="btn btn-light my-2">Cerrar</button>
+  </div>
+</ng-template>

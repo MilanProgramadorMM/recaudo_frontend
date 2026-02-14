@@ -1,4 +1,4 @@
-import { Component, inject, type OnInit } from '@angular/core';
+import { Component, EventEmitter, inject, Output, type OnInit } from '@angular/core';
 import { SimplebarAngularModule } from 'simplebar-angular'
 import { LogoBoxComponent } from "@components/logo-box.component";
 import { MENU_ITEMS, type MenuItemType } from '@common/menu-meta';
@@ -21,10 +21,15 @@ import { MenuItemBD, ModuleService } from '@core/services/module.service';
 })
 export class SidebarComponent implements OnInit {
 
-  
+
+  @Output() mobileMenuButtonClicked = new EventEmitter();
+
   menuItems: MenuItemType[] = [];
   menuItemsBd: MenuItemBD[] = [];
   activeMenuItems: string[] = [];
+
+  sidebarVisible = true;
+
 
   router = inject(Router);
   trimmedURL = this.router.url?.replaceAll(
@@ -34,7 +39,7 @@ export class SidebarComponent implements OnInit {
 
   store = inject(Store);
 
-  constructor(private moduleService : ModuleService) {
+  constructor(private moduleService: ModuleService) {
     this.router.events.forEach((event) => {
       if (event instanceof NavigationEnd) {
         this.trimmedURL = this.router.url?.replaceAll(
@@ -53,7 +58,7 @@ export class SidebarComponent implements OnInit {
     this.initMenu();
   }
 
-   initMenu(): void {
+  initMenu(): void {
     //this.menuItems = MENU_ITEMS;
     this.moduleService.getMenu().subscribe({
       next: (items) => {
@@ -98,6 +103,19 @@ export class SidebarComponent implements OnInit {
       }
     }
   }
+
+  closeSidebar() {
+    this.sidebarVisible = false;
+    const backdrop = document.getElementsByClassName('offcanvas-backdrop')[0] as HTMLElement;
+    if (backdrop) {
+      backdrop.click();
+    }
+  }
+
+  openSidebar() {
+    this.sidebarVisible = true;
+  }
+
 
   easeInOutQuad(t: number, b: number, c: number, d: number): number {
     t /= d / 2;

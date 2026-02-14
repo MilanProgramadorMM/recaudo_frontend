@@ -1,0 +1,53 @@
+a.disabled {
+  pointer-events: none;
+  opacity: 0.5;
+}
+
+/* 🔹 Ajuste responsive para el contenedor del paginador */
+.card-footer {
+  padding: 0.5rem 1rem;
+}
+
+// Al final del archivo SCSS:
+.dropdown-menu {
+  min-width: 280px;
+  max-height: 400px;
+  overflow-y: auto;
+}
+
+.btn-red {
+  background-color: #dc3545;
+  border-color: #dc3545;
+  color: #fff;
+  transition: all 0.3s ease;
+}
+
+.card-footer .pagination {
+  flex-wrap: wrap;
+  /* Permite que los elementos bajen de línea si no caben */
+  justify-content: center;
+  /* Centra los botones en pantallas pequeñas */
+}
+
+@media (max-width: 768px) {
+  .card-footer .pagination {
+    overflow-x: auto;
+    /* Permite desplazamiento horizontal si hay muchas páginas */
+    white-space: nowrap;
+    justify-content: flex-start;
+    /* Alinea a la izquierda en móviles */
+  }
+
+  .card-footer {
+    padding-bottom: 0.75rem;
+  }
+
+  .card-footer::-webkit-scrollbar {
+    height: 6px;
+  }
+
+  .card-footer::-webkit-scrollbar-thumb {
+    background: #ccc;
+    border-radius: 4px;
+  }
+}

@@ -1,0 +1,13 @@
+/* Quita el fondo blanco del modal de carga si lo deseas */
+.modal-loading .modal-content {
+  background: transparent;
+  border: none;
+  box-shadow: none;
+}
+/* Asegura que el spinner sea visible sobre el fondo oscuro */
+.modal-loading .spinner-border {
+  color: #ffffff !important; 
+}
+.modal-loading h5, .modal-loading p {
+  color: white !important;
+}

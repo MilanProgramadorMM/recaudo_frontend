@@ -1,0 +1,10 @@
+{
+  "assetPath": "resources",
+  "platforms": {
+    "android": {
+      "icon": {
+        "sources": ["iconoclean.png"]
+      }
+    }
+  }
+}

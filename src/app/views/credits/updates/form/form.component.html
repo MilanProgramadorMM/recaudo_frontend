@@ -2,16 +2,15 @@
     <h5 class="modal-title">
         {{ isEditMode ? 'Editar' : 'Nuevo' }}
         {{
-        type === 'tax_type'
-        ? 'tipo de Impuesto'
-        : type === 'amortization_type'
-        ? 'tipo de Amortización'
-        : type === 'service_quota'
-        ? 'tipo de Cargo por servicio'
-        : 'tipo de descuento'
+        type === 'tax_type' ? 'tipo de Impuesto'
+        : type === 'amortization_type' ? 'tipo de Amortización'
+        : type === 'service_quota' ? 'tipo de Cargo por servicio'
+        : type === 'other_discounts' ? 'tipo de Descuento'
+        : type === 'document_type' ? 'tipo de Documento'
+        : type === 'insurance' ? 'tipo de Seguro'
+        : ''
         }}
     </h5>
-
     <button type="button" class="btn-close" (click)="activeModal.dismiss()"></button>
 </div>
 
@@ -19,7 +18,7 @@
     <p *ngIf="errorMessage" class="fs-14 text-danger">{{ errorMessage }}</p>
 
     <form #form="ngForm" (ngSubmit)="save(form)">
-        <!-- Solo Amortization -->
+
         <div class="mb-3" *ngIf="type === 'amortization_type'">
             <label>Código <span class="required">*</span></label>
             <input type="text" class="form-control text-uppercase" [(ngModel)]="code" name="code" required
@@ -38,14 +37,16 @@
             </div>
         </div>
 
-        <div class="mb-3">
+        <div class="mb-3"
+            *ngIf="type === 'tax_type' || type === 'service_quota' || type === 'other_discounts' || type === 'document_type' || type === 'insurance'">
             <label>Descripción</label>
             <input type="text" class="form-control text-uppercase" [(ngModel)]="description" name="description" />
         </div>
 
-        <div class="mb-3">
-            <label>Procedimiento <span class="required">*</span></label>
-            <input type="text" class="form-control text-uppercase" [(ngModel)]="procedure" name="procedure" required
+        <div class="mb-3"
+            *ngIf="type === 'tax_type' || type === 'amortization_type' || type === 'service_quota' || type === 'other_discounts' || type === 'insurance'">
+            <label>Procedimiento </label>
+            <input type="text" class="form-control text-uppercase" [(ngModel)]="procedure" name="procedure" readonly
                 [ngClass]="{ 'is-invalid': submitted && form.submitted && form.controls['procedure']?.invalid }" />
             <div class="invalid-feedback" *ngIf="submitted && form.controls['procedure']?.errors?.['required']">
                 Campo obligatorio
@@ -59,9 +60,8 @@
             </button>
         </div>
     </form>
-
-
 </div>
+
 
 <!-- Alerta de éxito -->
 <ng-template #successAlert let-modal>
@@ -69,7 +69,7 @@
         <div class="modal-body p-4 text-center">
             <i class="ti ti-check h1"></i>
             <h4 class="mt-2">{{ successMessage || '¡Bien hecho!' }}</h4>
-            <p class="mt-3">{{ successDetails || 'Operación realizada correctamente 🎉' }}</p>
+            <p class="mt-3">{{ successDetails || 'Operación realizada correctamente' }}</p>
             <button (click)="onSuccessContinue(modal)" type="button" class="btn btn-light my-2">Continuar</button>
         </div>
     </div>

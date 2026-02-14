@@ -11,9 +11,11 @@ import { jwtDecode } from 'jwt-decode';
 
 interface JwtPayload {
   sub: string;
+  userId: number;  // Agregado
   name: string;
   role: string;
   exp: number;
+  iat: number;     // Agregado
   [key: string]: any;
 }
 
@@ -31,6 +33,7 @@ export class AuthenticationService {
 
 
   login(username: string, password: string): Observable<User> {
+    //debugger;
     return this.http.post<any>(`${baseUrl}auth/login`, { username, password }).pipe(
       map((response) => {
         const token = response.data.token;
@@ -48,7 +51,7 @@ export class AuthenticationService {
 
 
   logout(): void {
-    debugger;
+    //debugger;
     this.removeSession()
     this.user = null
   }
@@ -77,5 +80,59 @@ export class AuthenticationService {
 
   removeSession(): void {
     this.cookieService.delete(this.authSessionKey, '/')
+  }
+  // Nuevo método para obtener el userId del token
+  getUserId(): number | null {
+    try {
+      const token = this.cookieService.get(this.authSessionKey);
+      if (!token) return null;
+
+      const claims: JwtPayload = jwtDecode(token);
+      return claims.userId || null;
+    } catch (error) {
+      console.error('Error al decodificar el token:', error);
+      return null;
+    }
+  }
+
+  // Nuevo método para obtener el rol del usuario
+  getUserRole(): string | null {
+    try {
+      const token = this.cookieService.get(this.authSessionKey);
+      if (!token) return null;
+
+      const claims: JwtPayload = jwtDecode(token);
+      return claims.role || null;
+    } catch (error) {
+      console.error('Error al decodificar el token:', error);
+      return null;
+    }
+  }
+  // Método para verificar si el token está expirado
+  isTokenExpired(): boolean {
+    try {
+      const token = this.cookieService.get(this.authSessionKey);
+      if (!token) return true;
+
+      const claims: JwtPayload = jwtDecode(token);
+      const expirationDate = new Date(claims.exp * 1000);
+      return expirationDate < new Date();
+    } catch (error) {
+      return true;
+    }
+  }
+
+  // Nuevo método para obtener el username
+  getUsername(): string | null {
+    try {
+      const token = this.cookieService.get(this.authSessionKey);
+      if (!token) return null;
+
+      const claims: JwtPayload = jwtDecode(token);
+      return claims.sub || null;
+    } catch (error) {
+      console.error('Error al decodificar el token:', error);
+      return null;
+    }
   }
 }

@@ -18,6 +18,8 @@ export class NeighborhoodComponent {
   filteredBarrios: BarrioResponseDto[] = [];
   searchTerm: string = '';
   page = 1;
+  pageSize = 10;
+
   loading: boolean = false;
 
 
@@ -35,6 +37,7 @@ export class NeighborhoodComponent {
       next: (res) => {
         this.barrios = res.data;
         this.filteredBarrios = [...this.barrios];
+        this.page = 1; 
         this.loading = false;
 
       },
@@ -53,13 +56,20 @@ export class NeighborhoodComponent {
       b.nombreMunicipio?.toLowerCase().includes(term) ||
       b.nombreDepartamento?.toLowerCase().includes(term)
     );
+    this.page = 1;
+
+  }
+
+  get pagedBarrios(): BarrioResponseDto[] {
+    const start = (this.page - 1) * this.pageSize;
+    return this.filteredBarrios.slice(start, start + this.pageSize);
   }
 
   openBarrioModal(barrio?: BarrioResponseDto) {
     const modalRef = this.modalService.open(CreateLocationModalComponent, {
       centered: true,
       backdrop: 'static',
-      windowClass: 'custom-modal-size modal-xl'
+      windowClass: 'custom-modal-size modal-lg'
     });
 
     modalRef.componentInstance.type = 'barrio';

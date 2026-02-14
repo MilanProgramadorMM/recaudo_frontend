@@ -3,7 +3,6 @@ import { CommonModule } from '@angular/common';
 import { PageTitleComponent } from '@components/page-title.component';
 import { NgbModal, NgbPaginationModule, NgbModalModule } from '@ng-bootstrap/ng-bootstrap';
 import { FormsModule } from '@angular/forms';
-import { DepartamentoResponseDto } from '@core/services/department.service';
 import { CitiesResponseDto, CitiesService } from '@core/services/cities.service';
 import { CreateLocationModalComponent } from "../create-location-modal/create-location-modal.component";
 import Swal from 'sweetalert2';
@@ -19,6 +18,8 @@ export class CitiesComponent {
   filteredMunicipios: CitiesResponseDto[] = [];
   searchTerm: string = '';
   page = 1;
+  pageSize = 10;
+
   loading: boolean = false;
 
 
@@ -37,6 +38,8 @@ export class CitiesComponent {
       next: (res) => {
         this.municipios = res.data;
         this.filteredMunicipios = [...this.municipios];
+        this.page = 1; 
+
         this.loading = false;
 
       },
@@ -53,13 +56,20 @@ export class CitiesComponent {
     this.filteredMunicipios = this.municipios.filter(m =>
       m.nombre?.toLowerCase().includes(term) || m.nombreDepartamento?.toLowerCase().includes(term)
     );
+    this.page = 1; 
+
+  }
+
+  get pagedCities(): CitiesResponseDto[] {
+    const start = (this.page - 1) * this.pageSize;
+    return this.filteredMunicipios.slice(start, start + this.pageSize);
   }
 
   openCityModal(muni?: CitiesResponseDto) {
     const modalRef = this.modalService.open(CreateLocationModalComponent, {
       centered: true,
       backdrop: 'static',
-      windowClass: 'custom-modal-size modal-xl'
+      windowClass: 'custom-modal-size modal-lg'
     });
 
     modalRef.componentInstance.type = 'municipio';

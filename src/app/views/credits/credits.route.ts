@@ -4,6 +4,10 @@ import { AmortizationsComponent } from "./updates/amortizationsType/amortization
 import { TaxComponent } from "./updates/tax/tax.component";
 import { OtherDiscountsComponent } from "./updates/other-discounts/other-discounts.component";
 import { ServiceQuotaComponent } from "./updates/service-quota/service-quota.component";
+import { LineasComponent } from "./updates/lines/lineas.component";
+import { DocumentTypeComponent } from "./updates/document-type/document-type.component";
+import { InsuranceComponent } from "./updates/insurance/insurance.component";
+import { ZonaComponent } from "./updates/zona/zona.component";
 
 export const CREDITS_ROUTES: Route[] = [
 
@@ -11,6 +15,11 @@ export const CREDITS_ROUTES: Route[] = [
     path: 'periodos',
     component: PeriodsComponent,
     data: { title: 'Periodos' }
+  },
+  {
+    path: 'lineas',
+    component: LineasComponent,
+    data: { title: 'Lineas de credito' }
   },
   {
     path: 'type-amortizaciones',
@@ -31,5 +40,20 @@ export const CREDITS_ROUTES: Route[] = [
     path: 'service-quota',
     component: ServiceQuotaComponent,
     data: { title: 'Cargos por servicio' }
+  },
+  {
+    path: 'type-document',
+    component: DocumentTypeComponent,
+    data: { title: 'Tipo de documentos' }
+  },
+  {
+    path: 'insurance',
+    component: InsuranceComponent,
+    data: { title: 'Seguros' }
+  },
+  {
+    path: 'zonas',
+    component: ZonaComponent,
+    data: { title: 'Zonas' }
   }
 ]

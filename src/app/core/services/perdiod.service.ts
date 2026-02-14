@@ -6,6 +6,7 @@ import baseUrl from './api';
 import { CookieService } from 'ngx-cookie-service';
 
 export interface PeriodDto {
+  id: number;
   cod: string;
   name: string;
   description: string;
@@ -20,7 +21,7 @@ export class PeriodService {
   constructor(
     private http: HttpClient,
     private cookieService: CookieService
-  ) {}
+  ) { }
 
   getAllPeriods(): Observable<PeriodDto[]> {
     const token = this.cookieService.get('_OSEN_AUTH_SESSION_KEY_');

@@ -1,0 +1,149 @@
+<div class="col-lg-12">
+    <div class="card">
+        <div class="card-body">
+            <p *ngIf="errorMessage" class="fs-14 text-danger">{{ errorMessage }}</p>
+
+            <div *ngIf="loading" class="text-center py-5">
+                <div class="spinner-border text-primary" role="status">
+                    <span class="visually-hidden">Cargando...</span>
+                </div>
+                <p class="mt-2">Cargando información del crédito...</p>
+            </div>
+
+            <div *ngIf="!loading && creditIntention" id="credit-wizard">
+                <ng-stepper cdkStepper #stepper [linear]="true" class="cdksteppercontent nav nav-pills">
+
+                    <!-- PASO 1: ESTUDIO -->
+                    <cdk-step [completed]="estudyPhaseCompleted">
+                        <ng-template cdkStepLabel>
+                            <li class="nav-item form-wizard-header"
+                                (click)="$event.preventDefault(); $event.stopPropagation()">
+                                <span class="nav-link rounded-0 py-2 bg-dark text-white"
+                                    [ngClass]="{ 'active': stepper.selectedIndex === 0 }">
+                                    <i class="bi bi-clipboard-data fs-18 align-middle me-1"></i>
+                                    <span class="d-none d-sm-inline">Estudio</span>
+                                </span>
+                            </li>
+                        </ng-template>
+
+                        <div class="p-3">
+                            <h4 class="mb-3">Fase de Estudio</h4>
+                            <app-stady [credit]="creditIntention"
+                                (allActivitiesCompleted)="onEstudyPhaseCompleted($event)"
+                                (fechaTentativaUpdated)="onFechaTentativaUpdated($event)">
+                            </app-stady>
+
+                            <div class=" d-flex justify-content-end mt-3">
+                                <!--  Botón controlado por completitud -->
+                                <button class="btn btn-danger" [disabled]="!estudyPhaseCompleted"
+                                    (click)="goToNextPhase()">
+                                    Siguiente <i class="ri-arrow-right-line"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </cdk-step>
+
+                    <!-- PASO 2: APROBACIÓN -->
+                    <cdk-step [completed]="aprobacionPhaseCompleted">
+                        <ng-template cdkStepLabel>
+                            <li class="nav-item form-wizard-header"
+                                (click)="$event.preventDefault(); $event.stopPropagation()">
+                                <span class="nav-link rounded-0 py-2 bg-dark text-white"
+                                    [ngClass]="{ 'active': stepper.selectedIndex === 1 }">
+                                    <i class="bi bi-patch-check fs-18 align-middle me-1"></i>
+                                    <span class="d-none d-sm-inline">Aprobación</span>
+                                </span>
+                            </li>
+                        </ng-template>
+
+                        <div class="p-3">
+                            <h4 class="mb-3">Fase de Aprobación</h4>
+                            <app-approve [credit]="creditIntention"
+                                (allActivitiesCompleted)="onAprobacionPhaseCompleted($event)">
+                            </app-approve>
+
+                            <div class="d-flex justify-content-between mt-3">
+                                <button class="btn btn-secondary" cdkStepperPrevious>
+                                    <i class="ri-arrow-left-line"></i> Anterior
+                                </button>
+                                <button class="btn btn-danger" [disabled]="!aprobacionPhaseCompleted" cdkStepperNext>
+                                    Siguiente <i class="ri-arrow-right-line"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </cdk-step>
+
+                    <!-- PASO 3: PERFECCIONAMIENTO -->
+                    <cdk-step>
+                        <ng-template cdkStepLabel>
+                            <li class="nav-item form-wizard-header"
+                                (click)="$event.preventDefault(); $event.stopPropagation()">
+                                <span class="nav-link rounded-0 py-2 bg-dark text-white"
+                                    [ngClass]="{ 'active': stepper.selectedIndex === 2 }">
+                                    <i class="bi bi-star fs-18 align-middle me-1"></i>
+                                    <span class="d-none d-sm-inline">Perfeccionamiento</span>
+                                </span>
+                            </li>
+                        </ng-template>
+
+                        <div class="p-3">
+                            <h4 class="mb-3">Fase de Perfeccionamiento</h4>
+                            <app-improvement [credit]="creditIntention"
+                                (allActivitiesCompleted)="onPerfeccionamientoPhaseCompleted($event)">
+
+                            </app-improvement>
+                            <div class="d-flex justify-content-between mt-3">
+                                <button class="btn btn-secondary" cdkStepperPrevious>
+                                    <i class="ri-arrow-left-line"></i> Anterior
+                                </button>
+                                <button class="btn btn-danger" [disabled]="!improvementComponentPhaseCompleted"
+                                    cdkStepperNext>
+                                    Siguiente <i class="ri-arrow-right-line"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </cdk-step>
+
+                    <!-- PASO 4: DESEMBOLSO -->
+                    <cdk-step>
+                        <ng-template cdkStepLabel>
+                            <li class="nav-item form-wizard-header"
+                                (click)="$event.preventDefault(); $event.stopPropagation()">
+                                <span class="nav-link rounded-0 py-2 bg-dark text-white"
+                                    [ngClass]="{ 'active': stepper.selectedIndex === 3 }">
+                                    <i class="bi bi-currency-dollar fs-18 align-middle me-1"></i>
+                                    <span class="d-none d-sm-inline">Desembolso</span>
+                                </span>
+                            </li>
+                        </ng-template>
+
+                        <div class="p-3">
+                            <h4 class="mb-3">Fase de Desembolso</h4>
+                            <app-disbursement [credit]="creditIntention"
+                                (allActivitiesCompleted)="onDesembolsoPhaseCompleted($event)">
+
+                            </app-disbursement>
+                            <div class=" d-flex justify-content-between mt-3">
+                                <button class="btn btn-secondary" cdkStepperPrevious>
+                                    <i class="ri-arrow-left-line"></i> Anterior
+                                </button>
+                                <button class="btn btn-danger" [disabled]="!disbursementComponentPhaseCompleted"
+                                    (click)="finalizarProceso()">
+                                    Finalizar <i class="ri-arrow-right-line"></i>
+                                </button>
+
+                            </div>
+                        </div>
+                    </cdk-step>
+
+                </ng-stepper>
+                <button class="btn btn-danger btn-fixed-right" placement="left"
+                    ngbTooltip="Descargar documento de identificación" (click)="downloadCedula()"
+                    [disabled]="!creditIntentionId">
+                    <i class="ti ti-id"></i>
+                </button>
+
+            </div>
+        </div>
+    </div>
+</div>

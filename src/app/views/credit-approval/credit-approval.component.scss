@@ -1,0 +1,91 @@
+// credit-approval.component.scss
+
+:host {
+  display: block;
+}
+
+.min-vh-100 {
+  min-height: 100vh;
+}
+
+.card {
+  border-radius: 1rem;
+
+  .card-header {
+    border-top-left-radius: 1rem;
+    border-top-right-radius: 1rem;
+  }
+
+  .card-footer {
+    border-bottom-left-radius: 1rem;
+    border-bottom-right-radius: 1rem;
+  }
+}
+
+.bg-custom-red {
+  background-color: #dc3545;
+  /* rojo Bootstrap */
+}
+
+.text-custom-danger {
+  color: #dc3545;
+}
+
+
+
+.btn-lg {
+  padding: 0.875rem 1.5rem;
+  font-size: 1.125rem;
+  font-weight: 500;
+
+  i {
+    font-size: 1.25rem;
+  }
+}
+
+.btn-custom-danger {
+  color: #dc3545;
+  border-color: #dc3545;
+}
+
+.btn-custom-danger:hover {
+  background-color: #dc3545;
+  color: #fff;
+}
+
+
+// Animación para botones
+.btn {
+  transition: all 0.3s ease;
+
+  &:hover:not(:disabled) {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  }
+
+  &:active:not(:disabled) {
+    transform: translateY(0);
+  }
+}
+
+.logo-empresa {
+  max-width: 160px;
+  width: 100%;
+  height: auto;
+}
+
+
+// Responsive
+@media (max-width: 576px) {
+  .card-body {
+    padding: 1.5rem !important;
+  }
+
+  h3 {
+    font-size: 1.5rem;
+  }
+
+  h5 {
+    font-size: 1.125rem;
+  }
+}

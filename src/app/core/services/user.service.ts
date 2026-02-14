@@ -12,6 +12,8 @@ export interface UserDto {
     rol?: RoleDto;
     userCreate?: string;
     createdAt?: string;
+    status: boolean;
+
 }
 export interface UserRegisterDto {
     username: string;
@@ -153,7 +155,11 @@ export class UserService {
         return this.http.put(`${baseUrl}user/delete/${userId}`, {}, { headers });
     }
 
-
+    updateUserStatus(userId: number, status: boolean): Observable<any> {
+        const token = this.cookieService.get('_OSEN_AUTH_SESSION_KEY_');
+        const headers = new HttpHeaders({ Authorization: `Bearer ${token}` });
+        return this.http.put(`${baseUrl}user/${userId}/status?status=${status}`, {}, { headers });
+    }
 
 
 }

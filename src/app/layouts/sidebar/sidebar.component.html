@@ -5,11 +5,6 @@
     <i class="ti ti-circle align-middle"></i>
   </button>
 
-
-  <button class="button-close-fullsidebar" >
-    <i class="ti ti-x align-middle"></i>
-  </button>
-
   <ngx-simplebar data-simplebar>
     <ul class="side-nav">
       @for (item of menuItems; track item.label;let first = $first) {
@@ -50,7 +45,7 @@
       <span class="menu-text"> {{ menu.label }} </span>
       <span class="menu-arrow"></span>
     </a>
-    <div #collapse="ngbCollapse"  [(ngbCollapse)]="menu.collapsed" class="collapse"  id="sidebarDashboards">
+    <div #collapse="ngbCollapse" [(ngbCollapse)]="menu.collapsed" class="collapse" id="sidebarDashboards">
       <ul [class]="subMenuClassNames">
         @for (child of menu.children; track child.label) {
         @if (hasSubmenu(child)) {
@@ -79,7 +74,7 @@
 </ng-template>
 
 <ng-template #MenuItemLink let-menu="menu" let-className="className">
-  <a [routerLink]="menu.url" [class]="className"
+  <a (click)="closeSidebar()" [routerLink]="menu.url" [class]="className"
     [ngClass]="{ active: activeMenuItems.includes(menu.key), disabled:menu.isDisabled }"
     [attr.aria-controls]="menu.key">
     @if (menu.icon) {

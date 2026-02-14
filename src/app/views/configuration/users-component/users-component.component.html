@@ -31,8 +31,9 @@
       <div class="mb-3 row align-items-center ms-3">
         <label for="person-search" class="col-sm-auto col-form-label">Buscar:</label>
         <div class="col-6">
-          <input id="person-search" class="form-control" type="text" placeholder="Por nombre, apellido o documento..."
-            [(ngModel)]="searchTerm" (ngModelChange)="applyFilter()" />
+          <input id="person-search" class="form-control text-uppercase" type="text"
+            placeholder="Por nombre, apellido o documento..." [(ngModel)]="searchTerm"
+            (ngModelChange)="applyFilter()" />
         </div>
       </div>
 
@@ -48,52 +49,52 @@
               <th>Nombre</th>
               <th>Usuario</th>
               <th>Rol</th>
+              <th>Estado</th>
               <th>Creado Por</th>
               <th class="text-center" style="width: 120px;">Acciones</th>
             </tr>
           </thead>
 
           <tbody>
-            @for (user of filteredUsers; track $index) {
-            <tr>
-              <!-- <td class="ps-3">
-                <input type="checkbox" class="form-check-input" id="customCheck2">
-              </td>
-              <td>
-                <img [src]="persons.image" class="avatar-sm rounded-circle me-2" alt="...">
-                <a routerLink="/hospital/doctor/details" class="text-dark fw-medium">{{persons.username}}</a>
-              </td> -->
-              <td>{{user.person_fullname}}</td>
-              <td>{{user.username}}</td>
+            <tr *ngFor="let user of filteredUsers;">
+              <td>{{ user. person_fullname}}</td>
+              <td>{{ user.username }}</td>
               <td>{{ user.rol && user.rol.length ? user.rol[0].rol : 'Sin rol' }}</td>
+              <td>
+                <!-- Switch para todos los usuarios -->
+                <div class="form-check form-switch d-flex align-items-center gap-2">
+                  <input class="form-check-input" type="checkbox" [checked]="user.status"
+                    (click)="changeStatusUser($event, user)" (keydown.space)="changeStatusUser($event, user)" />
+                  <label class="form-check-label">
+                    {{ user.status ? 'Activo' : 'Inactivo' }}
+                  </label>
+                </div>
+
+              </td>
               <td>{{user.user_create}}</td>
 
               <td class="pe-3">
-                <div class="hstack gap-1 justify-content-end">
+                <div class="hstack gap-1 justify-content-center">
 
-                  <a (click)="openPermissionsModal(user)" class="btn btn-soft-warning btn-icon btn-sm rounded-circle"
-                    title="Actualizar permisos de usuario">
+                  <!-- <a (click)="user.status && openUserModal(user)" title="Actualizar usuario">
+                    <i class="ti ti-edit fs-4"></i>
+                  </a> -->
+
+                  <a (click)="user.status && openPermissionsModal(user)"
+                    class="btn btn-soft-warning btn-icon btn-sm rounded-circle" title="Actualizar permisos de usuario">
                     <i class="ti ti-lock-access fs-4"></i>
                   </a>
 
 
-                  <a (click)="openRoleUpdateModal(user)" class="btn btn-soft-info btn-icon btn-sm rounded-circle"
-                    title="Actualizar rol de usuario">
-                    <i class="ti ti-user-cog fs-4"></i>
-                  </a>
-
-                  <a (click)="onDelete(user)" class="btn btn-soft-danger btn-icon btn-sm rounded-circle"
-                    title="Eliminar usuario">
+                  <!-- <a (click)="user.status && onDelete(user)" [class.disabled]="!user.status"
+                    class="btn btn-soft-danger btn-icon btn-sm rounded-circle" title="Eliminar usuario">
                     <i class="ti ti-trash fs-4"></i>
-                  </a>
-
-
+                  </a> -->
                 </div>
               </td>
             </tr>
-            }
-
           </tbody>
+
         </table>
       </div>
       <div class="card-footer">
@@ -142,7 +143,6 @@
     </div>
   </div>
 </ng-template>
->
 
 <!-- Éxito -->
 <ng-template #successAlertTpl let-modal>

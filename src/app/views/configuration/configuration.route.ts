@@ -2,6 +2,8 @@ import type { Route } from "@angular/router";
 import { UsersComponentComponent } from "./users-component/users-component.component";
 import { UserCreateComponent } from "./user-create/user-create.component";
 import { MaestroRolesComponent } from "./maestro-roles/maestro-roles.component";
+import { ClosingComponent } from "@views/credits/operations/closing/closing.component";
+import { AuthGuard } from "@/store/authentication/guards/guard.guard";
 
 export const CONFIGURATION_ROUTES: Route[] = [
   {
@@ -18,6 +20,11 @@ export const CONFIGURATION_ROUTES: Route[] = [
     path: 'roles',
     component: MaestroRolesComponent,
     data: { title: 'Maestro de Roles' }
-  }
-
+  },
+  {
+    path: 'closing/:id',
+    component: ClosingComponent,
+    canActivate: [AuthGuard],
+    data: { roles: ['BACKOFFICE, Administrador'] }
+  },
 ]

@@ -1,0 +1,146 @@
+<page-title title="Mis Cierres" subtitle="Gestión de Cierres" />
+
+<div class="col-lg-12">
+    <div class="card">
+        <div class="card-body">
+            <div
+                class="d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center mb-3 gap-2">
+                <h5 class="mb-0">
+                    <i class="bi bi-clock-history me-2 text-danger"></i>
+                    Mis Cierres de Caja
+                </h5>
+                <button (click)="refreshClosings()" class="btn btn-danger" [disabled]="loading"
+                    title="Actualizar lista">
+                    <i class="bi" [ngClass]="loading ? 'bi-arrow-repeat spin' : 'bi-arrow-clockwise'"></i>
+                    <span class="ms-2 d-none d-md-inline">Actualizar</span>
+                </button>
+            </div>
+
+            <!-- Loading inicial -->
+            <div *ngIf="loading && closings.length === 0" class="text-center my-5">
+                <div class="spinner-border text-danger" role="status"></div>
+                <p class="mt-3">Cargando cierres...</p>
+            </div>
+
+            <!-- Sin cierres -->
+            <div *ngIf="!loading && closings.length === 0" class="alert alert-danger">
+                <i class="bi bi-info-circle me-2"></i>
+                No tienes cierres registrados aún.
+            </div>
+
+            <div *ngIf="closings.length > 0">
+
+                <!-- Resumen -->
+                <div class="row mb-4">
+                    <div class="col-6 col-md-2">
+                        <div class="card border-danger-custom">
+                            <div class="card-body text-center">
+                                <h3 class="mb-0 text-success">{{ getApprovedCount() }}</h3>
+                                <small class="text-muted">Aprobados</small>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-6 col-md-2">
+                        <div class="card border-danger-custom">
+                            <div class="card-body text-center">
+                                <h3 class="mb-0 text-danger-custom">
+                                    {{ getRejectedCount() }}
+                                </h3>
+                                <small class="text-muted">Rechazados</small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Tabla -->
+                <div class="table-responsive" style="max-height: 400px; overflow-y: auto;">
+
+                    <div *ngIf="loading" class="text-center my-3">
+                        <div class="spinner-border spinner-border-sm text-danger"></div>
+                        <span class="ms-2">Actualizando...</span>
+                    </div>
+
+                    <table class="table table-hover align-middle">
+                        <thead class="table-dark">
+                            <tr>
+                                <th>ID</th>
+                                <th>Fecha de Cierre</th>
+                                <th>Estado</th>
+                                <th>Base</th>
+                                <th>Zona</th>
+                                <th class="d-none d-md-table-cell">Creado por</th>
+                                <th class="d-none d-md-table-cell">Fecha Creación</th>
+                                <th class="text-center">Acciones</th>
+                            </tr>
+                        </thead>
+
+                        <tbody>
+                            <tr *ngFor="let closing of closings">
+
+                                <td><strong>#{{ closing.id }}</strong></td>
+
+                                <td>
+                                    <i class="bi bi-calendar3 me-1 text-danger-custom"></i>
+                                    {{ closing.closingDate | date: 'dd/MM/yyyy' }}
+                                </td>
+
+                                <td>
+                                    <span [class]="getStatusBadgeClass(closing.closingStatus)">
+                                        {{ getStatusText(closing.closingStatus) }}
+                                    </span>
+                                </td>
+
+                                <td>
+                                    <span *ngIf="closing.amount" class="fw-bold text-success">
+                                        ${{ formatCurrency(closing.amount) }}
+                                    </span>
+                                    <span *ngIf="!closing.amount" class="text-muted">---</span>
+                                </td>
+
+                                <td><strong>{{ closing.zona }}</strong></td>
+
+
+                                <td class="d-none d-md-table-cell">
+                                    <small class="text-muted">
+                                        <i class="bi bi-person me-1 text-danger"></i>
+                                        {{ closing.userCreate || '---' }}
+                                    </small>
+                                </td>
+
+                                <td class="d-none d-md-table-cell">
+                                    <small class="text-muted">
+                                        {{ closing.createdAt | date: 'dd/MM/yyyy HH:mm' }}
+                                    </small>
+                                </td>
+
+                                <!-- ACCIONES SIMPLIFICADAS - UN SOLO BOTÓN -->
+                                <td class="text-center">
+                                    <button (click)="goToClosing(closing.id)" class="btn btn-sm" [ngClass]="{
+    'btn-red': canEditClosing(closing),
+    'btn-secondary': closing.closingStatus === 'PRE_CIERRE' && !canEditClosing(closing),
+    'btn-outline-primary': !canEditClosing(closing) && closing.closingStatus !== 'PRE_CIERRE'
+  }" [disabled]="closing.closingStatus === 'PRE_CIERRE' && !canEditClosing(closing)">
+
+                                        <i class="bi" [ngClass]="{
+         'bi-pencil-square': canEditClosing(closing),
+         'bi-hourglass-split': closing.closingStatus === 'PRE_CIERRE' && !canEditClosing(closing)
+       }"></i>
+                                        {{ getActionButtonText(closing) }}
+                                    </button>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- Alerta -->
+                <div *ngIf="hasPendingClosings()" class="alert alert-danger mt-3">
+                    <i class="bi bi-exclamation-triangle me-2"></i>
+                    <strong>Tienes cierres pendientes por completar.</strong>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>

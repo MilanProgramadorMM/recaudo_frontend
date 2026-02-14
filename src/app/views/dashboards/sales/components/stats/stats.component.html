@@ -1,18 +1,18 @@
-<div class="row row-cols-xxl-4 row-cols-md-2 row-cols-1 text-center">
+<div class="row row-cols-2 row-cols-md-2 row-cols-xxl-4 text-center">
   @for (item of statData; track $index) {
   <div class="col">
     <div class="card">
       <div class="card-body">
-        <h5 class="text-muted fs-13 text-uppercase fw-bold" title="Number of Orders">
+        <h5 class="text-muted fs-13 fs-md-13 text-uppercase fw-bold" title="Number of Orders">
           {{ item.title }}
         </h5>
         <div class="d-flex align-items-center justify-content-center gap-2 my-2 py-1">
-          <div class="user-img fs-42 flex-shrink-0">
-            <span class="avatar-title text-bg-primary rounded-circle fs-22">
+          <div class="user-img fs-42 fs-md-42 flex-shrink-0">
+            <span class="avatar-title rounded-circle fs-22 fs-md-22 text-white" style="background-color: #DC3545;">
               <iconify-icon [icon]="item.icon"></iconify-icon>
             </span>
           </div>
-          <h3 class="mb-0 fw-bold">{{item.count}}</h3>
+          <h3 class="mb-0 fw-bold fs-5">{{item.count}}</h3>
         </div>
         <p class="mb-0 text-muted">
           <span class="text-{{item.variant}} me-2"></span>

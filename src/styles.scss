@@ -1,8 +1,22 @@
+// Custom Theming for Angular Material
+// For more information: https://material.angular.io/guide/theming
+@use '@angular/material' as mat;
+@use '../public/assets/scss/icons.scss' as *;
+@use '../public/assets/scss/app.scss' as *;
+
+html {
+  @include mat.theme((color: (theme-type: light,
+        primary: mat.$azure-palette,
+        tertiary: mat.$blue-palette,
+      ),
+      typography: Roboto,
+      density: 0,
+    ));
+}
+
 /* You can add global styles to this file, and also import other style files */
 // @import "../public/assets/scss/app.scss";
 // @import "../public/assets/scss/icons.scss";
-@use '../public/assets/scss/icons.scss' as *;
-@use '../public/assets/scss/app.scss' as *;
 @import "../node_modules/leaflet/dist/leaflet.css";
 @import "flatpickr/dist/flatpickr.css";
 @import "nouislider/dist/nouislider.css";
@@ -15,3 +29,150 @@
 .required {
   color: rgb(213, 58, 58);
 }
+
+fieldset {
+  border: 1px solid #ddd !important;
+  margin: 0;
+  padding: 0 8px 0 8px !important;
+  position: relative;
+  border-radius: 4px;
+}
+
+
+/* Modal extra grande */
+.modal-extra-large .modal-dialog {
+  max-width: 95vw !important;
+  width: 95vw !important;
+}
+
+/* O si prefieres un tamaño específico en pixeles */
+.modal-extra-large .modal-dialog {
+  max-width: 1400px !important;
+  width: 1400px !important;
+}
+
+/* O para pantallas muy grandes */
+.modal-extra-large .modal-dialog {
+  max-width: 90vw !important;
+  width: 90vw !important;
+  margin: 1.75rem auto;
+}
+
+legend {
+  float: none !important;
+  /* anula el float de bootstrap */
+  width: auto !important;
+  /* vuelve al tamaño natural del texto */
+  margin-bottom: 0.5rem;
+  /* opcional: espacio con los inputs */
+  padding: 0 8px;
+  /* opcional: un poco de aire */
+  font-weight: 500;
+  font-size: 1rem;
+}
+
+//MODALES PERSONALIZADOS CON TITULO OSCURO Y TEXTO BLANCO
+.modal-header {
+  background-color: #203143 !important;
+  /* color de bg-dark */
+  color: #fff !important;
+  /* texto blanco */
+}
+
+.btn-close {
+  filter: invert(1);
+  /* hace el icono blanco */
+}
+
+
+.custom-modal-xl .modal-dialog {
+  max-width: 1200px; // ancho más grande que el xl por defecto
+  width: 95%; // opcional: casi todo el ancho
+  max-height: 90vh; // altura máxima 90% del viewport
+}
+
+.custom-modal-xl .modal-content {
+  height: 90vh; // altura del contenido
+  overflow-y: auto; // scroll si hay muchas filas
+}
+
+
+// ESTILOS BOTONES PARA AÑADIR
+button.btn.btn-success.bg-gradient {
+  background-color: #dc3545 !important;
+  border-color: #dc3545 !important;
+  color: #fff !important;
+  box-shadow: none;
+  transition: all 0.3s ease;
+}
+
+/* Hover */
+button.btn.btn-success.bg-gradient:hover {
+  background-color: #dc3545 !important;
+  /* rojo más oscuro */
+  border-color: #dc3545 !important;
+  transform: translateY(-1px);
+}
+
+.modal-loading {
+  background-color: transparent !important;
+}
+
+.modal-loading .modal-content {
+  background-color: transparent !important;
+  border: none !important;
+  box-shadow: none !important;
+}
+
+/* Active (clic presionado) */
+button.btn.btn-success.bg-gradient:active {
+  background-color: #dc3545 !important;
+  border-color: #dc3545 !important;
+  transform: translateY(0);
+}
+
+.btn-danger {
+  background-color: #dc3545 !important;
+  border-color: #dc3545 !important;
+}
+
+.bg-danger-custom {
+  background-color: #dc3545 !important;
+  color: #fff;
+}
+
+.text-danger {
+  color: #dc3545 !important;
+}
+
+
+.pagination .page-link {
+  color: #dc3545;
+}
+
+.pagination .page-item.active .page-link {
+  background-color: #dc3545;
+  border-color: #dc3545;
+  color: #ffffff;
+  /* números en blanco cuando está activo */
+}
+
+.pagination .page-link:hover {
+  color: #ffffff;
+  /* números en blanco al pasar el mouse */
+  background-color: #dc3545;
+  border-color: #dc3545;
+}
+
+html,
+body {
+  height: 100%;
+}
+
+body {
+  margin: 0;
+  font-family: Roboto, "Helvetica Neue", sans-serif;
+}
+
+/* Importing Bootstrap SCSS file. */
+@import 'bootstrap/scss/bootstrap';

@@ -6,7 +6,7 @@ export const currentYear = new Date().getFullYear()
 
 export const credits = {
   website: 'https://credisabe.com/',
-  name: 'Business Sam',
+  name: 'Credisabe',
   buyLink: '',
 }
 

@@ -1,6 +1,6 @@
-<h3 class="fw-semibold mb-2">Inicio de Sesion</h3>
+<h3 class="fw-semibold text-dark mb-2">Inicio de Sesion</h3>
 
-<p class="text-muted mb-4">Ingrese su usuario y contraseña para iniciar sesion.</p>
+<p class="text-white mb-4">Ingrese su usuario y contraseña para iniciar sesion.</p>
 
 <!--<third-party-login/>-->
 
@@ -15,29 +15,39 @@
 </div>
 
 <form [formGroup]="signInForm" class="text-start mb-3">
-  <div class="mb-3">
+  <div class="text-dark mb-3">
     <label class="form-label" for="example-username">Usuario</label>
     <input formControlName="username" type="text" id="example-username" class="form-control"
       placeholder="Ingresa tu usuario" [ngClass]="{ 'is-invalid': formValues?.['username'].errors }">
   </div>
 
-  <div class="mb-3">
+  <div class="text-dark mb-3">
     <label class="form-label" for="example-password">Contraseña</label>
-    <input type="password" formControlName="password" id="example-password" class="form-control"
-      placeholder="Ingresa tu contraseña" [ngClass]="{ 'is-invalid': formValues?.['password'].errors }">
+
+    <div class="input-group">
+      <input [type]="showPassword ? 'text' : 'password'" formControlName="password" id="example-password"
+        class="form-control" placeholder="Ingresa tu contraseña"
+        [ngClass]="{ 'is-invalid': formValues?.['password'].errors }" />
+      <button type="button" class="btn btn-light border" (click)="togglePassword()"
+        style="border-left: 0; background-color: #DC3545; color: #fff;">
+        <i class="bi" [ngClass]="showPassword ? 'bi-eye-slash' : 'bi-eye'"></i>
+      </button>
+    </div>
+
   </div>
 
-  <div class="d-flex justify-content-between mb-3">
-    <!--<div class="form-check">
+
+  <!-- <div class="d-flex justify-content-between mb-3">
+    <div class="form-check">
       <input type="checkbox" class="form-check-input" id="checkbox-signin">
       <label class="form-check-label" for="checkbox-signin">Remember me</label>
-    </div> -->
+    </div> 
 
-    <a routerLink="/auth/recover-password" class="text-muted border-bottom border-dashed">Olvide mi contraseña</a>
-  </div>
+    <a routerLink="/auth/recover-password" class="text-white border-bottom border-dashed">Olvide mi contraseña</a>
+  </div> -->
 
   <div class="d-grid">
-    <button class="btn btn-primary" type="button" [disabled]="!signInForm.valid || loading" (click)="login()">
+    <button class="btn btn-danger" type="button" [disabled]="!signInForm.valid || loading" (click)="login()">
       <ng-container *ngIf="!loading; else loadingTpl">Ingresar</ng-container>
       <ng-template #loadingTpl>
         <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>

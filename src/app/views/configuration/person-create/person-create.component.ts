@@ -2,9 +2,12 @@ import { Component, Input, OnInit, TemplateRef, ViewChild } from '@angular/core'
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule, FormsModule } from '@angular/forms';
 import { NgbActiveModal, NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { PersonRegisterDto, PersonService } from '@core/services/person.service';
-import { FileUploaderComponent } from '@components/file-uploader.component';
 import { NgIf, NgClass, NgForOf, NgFor, CommonModule, LowerCasePipe } from '@angular/common';
 import { Glotypes, GlotypesService } from '@core/services/glotypes.service';
+import { OptionDTO, UbicacionService } from '@core/services/ubicacion.service';
+import { ZonaResponseDto, ZonaService } from '@core/services/zona.service';
+import { LoadingComponent } from '@views/ui/loading/loading.component';
+import { MatDialog } from '@angular/material/dialog';
 
 @Component({
   selector: 'app-person-create',
@@ -12,7 +15,6 @@ import { Glotypes, GlotypesService } from '@core/services/glotypes.service';
   imports: [
     ReactiveFormsModule,
     FormsModule,
-    FileUploaderComponent,
     NgIf,
     NgForOf,
     NgFor,
@@ -46,14 +48,22 @@ export class PersonCreateComponent implements OnInit {
 
   genderGlotypes: Glotypes[] = [];
   documentTypes: Glotypes[] = [];
+  paises: OptionDTO[] = [];
+  departamentos: OptionDTO[] = [];
+  municipios: OptionDTO[] = [];
+  barrios: OptionDTO[] = [];
+  zonas: ZonaResponseDto[] = [];
+  selectedZonas: number[] = [];
+
 
   constructor(
     public activeModal: NgbActiveModal,
     private personService: PersonService,
     private fb: FormBuilder,
     private modalService: NgbModal,
-    private glotypesService: GlotypesService
-
+    private glotypesService: GlotypesService,
+    private ubicacionService: UbicacionService,
+    private zonaService: ZonaService
   ) { }
 
   ngOnInit(): void {
@@ -62,17 +72,30 @@ export class PersonCreateComponent implements OnInit {
     this.loadGender();
 
     this.form = this.fb.group({
-      firstName: ['', Validators.required],
+      firstName: [''],
       secondName: [''],
-      firstSurname: ['', Validators.required],
+      firstSurname: [''],
       secondSurname: [''],
-      identification: ['', Validators.required],
-      documentType: [null, Validators.required],
-      gender: [null, Validators.required],
-      occupation: ['', Validators.required],
+      identification: [''],
+      documentType: [null],
+      gender: [null],
+      occupation: [''],
       description: [''],
       fullName: [{ value: '', disabled: true }],
+      direccion: [''],
+      pais: [],
+      zona: [null],
+      departamento: [''],
+      ciudad: [],
+      barrio: [],
+      telefono: [''],
+      celular: [''],
+      orden: [''],
+      correo: [''],
+      descripcion: ['']
     });
+
+    this.setValidatorsByType();
 
     if (this.personData) {
       this.loadPersonData(this.personData);
@@ -81,23 +104,130 @@ export class PersonCreateComponent implements OnInit {
     this.form.valueChanges.subscribe(() => {
       this.updateFullName();
     });
+
+    this.zonaService.getByStatus().subscribe({
+      next: (res) => {
+        this.zonas = res.data;
+      }, error: (err) => {
+        console.error('Error cargando zonas:', err);
+      }
+    });
+
+    this.ubicacionService.getPaises().subscribe(data => this.paises = data);
+    // Escuchar cambios
+    this.form.get('pais')?.valueChanges.subscribe(paisId => {
+      if (paisId) {
+        this.ubicacionService.getDepartamentos(paisId).subscribe(data => {
+          this.departamentos = data;
+          this.municipios = [];
+          this.barrios = [];
+          this.form.patchValue({ departamento: '', ciudad: '', barrio: '' });
+        });
+      }
+    });
+
+    this.form.get('departamento')?.valueChanges.subscribe(depId => {
+      if (depId) {
+        this.ubicacionService.getMunicipios(depId).subscribe(data => {
+          this.municipios = data;
+          this.barrios = [];
+          this.form.patchValue({ ciudad: '', barrio: '' });
+        });
+      }
+    });
+
+    this.form.get('ciudad')?.valueChanges.subscribe(munId => {
+      if (munId) {
+        this.ubicacionService.getBarrios(munId).subscribe(data => {
+          this.barrios = data;
+          this.form.patchValue({ barrio: '' });
+        });
+      }
+    });
   }
 
   loadPersonData(data: any) {
     this.form.patchValue({
-      firstName: data.first_name,
-      secondName: data.middlename,
-      firstSurname: data.last_name,
-      secondSurname: data.maternal_lastname,
+      firstName: data.firstName,
+      secondName: data.middleName,
+      firstSurname: data.lastName,
+      secondSurname: data.maternalLastname,
       identification: data.document,
-      documentType: Number(data.document_type),
+      documentType: Number(data.documentType),
       gender: Number(data.gender),
       occupation: data.occupation,
-      description: data.description
+      description: data.description,
+
+      // contacto
+      pais: data.countryId,
+      departamento: data.departentId,
+      ciudad: data.cityId,
+      barrio: data.neighborhoodId,
+      direccion: data.adress,
+      descripcion: data.descriptionD,
+      telefono: data.telefono,
+      celular: data.celular,
+      correo: data.correo,
+
+      // zona
+      zona: data.zid ? Number(data.zid) : null,
+      orden: data.orden
 
     });
 
+    // ===== CARGAR ZONA PARA CLIENTE =====
+    if (this.personType === 'CLIENTE' && data.zid) {
+      this.form.patchValue({
+        zona: Number(data.zid)  // ← AGREGAR: Establecer zona para CLIENTE
+      });
+    }
+    // ===== CARGAR ZONAS PARA ASESOR =====
+    if (this.personType === 'ASESOR' && data.zid) {
+      this.selectedZonas = String(data.zid)
+        .split('-')
+        .map((id: string) => Number(id.trim()));
+    }
+
+
     this.updateFullName();
+
+    if (data.countryId) {
+      this.ubicacionService.getDepartamentos(data.countryId).subscribe(deps => {
+        this.departamentos = deps;
+        if (data.departentId) {
+          this.ubicacionService.getMunicipios(data.departentId).subscribe(muns => {
+            this.municipios = muns;
+            if (data.cityId) {
+              this.ubicacionService.getBarrios(data.cityId).subscribe(barrs => {
+                this.barrios = barrs;
+              });
+            }
+          });
+        }
+      });
+    }
+  }
+
+  // Método para manejar el cambio en los checkboxes
+  onZonaCheckboxChange(event: any, zonaId: number): void {
+    if (event.target.checked) {
+      if (!this.selectedZonas.includes(zonaId)) {
+        this.selectedZonas.push(zonaId);
+      }
+    } else {
+      this.selectedZonas = this.selectedZonas.filter(id => id !== zonaId);
+    }
+  }
+
+  // Método para remover una zona seleccionada
+  removeZona(zonaId: number): void {
+    this.selectedZonas = this.selectedZonas.filter(id => id !== zonaId);
+  }
+
+  // Método para obtener el nombre de la zona
+  getZonaName(zonaId: number): string {
+    const zona = this.zonas.find(z => z.id === zonaId);
+    return zona ? zona.value : '';
   }
 
   updateFullName() {
@@ -116,8 +246,15 @@ export class PersonCreateComponent implements OnInit {
   savePerson() {
     this.submitted = true;
 
+    // Validación especial para ASESORES
+    if (this.personType === 'ASESOR' && this.selectedZonas.length === 0) {
+      this.errorMessage = 'Debe seleccionar al menos una zona para el asesor.';
+      setTimeout(() => this.errorMessage = '', 3000);
+      return;
+    }
+
     if (this.form.invalid) {
-      this.errorMessage = 'Por favor completa los campos obligatorios.';
+      this.errorMessage = 'Por favor completa los campos obligatorios.(*)';
       setTimeout(() => this.errorMessage = '', 3000);
       return;
     }
@@ -141,9 +278,32 @@ export class PersonCreateComponent implements OnInit {
       gender: formValues.gender,
       occupation: formValues.occupation,
       description: formValues.description,
-      type_person: this.personType
-
+      type_person: this.personType,
+      countryId: formValues.pais,
+      departentId: formValues.departamento,
+      cityId: formValues.ciudad,
+      neighborhoodId: formValues.barrio,
+      adress: formValues.direccion,
+      details: formValues.descripcion,
+      correo: formValues.correo,
+      celular: formValues.celular,
+      telefono: formValues.telefono
     };
+
+    // Asignar zona según el tipo de persona (SOLO UNA VEZ)
+    if (this.personType === 'CLIENTE') {
+      person.zona = formValues.zona;
+    } else if (this.personType === 'ASESOR') {
+      person.zonas = this.selectedZonas;
+    }
+
+    const loadingRef = this.modalService.open(LoadingComponent, {
+      centered: true,
+      backdrop: 'static',
+      keyboard: false,
+      size: 'sm',
+      modalDialogClass: 'modal-loading'
+    });
 
     const action = this.personData?.id
       ? this.personService.updatePerson(person)
@@ -151,6 +311,7 @@ export class PersonCreateComponent implements OnInit {
 
     action.subscribe({
       next: (response) => {
+        loadingRef.close();
         this.successDetails = response.details;
         const modalRef = this.modalService.open(this.successAlertTpl, {
           centered: true,
@@ -163,12 +324,10 @@ export class PersonCreateComponent implements OnInit {
         );
       },
       error: (err) => {
-        // 👇 aquí validamos si viene INACTIVE desde el backend
+        loadingRef.close();
         if (err?.status === 'INACTIVE' || err?.error?.status === 'INACTIVE') {
           const personId = err.personId || err?.error?.personId;
-          // Guardamos en memoria para usarlo al confirmar
           this.pendingReactivateId = personId;
-
           this.modalService.open(this.confirmReactivateTpl, {
             centered: true,
             size: 'sm',
@@ -247,4 +406,43 @@ export class PersonCreateComponent implements OnInit {
   cancel() {
     this.activeModal.dismiss();
   }
+
+  soloNumeros(event: KeyboardEvent) {
+    const char = event.key;
+
+    // Permitir solo números y teclas de control como Backspace
+    if (!/^[0-9]$/.test(char) && event.key !== 'Backspace' && event.key !== 'Tab') {
+      event.preventDefault();
+    }
+  }
+
+  private setValidatorsByType(): void {
+    // Limpia validadores antes de aplicar los nuevos
+    Object.keys(this.form.controls).forEach(key => {
+      this.form.get(key)?.clearValidators();
+      this.form.get(key)?.updateValueAndValidity({ emitEvent: false });
+    });
+
+    // Validadores comunes a ambos tipos
+    const comunes = ['firstName', 'firstSurname', 'documentType', 'identification', 'gender', 'occupation',
+      'pais', 'departamento', 'ciudad', 'barrio', 'direccion', 'celular', 'correo'];
+
+    comunes.forEach(field => {
+      if (field === 'correo') {
+        this.form.get(field)?.setValidators([Validators.required, Validators.email]);
+      } else {
+        this.form.get(field)?.setValidators([Validators.required]);
+      }
+      this.form.get(field)?.updateValueAndValidity({ emitEvent: false });
+    });
+
+    // Si es CLIENTE → zona y orden también obligatorios
+    if (this.personType === 'CLIENTE') {
+      this.form.get('zona')?.setValidators([Validators.required]);
+      //this.form.get('orden')?.setValidators([Validators.required]);
+      this.form.get('zona')?.updateValueAndValidity({ emitEvent: false });
+      //this.form.get('orden')?.updateValueAndValidity({ emitEvent: false });
+    }
+  }
+
 }

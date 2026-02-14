@@ -38,9 +38,11 @@ export class OverviewChartComponent {
     chart: {
       height: 300,
       type: "line",
-      toolbar: {
-        show: false,
-      },
+      toolbar: { show: false },
+      zoom: { enabled: false },
+      animations: { enabled: false },
+      //sparkline: { enabled: true }, // evita eventos de mouse
+      events: {}, // sin listeners
     },
     stroke: {
       dashArray: [0, 0, 0, 8],

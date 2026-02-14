@@ -1,0 +1,145 @@
+.stady-container {
+  padding: 1rem;
+}
+
+// Estilos para Material Stepper
+::ng-deep {
+  .mat-vertical-stepper-header {
+    padding: 16px 24px !important;
+    pointer-events: none !important; 
+    cursor: default !important;
+  }
+
+  .mat-vertical-content {
+    padding: 0 24px 24px 24px !important;
+  }
+
+  .mat-step-header {
+
+    &.cdk-keyboard-focused,
+    &.cdk-program-focused,
+    &:hover:not([aria-disabled]),
+    &:hover[aria-disabled='false'] {
+      background-color: rgba(0, 0, 0, 0.04);
+    }
+  }
+
+  // Ícono verde para pasos completados
+  .mat-step-icon-state-done {
+    background-color: #28a745 !important;
+  }
+
+  .mat-step-icon.mat-step-icon-state-done {
+    background-color: #28a745 !important;
+  }
+}
+
+.mat-step-icon-state-done,
+.mat-step-icon.mat-step-icon-state-done {
+  background-color: #28a745 !important;
+  color: white !important;
+}
+
+.mat-step-icon-state-done .mat-icon,
+.mat-step-icon-state-done .mat-step-icon-content {
+  color: white !important;
+}
+
+.step-content {
+  padding: 20px 0;
+
+  h5 {
+    color: #495057;
+    font-weight: 600;
+    border-bottom: 2px solid #e9ecef;
+    padding-bottom: 10px;
+  }
+}
+
+// Timeline styles para actividad 4
+.timeline {
+  position: relative;
+  padding-left: 30px;
+
+  &::before {
+    content: '';
+    position: absolute;
+    left: 8px;
+    top: 0;
+    bottom: 0;
+    width: 2px;
+    background: #e9ecef;
+  }
+
+  .timeline-item {
+    position: relative;
+    margin-bottom: 20px;
+
+    .timeline-marker {
+      position: absolute;
+      left: -25px;
+      width: 16px;
+      height: 16px;
+      border-radius: 50%;
+      border: 3px solid #fff;
+      box-shadow: 0 0 0 2px #0d6efd;
+    }
+
+    .timeline-content {
+      background: #f8f9fa;
+      padding: 15px;
+      border-radius: 8px;
+      border-left: 3px solid #0d6efd;
+
+      h6 {
+        margin: 0;
+        color: #212529;
+        font-weight: 600;
+      }
+
+      p {
+        color: #6c757d;
+        font-size: 0.9rem;
+        line-height: 1.5;
+      }
+    }
+  }
+}
+
+// Estilos para los radio buttons de decisión
+::ng-deep {
+  .mat-radio-button {
+    &.p-3 {
+      width: 100%;
+
+      .mat-radio-label {
+        width: 100%;
+      }
+    }
+  }
+}
+
+// Responsive
+@media (max-width: 768px) {
+  .stady-container {
+    padding: 0.5rem;
+  }
+
+  .step-content {
+    padding: 10px 0;
+
+    h5 {
+      font-size: 1rem;
+    }
+  }
+
+  .timeline {
+    padding-left: 20px;
+
+    .timeline-marker {
+      left: -16px;
+      width: 12px;
+      height: 12px;
+    }
+  }
+}
