@@ -8,6 +8,7 @@ import { CookieService } from 'ngx-cookie-service';
 export interface UserDto {
     id?: number;
     username: number;
+    person_id?: number;
     person_fullname?: string;
     rol?: RoleDto;
     userCreate?: string;
@@ -98,8 +99,6 @@ export class UserService {
 
         return this.http.get<DefaultResponseDto<UserDto>>(`${baseUrl}user/get/${userId}`, { headers });
     }
-
-
 
     assignUserRole(userId: number, roleId: number): Observable<any> {
         const token = this.cookieService.get('_OSEN_AUTH_SESSION_KEY_');

@@ -7,6 +7,7 @@
                 <h5 class="mb-0 d-flex align-items-center flex-wrap gap-2">
                     <i class="ti ti-cash"></i>
                     <span>Recaudo de Clientes</span>
+<<<<<<< Updated upstream
 
                     <!-- Select de zonas 
                     <select *ngIf="zonas.length > 1"
@@ -21,6 +22,8 @@
                         Zona: {{ zonas[0] }}
                     </span>
                     -->
+=======
+>>>>>>> Stashed changes
                 </h5>
             </div>
         </div>
@@ -88,12 +91,21 @@
                             <!-- Estado -->
                             <div class="mb-3">
                                 <span class="badge d-inline-block mt-1" style="width: fit-content;" [ngClass]="{
+<<<<<<< Updated upstream
     'bg-success': cliente.paidFull === 'S',
     'bg-primary': cliente.paidToday === 1 && cliente.paidFull !== 'S',
     'bg-warning text-dark': cliente.paidToday === 0 && cliente.paymentPromiseDate && cliente.noPago !== 1,
     'bg-danger': cliente.paidToday === 0 && !cliente.paymentPromiseDate && cliente.noPago !== 1,
     'bg-secondary': cliente.noPago === 1
 }">
+=======
+                                    'bg-success': cliente.paidFull === 'S',
+                                    'bg-primary': cliente.paidToday === 1 && cliente.paidFull !== 'S',
+                                    'bg-warning text-dark': cliente.paidToday === 0 && cliente.paymentPromiseDate && cliente.noPago !== 1,
+                                    'bg-danger': cliente.paidToday === 0 && !cliente.paymentPromiseDate && cliente.noPago !== 1,
+                                    'bg-secondary': cliente.noPago === 1
+                                }">
+>>>>>>> Stashed changes
                                     {{
                                     cliente.paidFull === 'S'
                                     ? 'Cuota Pagada Completamente'
@@ -108,9 +120,15 @@
                                 </span>
                             </div>
 
+<<<<<<< Updated upstream
                             <!-- Vista móvil -->
                             <div class="d-flex gap-2">
                                 <!-- Botón Ver Detalle (si está pagada completamente) -->
+=======
+                            <!-- Vista móvil - BOTONES ACTUALIZADOS -->
+                            <div class="d-flex gap-2">
+                                <!-- Botón Ver Detalle (siempre que esté pagada completamente) -->
+>>>>>>> Stashed changes
                                 <button type="button" class="btn btn-info btn-sm flex-grow-1"
                                     *ngIf="cliente.paidFull === 'S'" (click)="openRecaudoDetailModal(cliente)"
                                     title="Ver detalle del recaudo">
@@ -118,15 +136,25 @@
                                     Ver Detalle
                                 </button>
 
+<<<<<<< Updated upstream
                                 <!-- Botón Recaudar (si NO está pagada completamente) -->
                                 <button type="button" class="btn btn-recaudo btn-sm flex-grow-1"
                                     *ngIf="cliente.paidFull !== 'S'" (click)="openRecaudoModal(cliente)"
                                     title="Registrar recaudo">
+=======
+                                <!-- Botón Recaudar (SIEMPRE VISIBLE) -->
+                                <button type="button" class="btn btn-recaudo btn-sm flex-grow-1"
+                                    (click)="openRecaudoModal(cliente)" title="Registrar recaudo">
+>>>>>>> Stashed changes
                                     <i class="ti ti-cash me-1"></i>
                                     Recaudar
                                 </button>
 
+<<<<<<< Updated upstream
                                 <!-- Botón Promesa (solo si no está pagada ni liquidada) -->
+=======
+                                <!-- Botón Promesa (solo si no está pagada completamente ni liquidada) -->
+>>>>>>> Stashed changes
                                 <button type="button" class="btn btn-outline-warning btn-sm flex-grow-1"
                                     *ngIf="cliente.paidFull !== 'S' && cliente.liquidated !== 'S' && cliente.paidToday !== 1"
                                     (click)="registrarPromesa(cliente)" title="Registrar promesa">
@@ -134,7 +162,11 @@
                                     Promesa
                                 </button>
 
+<<<<<<< Updated upstream
                                 <!-- Botón No pagó (solo si no está pagada ni liquidada) -->
+=======
+                                <!-- Botón No pagó (solo si no está pagada completamente ni liquidada) -->
+>>>>>>> Stashed changes
                                 <button type="button" class="btn btn-outline-secondary btn-sm"
                                     *ngIf="cliente.paidFull !== 'S' && cliente.liquidated !== 'S' && cliente.paidToday !== 1"
                                     (click)="registrarNoPago(cliente)" title="No pagó">
@@ -167,6 +199,7 @@
                                         <small class="text-muted">
                                             Cuota #{{ cliente.quotaNumber }} · Vence {{ cliente.expirationDate | date }}
                                         </small>
+<<<<<<< Updated upstream
                                         <!-- Reemplazar el badge de estado en ambas vistas -->
                                         <span class="badge d-inline-block mt-1" style="width: fit-content;" [ngClass]="{
     'bg-success': cliente.paidFull === 'S',
@@ -175,6 +208,15 @@
     'bg-danger': cliente.paidToday === 0 && !cliente.paymentPromiseDate && cliente.noPago !== 1,
     'bg-secondary': cliente.noPago === 1
 }">
+=======
+                                        <span class="badge d-inline-block mt-1" style="width: fit-content;" [ngClass]="{
+                                            'bg-success': cliente.paidFull === 'S',
+                                            'bg-primary': cliente.paidToday === 1 && cliente.paidFull !== 'S',
+                                            'bg-warning text-dark': cliente.paidToday === 0 && cliente.paymentPromiseDate && cliente.noPago !== 1,
+                                            'bg-danger': cliente.paidToday === 0 && !cliente.paymentPromiseDate && cliente.noPago !== 1,
+                                            'bg-secondary': cliente.noPago === 1
+                                        }">
+>>>>>>> Stashed changes
                                             {{
                                             cliente.paidFull === 'S'
                                             ? 'Cuota Pagada Completamente'
@@ -189,10 +231,17 @@
                                         </span>
                                     </div>
                                 </td>
+<<<<<<< Updated upstream
                                 <!-- Vista desktop - Reemplazar la sección de botones en la columna de acciones -->
                                 <td class="text-center">
                                     <div class="d-flex gap-2 justify-content-center flex-wrap">
                                         <!-- Botón Ver Detalle (si está pagada completamente) -->
+=======
+                                <!-- Vista desktop - BOTONES ACTUALIZADOS -->
+                                <td class="text-center">
+                                    <div class="d-flex gap-2 justify-content-center flex-wrap">
+                                        <!-- Botón Ver Detalle (siempre que esté pagada completamente) -->
+>>>>>>> Stashed changes
                                         <button type="button" class="btn btn-info btn-sm"
                                             *ngIf="cliente.paidFull === 'S'" (click)="openRecaudoDetailModal(cliente)"
                                             title="Ver detalle del recaudo">
@@ -200,15 +249,25 @@
                                             Ver Detalle
                                         </button>
 
+<<<<<<< Updated upstream
                                         <!-- Botón Recaudar (si NO está pagada completamente) -->
                                         <button type="button" class="btn btn-recaudo btn-sm"
                                             *ngIf="cliente.paidFull !== 'S'" (click)="openRecaudoModal(cliente)"
                                             title="Registrar recaudo">
+=======
+                                        <!-- Botón Recaudar (SIEMPRE VISIBLE) -->
+                                        <button type="button" class="btn btn-recaudo btn-sm"
+                                            (click)="openRecaudoModal(cliente)" title="Registrar recaudo">
+>>>>>>> Stashed changes
                                             <i class="ti ti-cash me-1"></i>
                                             Recaudar
                                         </button>
 
+<<<<<<< Updated upstream
                                         <!-- Botón Promesa (solo si no está pagada ni liquidada) -->
+=======
+                                        <!-- Botón Promesa (solo si no está pagada completamente ni liquidada) -->
+>>>>>>> Stashed changes
                                         <button type="button" class="btn btn-outline-warning btn-sm"
                                             *ngIf="cliente.paidFull !== 'S' && cliente.liquidated !== 'S' && cliente.paidToday !== 1"
                                             (click)="registrarPromesa(cliente)" title="Registrar promesa">
@@ -216,7 +275,11 @@
                                             Promesa
                                         </button>
 
+<<<<<<< Updated upstream
                                         <!-- Botón No pagó (solo si no está pagada ni liquidada) -->
+=======
+                                        <!-- Botón No pagó (solo si no está pagada completamente ni liquidada) -->
+>>>>>>> Stashed changes
                                         <button type="button" class="btn btn-outline-secondary btn-sm"
                                             *ngIf="cliente.paidFull !== 'S' && cliente.liquidated !== 'S' && cliente.paidToday !== 1"
                                             (click)="registrarNoPago(cliente)" title="No pagó">
@@ -243,10 +306,13 @@
                             <small class="text-muted d-block mb-1">Total de recaudos:</small>
                             <strong class="fs-5 text-danger">{{ clientesFiltered.length }}</strong>
                         </div>
+<<<<<<< Updated upstream
                         <!-- <div class="col-6 col-md-6 text-end text-md-start">
                             <small class="text-muted d-block mb-1">Zona asignada:</small>
                             <strong class="fs-5 text-danger">{{ zona }}</strong>
                         </div> -->
+=======
+>>>>>>> Stashed changes
                     </div>
                 </div>
             </div>

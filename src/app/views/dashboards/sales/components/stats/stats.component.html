@@ -1,9 +1,34 @@
+<<<<<<< Updated upstream
 <div class="row row-cols-2 row-cols-md-2 row-cols-xxl-4 text-center">
+=======
+<<<<<<< Updated upstream
+<div class="row row-cols-xxl-4 row-cols-md-2 row-cols-1 text-center">
+>>>>>>> Stashed changes
   @for (item of statData; track $index) {
   <div class="col">
     <div class="card">
       <div class="card-body">
+<<<<<<< Updated upstream
         <h5 class="text-muted fs-13 fs-md-13 text-uppercase fw-bold" title="Number of Orders">
+=======
+        <h5 class="text-muted fs-13 text-uppercase fw-bold" title="Number of Orders">
+=======
+<!-- stats.component.html -->
+<div class="row row-cols-2 row-cols-md-2 row-cols-xxl-4 text-center">
+  <!-- LOADING -->
+  <div *ngIf="loading" class="col-12 text-center py-4">
+    <div class="spinner-border text-danger" role="status">
+      <span class="visually-hidden">Cargando estadísticas...</span>
+    </div>
+  </div>
+
+  <!-- STATS -->
+  <div *ngFor="let item of statData" class="col">
+    <div class="card">
+      <div class="card-body">
+        <h5 class="text-muted fs-13 fs-md-13 text-uppercase fw-bold">
+>>>>>>> Stashed changes
+>>>>>>> Stashed changes
           {{ item.title }}
         </h5>
         <div class="d-flex align-items-center justify-content-center gap-2 my-2 py-1">
@@ -12,7 +37,15 @@
               <iconify-icon [icon]="item.icon"></iconify-icon>
             </span>
           </div>
+<<<<<<< Updated upstream
           <h3 class="mb-0 fw-bold fs-5">{{item.count}}</h3>
+=======
+<<<<<<< Updated upstream
+          <h3 class="mb-0 fw-bold">{{item.count}}</h3>
+=======
+          <h3 class="mb-0 fw-bold fs-5">{{ item.count }}</h3>
+>>>>>>> Stashed changes
+>>>>>>> Stashed changes
         </div>
         <p class="mb-0 text-muted">
           <span class="text-{{item.variant}} me-2"></span>
@@ -20,5 +53,4 @@
       </div>
     </div>
   </div>
-  }
 </div>

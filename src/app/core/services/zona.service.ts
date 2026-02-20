@@ -1,4 +1,8 @@
+<<<<<<< Updated upstream
 import { HttpClient, HttpHeaders } from "@angular/common/http";
+=======
+import { HttpClient, HttpHeaders, HttpParams } from "@angular/common/http";
+>>>>>>> Stashed changes
 import { Injectable } from "@angular/core";
 import { CookieService } from "ngx-cookie-service";
 import { Observable } from "rxjs";
@@ -29,6 +33,19 @@ export interface DailyReportDetail {
   montoRecaudado: number;
 }
 
+<<<<<<< Updated upstream
+=======
+export interface DashboardSummaryDto {
+  zonaId: number;
+  zonaNombre: string;
+  totalDebidoCobrar: number;
+  totalRecaudado: number;
+  totalNoPagado: number;
+  totalCartera: number;
+}
+
+
+>>>>>>> Stashed changes
 // DTO de respuesta de Zona
 export interface ZonaResponseDto {
   id?: number;
@@ -130,4 +147,29 @@ export class ZonaService {
       }
     );
   }
+<<<<<<< Updated upstream
+=======
+
+  getDashboardSummary(
+    fechaInicio: string,
+    fechaFin: string,
+    zonaId?: number
+  ): Observable<DefaultResponseDto<DashboardSummaryDto[]>> {
+    let params = new HttpParams()
+      .set('fechaInicio', fechaInicio)
+      .set('fechaFin', fechaFin);
+
+    if (zonaId) {
+      params = params.set('zonaId', zonaId.toString());
+    }
+
+    return this.http.get<DefaultResponseDto<DashboardSummaryDto[]>>(
+      `${baseUrl}zona/dashboard`,
+      {
+        headers: this.getHeaders(),
+        params: params
+      }
+    );
+  }
+>>>>>>> Stashed changes
 }

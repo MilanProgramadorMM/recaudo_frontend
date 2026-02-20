@@ -1,4 +1,10 @@
+<<<<<<< Updated upstream
 <div class="container-fluid"> <!-- Encabezado -->
+=======
+<!-- sales.component.html -->
+<div class="container-fluid">
+  <!-- Encabezado -->
+>>>>>>> Stashed changes
   <div class="row">
     <div class="col-12">
       <div
@@ -7,6 +13,7 @@
           <h4 class="fs-18 fw-semibold m-0">Informes</h4>
         </div>
         <div class="w-100 w-sm-auto">
+<<<<<<< Updated upstream
           <form action="javascript:void(0);">
             <div class="row g-2 align-items-center justify-content-center justify-content-sm-end">
               <div class="col-12 col-sm-auto" style="min-width: 180px;"> <select selectFormInput
@@ -24,6 +31,27 @@
                     data-provider="flatpickr" data-deafult-date="01 May to 31 May" data-date-format="d M"
                     data-range-date="true" /> <span class="input-group-text text-white"
                     style="background-color: #DC3545; border-color: #DC3545;">
+=======
+          <form [formGroup]="filterForm">
+            <div class="row g-2 align-items-center justify-content-center justify-content-sm-end">
+              <!-- SELECT DE ZONAS -->
+              <div class="col-12 col-sm-auto" style="min-width: 180px;">
+                <select class="form-select w-100" aria-label="Filtrar por zona" formControlName="zona">
+                  <option value="" disabled>Seleccione una zona</option>
+                  <option *ngFor="let zona of zonas" [value]="zona.value">
+                    {{ zona.value }}
+                  </option>
+                </select>
+              </div>
+
+              <!-- SELECTOR DE FECHAS -->
+              <div class="col-12 col-sm-auto">
+                <div class="input-group">
+                  <input #dateRangeInput mwlFlatpickr [flatpickrOptions]="flatpickrOptions"
+                    placeholder="Seleccione rango de fechas" type="text" class="form-control border-0 shadow"
+                    formControlName="dateRange" />
+                  <span class="input-group-text text-white" style="background-color: #DC3545; border-color: #DC3545;">
+>>>>>>> Stashed changes
                     <i class="ti ti-calendar fs-15"></i>
                   </span>
                 </div>
@@ -33,19 +61,59 @@
         </div>
       </div>
     </div>
+<<<<<<< Updated upstream
   </div> <!-- Contenido principal -->
   <div class="row mt-3 g-3">
     <div class="col-12 col-lg-6">
       <app-stats></app-stats>
     </div>
+=======
+  </div>
+
+  <!-- LOADING -->
+  <div *ngIf="loading" class="row mt-3">
+    <div class="col-12 text-center py-5">
+      <div class="spinner-border text-danger" role="status">
+        <span class="visually-hidden">Cargando zonas...</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- MENSAJE SI NO HAY ZONAS -->
+  <div *ngIf="!loading && zonas.length === 0" class="row mt-3">
+    <div class="col-12">
+      <div class="alert alert-warning">
+        <i class="ti ti-alert-circle me-2"></i>
+        No hay zonas disponibles para mostrar información.
+      </div>
+    </div>
+  </div>
+
+  <!-- Contenido principal -->
+  <div class="row mt-3 g-3" *ngIf="!loading && zonas.length > 0">
+    <div class="col-12 col-lg-6">
+      <app-stats></app-stats>
+    </div>
+
+>>>>>>> Stashed changes
     <!-- Intenciones de credito -->
     <div class="col-12 col-lg-6">
       <div class="card">
         <recent-orders></recent-orders>
       </div>
     </div>
+<<<<<<< Updated upstream
   </div> <!-- Gráfico -->
   <div class="row mt-3">
     <div class="col-12"> <overview-chart></overview-chart> </div>
+=======
+  </div>
+
+  <!-- Gráfico -->
+  <div class="row mt-3" *ngIf="!loading && zonas.length > 0">
+    <div class="col-12">
+      <overview-chart></overview-chart>
+    </div>
+>>>>>>> Stashed changes
   </div>
 </div>

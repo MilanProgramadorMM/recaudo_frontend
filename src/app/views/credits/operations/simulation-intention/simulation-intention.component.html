@@ -407,6 +407,10 @@
                                             <label class="form-label">Seleccione la fecha de inicio <span
                                                     class="required">*</span></label>
                                             <input type="date" class="form-control" formControlName="start_date"
+<<<<<<< Updated upstream
+=======
+                                                [min]="today"
+>>>>>>> Stashed changes
                                                 [ngClass]="{ 'is-invalid': submitted && form.get('start_date')?.invalid }">
                                             <div class="invalid-feedback"
                                                 *ngIf="submitted && form.get('start_date')?.errors?.['required']">
