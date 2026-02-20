@@ -59,11 +59,8 @@ export class RecaudoFormComponent implements OnInit {
       this.loadBanks();
     }
     this.loadQuotaDetails();
-<<<<<<< Updated upstream
     console.log('Cliente recibido:', this.cliente);
     console.log('Modo vista:', this.viewMode);
-=======
->>>>>>> Stashed changes
   }
 
   loadBanks(): void {
@@ -99,7 +96,6 @@ export class RecaudoFormComponent implements OnInit {
           q => q.quotaNumber === this.cliente.quotaNumber
         );
 
-<<<<<<< Updated upstream
         console.log('Cuota encontrada:', currentQuota);
 
         if (currentQuota) {
@@ -112,16 +108,6 @@ export class RecaudoFormComponent implements OnInit {
             totalPaid: this.totalPaid,
             remainingBalance: this.remainingBalance
           });
-=======
-        if (currentQuota) {
-          this.quotaValue = currentQuota.quotaValue;
-          this.totalPaid = Math.abs(Number(currentQuota.totalPaid || 0));
-
-          this.remainingBalance = Math.max(
-            Number(this.quotaValue) - this.totalPaid,
-            0
-          );
->>>>>>> Stashed changes
         } else {
           this.quotaValue = this.cliente.clientCuota || 0;
           this.remainingBalance = this.quotaValue;
