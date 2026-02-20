@@ -72,6 +72,7 @@ export class SimulationIntentionComponent implements OnInit {
   creditLines: CreditLineDto[] = [];
   periods: PeriodDto[] = [];
   taxTypes: any[] = [];
+  today: string = '';
 
   private fieldMapping: Record<string, string> = {
     documentType: 'document_type',
@@ -110,6 +111,8 @@ export class SimulationIntentionComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
+    const now = new Date();
+    this.today = now.toISOString().split('T')[0];
     this.form = this.fb.group({
       zone_id: [null, Validators.required],
       document_type: ['', Validators.required],
@@ -143,7 +146,7 @@ export class SimulationIntentionComponent implements OnInit {
 
       cargos: ['', Validators.required],
       initial_quota: [''],
-      start_date: [''],
+      start_date: ['', Validators.required],      
       inicio_quincena: [{ value: null, disabled: true }],
       fin_quincena: [{ value: null, disabled: true }],
 
@@ -665,6 +668,16 @@ export class SimulationIntentionComponent implements OnInit {
     // Validaciones básicas de campos obligatorios
     if (!raw.credit_line_id || !raw.period_id || !raw.period_quantity || !raw.start_date) {
       this.errorMessage = 'Por favor complete todos los campos obligatorios del paso 3';
+      return false;
+    }
+
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+
+    const selectedDate = new Date(raw.start_date);
+
+    if (selectedDate < today) {
+      this.errorMessage = 'La fecha de inicio no puede ser anterior a hoy';
       return false;
     }
 

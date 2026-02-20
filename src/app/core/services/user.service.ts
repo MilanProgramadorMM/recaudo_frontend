@@ -8,6 +8,7 @@ import { CookieService } from 'ngx-cookie-service';
 export interface UserDto {
     id?: number;
     username: number;
+    person_id?: number;
     person_fullname?: string;
     rol?: RoleDto;
     userCreate?: string;

@@ -1,4 +1,4 @@
-import { HttpClient, HttpHeaders } from "@angular/common/http";
+import { HttpClient, HttpHeaders, HttpParams } from "@angular/common/http";
 import { Injectable } from "@angular/core";
 import { CookieService } from "ngx-cookie-service";
 import { Observable } from "rxjs";
@@ -27,6 +27,15 @@ export interface DailyReportDetail {
   observacion?: string;
   fechaPromesa?: string;
   montoRecaudado: number;
+}
+
+export interface DashboardSummaryDto {
+  zonaId: number;
+  zonaNombre: string;
+  totalDebidoCobrar: number;
+  totalRecaudado: number;
+  totalNoPagado: number;
+  totalCartera: number;
 }
 
 // DTO de respuesta de Zona
@@ -127,6 +136,28 @@ export class ZonaService {
       {
         params: { fecha },
         headers: this.getHeaders()
+      }
+    );
+  }
+
+   getDashboardSummary(
+    fechaInicio: string,
+    fechaFin: string,
+    zonaId?: number
+  ): Observable<DefaultResponseDto<DashboardSummaryDto[]>> {
+    let params = new HttpParams()
+      .set('fechaInicio', fechaInicio)
+      .set('fechaFin', fechaFin);
+
+    if (zonaId) {
+      params = params.set('zonaId', zonaId.toString());
+    }
+
+    return this.http.get<DefaultResponseDto<DashboardSummaryDto[]>>(
+      `${baseUrl}zona/dashboard`,
+      {
+        headers: this.getHeaders(),
+        params: params
       }
     );
   }

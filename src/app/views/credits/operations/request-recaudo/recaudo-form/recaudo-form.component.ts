@@ -100,8 +100,11 @@ export class RecaudoFormComponent implements OnInit {
 
         if (currentQuota) {
           this.quotaValue = currentQuota.quotaValue;
-          this.totalPaid = currentQuota.totalPaid || 0;
-          this.remainingBalance = currentQuota.remainingBalance || currentQuota.quotaValue;
+          this.totalPaid = Math.abs(Number(currentQuota.totalPaid || 0));
+          this.remainingBalance = Math.max(
+            Number(this.quotaValue) - this.totalPaid,
+            0
+          );
 
           console.log('Valores asignados:', {
             quotaValue: this.quotaValue,

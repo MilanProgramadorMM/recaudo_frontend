@@ -19,14 +19,20 @@
     </div> -->
   </div>
 
-  <div class="bg-light bg-opacity-50">
+  <div *ngIf="loading" class="bg-light bg-opacity-50 py-5 text-center">
+    <div class="spinner-border text-danger" role="status">
+      <span class="visually-hidden">Cargando datos...</span>
+    </div>
+  </div>
+
+  <div *ngIf="!loading" class="bg-light bg-opacity-50">
     <div class="row text-center">
       @for (item of overViewData; track $index) {
-      <div class="col-md-3 col-6">
+      <div class="col-md-4 col-6">
         <p class="text-muted mt-3 mb-1">{{item.title}}</p>
         <h4 class="mb-3">
           <span class="ti {{item.icon}} text-{{item.variant}} me-1"></span>
-          <span>{{currency}}{{item.count}}k</span>
+          <span>{{currency}} {{item.count}}</span>
         </h4>
       </div>
       }

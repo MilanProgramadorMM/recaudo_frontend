@@ -88,12 +88,12 @@
                             <!-- Estado -->
                             <div class="mb-3">
                                 <span class="badge d-inline-block mt-1" style="width: fit-content;" [ngClass]="{
-    'bg-success': cliente.paidFull === 'S',
-    'bg-primary': cliente.paidToday === 1 && cliente.paidFull !== 'S',
-    'bg-warning text-dark': cliente.paidToday === 0 && cliente.paymentPromiseDate && cliente.noPago !== 1,
-    'bg-danger': cliente.paidToday === 0 && !cliente.paymentPromiseDate && cliente.noPago !== 1,
-    'bg-secondary': cliente.noPago === 1
-}">
+                                    'bg-success': cliente.paidFull === 'S',
+                                    'bg-primary': cliente.paidToday === 1 && cliente.paidFull !== 'S',
+                                    'bg-warning text-dark': cliente.paidToday === 0 && cliente.paymentPromiseDate && cliente.noPago !== 1,
+                                    'bg-danger': cliente.paidToday === 0 && !cliente.paymentPromiseDate && cliente.noPago !== 1,
+                                    'bg-secondary': cliente.noPago === 1
+                                }">
                                     {{
                                     cliente.paidFull === 'S'
                                     ? 'Cuota Pagada Completamente'
@@ -120,7 +120,7 @@
 
                                 <!-- Botón Recaudar (si NO está pagada completamente) -->
                                 <button type="button" class="btn btn-recaudo btn-sm flex-grow-1"
-                                    *ngIf="cliente.paidFull !== 'S'" (click)="openRecaudoModal(cliente)"
+                                    (click)="openRecaudoModal(cliente)" title="Registrar recaudo">
                                     title="Registrar recaudo">
                                     <i class="ti ti-cash me-1"></i>
                                     Recaudar
@@ -169,12 +169,12 @@
                                         </small>
                                         <!-- Reemplazar el badge de estado en ambas vistas -->
                                         <span class="badge d-inline-block mt-1" style="width: fit-content;" [ngClass]="{
-    'bg-success': cliente.paidFull === 'S',
-    'bg-primary': cliente.paidToday === 1 && cliente.paidFull !== 'S',
-    'bg-warning text-dark': cliente.paidToday === 0 && cliente.paymentPromiseDate && cliente.noPago !== 1,
-    'bg-danger': cliente.paidToday === 0 && !cliente.paymentPromiseDate && cliente.noPago !== 1,
-    'bg-secondary': cliente.noPago === 1
-}">
+                                                'bg-success': cliente.paidFull === 'S',
+                                                'bg-primary': cliente.paidToday === 1 && cliente.paidFull !== 'S',
+                                                'bg-warning text-dark': cliente.paidToday === 0 && cliente.paymentPromiseDate && cliente.noPago !== 1,
+                                                'bg-danger': cliente.paidToday === 0 && !cliente.paymentPromiseDate && cliente.noPago !== 1,
+                                                'bg-secondary': cliente.noPago === 1
+                                            }">
                                             {{
                                             cliente.paidFull === 'S'
                                             ? 'Cuota Pagada Completamente'
@@ -201,8 +201,8 @@
                                         </button>
 
                                         <!-- Botón Recaudar (si NO está pagada completamente) -->
-                                        <button type="button" class="btn btn-recaudo btn-sm"
-                                            *ngIf="cliente.paidFull !== 'S'" (click)="openRecaudoModal(cliente)"
+                                         <button type="button" class="btn btn-recaudo btn-sm"
+                                            (click)="openRecaudoModal(cliente)" title="Registrar recaudo">
                                             title="Registrar recaudo">
                                             <i class="ti ti-cash me-1"></i>
                                             Recaudar
