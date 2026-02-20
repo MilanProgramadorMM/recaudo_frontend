@@ -1,8 +1,4 @@
-<<<<<<< Updated upstream
-import { HttpClient, HttpHeaders } from "@angular/common/http";
-=======
 import { HttpClient, HttpHeaders, HttpParams } from "@angular/common/http";
->>>>>>> Stashed changes
 import { Injectable } from "@angular/core";
 import { CookieService } from "ngx-cookie-service";
 import { Observable } from "rxjs";
@@ -33,8 +29,6 @@ export interface DailyReportDetail {
   montoRecaudado: number;
 }
 
-<<<<<<< Updated upstream
-=======
 export interface DashboardSummaryDto {
   zonaId: number;
   zonaNombre: string;
@@ -44,8 +38,6 @@ export interface DashboardSummaryDto {
   totalCartera: number;
 }
 
-
->>>>>>> Stashed changes
 // DTO de respuesta de Zona
 export interface ZonaResponseDto {
   id?: number;
@@ -147,10 +139,8 @@ export class ZonaService {
       }
     );
   }
-<<<<<<< Updated upstream
-=======
 
-  getDashboardSummary(
+   getDashboardSummary(
     fechaInicio: string,
     fechaFin: string,
     zonaId?: number
@@ -171,5 +161,4 @@ export class ZonaService {
       }
     );
   }
->>>>>>> Stashed changes
 }

@@ -100,6 +100,8 @@ export class UserService {
         return this.http.get<DefaultResponseDto<UserDto>>(`${baseUrl}user/get/${userId}`, { headers });
     }
 
+
+
     assignUserRole(userId: number, roleId: number): Observable<any> {
         const token = this.cookieService.get('_OSEN_AUTH_SESSION_KEY_');
         const headers = new HttpHeaders({

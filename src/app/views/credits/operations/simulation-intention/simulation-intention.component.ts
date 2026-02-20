@@ -72,12 +72,8 @@ export class SimulationIntentionComponent implements OnInit {
   creditLines: CreditLineDto[] = [];
   periods: PeriodDto[] = [];
   taxTypes: any[] = [];
-
-<<<<<<< Updated upstream
-=======
   today: string = '';
 
->>>>>>> Stashed changes
   private fieldMapping: Record<string, string> = {
     documentType: 'document_type',
     document: 'document',
@@ -115,11 +111,8 @@ export class SimulationIntentionComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
-<<<<<<< Updated upstream
-=======
     const now = new Date();
     this.today = now.toISOString().split('T')[0];
->>>>>>> Stashed changes
     this.form = this.fb.group({
       zone_id: [null, Validators.required],
       document_type: ['', Validators.required],
@@ -153,11 +146,7 @@ export class SimulationIntentionComponent implements OnInit {
 
       cargos: ['', Validators.required],
       initial_quota: [''],
-<<<<<<< Updated upstream
-      start_date: [''],
-=======
-      start_date: ['', Validators.required],
->>>>>>> Stashed changes
+      start_date: ['', Validators.required],      
       inicio_quincena: [{ value: null, disabled: true }],
       fin_quincena: [{ value: null, disabled: true }],
 
@@ -682,8 +671,6 @@ export class SimulationIntentionComponent implements OnInit {
       return false;
     }
 
-<<<<<<< Updated upstream
-=======
     const today = new Date();
     today.setHours(0, 0, 0, 0);
 
@@ -694,8 +681,6 @@ export class SimulationIntentionComponent implements OnInit {
       return false;
     }
 
-
->>>>>>> Stashed changes
     const cuota = this.toNumber(raw.quota_value);
     const tasa = this.toDecimal(raw.tax_value);
     const itemValue = this.toNumber(raw.item_value);

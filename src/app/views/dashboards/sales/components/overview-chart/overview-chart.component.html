@@ -1,16 +1,30 @@
 <div class="card">
   <div class="card-header d-flex justify-content-between align-items-center">
     <h4 class="header-title fw-bold">Resumen por zona</h4>
+    <!-- <div ngbDropdown placement="bottom-start">
+      <a ngbDropdownToggle class="drop-arrow-none cursor-pointer card-drop" data-bs-toggle="dropdown"
+        aria-expanded="false">
+        <i class="ti ti-dots-vertical"></i>
+      </a>
+      <div ngbDropdownMenu class="dropdown-menu-end">
+
+        <a href="javascript:void(0);" ngbDropdownItem>Sales Report</a>
+
+        <a href="javascript:void(0);" ngbDropdownItem>Export Report</a>
+
+        <a href="javascript:void(0);" ngbDropdownItem>Profit</a>
+
+        <a href="javascript:void(0);" ngbDropdownItem>Action</a>
+      </div>
+    </div> -->
   </div>
 
-  <!-- LOADING -->
   <div *ngIf="loading" class="bg-light bg-opacity-50 py-5 text-center">
     <div class="spinner-border text-danger" role="status">
       <span class="visually-hidden">Cargando datos...</span>
     </div>
   </div>
 
-  <!-- DATOS -->
   <div *ngIf="!loading" class="bg-light bg-opacity-50">
     <div class="row text-center">
       @for (item of overViewData; track $index) {
@@ -18,7 +32,6 @@
         <p class="text-muted mt-3 mb-1">{{item.title}}</p>
         <h4 class="mb-3">
           <span class="ti {{item.icon}} text-{{item.variant}} me-1"></span>
-          <!-- ✅ Mostrar valor formateado sin la "k" -->
           <span>{{currency}} {{item.count}}</span>
         </h4>
       </div>

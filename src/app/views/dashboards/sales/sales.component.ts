@@ -13,6 +13,7 @@ import { PersonService } from '@core/services/person.service';
 import { UserService } from '@core/services/user.service';
 import { switchMap } from 'rxjs';
 
+
 @Component({
   selector: 'app-sales',
   standalone: true,
@@ -22,10 +23,11 @@ import { switchMap } from 'rxjs';
     StatsComponent,
     OverviewChartComponent,
     FlatpickrDirective,
-    RecentOrdersComponent,
+    RecentOrdersComponent
   ],
   templateUrl: './sales.component.html',
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
+  styles: ``
 })
 export class SalesComponent implements OnInit, AfterViewInit {
 
@@ -253,4 +255,5 @@ export class SalesComponent implements OnInit, AfterViewInit {
       String(date.getMonth() + 1).padStart(2, '0') + '-' +
       String(date.getDate()).padStart(2, '0');
   }
+
 }

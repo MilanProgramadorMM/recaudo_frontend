@@ -1,4 +1,3 @@
-// stats.component.ts
 import { Component, CUSTOM_ELEMENTS_SCHEMA, OnInit, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Subject, takeUntil } from 'rxjs';
@@ -19,7 +18,8 @@ interface StatType {
   standalone: true,
   imports: [CommonModule],
   templateUrl: './stats.component.html',
-  schemas: [CUSTOM_ELEMENTS_SCHEMA]
+  styles: ``,
+  schemas:[CUSTOM_ELEMENTS_SCHEMA]
 })
 export class StatsComponent implements OnInit, OnDestroy {
   statData: StatType[] = this.getEmptyStats();
@@ -77,7 +77,7 @@ export class StatsComponent implements OnInit, OnDestroy {
   private updateStats(data: DashboardSummaryDto[]): void {
     const totals = data.reduce((acc, item) => ({
       debidoCobrar: acc.debidoCobrar + (item.totalDebidoCobrar || 0),
-      recaudado: acc.recaudado + (item.totalRecaudado || 0),
+      recaudado: acc.recaudado + (item.totalRecaudado || 0) * -1,
       noPagado: acc.noPagado + (item.totalNoPagado || 0),
     }), { debidoCobrar: 0, recaudado: 0, noPagado: 0 });
 
