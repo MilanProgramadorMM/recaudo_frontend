@@ -28,7 +28,10 @@ import { credits, currentYear } from '@common/constants';
   </div>
   </div>
   `,
-  styles: ``,
+  styles: `
+  .card {
+    background-color: transparent;
+  }`,
 })
 export class AuthLayoutComponent implements OnInit, OnDestroy {
   currentYear = currentYear

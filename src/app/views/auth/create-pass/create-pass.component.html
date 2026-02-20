@@ -1,57 +1,84 @@
 <div class="container d-flex align-items-center justify-content-center">
-  <!--style="background-color: #f8f9fa;"-->
-
   <div class="card p-4 shadow" style="max-width: 700px; width: 500px;">
+    <button type="button" class="btn-close position-absolute" style="top: 10px; right: 10px; filter: invert(0.5);"
+      (click)="activeModal.dismiss()">
+    </button>
     <div class="text-center mb-4">
-      <img src="assets/images/Movil.png" alt="Logo" height="100" class="mb-2">
+      <img src="assets/images/movil.png" alt="Logo" height="100" class="mb-2">
       <h3 class="fw-semibold mb-2">Crear nueva contraseña</h3>
       <p class="text-muted mb-1">Por favor crea tu nueva contraseña.</p>
     </div>
 
-    <form class="text-start" (ngSubmit)="changePassword()">
-      <div class="mb-3">
-        <label class="form-label" for="password">
-          Contraseña actual
-        </label>
-        <input type="password" id="password" class="form-control" [(ngModel)]="passwordActual" name="Password"
-          placeholder="Ingrese contraseña actual" required>
-      </div>
-      <div class="mb-3">
-        <label class="form-label" for="new-password">
-          Nueva contraseña
-          <small class="text-primary ms-1">Debe tener al menos 8 caracteres</small>
-        </label>
-        <input type="password" id="new-password" class="form-control" [(ngModel)]="newPassword" name="newPassword"
-          placeholder="Nueva contraseña" required>
-      </div>
-      <div class="mb-3">
-        <label class="form-label" for="re-password">Reingresa la nueva contraseña</label>
-        <input type="password" id="re-password" class="form-control" [(ngModel)]="confirmPassword"
-          name="confirmPassword" placeholder="Reingresa la contraseña" required>
+    <form [formGroup]="form" class="text-start" (ngSubmit)="changePassword()">
+      <!-- Contraseña actual -->
+      <div class="mb-3 position-relative">
+        <label class="form-label" for="passwordActual">Contraseña actual</label>
+        <input [type]="showPasswordActual ? 'text' : 'password'" id="passwordActual" class="form-control"
+          formControlName="passwordActual"
+          [ngClass]="{ 'is-invalid': submitted && form.get('passwordActual')?.invalid }"
+          placeholder="Ingrese contraseña actual">
+
+        <i class="bi" [ngClass]="showPasswordActual ? 'bi-eye-slash' : 'bi-eye'"
+          (click)="showPasswordActual = !showPasswordActual"
+          style="position:absolute; right:10px; top:40px; cursor:pointer"></i>
+        <div *ngIf="submitted && form.get('passwordActual')?.invalid" class="invalid-feedback">
+          La contraseña actual es obligatoria
+        </div>
       </div>
 
+      <!-- Nueva contraseña -->
+      <div class="mb-3 position-relative">
+        <label class="form-label" for="newPassword">Nueva contraseña
+          <small class="text-primary ms-1">Debe tener al menos 8 caracteres</small>
+        </label>
+        <input [type]="showNewPassword ? 'text' : 'password'" id="newPassword" class="form-control"
+          formControlName="newPassword" [ngClass]="{ 'is-invalid': submitted && form.get('newPassword')?.invalid }"
+          placeholder="Nueva contraseña">
+
+        <i class="bi" [ngClass]="showNewPassword ? 'bi-eye-slash' : 'bi-eye'"
+          (click)="showNewPassword = !showNewPassword"
+          style="position:absolute; right:10px; top:40px; cursor:pointer"></i>
+        <div *ngIf="submitted && form.get('newPassword')?.errors?.['required']" class="invalid-feedback">
+          La nueva contraseña es obligatoria
+        </div>
+        <div *ngIf="submitted && form.get('newPassword')?.errors?.['minlength']" class="invalid-feedback">
+          Debe tener al menos 8 caracteres
+        </div>
+      </div>
+
+      <!-- Confirmar contraseña -->
+      <div class="mb-3 position-relative">
+        <label class="form-label" for="confirmPassword">Reingresa la nueva contraseña</label>
+        <input [type]="showConfirmPassword ? 'text' : 'password'" id="confirmPassword" class="form-control"
+          formControlName="confirmPassword"
+          [ngClass]="{ 'is-invalid': submitted && (form.hasError('notMatching') || form.get('confirmPassword')?.invalid) }"
+          placeholder="Reingresa la contraseña">
+
+        <i class="bi" [ngClass]="showConfirmPassword ? 'bi-eye-slash' : 'bi-eye'"
+          (click)="showConfirmPassword = !showConfirmPassword"
+          style="position:absolute; right:10px; top:40px; cursor:pointer"></i>
+        <div *ngIf="submitted && form.hasError('notMatching')" class="invalid-feedback">
+          Las contraseñas no coinciden
+        </div>
+      </div>
+
+      <!-- Error general -->
       <div *ngIf="errorMessage" class="text-danger mb-2">{{ errorMessage }}</div>
 
       <div class="mb-2 d-grid">
         <button class="btn btn-primary" type="submit">Crear contraseña</button>
       </div>
     </form>
-
-
-    <!--<p class="text-center text-danger fs-14 mt-4 mb-0">
-      Volver a
-      <a routerLink="/auth/login" class="fw-semibold text-dark ms-1">¡Iniciar sesión!</a>
-    </p> -->
   </div>
 </div>
 
+<!-- Modal -->
 <ng-template #passwordChanged let-modal>
   <div class="modal-body text-center">
     <i class="ti ti-check-circle h1 text-success"></i>
     <h4 class="mt-2">¡Contraseña actualizada!</h4>
-    <p class="mt-3">Tu contraseña se cambió correctamente.  
+    <p class="mt-3">Tu contraseña se cambió correctamente.
       Necesitas iniciar sesión nuevamente.</p>
-    <button (click)="onConfirmPasswordChange(modal)" type="button"
-            class="btn btn-primary mt-2">OK</button>
+    <button (click)="onConfirmPasswordChange(modal)" type="button" class="btn btn-primary mt-2">OK</button>
   </div>
 </ng-template>

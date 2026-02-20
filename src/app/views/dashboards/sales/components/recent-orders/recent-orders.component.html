@@ -6,26 +6,33 @@
           class="ti ti-plus"></i></a> -->
     </div>
   </div>
-  @for (item of orders; track $index) {
+  @for (item of intentions; track $index) {
   <div class="d-flex align-items-center gap-2 position-relative mb-2">
     <div class="avatar-md flex-shrink-0">
-      <i class="ti ti-file-dollar fs-3"></i>      
+      <i class="ti ti-file-dollar fs-3"></i>
     </div>
     <div>
-      <h5 class="fs-14 my-1"><a routerLink="/apps/ecommerce/orders/details"
-          class="stretched-link link-reset">{{item.name}}</a></h5>
-      <span class="text-muted fs-12"> {{currency}}{{item.price}} x {{item.orderQuantity}} =
-        {{currency}}{{item.price*item.orderQuantity}}</span>
+      <h5 class="fs-14 my-1">
+        <span class="link-reset">{{ item.fullname }}</span>
+      </h5>
+      <span class="text-muted fs-12">
+        {{ currency }}{{ formatCurrency(item.quotaValue) }} x
+        {{ item.periodQuantity }} =
+        {{ currency }}{{ formatCurrency(getTotalAmount(item)) }}
+      </span>
+
     </div>
     <div class="ms-auto">
       <span class="badge px-2 py-1">
-        <button class="btn btn-primary me-1">Gestionar</button>
+        <button class="btn btn-danger me-1" (click)="manageIntention(item)">
+          Gestionar
+        </button>
       </span>
     </div>
   </div>
   }
-
   <div class="mt-3 text-center">
-    <a href="javascript: void(0);" class="text-decoration-underline fw-semibold ms-auto link-offset-2 link-dark">Ver todo</a>
+    <a href="javascript: void(0);" class="text-decoration-underline fw-semibold ms-auto link-offset-2 link-dark">Ver
+      todo</a>
   </div>
 </div>

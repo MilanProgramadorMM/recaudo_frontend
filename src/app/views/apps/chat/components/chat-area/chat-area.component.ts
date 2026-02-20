@@ -33,6 +33,7 @@ export class ChatAreaComponent implements OnInit {
   @Output() sidebarButtonClicked = new EventEmitter();
 
   openSidebar() {
+    debugger; 
     this.sidebarButtonClicked.emit();
   }
 

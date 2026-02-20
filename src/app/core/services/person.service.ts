@@ -17,8 +17,70 @@ export interface PersonRegisterDto {
     gender: number;
     occupation?: string;
     description?: string;
-    type_person : string;
+    type_person: string;
+
+    // campos para CLIENTE
+    //orden?: number;
+    zona?: number;
+
+    // campos para ASESOR (múltiples zonas)
+    zonas?: number[];
+    countryId?: number;
+    departentId?: number;
+    cityId?: number;
+    neighborhoodId?: number;
+    adress?: string;
+    details?: string;
+    correo?: string;
+    celular?: string;
+    telefono?: string;
 }
+
+
+export interface PersonResponseDto {
+    id: number;
+    documentType: number;
+    document: string;
+    firstName: string;
+    middleName: string;
+    lastName: string;
+    maternalLastname: string;
+    fullName: string;
+    gender: number;
+    occupation?: string;
+    description?: string;
+    createdAt: string;
+    typePerson: string;
+    status: boolean;
+    username: string;
+
+    orden?: number;
+    zonaId?: number | null;
+    zid?: string;
+    zona?: String;
+    zonas?: Array<{ id: number; zonaId: number; zonaName: string }>;
+
+    countryId?: string | null;
+    departentId?: string | null;
+    cityId?: string | null;
+    neighborhoodId?: string | null;
+    descriptionD?: string;
+    adress?: string | null;
+    details?: string | null;
+    correo?: string | null;
+    celular?: string | null;
+    telefono?: string | null;
+    // ===== CRÉDITO =====
+    creditId?: number;
+    creditAmount?: number;
+    creditBalance?: number;
+    creditStatus?: string;
+
+    // cierre del día
+    hasClosingToday?: boolean;
+    closingStatus?: string;
+}
+
 
 export interface DefaultResponseDto<T> {
     status: string;
@@ -36,50 +98,94 @@ export class PersonService {
         private cookieService: CookieService
     ) { }
 
-    getAllPersons(): Observable<DefaultResponseDto<PersonRegisterDto[]>> {
+    getAllPersons(): Observable<DefaultResponseDto<PersonResponseDto[]>> {
         const token = this.cookieService.get('_OSEN_AUTH_SESSION_KEY_');
         const headers = new HttpHeaders({
             Authorization: `Bearer ${token}`
         });
-        return this.http.get<DefaultResponseDto<PersonRegisterDto[]>>(`${baseUrl}person/get-all`, { headers });
+        return this.http.get<DefaultResponseDto<PersonResponseDto[]>>(`${baseUrl}person/get-all`, { headers });
     }
 
-    getPersonsByType(type: string): Observable<DefaultResponseDto<PersonRegisterDto[]>> {
+    getPersonsByType(type: string): Observable<DefaultResponseDto<PersonResponseDto[]>> {
         const token = this.cookieService.get('_OSEN_AUTH_SESSION_KEY_');
         const headers = new HttpHeaders({ Authorization: `Bearer ${token}` });
-        return this.http.get<DefaultResponseDto<PersonRegisterDto[]>>(
+        return this.http.get<DefaultResponseDto<PersonResponseDto[]>>(
             `${baseUrl}person/get-by-type/${type}`,
             { headers }
         );
     }
 
-
-    getPersonById(personId: number): Observable<DefaultResponseDto<PersonRegisterDto>> {
+    getPersonByDocument(document: string): Observable<DefaultResponseDto<PersonResponseDto>> {
         const token = this.cookieService.get('_OSEN_AUTH_SESSION_KEY_');
-        const headers = new HttpHeaders({
-            Authorization: `Bearer ${token}`
-        });
+        const headers = new HttpHeaders({ Authorization: `Bearer ${token}` });
 
-        return this.http.get<DefaultResponseDto<PersonRegisterDto>>(`${baseUrl}person/get/${personId}`, { headers });
+        return this.http.get<DefaultResponseDto<PersonResponseDto>>(
+            `${baseUrl}person/get-by-document/${document}`,
+            { headers }
+        );
     }
 
-    registerPerson(data: PersonRegisterDto): Observable<DefaultResponseDto<PersonRegisterDto>> {
+
+    getPersonsByZona(type: string, zona: string): Observable<DefaultResponseDto<PersonResponseDto[]>> {
         const token = this.cookieService.get('_OSEN_AUTH_SESSION_KEY_');
-        const headers = new HttpHeaders({
-            Authorization: `Bearer ${token}`
-        });
-        return this.http.post<DefaultResponseDto<PersonRegisterDto>>(`${baseUrl}person/register`, data, { headers });
+        const headers = new HttpHeaders({ Authorization: `Bearer ${token}` });
+        return this.http.get<DefaultResponseDto<PersonResponseDto[]>>(
+            `${baseUrl}person/get-zona/${type}/${zona}`,
+            { headers }
+        );
     }
 
-    updatePerson(data: PersonRegisterDto): Observable<DefaultResponseDto<PersonRegisterDto>> {
+    getPersonsByZonaForRecaudo(type: string, zona: string): Observable<DefaultResponseDto<PersonResponseDto[]>> {
+        const token = this.cookieService.get('_OSEN_AUTH_SESSION_KEY_');
+        const headers = new HttpHeaders({ Authorization: `Bearer ${token}` });
+        return this.http.get<DefaultResponseDto<PersonResponseDto[]>>(
+            `${baseUrl}person/get-by-zona/${type}/${zona}`,
+            { headers }
+        );
+    }
+
+    // getZonaByAcesor(idAsesor: number): Observable<DefaultResponseDto<PersonResponseDto[]>> {
+    //     const token = this.cookieService.get('_OSEN_AUTH_SESSION_KEY_');
+    //     const headers = new HttpHeaders({ Authorization: `Bearer ${token}` });
+    //     return this.http.get<DefaultResponseDto<PersonResponseDto[]>>(
+    //         `${baseUrl}person/asesor/${idAsesor}/zona`,
+    //         { headers }
+    //     );
+    // }
+
+    getZonasByAsesor(asesorId: number): Observable<any> {
+        const token = this.cookieService.get('_OSEN_AUTH_SESSION_KEY_');
+        const headers = new HttpHeaders({ Authorization: `Bearer ${token}` });
+        return this.http.get(`${baseUrl}person/asesor/${asesorId}/zona`, {
+            headers
+        });
+    }
+
+    getPersonById(personId: number): Observable<DefaultResponseDto<PersonResponseDto>> {
         const token = this.cookieService.get('_OSEN_AUTH_SESSION_KEY_');
         const headers = new HttpHeaders({
             Authorization: `Bearer ${token}`
         });
-        return this.http.put<DefaultResponseDto<PersonRegisterDto>>(`${baseUrl}person/update`, data, { headers }).pipe(
+
+        return this.http.get<DefaultResponseDto<PersonResponseDto>>(`${baseUrl}person/get/${personId}`, { headers });
+    }
+
+    registerPerson(data: PersonRegisterDto): Observable<DefaultResponseDto<PersonResponseDto>> {
+        const token = this.cookieService.get('_OSEN_AUTH_SESSION_KEY_');
+        const headers = new HttpHeaders({
+            Authorization: `Bearer ${token}`
+        });
+        return this.http.post<DefaultResponseDto<PersonResponseDto>>(`${baseUrl}person/register`, data, { headers });
+    }
+
+    updatePerson(data: PersonRegisterDto): Observable<DefaultResponseDto<PersonResponseDto>> {
+        const token = this.cookieService.get('_OSEN_AUTH_SESSION_KEY_');
+        const headers = new HttpHeaders({
+            Authorization: `Bearer ${token}`
+        });
+        return this.http.put<DefaultResponseDto<PersonResponseDto>>(`${baseUrl}person/update`, data, { headers }).pipe(
             catchError((error) => {
                 debugger
-                // Aquí puedes mapear el error del backend
                 const backendError = error?.error?.data || error?.error || { message: 'Error desconocido' };
 
                 return throwError(() => backendError);
@@ -99,18 +205,20 @@ export class PersonService {
         );
     }
 
-    reactivatePerson(id: number): Observable<DefaultResponseDto<PersonRegisterDto>> {
+    reactivatePerson(id: number): Observable<DefaultResponseDto<PersonResponseDto>> {
         const token = this.cookieService.get('_OSEN_AUTH_SESSION_KEY_');
         const headers = new HttpHeaders({
             Authorization: `Bearer ${token}`
         });
-        return this.http.put<DefaultResponseDto<PersonRegisterDto>>(
+        return this.http.put<DefaultResponseDto<PersonResponseDto>>(
             `${baseUrl}person/person/reactivate/${id}`,
             null,
             { headers }
         );
     }
 
-
+    toggleStatus(id: number, status: boolean): Observable<any> {
+        return this.http.put<any>(`${baseUrl}person/status/${id}?status=${status}`, {});
+    }
 
 }

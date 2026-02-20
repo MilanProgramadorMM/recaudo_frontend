@@ -13,7 +13,7 @@ import { Component, Input } from '@angular/core'
 
     <div class="text-end">
         <ol class="breadcrumb m-0 py-0">
-            <li class="breadcrumb-item"><a href="javascript: void(0);">Osen</a></li>
+            <li class="breadcrumb-item"><a href="javascript: void(0);">CREDISABE</a></li>
             <li class="breadcrumb-item" *ngIf="subtitle"><a href="javascript: void(0);">{{ subtitle }}</a></li>
             <li class="breadcrumb-item active">{{ title }}</li>
         </ol>

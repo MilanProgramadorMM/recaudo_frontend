@@ -5,14 +5,19 @@ import { NgbActiveModal, NgbProgressbarModule } from '@ng-bootstrap/ng-bootstrap
 import { FormsModule, ReactiveFormsModule, Validators, FormBuilder, type UntypedFormGroup } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { RoleDto, RoleService } from '@core/services/role.service';
-import { UserService } from '@core/services/user.service';
+import { UserDto, UserService } from '@core/services/user.service';
 
 
 @Component({
   selector: 'add-users',
   standalone: true,
-  imports: [FormsModule, CdkStepperModule, // <-- esto es necesario para usar <cdk-step> y <ng-stepper>
-    NgbProgressbarModule, NgStepperModule, ReactiveFormsModule, CommonModule],
+  imports: [
+    FormsModule,
+    CdkStepperModule,
+    NgbProgressbarModule,
+    NgStepperModule,
+    ReactiveFormsModule,
+    CommonModule],
   templateUrl: './user-create.component.html',
   styles: ``
 })
@@ -21,6 +26,7 @@ export class UserCreateComponent {
   profileForm!: UntypedFormGroup
   submit = false
   roles: RoleDto[] = [];
+  users: UserDto[] = [];
   selectedRoles: number[] = [];
   submitSuccess: boolean = false;
   successMessage: string = '';
@@ -30,7 +36,7 @@ export class UserCreateComponent {
 
   @ViewChild('stepper') stepper!: NgStepperComponent
   @ViewChild('cdkSteppers') cdkSteppers!: CdkStepper
-  
+
   constructor(
     private formBuilder: FormBuilder,
     private cdr: ChangeDetectorRef,
@@ -82,7 +88,9 @@ export class UserCreateComponent {
     return this.selectedRoles.includes(roleId);
   }
 
-
+  cancel() {
+    this.activeModal.dismiss();
+  }
 
   updateProgressBarWidth() {
     if (this.cdkSteppers) {
@@ -101,6 +109,17 @@ export class UserCreateComponent {
     this.roleService.getAllRoles().subscribe({
       next: (response) => {
         this.roles = response.data;
+      },
+      error: (error) => {
+        console.error('Error al obtener users', error);
+      }
+    });
+  }
+
+  fetchUsers() {
+    this.userService.getAllUsers().subscribe({
+      next: (response) => {
+        this.users = response.data;
       },
       error: (error) => {
         console.error('Error al obtener users', error);
@@ -161,6 +180,7 @@ export class UserCreateComponent {
       next: (response) => {
         this.submitSuccess = true;
         this.successMessage = '¡Usuario creado correctamente!';
+        this.fetchUsers();
         this.stepper.next();
         setTimeout(() => {
           this.activeModal.close({ success: true });

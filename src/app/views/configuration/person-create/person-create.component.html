@@ -11,110 +11,290 @@
   <p *ngIf="errorMessage" class="fs-14 text-danger">{{ errorMessage }}</p>
 
   <form [formGroup]="form" class="row">
-    <div class="col-lg-9">
+    <div class="col-lg-12">
       <div class="card">
-        <div class="card-header border-bottom border-dashed">
+        <!-- <div class="card-header border-bottom border-dashed">
           <h4 class="card-title mb-0">Información Básica</h4>
-        </div>
+        </div> -->
         <div class="card-body">
-          <div class="row">
-            <div class="col-lg-3 mb-3">
-              <label class="form-label">Primer nombre <span class="required">*</span></label>
-              <input formControlName="firstName" type="text" class="form-control text-uppercase"
-                [ngClass]="{ 'is-invalid': submitted && form.get('firstName')?.invalid }">
-              <div class="invalid-feedback" *ngIf="submitted && form.get('firstName')?.errors?.['required']">
-                Campo obligatorio
+          <fieldset>
+            <legend>Información Básica</legend>
+            <div class="row">
+              <div class="col-lg-3 mb-3">
+                <label class="form-label">Primer nombre <span class="required">*</span></label>
+                <input formControlName="firstName" type="text" class="form-control text-uppercase"
+                  [ngClass]="{ 'is-invalid': submitted && form.get('firstName')?.invalid }">
+                <div class="invalid-feedback" *ngIf="submitted && form.get('firstName')?.errors?.['required']">
+                  Campo obligatorio
+                </div>
+              </div>
+              <div class="col-lg-3 mb-3">
+                <label class="form-label">Segundo nombre</label>
+                <input formControlName="secondName" type="text" class="form-control text-uppercase"
+                  [ngClass]="{ 'is-invalid': submitted && form.get('secondName')?.invalid }">
+                <div class="invalid-feedback" *ngIf="submitted && form.get('secondName')?.errors?.['required']">
+                  Campo obligatorio
+                </div>
+              </div>
+              <div class="col-lg-3 mb-3">
+                <label class="form-label">Primer apellido <span class="required">*</span></label>
+                <input formControlName="firstSurname" type="text" class="form-control text-uppercase"
+                  [ngClass]="{ 'is-invalid': submitted && form.get('firstSurname')?.invalid }">
+                <div class="invalid-feedback" *ngIf="submitted && form.get('firstSurname')?.errors?.['required']">
+                  Campo obligatorio
+                </div>
+              </div>
+              <div class="col-lg-3 mb-3">
+                <label class="form-label">Segundo apellido</label>
+                <input formControlName="secondSurname" type="text" class="form-control text-uppercase"
+                  [ngClass]="{ 'is-invalid': submitted && form.get('secondSurname')?.invalid }">
+                <div class="invalid-feedback" *ngIf="submitted && form.get('secondSurname')?.errors?.['required']">
+                  Campo obligatorio
+                </div>
               </div>
             </div>
 
-            <div class="col-lg-3 mb-3">
-              <label class="form-label">Segundo nombre</label>
-              <input formControlName="secondName" type="text" class="form-control text-uppercase"
-                [ngClass]="{ 'is-invalid': submitted && form.get('secondName')?.invalid }">
-              <div class="invalid-feedback" *ngIf="submitted && form.get('secondName')?.errors?.['required']">
-                Campo obligatorio
+            <div class="row">
+              <div class="col-lg-12 mb-3">
+                <label class="form-label">Nombre completo</label>
+                <input formControlName="fullName" type="text" class="form-control" readonly>
               </div>
             </div>
 
-            <div class="col-lg-3 mb-3">
-              <label class="form-label">Primer apellido <span class="required">*</span></label>
-              <input formControlName="firstSurname" type="text" class="form-control text-uppercase"
-                [ngClass]="{ 'is-invalid': submitted && form.get('firstSurname')?.invalid }">
-              <div class="invalid-feedback" *ngIf="submitted && form.get('firstSurname')?.errors?.['required']">
-                Campo obligatorio
+            <div class="row">
+              <div class="col-lg-3 mb-3">
+                <label class="form-label">
+                  Tipo de documento <span class="required">*</span>
+                </label>
+                <select formControlName="documentType" class="form-control form-select"
+                  [ngClass]="{ 'is-invalid': submitted && form.get('documentType')?.invalid }">
+                  <option value="">Seleccione</option>
+                  <option *ngFor="let doc of documentTypes" [value]="doc.id">
+                    {{ doc.name }}
+                  </option>
+                </select>
+                <div class="invalid-feedback" *ngIf="submitted && form.get('documentType')?.errors?.['required']">
+                  Campo obligatorio
+                </div>
+              </div>
+
+              <div class="col-lg-3 mb-3">
+                <label class="form-label">Número de documento <span class="required">*</span></label>
+                <input formControlName="identification" type="text" class="form-control"
+                  [ngClass]="{ 'is-invalid': submitted && form.get('identification')?.invalid }">
+                <div class="invalid-feedback" *ngIf="submitted && form.get('identification')?.errors?.['required']">
+                  Campo obligatorio
+                </div>
+              </div>
+
+              <div class="col-lg-3 mb-3">
+                <label class="form-label">Género <span class="required">*</span></label>
+                <select class="form-control form-select" formControlName="gender"
+                  [ngClass]="{ 'is-invalid': submitted && form.get('gender')?.invalid }">
+                  <option value="">Seleccione</option>
+                  <option *ngFor="let type of genderGlotypes" [value]="type.id">
+                    {{ type.name }}
+                  </option>
+                </select>
+                <div class="invalid-feedback" *ngIf="submitted && form.get('gender')?.errors?.['required']">
+                  Campo obligatorio
+                </div>
+              </div>
+
+              <div class="col-lg-3 mb-3">
+                <label class="form-label">Ocupación <span class="required">*</span></label>
+                <input formControlName="occupation" type="text" class="form-control text-uppercase"
+                  [ngClass]="{ 'is-invalid': submitted && form.get('occupation')?.invalid }">
+                <div class="invalid-feedback" *ngIf="submitted && form.get('occupation')?.errors?.['required']">
+                  Campo obligatorio
+                </div>
               </div>
             </div>
 
-            <div class="col-lg-3 mb-3">
-              <label class="form-label">Segundo apellido</label>
-              <input formControlName="secondSurname" type="text" class="form-control text-uppercase"
-                [ngClass]="{ 'is-invalid': submitted && form.get('secondSurname')?.invalid }">
-              <div class="invalid-feedback" *ngIf="submitted && form.get('secondSurname')?.errors?.['required']">
-                Campo obligatorio
+            <div class="row">
+              <div class="col-lg-12 mb-3">
+                <label class="form-label">Observaciones</label>
+                <textarea formControlName="description" class="form-control text-uppercase" rows="3"></textarea>
               </div>
             </div>
+          </fieldset>
 
-            <div class="col-lg-12 mb-3">
-              <label class="form-label">Nombre completo</label>
-              <input formControlName="fullName" type="text" class="form-control" readonly>
-            </div>
+          <fieldset style="margin-top: 20px;">
+            <legend>Informacion de contacto</legend>
+            <div class="row">
 
-            <div class="col-lg-4 mb-3">
-              <label class="form-label">Tipo de documento <span class="required">*</span></label>
-              <select class="form-control form-select"
-                [ngClass]="{ 'is-invalid': submitted && form.get('secondSurname')?.invalid }"
-                name="choices-single-default" id="choices-single-default" formControlName="documentType">
-                <option value="">Seleccione</option>
-                <option *ngFor="let type of documentTypes" [value]="type.id">
-                  {{ type.name }}
-                </option>
-              </select>
-              <div class="invalid-feedback" *ngIf="submitted && form.get('documentType')?.errors?.['required']">
-                Campo obligatorio
+              <div class="col-lg-3 mb-3">
+                <label class="form-label">País <span class="required">*</span></label>
+                <select class="form-control form-select" formControlName="pais"
+                  [ngClass]="{ 'is-invalid': submitted && form.get('pais')?.invalid }">
+                  <option value="">Seleccione</option>
+                  <option *ngFor="let p of paises" [value]="p.id">
+                    {{ p.label }}
+                  </option>
+                </select>
+                <div class="invalid-feedback" *ngIf="submitted && form.get('pais')?.errors?.['required']">
+                  Campo obligatorio
+                </div>
+              </div>
+
+              <!-- Departamento -->
+              <div class="col-lg-3 mb-3">
+                <label class="form-label">Departamento <span class="required">*</span></label>
+                <select class="form-control form-select" formControlName="departamento"
+                  [ngClass]="{ 'is-invalid': submitted && form.get('departamento')?.invalid }">
+                  <option value="">Seleccione</option>
+                  <option *ngFor="let d of departamentos" [value]="d.id">
+                    {{ d.label }}
+                  </option>
+                </select>
+                <div class="invalid-feedback" *ngIf="submitted && form.get('departamento')?.errors?.['required']">
+                  Campo obligatorio
+                </div>
+              </div>
+
+              <!-- Municipio -->
+              <div class="col-lg-3 mb-3">
+                <label class="form-label">Municipio <span class="required">*</span></label>
+                <select class="form-control form-select" formControlName="ciudad"
+                  [ngClass]="{ 'is-invalid': submitted && form.get('ciudad')?.invalid }">
+                  <option value="">Seleccione</option>
+                  <option *ngFor="let c of municipios" [value]="c.id">
+                    {{ c.label }}
+                  </option>
+                </select>
+                <div class="invalid-feedback" *ngIf="submitted && form.get('ciudad')?.errors?.['required']">
+                  Campo obligatorio
+                </div>
+              </div>
+
+              <!-- Barrio -->
+              <div class="col-lg-3 mb-3">
+                <label class="form-label">Barrio <span class="required">*</span></label>
+                <select class="form-control form-select" formControlName="barrio"
+                  [ngClass]="{ 'is-invalid': submitted && form.get('barrio')?.invalid }">
+                  <option value="">Seleccione</option>
+                  <option *ngFor="let b of barrios" [value]="b.id">
+                    {{ b.label }}
+                  </option>
+                </select>
+                <div class="invalid-feedback" *ngIf="submitted && form.get('barrio')?.errors?.['required']">
+                  Campo obligatorio
+                </div>
+              </div>
+
+              <!-- Dirección -->
+              <div class="col-lg-6 mb-3">
+                <label class="form-label">Dirección <span class="required">*</span></label>
+                <input type="text" class="form-control text-uppercase" formControlName="direccion"
+                  placeholder="Ingrese dirección"
+                  [ngClass]="{ 'is-invalid': submitted && form.get('direccion')?.invalid }" />
+                <div class="invalid-feedback" *ngIf="submitted && form.get('direccion')?.errors?.['required']">
+                  Campo obligatorio
+                </div>
+              </div>
+
+              <div class="col-lg-6 mb-3">
+                <label class="form-label">Detalle</label>
+                <input type="text" class="form-control text-uppercase" formControlName="descripcion"
+                  placeholder="Detalle dirección" />
+              </div>
+
+              <!-- Celular -->
+              <div class="col-lg-4 mb-3">
+                <label class="form-label">Celular <span class="required">*</span></label>
+                <input type="tel" class="form-control" formControlName="celular" placeholder="Ingrese solo números"
+                  pattern="[0-9]*" inputmode="numeric" (keypress)="soloNumeros($event)"
+                  [ngClass]="{ 'is-invalid': submitted && form.get('celular')?.invalid }" />
+                <div class="invalid-feedback" *ngIf="submitted && form.get('celular')?.errors?.['required']">
+                  Campo obligatorio
+                </div>
+              </div>
+
+              <div class="col-lg-4 mb-3">
+                <label class="form-label">Correo <span class="required">*</span></label>
+                <input type="email" class="form-control" formControlName="correo" placeholder="example@mail.com"
+                  [ngClass]="{ 'is-invalid': submitted && form.get('correo')?.invalid }" />
+                <div class="invalid-feedback" *ngIf="submitted && form.get('correo')?.errors?.['required']">
+                  Campo obligatorio
+                </div>
+                <div class="invalid-feedback" *ngIf="submitted && form.get('correo')?.errors?.['email']">
+                  Ingrese un correo válido
+                </div>
+              </div>
+
+              <div class="col-lg-4 mb-3">
+                <label class="form-label">Teléfono</label>
+                <input type="tel" class="form-control" formControlName="telefono" placeholder="Ingrese solo números"
+                  pattern="[0-9]*" inputmode="numeric" (keypress)="soloNumeros($event)"
+                  [ngClass]="{ 'is-invalid': submitted && form.get('telefono')?.invalid }" />
+                <div class="invalid-feedback" *ngIf="submitted && form.get('telefono')?.errors?.['required']">
+                  Campo obligatorio
+                </div>
               </div>
             </div>
+          </fieldset>
 
-            <div class="col-lg-4 mb-3">
-              <label class="form-label">Número de documento <span class="required">*</span></label>
-              <input formControlName="identification" type="text" class="form-control"
-                [ngClass]="{ 'is-invalid': submitted && form.get('identification')?.invalid }">
-              <div class="invalid-feedback" *ngIf="submitted && form.get('identification')?.errors?.['required']">
-                Campo obligatorio
+          <!-- Solo visible para ASESORES -->
+          <fieldset style="margin-top: 20px;" *ngIf="personType === 'ASESOR'">
+            <legend>Zonas Asignadas</legend>
+            <div class="row">
+              <div class="col-lg-12 mb-3">
+                <label class="form-label">Seleccione las zonas <span class="required">*</span></label>
+                <div class="border rounded p-3" style="max-height: 300px; overflow-y: auto;">
+                  <div *ngFor="let zona of zonas" class="form-check mb-2">
+                    <input class="form-check-input" type="checkbox" [value]="zona.id" [id]="'zona-' + zona.id"
+                      (change)="onZonaCheckboxChange($event, zona.id)" [checked]="selectedZonas.includes(zona.id)">
+                    <label class="form-check-label" [for]="'zona-' + zona.id">
+                      {{ zona.value }}
+                    </label>
+                  </div>
+                </div>
+                <div class="text-danger small mt-2"
+                  *ngIf="submitted && personType === 'ASESOR' && selectedZonas.length === 0">
+                  Debe seleccionar al menos una zona
+                </div>
+              </div>
+
+              <!-- Mostrar zonas seleccionadas -->
+              <div class="col-lg-12 mb-3" *ngIf="selectedZonas.length > 0">
+                <label class="form-label">Zonas seleccionadas:</label>
+                <div class="d-flex flex-wrap gap-2">
+                  <span *ngFor="let zonaId of selectedZonas" class="badge bg-primary">
+                    {{ getZonaName(zonaId) }}
+                    <i class="ti ti-x ms-1" style="cursor: pointer;" (click)="removeZona(zonaId)"></i>
+                  </span>
+                </div>
               </div>
             </div>
+          </fieldset>
 
-            <div class="col-lg-4 mb-3">
-              <label class="form-label">Género <span class="required">*</span></label>
-              <select class="form-control form-select" formControlName="gender">
-                <option value="">Seleccione</option>
-                <option *ngFor="let type of genderGlotypes" [value]="type.id">
-                  {{ type.name }}
-                </option>
-              </select>
-            </div>
+          <!-- Solo visible para CLIENTES (AGREGADO *ngIf) -->
+          <fieldset style="margin-top: 20px;" *ngIf="personType === 'CLIENTE'">
+            <legend>Zona</legend>
+            <div class="row">
+              <div class="col-lg-6 mb-3">
+                <label class="form-label">Zona <span class="required">*</span></label>
+                <select class="form-control form-select" formControlName="zona"
+                  [ngClass]="{ 'is-invalid': submitted && form.get('zona')?.invalid }">
+                  <option value="">Seleccione</option>
+                  <option *ngFor="let z of zonas" [value]="z.id">{{ z.value }}</option>
+                </select>
+                <div class="invalid-feedback" *ngIf="submitted && form.get('zona')?.errors?.['required']">
+                  Campo obligatorio
+                </div>
+              </div>
 
-
-
-            <div class="col-lg-6 mb-3">
-              <label class="form-label">Ocupación <span class="required">*</span></label>
-              <input formControlName="occupation" type="text" class="form-control text-uppercase"
-                [ngClass]="{ 'is-invalid': submitted && form.get('occupation')?.invalid }">
-              <div class="invalid-feedback" *ngIf="submitted && form.get('occupation')?.errors?.['required']">
-                Campo obligatorio
+              <div class="col-lg-6 mb-3">
+                <label class="form-label">Orden</label>
+                <input formControlName="orden" type="number" class="form-control" [readonly]="true">
               </div>
             </div>
-
-            <div class="col-lg-12 mb-3">
-              <label class="form-label">Observaciones</label>
-              <textarea formControlName="description" class="form-control text-uppercase" rows="3"></textarea>
-            </div>
-
-          </div>
+          </fieldset>
         </div>
       </div>
     </div>
 
-    <div class="col-lg-3">
+    <!-- <div class="col-lg-3">
       <div class="card">
         <div class="card-header border-bottom border-dashed">
           <h4 class="card-title mb-0">Foto de perfil</h4>
@@ -125,7 +305,7 @@
           </div>
         </div>
       </div>
-    </div>
+    </div> -->
   </form>
 </div>
 

@@ -16,8 +16,12 @@ export class JwtInterceptor implements HttpInterceptor {
   ): Observable<HttpEvent<Event>> {
     const authenticationService = inject(AuthenticationService)
     const token = authenticationService.session;
+
+    const isPublicEndpoint = request.url.includes('/api/public/');
     const isAuthEndpoint = request.url.includes('/api/auth/login');
-    if (token && !isAuthEndpoint) {
+
+    // Solo añadir token si NO es una ruta pública o de autenticación
+    if (token && !isAuthEndpoint && !isPublicEndpoint) {
       request = request.clone({
         setHeaders: {
           Authorization: `Bearer ${token}`,

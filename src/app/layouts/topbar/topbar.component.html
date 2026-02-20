@@ -1,10 +1,31 @@
 <header class="app-topbar">
   <div class="page-container topbar-menu">
-    <div class="d-flex align-items-center gap-2">
-    </div>
 
     <div class="d-flex align-items-center gap-2">
-      <div class="topbar-item d-none d-sm-flex">
+      <app-logo-box />
+
+
+      <button class="sidenav-toggle-button px-2" (click)="toggleMobileMenu()">
+        <i class="ti ti-menu-deep fs-24"></i>
+      </button>
+
+
+      <button (click)="toggleMobileMenu()" class="topnav-toggle-button px-2" data-bs-toggle="collapse"
+        data-bs-target="#topnav-menu-content">
+        <i class="ti ti-menu-deep fs-22"></i>
+      </button>
+
+
+      <div class="topbar-search text-muted d-none d-xl-flex gap-2 align-items-center" data-bs-toggle="modal"
+        data-bs-target="#searchModal" type="button" (click)="open(content)">
+        <i class="ti ti-search fs-18"></i>
+        <span class="me-2">Search something..</span>
+        <span class="ms-auto fw-medium">⌘K</span>
+      </div>
+    </div>
+
+    <div class="d-flex align-items-center gap-2"> 
+      <!-- <div class="topbar-item d-none d-sm-flex">
         <button class="topbar-link" (click)="changeTheme()" id="light-dark-mode" type="button">
           @if (color==="light") {
           <i class="ti ti-moon fs-22"></i>
@@ -12,7 +33,7 @@
           <i class="ti ti-sun fs-22"></i>
           }
         </button>
-      </div>
+      </div> -->
 
 
       <div class="topbar-item nav-user">
@@ -43,6 +64,8 @@
         </div>
       </div>
     </div>
+
+
   </div>
 </header>
 

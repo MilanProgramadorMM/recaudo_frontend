@@ -1,0 +1,118 @@
+<div class="modal-header bg-info text-white">
+    <h5 class="modal-title">
+        <i class="ti ti-settings me-2"></i>
+        {{ distributionLabel }} - Crédito #{{ creditId }}
+    </h5>
+    <button type="button" class="btn-close btn-close-white" (click)="close()"></button>
+</div>
+
+<div class="modal-body">
+    <!-- Alerta informativa -->
+    <div class="alert alert-info mb-4">
+        <i class="ti ti-info-circle me-2"></i>
+        <strong>Tipo de distribución:</strong> {{ distributionLabel }}
+        <p class="mb-0 mt-2">{{ distributionDescription }}</p>
+    </div>
+
+    <!-- Formulario -->
+    <form [formGroup]="paymentForm" (ngSubmit)="onSubmit()">
+        <div class="row">
+            <!-- Método de Pago -->
+            <div class="col-md-12 mb-3">
+                <label class="form-label">
+                    Método de Pago <span class="text-danger">*</span>
+                </label>
+                <select class="form-select" formControlName="paymentTypeId" (change)="onMetodoChange()"
+                    [class.is-invalid]="submitted && paymentForm.get('paymentTypeId')?.invalid">
+                    <option value="">Seleccione método de pago</option>
+                    <option *ngFor="let metodo of paymentMetods" [value]="metodo.id">
+                        {{ metodo.name }}
+                    </option>
+                </select>
+                <div class="invalid-feedback"
+                    *ngIf="submitted && paymentForm.get('paymentTypeId')?.errors?.['required']">
+                    El método de pago es requerido
+                </div>
+            </div>
+
+            <!-- CAMPOS CONDICIONALES SEGÚN MÉTODO -->
+            <ng-container *ngIf="metodoSeleccionado">
+                <!-- BANCO (solo transferencia) -->
+                <div *ngIf="metodoSeleccionado === 'Transferencia'" class="col-md-12 mb-3">
+                    <label class="form-label">Banco <span class="text-danger">*</span></label>
+                    <select class="form-select" formControlName="bankId"
+                        [class.is-invalid]="submitted && paymentForm.get('bankId')?.invalid">
+                        <option value="">Seleccione el banco</option>
+                        <option *ngFor="let banco of bancos" [value]="banco.id">{{ banco.name }}</option>
+                    </select>
+                    <div class="invalid-feedback" *ngIf="submitted && paymentForm.get('bankId')?.errors?.['required']">
+                        El banco es requerido
+                    </div>
+                </div>
+
+                <!-- NÚMERO DE CUENTA (solo si no es Efectivo) -->
+                <div *ngIf="metodoSeleccionado !== 'Efectivo'" class="col-md-6 mb-3">
+                    <label class="form-label">Número de cuenta <span class="text-danger">*</span></label>
+                    <input type="text" class="form-control" formControlName="accountNumber"
+                        [placeholder]="metodoSeleccionado === 'Transferencia' ? 'Número de cuenta bancaria' : 'Número de ' + metodoSeleccionado"
+                        [class.is-invalid]="submitted && paymentForm.get('accountNumber')?.invalid">
+                    <div class="invalid-feedback" *ngIf="submitted && paymentForm.get('accountNumber')?.invalid">
+                        {{ getNumeroCuentaError() }}
+                    </div>
+                </div>
+
+                <!-- VALOR A PAGAR -->
+                <div [class]="metodoSeleccionado === 'Efectivo' ? 'col-md-12 mb-3' : 'col-md-6 mb-3'">
+                    <label class="form-label">
+                        Valor a Pagar <span class="text-danger">*</span>
+                    </label>
+                    <div class="input-group">
+                        <span class="input-group-text">
+                            <i class="ti ti-currency-dollar"></i>
+                        </span>
+                        <input type="text" class="form-control" formControlName="valuePaid"
+                            (input)="formatCurrency('valuePaid')" placeholder="Ingrese el monto"
+                            [class.is-invalid]="submitted && paymentForm.get('valuePaid')?.invalid">
+                    </div>
+                    <div class="invalid-feedback d-block"
+                        *ngIf="submitted && paymentForm.get('valuePaid')?.errors?.['required']">
+                        El valor a pagar es requerido
+                    </div>
+                    <div class="invalid-feedback d-block"
+                        *ngIf="submitted && paymentForm.get('valuePaid')?.errors?.['min']">
+                        El valor debe ser mayor a 0
+                    </div>
+                </div>
+
+                <!-- COMPROBANTE (solo si no es Efectivo) -->
+                <div *ngIf="metodoSeleccionado !== 'Efectivo'" class="col-md-12 mb-3">
+                    <label class="form-label">Comprobante de pago <span class="text-danger">*</span></label>
+                    <div class="input-group">
+                        <input type="file" class="form-control" accept="image/*,application/pdf"
+                            (change)="onFileSelected($event)"
+                            [class.is-invalid]="submitted && paymentForm.get('comprobante')?.invalid">
+                        <label class="input-group-text">
+                            <i class="ti ti-upload"></i>
+                        </label>
+                    </div>
+                    <small class="text-muted">Archivo cargado: {{ comprobanteTemp?.name || 'Ninguno' }}</small>
+                    <div class="invalid-feedback d-block"
+                        *ngIf="submitted && paymentForm.get('comprobante')?.errors?.['required']">
+                        El comprobante es requerido
+                    </div>
+                </div>
+            </ng-container>
+        </div>
+    </form>
+</div>
+
+<div class="modal-footer">
+    <button type="button" class="btn btn-secondary" (click)="close()" [disabled]="loading">
+        <i class="ti ti-x me-1"></i>Cancelar
+    </button>
+    <button type="button" class="btn btn-success" (click)="onSubmit()" [disabled]="!metodoSeleccionado || loading">
+        <span *ngIf="loading" class="spinner-border spinner-border-sm me-2"></span>
+        <i *ngIf="!loading" class="ti ti-check me-1"></i>
+        {{ loading ? 'Procesando...' : 'Procesar Pago' }}
+    </button>
+</div>

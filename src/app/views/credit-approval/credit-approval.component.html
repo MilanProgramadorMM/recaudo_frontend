@@ -1,0 +1,197 @@
+<!-- credit-approval.component.html -->
+
+<div class="min-vh-100 d-flex align-items-center justify-content-center bg-light py-5">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-12 col-md-10 col-lg-8 col-xl-6">
+
+                <!-- Loading State -->
+                <div *ngIf="loading" class="card shadow-lg border-0">
+                    <div class="card-body text-center py-5">
+                        <div class="spinner-border text-danger mb-3" role="status">
+                            <span class="visually-hidden">Cargando...</span>
+                        </div>
+                        <p class="text-muted">Cargando información...</p>
+                    </div>
+                </div>
+
+                <!-- Error State -->
+                <div *ngIf="!loading && error" class="card shadow-lg border-0">
+                    <div class="card-body text-center py-5">
+                        <i class="bi bi-exclamation-triangle text-warning" style="font-size: 4rem;"></i>
+                        <h3 class="mt-3 mb-2">{{ error }}</h3>
+                        <p class="text-muted">
+                            Si crees que esto es un error, contacta con soporte.
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Success State - Mostrar información y botones -->
+                <div *ngIf="!loading && !error && creditIntention" class="card shadow-lg border-0">
+                    <!-- Header -->
+                    <div class="card-header bg-custom-red text-white text-center py-4">
+                        <h3 class="mb-1">
+                            <i class="bi bi-file-text me-2"></i>
+                            Confirmación de Solicitud de Crédito
+                        </h3>
+                        <p class="mb-0 small opacity-75">Revisa los detalles y confirma tu decisión</p>
+                    </div>
+
+                    <div class="card-body p-4 p-md-5">
+                        <!-- LOGO EMPRESA -->
+                        <div class="text-center mb-4">
+                            <img src="assets/images/movil.png" alt="Credisabe" class="img-fluid logo-empresa">
+                        </div>
+                        <!-- Estado actual -->
+                        <div *ngIf="creditIntention.approvalStatus !== 'PENDING'"
+                            class="alert alert-info d-flex align-items-center mb-4">
+                            <i class="bi bi-info-circle-fill me-2 fs-5"></i>
+                            <div>
+                                <strong>Estado:</strong>
+                                <span class="badge ms-2" [ngClass]="getStatusClass(creditIntention.approvalStatus)">
+                                    {{ getStatusText(creditIntention.approvalStatus) }}
+                                </span>
+                            </div>
+                        </div>
+
+                        <!-- Información del cliente -->
+                        <div class="mb-4">
+                            <h5 class="text-custom-danger mb-3">
+                                <i class="bi bi-person-circle me-2"></i>
+                                Información del Solicitante
+                            </h5>
+
+                            <div class="bg-light rounded p-3">
+                                <p class="mb-1">
+                                    <strong>Nombre Completo:</strong>
+                                    <span class="ms-2">{{ creditIntention.fullname }}</span>
+                                </p>
+                            </div>
+                        </div>
+
+                        <!-- Detalles del crédito -->
+                        <div class="mb-4">
+                            <h5 class="text-custom-danger mb-3">
+                                <i class="bi bi-cash-stack me-2"></i>
+                                Detalles del Crédito
+                            </h5>
+
+                            <div class="row g-3">
+                                <!-- Línea de crédito -->
+                                <div class="col-12">
+                                    <div class="card bg-light border-0">
+                                        <div class="card-body">
+                                            <small class="text-muted d-block mb-1">Línea de Crédito</small>
+                                            <h6 class="mb-0">{{ creditIntention.nameLine }}</h6>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Valor de la cuota -->
+                                <div class="col-md-4">
+                                    <div class="card bg-light border-0">
+                                        <div class="card-body">
+                                            <small class="text-muted d-block mb-1">Valor de la Cuota</small>
+                                            <h6 class="mb-0 text-success">
+                                                {{ formatCurrency(creditIntention.quotaValue) }}
+                                            </h6>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Plazo -->
+                                <div class="col-md-4">
+                                    <div class="card bg-light border-0">
+                                        <div class="card-body">
+                                            <small class="text-muted d-block mb-1">Numero de cuotas</small>
+                                            <h6 class="mb-0">
+                                                {{ creditIntention.periodQuantity }}
+                                            </h6>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="col-md-4">
+                                    <div class="card bg-light border-0">
+                                        <div class="card-body">
+                                            <small class="text-muted d-block mb-1">Periodo</small>
+                                            <h6 class="mb-0">
+                                                {{ creditIntention.namePeriod }}
+                                            </h6>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Valor total -->
+                                <div class="col-12">
+                                    <div class="card border-primary">
+                                        <div class="card-body text-center">
+                                            <small class="text-muted d-block mb-1">Valor Total del Crédito</small>
+                                            <h4 class="mb-0 text-primary fw-bold">
+                                                {{ formatCurrency(creditIntention.totalIntentionValue) }}
+                                            </h4>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Botones de acción -->
+                        <div *ngIf="creditIntention.approvalStatus === 'PENDING' && !creditIntention.tokenExpired"
+                            class="mt-4">
+                            <hr class="my-4">
+
+                            <h5 class="text-center mb-4">
+                                ¿Deseas aprobar esta solicitud de crédito?
+                            </h5>
+
+                            <div class="row g-3">
+                                <!-- Botón Rechazar -->
+                                <div class="col-md-6">
+                                    <button type="button" class="btn btn-custom-danger btn-lg w-100" (click)="reject()"
+                                        [disabled]="processing">
+                                        <i class="bi bi-x-circle me-2"></i>
+                                        {{ processing ? 'Procesando...' : 'Rechazar' }}
+                                    </button>
+
+                                </div>
+
+                                <!-- Botón Aprobar -->
+                                <div class="col-md-6">
+                                    <button type="button" class="btn btn-success btn-lg w-100" (click)="approve()"
+                                        [disabled]="processing">
+                                        <i class="bi bi-check-circle me-2"></i>
+                                        {{ processing ? 'Procesando...' : 'Aprobar' }}
+                                    </button>
+                                </div>
+                            </div>
+
+                            <p class="text-center text-muted small mt-3 mb-0">
+                                <i class="bi bi-shield-check me-1"></i>
+                                Tu decisión quedará registrada de forma segura
+                            </p>
+                        </div>
+
+                        <!-- Mensaje cuando ya fue procesada -->
+                        <div *ngIf="creditIntention.approvalStatus !== 'PENDING'" class="text-center mt-4">
+                            <i class="bi bi-check2-circle text-success" style="font-size: 3rem;"></i>
+                            <p class="mt-3 mb-0 text-muted">
+                                Esta solicitud ya fue procesada anteriormente.
+                            </p>
+                        </div>
+
+                    </div>
+
+                    <!-- Footer -->
+                    <div class="card-footer bg-light text-center py-3">
+                        <small class="text-muted">
+                            <i class="bi bi-lock me-1"></i>
+                            Conexión segura y encriptada
+                        </small>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>

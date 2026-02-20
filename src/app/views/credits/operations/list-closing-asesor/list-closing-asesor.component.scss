@@ -1,0 +1,107 @@
+a.disabled {
+  pointer-events: none;
+  opacity: 0.5;
+}
+
+/* 🔹 Ajuste responsive para el contenedor del paginador */
+.card-footer {
+  padding: 0.5rem 1rem;
+}
+
+.card-footer .pagination {
+  flex-wrap: wrap;
+  /* Permite que los elementos bajen de línea si no caben */
+  justify-content: center;
+  /* Centra los botones en pantallas pequeñas */
+}
+
+@media (max-width: 768px) {
+  .card-footer .pagination {
+    overflow-x: auto;
+    /* Permite desplazamiento horizontal si hay muchas páginas */
+    white-space: nowrap;
+    justify-content: flex-start;
+    /* Alinea a la izquierda en móviles */
+  }
+
+  .card-footer {
+    padding-bottom: 0.75rem;
+  }
+
+  .card-footer::-webkit-scrollbar {
+    height: 6px;
+  }
+
+  .card-footer::-webkit-scrollbar-thumb {
+    background: #ccc;
+    border-radius: 4px;
+  }
+}
+
+@media (max-width: 768px) {
+  .row.mb-4>[class^="col-"] {
+    margin-bottom: 1rem;
+  }
+
+  .row.mb-4 .card {
+    border-width: 2px;
+  }
+
+  .row.mb-4 h3 {
+    font-size: 1.5rem;
+  }
+
+  .row.mb-4 small {
+    font-size: 0.85rem;
+  }
+}
+
+.text-danger-custom {
+  color: #dc3545 !important;
+}
+
+.btn-red {
+  background-color: #dc3545;
+  border-color: #dc3545;
+  color: #fff;
+  transition: all 0.3s ease;
+}
+
+.border-danger-custom {
+  border: 1px solid #dc3545 !important;
+}
+
+
+.btn-red:hover {
+  background-color: #dc3545;
+  border-color: #dc3545;
+  transform: translateY(-1px);
+}
+
+@media (max-width: 768px) {
+
+  /* Header */
+  h5 {
+    font-size: 1rem;
+  }
+
+  /* Tabla */
+  table {
+    font-size: 0.85rem;
+  }
+
+  /* Badges */
+  .badge {
+    font-size: 0.75rem;
+  }
+
+  /* Botones */
+  .btn-sm {
+    width: 100%;
+  }
+
+  /* Scroll tabla más suave */
+  .table-responsive {
+    -webkit-overflow-scrolling: touch;
+  }
+}

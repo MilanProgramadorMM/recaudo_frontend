@@ -1,5 +1,5 @@
 <div class="card">
-    <div class="card-body" [formGroup]="form"> 
+    <div class="card-body" [formGroup]="form">
         <div class="d-flex align-items-center gap-2">
             <img src="assets/images/users/avatar-5.jpg" alt=""
                 class="avatar-xl rounded-circle border border-light border-2">
@@ -85,10 +85,13 @@
                     </div>
                 </div>
             </div>
-            <!-- Teléfono o celular -->
-            <div *ngIf="form.value.typeInfo === 'TEL' || form.value.typeInfo === 'CEL'">
+            <!-- Teléfono o celular o WhatsApp -->
+            <div
+                *ngIf="form.value.typeInfo === 'TEL' || form.value.typeInfo === 'CEL' || form.value.typeInfo === 'WHA'">
                 <label class="form-label">
-                    {{ form.value.typeInfo === 'TEL' ? 'Teléfono' : 'Celular' }}
+                    {{ form.value.typeInfo === 'TEL' ? 'Teléfono' :
+                    form.value.typeInfo === 'CEL' ? 'Celular' :
+                    form.value.typeInfo === 'WSP' ? 'WhatsApp' : '' }}
                 </label>
                 <input type="tel" class="form-control" formControlName="telefono" placeholder="Ingrese solo números"
                     pattern="[0-9]*" inputmode="numeric" (keypress)="soloNumeros($event)" />
@@ -104,7 +107,7 @@
 
         <!-- Botón -->
         <div class="mt-3">
-            <button class="btn btn-primary" (click)="onSubmit()" [disabled]="form.invalid">
+            <button class="btn btn-danger" (click)="onSubmit()" [disabled]="form.invalid">
                 Guardar
             </button>
         </div>

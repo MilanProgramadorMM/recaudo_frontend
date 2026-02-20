@@ -1,0 +1,558 @@
+<div class="stady-container">
+    <mat-stepper orientation="vertical" [linear]="true" #stepper>
+
+        <!-- ==================== ACTIVIDAD 1: DATOS PERSONALES Y CONTACTO ==================== -->
+        <mat-step *ngIf="form1" [stepControl]="form1">
+            <ng-template matStepLabel>
+                Actividad 1 – Datos del Cliente
+            </ng-template>
+            <br>
+            <!-- ================= DATOS PERSONALES ================= -->
+            <div class="tab-pane" id="step1">
+                <form [formGroup]="form1">
+
+                    <div class="row">
+                        <div class="col-lg-3 mb-3">
+                            <label class="form-label">
+                                Tipo de documento <span class="required">*</span>
+                            </label>
+                            <select formControlName="document_type" class="form-control form-select"
+                                [ngClass]="{ 'is-invalid': submitted && form1.get('document_type')?.invalid }">
+                                <option value="">Seleccione</option>
+                                <option *ngFor="let doc of documentTypes" [value]="doc.id">
+                                    {{ doc.name }}
+                                </option>
+                            </select>
+                            <div class="invalid-feedback"
+                                *ngIf="submitted && form1.get('document_type')?.errors?.['required']">
+                                Campo obligatorio
+                            </div>
+                        </div>
+
+                        <div class="col-lg-3 mb-3">
+                            <label class="form-label">Número de documento <span class="required">*</span></label>
+                            <div class="input-group mb-2">
+                                <input formControlName="document" type="text" class="form-control"
+                                    [ngClass]="{ 'is-invalid': submitted && form1.get('document')?.invalid }"
+                                    (keypress)="soloNumeros($event)">
+                            </div>
+                            <div class="invalid-feedback"
+                                *ngIf="submitted && form1.get('document')?.errors?.['required']">
+                                Campo obligatorio
+                            </div>
+                        </div>
+
+                        <div class="col-lg-3 mb-3">
+                            <label class="form-label">Género <span class="required">*</span></label>
+                            <select class="form-control form-select" formControlName="gender"
+                                [ngClass]="{ 'is-invalid': submitted && form1.get('gender')?.invalid }">
+                                <option value="">Seleccione</option>
+                                <option *ngFor="let type of genderGlotypes" [value]="type.id">
+                                    {{ type.name }}
+                                </option>
+                                <div class="invalid-feedback"
+                                    *ngIf="submitted && form1.get('gender')?.errors?.['required']">
+                                    Campo obligatorio
+                                </div>
+                            </select>
+                        </div>
+
+                        <div class="col-lg-3 mb-3">
+                            <label class="form-label">Zona <span class="required">*</span></label>
+                            <select class="form-control form-select" formControlName="zone_id"
+                                [ngClass]="{ 'is-invalid': submitted && form1.get('zone_id')?.invalid }">
+                                <option value="">Seleccione</option>
+                                <option *ngFor="let z of zonas" [value]="z.id">{{ z.value }}</option>
+                            </select>
+                            <div class="invalid-feedback"
+                                *ngIf="submitted && form1.get('zone_id')?.errors?.['required']">
+                                Campo obligatorio
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-lg-3 mb-3">
+                            <label class="form-label">Primer nombre <span class="required">*</span></label>
+                            <input formControlName="firstname" type="text" class="form-control text-uppercase"
+                                [ngClass]="{ 'is-invalid': submitted && form1.get('firstname')?.invalid }">
+                            <div class="invalid-feedback"
+                                *ngIf="submitted && form1.get('firstname')?.errors?.['required']">
+                                Campo obligatorio
+                            </div>
+                        </div>
+                        <div class="col-lg-3 mb-3">
+                            <label class="form-label">Segundo nombre</label>
+                            <input formControlName="middlename" type="text" class="form-control text-uppercase">
+                        </div>
+                        <div class="col-lg-3 mb-3">
+                            <label class="form-label">Primer apellido <span class="required">*</span></label>
+                            <input formControlName="lastname" type="text" class="form-control text-uppercase"
+                                [ngClass]="{ 'is-invalid': submitted && form1.get('lastname')?.invalid }">
+                            <div class="invalid-feedback"
+                                *ngIf="submitted && form1.get('lastname')?.errors?.['required']">
+                                Campo obligatorio
+                            </div>
+                        </div>
+                        <div class="col-lg-3 mb-3">
+                            <label class="form-label">Segundo apellido</label>
+                            <input formControlName="maternal_lastname" type="text" class="form-control text-uppercase">
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-lg-12 mb-3">
+                            <label class="form-label">Nombre completo</label>
+                            <input type="text" class="form-control text-uppercase" formControlName="fullname" readonly>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-lg-3 mb-3">
+                            <label class="form-label">Ocupación <span class="required">*</span></label>
+                            <input formControlName="occupation" type="text" class="form-control text-uppercase"
+                                [ngClass]="{ 'is-invalid': submitted && form1.get('occupation')?.invalid }">
+                            <div class="invalid-feedback"
+                                *ngIf="submitted && form1.get('occupation')?.errors?.['required']">
+                                Campo obligatorio
+                            </div>
+                        </div>
+
+                        <div class="col-lg-3 mb-3">
+                            <label class="form-label">Correo <span class="required">*</span></label>
+                            <input type="email" class="form-control" formControlName="email"
+                                placeholder="example@mail.com" />
+                            <div class="invalid-feedback" *ngIf="submitted && form1.get('email')?.errors?.['required']">
+                                Campo obligatorio
+                            </div>
+                            <div class="invalid-feedback" *ngIf="submitted && form1.get('email')?.errors?.['email']">
+                                Ingrese un correo válido
+                            </div>
+                        </div>
+
+                        <div class="col-lg-3 mb-3">
+                            <label class="form-label">Celular <span class="required">*</span></label>
+                            <input type="tel" class="form-control" formControlName="phone_number"
+                                placeholder="Ingrese solo números" pattern="[0-9]*" inputmode="numeric"
+                                (keypress)="soloNumeros($event)" />
+                            <div class="invalid-feedback"
+                                *ngIf="submitted && form1.get('phone_number')?.errors?.['required']">
+                                Campo obligatorio
+                            </div>
+                        </div>
+
+                        <div class="col-lg-3 mb-3">
+                            <label class="form-label">WhatsApp <span class="required">*</span></label>
+                            <input type="text" class="form-control" formControlName="whatsapp_number"
+                                placeholder="Ingrese solo números" pattern="[0-9]*" inputmode="numeric"
+                                (keypress)="soloNumeros($event)" />
+                            <div class="invalid-feedback"
+                                *ngIf="submitted && form1.get('whatsapp_number')?.errors?.['required']">
+                                Campo obligatorio
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <div class="row">
+                        <div class="col-lg-3 mb-3">
+                            <label class="form-label">País <span class="required">*</span></label>
+                            <select class="form-control form-select" formControlName="country_id"
+                                [ngClass]="{ 'is-invalid': submitted && form1.get('country_id')?.invalid }">
+                                <option value="">Seleccione</option>
+                                <option *ngFor="let p of paises" [ngValue]="p.id">
+                                    {{ p.label }}
+                                </option>
+                            </select>
+                            <div class="invalid-feedback"
+                                *ngIf="submitted && form1.get('country_id')?.errors?.['required']">
+                                Campo obligatorio
+                            </div>
+                        </div>
+                        <div class="col-lg-3 mb-3">
+                            <label class="form-label">Departamento <span class="required">*</span></label>
+                            <select class="form-control form-select" formControlName="department_id"
+                                [ngClass]="{ 'is-invalid': submitted && form1.get('department_id')?.invalid }">
+                                <option value="">Seleccione</option>
+                                <option *ngFor="let d of departamentos" [ngValue]="d.id">
+                                    {{ d.label }}
+                                </option>
+                            </select>
+                            <div class="invalid-feedback"
+                                *ngIf="submitted && form1.get('department_id')?.errors?.['required']">
+                                Campo obligatorio
+                            </div>
+                        </div>
+
+                        <div class="col-lg-3 mb-3">
+                            <label class="form-label">Municipio <span class="required">*</span></label>
+                            <select class="form-control form-select" formControlName="municipality_id"
+                                [ngClass]="{ 'is-invalid': submitted && form1.get('municipality_id')?.invalid }">
+                                <option value="">Seleccione</option>
+                                <option *ngFor="let c of municipios" [ngValue]="c.id">
+                                    {{ c.label }}
+                                </option>
+                            </select>
+                            <div class="invalid-feedback"
+                                *ngIf="submitted && form1.get('municipality_id')?.errors?.['required']">
+                                Campo obligatorio
+                            </div>
+                        </div>
+
+                        <div class="col-lg-3 mb-3">
+                            <label class="form-label">Barrio <span class="required">*</span></label>
+                            <select class="form-control form-select" formControlName="neighborhood_id"
+                                [ngClass]="{ 'is-invalid': submitted && form1.get('neighborhood_id')?.invalid }">
+                                <option value="">Seleccione</option>
+                                <option *ngFor="let b of barrios" [ngValue]="b.id">
+                                    {{ b.label }}
+                                </option>
+                            </select>
+                            <div class="invalid-feedback"
+                                *ngIf="submitted && form1.get('neighborhood_id')?.errors?.['required']">
+                                Campo obligatorio
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-lg-12 mb-3">
+                        <label class="form-label">Dirección <span class="required">*</span></label>
+                        <input type="text" class="form-control text-uppercase" formControlName="home_address"
+                            placeholder="Ingrese dirección"
+                            [ngClass]="{ 'is-invalid': submitted && form1.get('home_address')?.invalid }" />
+                        <div class="invalid-feedback"
+                            *ngIf="submitted && form1.get('home_address')?.errors?.['required']">
+                            Campo obligatorio
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <!-- <div class="col-lg-12 mb-3">
+                            <label class="form-label">Descripción</label>
+                            <textarea class="form-control text-uppercase" formControlName="description"
+                                rows="3"></textarea>
+                        </div> -->
+                        <div class="row">
+                            <div class="col-lg-4 mb-3">
+                                <!-- <label class="form-label">Estado del cliente</label> -->
+
+                                <div class="form-check form-checkbox-success mb-1">
+                                    <input type="checkbox" class="form-check-input" [checked]="true" disabled
+                                        id="estadoCliente">
+
+                                    <label class="form-check-label" for="estadoCliente">
+                                        {{ credit.clientExists === 1
+                                        ? 'Cliente existente confirmado'
+                                        : 'Cliente NO existe confirmado'
+                                        }}
+                                    </label>
+
+                                </div>
+
+                                <small class="text-muted">
+                                    Este estado fue verificado automáticamente por el sistema y no puede ser modificado.
+                                </small>
+                            </div>
+
+
+                            <div class="col-lg-4 mb-3">
+                                <!-- <label class="form-label">¿Cliente referido?</label> -->
+
+                                <div class="form-check form-checkbox-success mb-2">
+                                    <input type="checkbox" class="form-check-input" id="clienteReferido"
+                                        formControlName="referido">
+                                    <label class="form-check-label" for="clienteReferido">
+                                        Cliente referido
+                                    </label>
+                                </div>
+
+                                <div class="text-danger small" *ngIf="submitted && form1.get('referido')?.invalid">
+                                    Debe confirmar si el cliente es referido
+                                </div>
+                            </div>
+
+
+                            <div class="col-lg-4 mb-3">
+                                <!-- <label class="form-label">¿Confirmó datos por llamada?</label> -->
+
+                                <div class="form-check form-checkbox-success mb-2">
+                                    <input type="checkbox" class="form-check-input" id="confirmoDatosLlamada"
+                                        formControlName="call_success">
+                                    <label class="form-check-label" for="confirmoDatosLlamada">
+                                        Datos confirmados por llamada
+                                    </label>
+                                </div>
+
+                                <div class="text-danger small" *ngIf="submitted && form1.get('call_success')?.invalid">
+                                    Debe confirmar este campo
+                                </div>
+                            </div>
+
+
+                        </div>
+                    </div>
+                </form>
+                <div class="d-flex wizard justify-content-center justify-content-md-end flex-wrap gap-2 mt-3">
+                    <div class="next">
+                        <button class="btn btn-danger w-100 w-md-auto px-4 py-2" [disabled]="isSaving"
+                            (click)="onSubmitActividad1()">
+                            Siguiente <i class="bx bx-right-arrow-alt ms-2"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </mat-step>
+
+        <!-- ==================== ACTIVIDAD 2: FECHA INICIO ==================== -->
+        <mat-step *ngIf="form2" [stepControl]="form2">
+            <ng-template matStepLabel>
+                Actividad 2 – Fecha de Inicio del Crédito
+            </ng-template>
+            <br>
+            <div class="tab-pane" id="step2">
+                <form [formGroup]="form2">
+                    <div class="row">
+                        <div class="col-lg-4 mb-3">
+                            <label class="form-label">Definir fecha tentativa de inicio <span
+                                    class="required">*</span></label>
+                            <input type="date" class="form-control" formControlName="fecha_inicio_tentativa"
+                                [ngClass]="{ 'is-invalid': submitted && form2.get('fecha_inicio_tentativa')?.invalid }">
+                            <div class="invalid-feedback">
+                                La fecha de inicio es obligatoria
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-lg-12 mb-3">
+                                <label class="form-label">Observaciones</label>
+                                <textarea class="form-control text-uppercase" formControlName="observacion_actividad2"
+                                    rows="3"></textarea>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+                <div class="d-flex wizard justify-content-between flex-wrap gap-2 mt-3">
+                    <div class="first">
+                        <button (click)="previousStep()" class="btn btn-primary mt-3 mt-md-0">
+                            <i class="bx bx-left-arrow-alt me-2"></i>Atrás
+                        </button>
+                    </div>
+                    <div class="next">
+                        <button (click)="onSubmitActividad2()" class="btn btn-danger mt-3 mt-md-0">
+                            Siguiente <i class="bx bx-right-arrow-alt ms-2"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </mat-step>
+
+        <!-- ACTIVIDAD 3: CRÉDITOS DEL CLIENTE -->
+        <mat-step [stepControl]="form3">
+            <ng-template matStepLabel>
+                Actividad 3 - Créditos del Cliente
+            </ng-template>
+            <form [formGroup]="form3">
+
+                <div class="step-content">
+                    <div *ngIf="!loading" class="table table-nowrap table-hover mb-0">
+                        <div *ngIf="loading" class="text-center my-3">
+                            <div class="spinner-border spinner-border-sm text-primary" role="status"></div>
+                            <span class="ms-2">Cargando historial de credito...</span>
+                        </div>
+                        <table class="table table-bordered table-sm">
+                            <thead class="table-dark bg-light-subtle">
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Monto</th>
+                                    <th>Saldo</th>
+                                    <th>Estado</th>
+                                    <th>Cuotas</th>
+                                    <th>Proyección vs Recaudo</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr *ngFor="let credito of creditosCliente">
+                                    <td>{{ credito.id }}</td>
+                                    <td>{{ credito.monto | currency:'COP':'symbol-narrow':'1.0-0' }}</td>
+                                    <td>{{ credito.saldo | currency:'COP':'symbol-narrow':'1.0-0' }}</td>
+                                    <td>
+                                        <span class="badge"
+                                            [ngClass]="credito.estado === 'Activo' ? 'bg-success' : 'bg-secondary'">
+                                            {{ credito.estado }}
+                                        </span>
+                                    </td>
+                                    <td>{{ credito.cuotas_pagadas }} / {{ credito.cuotas_totales }}</td>
+                                    <td>
+                                        <div class="progress" style="height: 20px;">
+                                            <div class="progress-bar"
+                                                [style.width.%]="calcularProyeccionVsRecaudo(credito).porcentaje">
+                                                {{ calcularProyeccionVsRecaudo(credito).porcentaje }}%
+                                            </div>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr *ngIf="creditosCliente.length === 0">
+                                    <td colspan="6" class="text-center text-muted">
+                                        No hay créditos registrados
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-lg-12 mb-3">
+                            <label class="form-label">Observaciones <span class="required">*</span></label>
+                            <textarea class="form-control text-uppercase" formControlName="observacion_actividad3"
+                                [ngClass]="{ 'is-invalid': submitted && form3.get('observacion_actividad3')?.invalid }"
+                                rows="3"></textarea>
+                            <div class="invalid-feedback"
+                                *ngIf="submitted && form3.get('observacion_actividad3')?.errors?.['required']">
+                                Campo obligatorio
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </form>
+            <div class="d-flex wizard justify-content-between flex-wrap gap-2 mt-3">
+                <div class="first">
+                    <button (click)="previousStep()" class="btn btn-primary mt-3 mt-md-0">
+                        <i class="bx bx-left-arrow-alt me-2"></i>Atrás
+                    </button>
+                </div>
+                <div class="next">
+                    <button (click)="nextStep(3)" class="btn btn-danger mt-3 mt-md-0">
+                        Siguiente <i class="bx bx-right-arrow-alt ms-2"></i>
+                    </button>
+                </div>
+            </div>
+        </mat-step>
+
+        <!-- ACTIVIDAD 4: SEGUIMIENTO CARTERA -->
+        <!-- <mat-step [stepControl]="form4">
+            <ng-template matStepLabel>
+                Actividad 4 - Seguimiento de Cartera y Cobranza
+            </ng-template>
+
+            <form [formGroup]="form4">
+                <div class="step-content">
+                    <div class="timeline mb-3">
+                        <div class="timeline-item" *ngFor="let obs of observacionesSeguimiento">
+                            <div class="timeline-marker bg-primary"></div>
+                            <div class="timeline-content">
+                                <div class="d-flex justify-content-between align-items-start">
+                                    <div>
+                                        <h6 class="mb-1">{{ obs.tipo }}</h6>
+                                        <small class="text-muted">{{ obs.usuario }} - {{ obs.fecha | date:'short'
+                                            }}</small>
+                                    </div>
+                                    <span class="badge bg-info">Cartera</span>
+                                </div>
+                                <p class="mb-0 mt-2">{{ obs.observacion }}</p>
+                            </div>
+                        </div>
+                        <div *ngIf="observacionesSeguimiento.length === 0" class="alert alert-warning">
+                            No hay observaciones de seguimiento registradas
+                        </div>
+                    </div>
+
+                    <div class="col-lg-12 mb-3">
+                        <label class="form-label">Observaciones <span class="required">*</span></label>
+                        <textarea class="form-control text-uppercase" formControlName="observacion_actividad4"
+                            [ngClass]="{ 'is-invalid': submitted && form4.get('observacion_actividad4')?.invalid }"
+                            rows="3"></textarea>
+                        <div class="invalid-feedback"
+                            *ngIf="submitted && form4.get('observacion_actividad4')?.errors?.['required']">
+                            Campo obligatorio *
+                        </div>
+                    </div>
+                </div>
+            </form>
+            <div class="d-flex wizard justify-content-between flex-wrap gap-2 mt-3">
+                <div class="first">
+                    <button (click)="previousStep()" class="btn btn-primary mt-3 mt-md-0">
+                        <i class="bx bx-left-arrow-alt me-2"></i>Atrás
+                    </button>
+                </div>
+                <div class="next">
+                    <button (click)="nextStep(4)" class="btn btn-danger mt-3 mt-md-0">
+                        Siguiente <i class="bx bx-right-arrow-alt ms-2"></i>
+                    </button>
+                </div>
+            </div>
+        </mat-step> -->
+
+        <!-- ACTIVIDAD 5: DECISIÓN FINAL -->
+        <mat-step [stepControl]="form5">
+            <ng-template matStepLabel>
+                Actividad 4 - Decisión Final
+            </ng-template>
+
+            <form [formGroup]="form5">
+                <div class="step-content">
+                    <div class="alert alert-warning mb-3">
+                        <i class="bi bi-exclamation-triangle me-2"></i>
+                        <strong>Importante:</strong> Esta decisión determinará si la presolicitud continúa
+                        al proceso de aprobación o es rechazada.
+                    </div>
+
+                    <mat-radio-group formControlName="decision" class="d-flex flex-column gap-3 mb-3">
+                        <mat-radio-button value="aprobar" class="p-3 border rounded bg-success bg-opacity-10">
+                            <div class="d-flex align-items-center">
+                                <i class="bi bi-check-circle text-success fs-4 me-3"></i>
+                                <div>
+                                    <strong class="d-block">Aprobar Presolicitud</strong>
+                                    <small class="text-muted">La solicitud pasará a la fase de aprobación</small>
+                                </div>
+                            </div>
+                        </mat-radio-button>
+
+                        <mat-radio-button value="rechazar" class="p-3 border rounded bg-danger bg-opacity-10">
+                            <div class="d-flex align-items-center">
+                                <i class="bi bi-x-circle text-danger fs-4 me-3"></i>
+                                <div>
+                                    <strong class="d-block">Rechazar Presolicitud</strong>
+                                    <small class="text-muted">La solicitud será rechazada y no continuará</small>
+                                </div>
+                            </div>
+                        </mat-radio-button>
+                    </mat-radio-group>
+
+                    <div class="col-lg-12 mb-3">
+                        <label class="form-label">Observaciones <span class="required">*</span></label>
+                        <textarea class="form-control text-uppercase" formControlName="observacion_actividad5"
+                            [ngClass]="{ 'is-invalid': submitted && form5.get('observacion_actividad5')?.invalid }"
+                            rows="3"></textarea>
+                        <div class="invalid-feedback"
+                            *ngIf="submitted && form5.get('observacion_actividad5')?.errors?.['required']">
+                            Campo obligatorio *
+                        </div>
+                    </div>
+                </div>
+            </form>
+            <!-- Mostrar botones solo si NO está completado -->
+            <div class="d-flex wizard justify-content-between flex-wrap gap-2 mt-3">
+                <div class="first">
+                    <button (click)="previousStep()" class="btn btn-primary mt-3 mt-md-0">
+                        <i class="bx bx-left-arrow-alt me-2"></i>Atrás
+                    </button>
+                </div>
+                <div class="next" *ngIf="!isPhaseCompleted">
+                    <button (click)="onSubmitActividad5()" [disabled]="!form5.valid"
+                        [ngClass]="form5.value.decision === 'aprobar' ? 'btn btn-success' : 'btn btn-danger'"
+                        class="mt-3 mt-md-0">
+                        <i class="bi" [ngClass]="form5.value.decision === 'aprobar' ? 'bi-check-lg' : 'bi-x-lg'"></i>
+                        {{ form5.value.decision === 'aprobar' ? 'Seguir proceso' : 'Rechazar' }}
+                    </button>
+                </div>
+            </div>
+
+            <!-- Mensaje cuando ya está completado -->
+            <div class="alert alert-success mt-3" *ngIf="isPhaseCompleted">
+                <i class="bi bi-check-circle me-2"></i>
+                Fase de Estudio completada. Haga clic en "Siguiente" para continuar.
+            </div>
+        </mat-step>
+
+    </mat-stepper>
+</div>

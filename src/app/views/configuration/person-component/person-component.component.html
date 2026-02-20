@@ -1,4 +1,5 @@
 <page-title [title]="personType === 'ASESOR' ? 'Asesores' : 'Clientes'" subtitle="Maestros" />
+
 <div class="row">
   <div class="col-12">
     <div class="card">
@@ -7,7 +8,7 @@
           {{ personType === 'ASESOR' ? 'Asesores' : 'Clientes' }}
         </h4>
         <div>
-          <button (click)="openUserModal()" class="btn btn-success bg-gradient me-1">
+          <button (click)="openUserModal()" class="btn btn-danger bg-gradient me-1">
             <i class="ti ti-plus me-1"></i> Agregar {{ personType | lowercase }}
           </button>
           <!-- <a href="javascript:void(0);" class="btn btn-secondary bg-gradient">
@@ -15,91 +16,192 @@
           </a> -->
         </div>
       </div>
-      <div class="mb-3 row align-items-center">
+
+      <div class="mb-3 row align-items-center ms-3">
         <label for="person-search" class="col-sm-auto col-form-label">Buscar:</label>
         <div class="col-6">
           <input id="person-search" class="form-control text-uppercase" type="text"
-            placeholder="Por nombre, apellido o documento..." [(ngModel)]="searchTerm"
+            placeholder="Por nombre, apellido, documento, zona, orden o celular..." [(ngModel)]="searchTerm"
             (ngModelChange)="applyFilter()" />
         </div>
       </div>
 
 
-      <div class="table-responsive">
-        <table class="table table-nowrap mb-0">
-          <thead class="table-dark bg-light-subtle">
+      <div class="table-responsive" style="max-height: 400px; overflow-y: auto;">
+        <div *ngIf="loading" class="text-center my-3">
+          <div class="spinner-border spinner-border-sm text-primary" role="status"></div>
+          <span class="ms-2">
+            Cargando {{ personType === 'ASESOR' ? 'asesores' : 'clientes' }}...
+          </span>
+        </div>
+
+        <table *ngIf="!loading" class="table table-nowrap mb-0">
+          <thead class="table-dark bg-light-subtle sticky-top">
             <tr>
-              <th>Identificaci&oacute;n</th>
+              <th>Identificación</th>
               <th>Primer Apellido</th>
               <th>Segundo Apellido</th>
               <th>Primer Nombre</th>
               <th>Segundo Nombre</th>
-              <th>Ocupaci&oacute;n</th>
-              <th class="text-center" style="width: 120px;">Acciones</th>
+              <th>Ocupación</th>
+              <th>Correo</th>
+              <th>Telefono</th>
+              <th>Celular</th>
+              <th>Pais</th>
+              <th>Departamento</th>
+              <th>Municipio</th>
+              <th>Barrio</th>
+              <th>Zona</th>
+              <th *ngIf="personType === 'CLIENTE'">Orden</th>
+              <th *ngIf="personType === 'ASESOR'">Cierres</th>
+              <th>Estado</th>
+              <th class="text-center" [style.width]="personType === 'ASESOR' ? '180px' : '120px'">
+                Acciones
+              </th>
             </tr>
           </thead>
 
           <tbody>
-            @for (person of filteredPersons; track $index) {
-            <tr>
-              <td>{{person.document}}</td>
-              <td>{{person.last_name}}</td>
-              <td>{{person.maternal_lastname}}</td>
-              <td>{{person.first_name}}</td>
-              <td>{{person.middlename}}</td>
-              <td>{{person.occupation}}</td>
+            <tr *ngFor="let person of pagedPersons">
+              <td>{{ person.document }}</td>
+              <td>{{ person.lastName }}</td>
+              <td>{{ person.maternalLastname }}</td>
+              <td>{{ person.firstName }}</td>
+              <td>{{ person.middleName }}</td>
+              <td>{{ person.occupation }}</td>
+              <td>{{ person.correo }}</td>
+              <td>{{ person.celular }}</td>
+              <td>{{ person.telefono }}</td>
+              <td>{{ person.country }}</td>
+              <td>{{ person.departent }}</td>
+              <td>{{ person.city }}</td>
+              <td>{{ person.neighborhood }}</td>
+              <td>{{ person.zona }}</td>
+              <td *ngIf="personType === 'CLIENTE'">{{ person.orden }}</td>
+
+              <td *ngIf="personType === 'ASESOR'">
+                <div ngbDropdown class="d-inline-block" container="body">
+                  <button class="btn btn-sm btn-red" ngbDropdownToggle type="button">
+                    Cierres
+                  </button>
+                  <div ngbDropdownMenu class="p-2" style="min-width: 280px;">
+                    <h6 class="dropdown-header">
+                      <i class="ti ti-cash me-1"></i> Gestión de Cierres
+                    </h6>
+                    <div class="dropdown-divider"></div>
+
+                    <div *ngFor="let zona of getZonasInfo(person); let last = last" class="mb-2">
+                      <div class="d-flex justify-content-between align-items-center px-2">
+                        <div>
+                          <strong>{{ zona.value }}</strong>
+                          <br>
+                          <small [class]="getClosingByZona(person, zona.id).hasClosing 
+                            ? getClosingStatusBadgeClass(getClosingByZona(person, zona.id).closingStatus)
+                            : 'text-muted'">
+                            {{ getClosingByZona(person, zona.id).hasClosing
+                            ? getClosingStatusText(getClosingByZona(person, zona.id).closingStatus)
+                            : 'Sin cierre' }}
+                          </small>
+                        </div>
+
+                        <div>
+                          <button *ngIf="canDoClosing() && canCreateClosingByZona(person, zona.id)"
+                            (click)="confirmAndCreateClosing(person, zona.id); $event.stopPropagation()"
+                            class="btn btn-sm" [ngClass]="getClosingByZona(person, zona.id).closingStatus === 'REJECTED' 
+                               ? 'btn-danger' : 'btn-success'" [title]="getClosingByZona(person, zona.id).closingStatus === 'REJECTED' 
+                            ? 'Reiniciar cierre' : 'Crear cierre'">
+                            <i class="ti" [ngClass]="getClosingByZona(person, zona.id).closingStatus === 'REJECTED' 
+                           ? 'ti-refresh' : 'ti-plus'"></i>
+                          </button>
+
+                          <button *ngIf="getClosingByZona(person, zona.id).hasClosing && 
+                           getClosingByZona(person, zona.id).closingStatus !== 'REJECTED'"
+                            (click)="goToSpecificClosing(person, zona.id); $event.stopPropagation()"
+                            class="btn btn-sm btn-info ms-1" title="Ver detalles">
+                            <i class="ti ti-eye"></i>
+                          </button>
+                        </div>
+                      </div>
+                      <hr *ngIf="!last" class="my-2">
+                    </div>
+                  </div>
+                </div>
+              </td>
+
+              <td>
+                <div class="form-check form-switch d-flex align-items-center gap-2">
+                  <input class="form-check-input" type="checkbox" [checked]="person.status"
+                    (click)="changeStatusPerson($event, person)" (keydown.space)="changeStatusPerson($event, person)" />
+                  <label class="form-check-label">
+                    {{ person.status ? 'Activo' : 'Inactivo' }}
+                  </label>
+                </div>
+              </td>
 
               <td class="pe-3">
                 <div class="hstack gap-1 justify-content-end">
-                  <a (click)="openInfoUserModal(person)" class="btn btn-soft-primary btn-icon btn-sm rounded-circle"
-                    title="Actualizar informacion de contacto"><i class="ti ti-id-badge fs-4"></i>
-                  </a>
-                  <a (click)="openUserModal(person)" class="btn btn-soft-success btn-icon btn-sm rounded-circle"
-                    title="Actualizar persona">
-                    <i class="ti ti-edit fs-4"></i>
-                  </a>
-                  <a (click)="onDelete(person.id)" class="btn btn-soft-danger btn-icon btn-sm rounded-circle"
-                    title="Eliminar persona">
-                    <i class="ti ti-trash fs-4"></i>
+                  <!-- Botón Realizar Cierre (solo para admin y si es asistente)
+                  <ng-container *ngIf="personType === 'ASESOR' && canDoClosing()">
+                    <div class="d-flex flex-column gap-1">
+                      <div *ngFor="let zona of getZonasInfo(person)">
+                        <a *ngIf="canCreateClosingByZona(person, zona.id)"
+                          (click)="confirmAndCreateClosing(person, zona.id)" class="btn btn-icon btn-sm rounded-circle"
+                          [ngClass]="
+              getClosingByZona(person, zona.id).closingStatus === 'REJECTED'
+                ? 'btn-soft-warning'
+                : 'btn-soft-success'
+            " [title]="
+              (getClosingByZona(person, zona.id).closingStatus === 'REJECTED'
+                ? 'Reiniciar cierre rechazado - '
+                : 'Realizar cierre - ') + zona.value
+            ">
+                          <i class="ti fs-4" [ngClass]="
+              getClosingByZona(person, zona.id).closingStatus === 'REJECTED'
+                ? 'ti-refresh'
+                : 'ti-cash'
+            "></i>
+                        </a>
+                      </div>
+                    </div>
+                  </ng-container> -->
+
+
+                  <!-- Botón Ver Cierre (solo para asesores y admin con cierre existente)
+                  <a *ngIf="personType === 'ASESOR' && canViewClosing(person)" (click)="goToClosing(person)"
+                    class="btn btn-soft-primary btn-icon btn-sm rounded-circle" title="Ver detalles del cierre">
+                    <i class="ti ti-eye fs-4"></i>
+                  </a> -->
+
+                  <!-- Botón Actualizar información de contacto -->
+                  <a (click)="person.status && openInfoUserModal(person)"
+                    class="btn btn-soft-primary btn-icon btn-sm rounded-circle"
+                    title="Actualizar información de contacto">
+                    <i class="ti ti-id-badge fs-4"></i>
                   </a>
 
+                  <!-- <a (click)="person.status && onDelete(person.id)"
+                    class="btn btn-soft-danger btn-icon btn-sm rounded-circle" title="Eliminar persona">
+                    <i class="ti ti-trash fs-4"></i>
+                  </a> -->
+
+                  <!-- Botón Actualizar persona -->
+                  <a (click)="person.status && openUserModal(person)"
+                    class="btn btn-soft-info btn-icon btn-sm rounded-circle" title="Actualizar persona">
+                    <i class="ti ti-edit fs-4"></i>
+                  </a>
                 </div>
               </td>
             </tr>
-            }
-
           </tbody>
         </table>
       </div>
+
       <div class="card-footer">
-        <div class="d-flex justify-content-end">
-          <ngb-pagination [collectionSize]="30" [(page)]="page" aria-label="Default pagination" />
+        <div class="d-flex justify-content-center justify-content-md-end flex-wrap">
+          <ngb-pagination class="pagination-red" [(page)]="page" [pageSize]="pageSize"
+            [collectionSize]="filteredPersons.length" [boundaryLinks]="true" [directionLinks]="true" [ellipses]="true"
+            [maxSize]="3" aria-label="Paginación de personas">
+          </ngb-pagination>
         </div>
       </div>
     </div>
-    <!-- Modal template -->
-    <ng-template #userModal let-modal>
-      <div class="modal-header">
-        <h5 class="modal-title">Agregar Usuario</h5>
-        <button type="button" class="btn-close" aria-label="Close" (click)="modal.dismiss()"></button>
-      </div>
-      <div class="modal-body">
-        <form (ngSubmit)="saveUser()" #form="ngForm">
-          <div class="mb-3">
-            <label class="form-label">Nombre</label>
-            <input type="text" class="form-control" [(ngModel)]="newUser.name" name="name" required>
-          </div>
-          <div class="mb-3">
-            <label class="form-label">Correo</label>
-            <input type="email" class="form-control" [(ngModel)]="newUser.email" name="email" required>
-          </div>
-          <!-- Agrega más campos según necesites -->
-        </form>
-      </div>
-      <div class="modal-footer">
-        <button class="btn btn-secondary" (click)="modal.dismiss()">Cancelar</button>
-        <button class="btn btn-primary" (click)="saveUser()">Guardar</button>
-      </div>
-    </ng-template>
-  </div>
-</div>

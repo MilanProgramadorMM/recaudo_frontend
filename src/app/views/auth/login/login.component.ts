@@ -9,14 +9,13 @@ import { login } from '@/store/authentication/authentication.actions';
 import { RouterLink } from '@angular/router';
 import { currentYear } from '@common/constants';
 import { NgClass, NgIf } from "@angular/common";
-import { getError } from "@/store/authentication/authentication.selector";
 import { take } from 'rxjs';
 import { AlertType } from '@views/ui/alerts/data';
 
 @Component({
   selector: 'login',
   standalone: true,
-  imports: [FormsModule, ReactiveFormsModule, RouterLink, NgClass, NgIf, CommonModule],
+  imports: [FormsModule, ReactiveFormsModule, NgClass, NgIf, CommonModule],
   templateUrl: './login.component.html',
   styles: ``
 })
@@ -25,8 +24,9 @@ export class LoginComponent {
   currentYear = currentYear
   signInForm!: UntypedFormGroup;
   loading = false;
+  showPassword = false;
   errorMessage: string = ''
-
+  
   alertData: AlertType[] = [];
 
 
@@ -90,5 +90,8 @@ export class LoginComponent {
   });
 }
 
+togglePassword() {
+  this.showPassword = !this.showPassword;
+}
 
 }

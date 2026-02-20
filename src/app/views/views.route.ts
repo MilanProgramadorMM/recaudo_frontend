@@ -22,6 +22,11 @@ export const VIEWS_ROUTES: Route[] = [
       import('./credits/credits.route').then((mod) => mod.CREDITS_ROUTES),
   },
   {
+    path: 'operaciones',
+    loadChildren: () =>
+      import('./credits/operations.route').then((mod) => mod.OPERATIONS_ROUTES),
+  },
+  {
     path: 'master',
     loadChildren: () =>
       import('./master/master.route').then((mod) => mod.MASTER_ROUTES),

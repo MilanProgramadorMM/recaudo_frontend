@@ -6,7 +6,6 @@ import { Glotypes, GlotypesService } from '@core/services/glotypes.service';
 import { PersonRegisterDto } from '@core/services/person.service';
 import { OptionDTO, UbicacionService } from '@core/services/ubicacion.service';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
-import { treatmentData } from '@views/hospital/patient-details/data';
 
 @Component({
   selector: 'app-person-info',
@@ -56,12 +55,12 @@ export class PersonInfoComponent implements OnInit {
       typeInfo: ['', Validators.required],
       direccion: [''],
       pais: [],
-      departamento: [''], // ← nuevo
+      departamento: [''],
       ciudad: [],
       barrio: [],
       telefono: [''],
       correo: [''],
-      descripcion: [''] // ← nuevo
+      descripcion: ['']
     });
 
 
@@ -191,14 +190,16 @@ export class PersonInfoComponent implements OnInit {
         // Notificar al padre para refrescar la lista
         this.saved.emit();
         // Reset
-        this.form.reset();
-        this.submitted = false;
+        //this.form.reset();
+        //this.submitted = false;
       },
       error: (err) => {
-
         this.errorMessage = err?.error?.details || 'Error inesperado';
-
         this.modalService.open(this.errorAlertTpl, { centered: true, size: 'sm' });
+      },
+      complete: () => {
+        this.form.reset();
+        this.submitted = false;
       }
 
     });
@@ -207,13 +208,23 @@ export class PersonInfoComponent implements OnInit {
   loadParameterFilterFormSave() {
     this.glotypesService.getGlotypesByKey('TIPUBI').subscribe({
       next: (data) => {
-        this.parametersGlotypes = data.map(d => {
-          if (d.name.toUpperCase().includes('DIRECCIÓN')) return { ...d, key: 'DIR' };
-          if (d.name.toUpperCase().includes('TELÉFONO')) return { ...d, key: 'TEL' };
-          if (d.name.toUpperCase().includes('CELULAR')) return { ...d, key: 'CEL' };
-          if (d.name.toUpperCase().includes('CORREO')) return { ...d, key: 'COR' };
-          return d;
-        });
+        this.parametersGlotypes = data
+          .filter(d => {
+            const name = d.name.toUpperCase().trim();
+            return name === 'DIRECCIÓN' || name === 'TELÉFONO' || name === 'CELULAR' || name === 'CORREO' || name === 'WHATSAPP'
+              ;
+          })
+          .map(d => {
+            if (d.name.toUpperCase() === 'DIRECCIÓN') return { ...d, key: 'DIR' };
+            if (d.name.toUpperCase() === 'TELÉFONO') return { ...d, key: 'TEL' };
+            if (d.name.toUpperCase() === 'CELULAR') return { ...d, key: 'CEL' };
+            if (d.name.toUpperCase() === 'CORREO') return { ...d, key: 'COR' };
+            if (d.name.toUpperCase() === 'WHATSAPP') return { ...d, key: 'WHA' }; // 👈 clave para WhatsApp
+
+            return d;
+          });
+
+
       },
       error: (err) => console.error('Error cargando opciones:', err)
     });

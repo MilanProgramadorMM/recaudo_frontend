@@ -1,0 +1,142 @@
+/* Cuando el cliente está en reposo */
+.cdk-drag {
+  cursor: grab;
+}
+
+/* Cuando el cliente se está arrastrando */
+.cdk-drag.cdk-drag-dragging {
+  cursor: grabbing;
+}
+
+.list-group-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.cliente-nombre {
+  flex: 1;
+  /* ocupa el espacio disponible */
+  font-weight: 500;
+}
+
+.cliente-documento {
+  min-width: 150px;
+  /* ancho fijo para alinear */
+  text-align: right;
+  font-size: 0.9rem;
+}
+
+/* Resaltar al arrastrar */
+.draggable-item.cdk-drag-preview {
+  background-color: #d9edf7 !important;
+  border-radius: 4px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+}
+
+.cdk-drop-list.cdk-drop-list-dragging .list-group-item {
+  transition: transform 0.2s ease;
+}
+
+/* Scroll si hay muchas filas */
+.modal-body {
+  max-height: 60vh;
+  overflow-y: auto;
+}
+
+/* Columnas alineadas */
+.list-group-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+/* Estilo general */
+.modal-body {
+  max-height: 65vh;
+  overflow-y: auto;
+}
+
+/* Listas */
+.cliente-list {
+  min-height: 200px;
+  background-color: #fff;
+  border-radius: 8px;
+}
+
+.list-group-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  font-size: 0.95rem;
+  padding: 0.6rem 0.8rem;
+  border: 1px solid #e9ecef;
+  border-radius: 6px;
+  margin-bottom: 6px;
+}
+
+/* Orden */
+.orden-number {
+  width: 40px;
+  text-align: center;
+  font-weight: 600;
+  color: #0d6efd;
+}
+
+/* Documento */
+.cliente-documento {
+  min-width: 120px;
+  text-align: right;
+  font-size: 0.85rem;
+  color: #6c757d;
+}
+
+/* Drag visual feedback */
+.cdk-drag {
+  cursor: grab;
+}
+
+.cdk-drag.cdk-drag-dragging {
+  cursor: grabbing;
+}
+
+.draggable-item.cdk-drag-preview {
+  background-color: #d9edf7 !important;
+  border-radius: 4px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+}
+
+.cdk-drop-list.cdk-drop-list-dragging .list-group-item {
+  transition: transform 0.2s ease;
+}
+
+/* ✅ RESPONSIVE DESIGN */
+@media (max-width: 768px) {
+  .modal-body {
+    max-height: 70vh;
+    padding: 0.5rem;
+  }
+
+  .list-group-item {
+    font-size: 0.9rem;
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .orden-number {
+    width: auto;
+    margin-bottom: 4px;
+  }
+
+  .cliente-documento {
+    text-align: left;
+    min-width: auto;
+    font-size: 0.8rem;
+  }
+
+  .modal-footer {
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+}

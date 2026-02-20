@@ -1,0 +1,28 @@
+.text-uppercase {
+  text-transform: uppercase;
+}
+
+.btn-outline-danger {
+  border-color: #dc3545 !important;
+  color: #dc3545 !important;
+}
+
+.btn-outline-danger:hover {
+  background-color: #dc3545 !important;
+  color: #fff !important;
+}
+
+span.active {
+  color:#dc3545 !important
+}
+
+.btn-fixed-right {
+  position: fixed;
+  right: -10px;
+  top: 50%;
+  z-index: 1050;
+  padding: 4px 16px 4px 6px;
+  i {
+    font-size: 24px;
+  }
+}

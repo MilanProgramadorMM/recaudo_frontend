@@ -1,5 +1,5 @@
 <div class="wrapper">
-  <app-sidebar />
+  <app-sidebar (mobileMenuButtonClicked)="onToggleMobileMenu()"/>
 
   <app-topbar (settingsButtonClicked)="onSettingsButtonClicked()" (mobileMenuButtonClicked)="onToggleMobileMenu()" />
 

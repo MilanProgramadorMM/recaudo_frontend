@@ -6,3 +6,22 @@
 .text-uppercase {
   text-transform: uppercase;
 }
+
+
+.btn-close-dark {
+  filter: invert(0%) !important; /* 0% = negro */
+  opacity: 0.8;
+  transition: opacity 0.2s ease-in-out;
+}
+
+.btn-close-dark:hover {
+  opacity: 1;
+  filter: invert(20%) !important; /* un poco más claro al pasar el mouse */
+}
+
+@media (max-width: 576px) {
+  .btn-close-dark {
+    position: static !important;
+    margin-top: 0.5rem;
+  }
+}

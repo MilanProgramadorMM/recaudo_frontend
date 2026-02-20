@@ -1,0 +1,117 @@
+<div class="modal-header bg-danger text-white">
+    <h5 class="modal-title">
+        <i class="ti ti-arrow-back-up me-2"></i>
+        {{ title }}
+    </h5>
+    <button type="button" class="btn-close btn-close-white" (click)="close()" [disabled]="loading"></button>
+</div>
+
+<div class="modal-body">
+    <div class="alert alert-warning">
+        <i class="ti ti-alert-triangle me-2"></i>
+        {{ description }}
+    </div>
+
+    <!-- Controles de selección -->
+    <!-- <div class="d-flex justify-content-between align-items-center mb-3">
+        <div>
+            <button type="button" class="btn btn-sm btn-outline-primary me-2" (click)="selectAll()">
+                Seleccionar Todos
+            </button>
+            <button type="button" class="btn btn-sm btn-outline-secondary" (click)="deselectAll()">
+                Deseleccionar Todos
+            </button>
+        </div>
+        <div class="badge bg-info">
+            Seleccionados: {{ selectedRecaudos.size }} / {{ recaudos.length }}
+        </div>
+    </div> -->
+
+    <!-- Lista de recaudos -->
+    <div class="table-responsive" style="max-height: 400px; overflow-y: auto;">
+        <table class="table table-hover table-bordered">
+            <thead class="table-light sticky-top">
+                <tr>
+                    <th style="width: 50px;">
+                        <input type="checkbox" class="form-check-input"
+                            [checked]="selectedRecaudos.size === recaudos.length && recaudos.length > 0"
+                            (change)="selectedRecaudos.size === recaudos.length ? deselectAll() : selectAll()">
+                    </th>
+
+                    <th class="text-center">Cuota N°</th>
+                    <th>Fecha y Hora</th>
+
+                    <!-- RECAUDO -->
+                    <th>Valor Pagado</th>
+                    <th>Capital</th>
+                    <th>Intereses</th>
+                    <th>S. de vida</th>
+                    <th>S. de Cartera</th>
+                    <th>Registrado por</th>
+                </tr>
+            </thead>
+
+            <tbody>
+                <tr *ngFor="let recaudo of recaudos" [class.table-active]="isSelected(recaudo.recaudoId)"
+                    style="cursor: pointer;" (click)="toggleSelection(recaudo.recaudoId)">
+
+                    <td>
+                        <input type="checkbox" class="form-check-input" [checked]="isSelected(recaudo.recaudoId)"
+                            (click)="toggleSelection(recaudo.recaudoId); $event.stopPropagation()">
+
+                    </td>
+
+                    <td class="text-center">
+                        <strong>{{ recaudo.quotaNumber || 'N/A' }}</strong>
+                    </td>
+
+                    <td>{{ formatDateTime(recaudo.createdAt) }}</td>
+
+                    <!-- RECAUDO -->
+                    <td>
+                        <strong>${{ formatCurrency(recaudo.valuePaid) }}</strong>
+                    </td>
+                    <td>
+                        <strong>${{ formatCurrency(recaudo.investmentValue) }}</strong>
+                    </td>
+                    <td>
+                        <strong>${{ formatCurrency(recaudo.interestValue) }}</strong>
+                    </td>
+                    <!-- CAPITAL -->
+                    <td>
+                        <strong>${{ formatCurrency(recaudo.investmentValue) }}</strong>
+                    </td>
+
+                    <!-- INTERESES -->
+                    <td>
+                        <strong>${{ formatCurrency(recaudo.interestValue) }}</strong>
+                    </td>
+
+                    <td>{{ recaudo.userCreate }}</td>
+
+                </tr>
+            </tbody>
+
+        </table>
+    </div>
+
+    <!-- Resumen -->
+    <div class="alert alert-info mt-3" *ngIf="selectedRecaudos.size > 0">
+        <div class="d-flex justify-content-between align-items-center">
+            <strong>Total a reversar:</strong>
+            <span class="fs-5">${{ formatCurrency(getTotalSelected()) }}</span>
+        </div>
+    </div>
+</div>
+
+<div class="modal-footer">
+    <button type="button" class="btn btn-secondary" (click)="close()" [disabled]="loading">
+        <i class="ti ti-x me-1"></i>Cancelar
+    </button>
+    <button type="button" class="btn btn-danger" (click)="onSubmit()"
+        [disabled]="selectedRecaudos.size === 0 || loading">
+        <span *ngIf="loading" class="spinner-border spinner-border-sm me-1"></span>
+        <i *ngIf="!loading" class="ti ti-arrow-back-up me-1"></i>
+        {{ loading ? 'Procesando...' : 'Reversar Seleccionados' }}
+    </button>
+</div>

@@ -1,0 +1,454 @@
+<div class="stady-container">
+    <mat-stepper orientation="vertical" [linear]="true" #stepper>
+
+        <!-- ==================== ACTIVIDAD 1: FECHA INICIO TENTATIVA ==================== -->
+        <mat-step *ngIf="form1" [stepControl]="form1">
+            <ng-template matStepLabel>
+                Actividad 1 – Fecha de Inicio del Crédito
+            </ng-template>
+            <br>
+            <div class="tab-pane" id="step2">
+                <form [formGroup]="form1">
+                    <div class="row">
+                        <div class="col-lg-4 mb-3">
+                            <label class="form-label">Definir fecha tentativa de inicio <span
+                                    class="required">*</span></label>
+                            <input type="date" class="form-control" formControlName="fecha_inicio_tentativa"
+                                [ngClass]="{ 'is-invalid': submitted && form1.get('fecha_inicio_tentativa')?.invalid }">
+                            <div class="invalid-feedback">
+                                La fecha de inicio es obligatoria
+                            </div>
+                        </div>
+                    </div>
+                </form>
+                <div class="d-flex wizard justify-content-end flex-wrap gap-2 mt-3">
+                    <div class="next">
+                        <button (click)="onSubmitActividad1()" class="btn btn-danger mt-3 mt-md-0">
+                            Siguiente <i class="bx bx-right-arrow-alt ms-2"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </mat-step>
+
+        <!-- ==================== ACTIVIDAD 2: Formas de desembolso ==================== -->
+        <mat-step *ngIf="form2" [stepControl]="form2">
+            <ng-template matStepLabel>
+                Actividad 2 – Formas de desembolso
+            </ng-template>
+
+            <div class="tab-pane" [formGroup]="form2">
+                <br>
+                <!-- ========== CAMPOS PARA LÍNEA LIBRE INVERSIÓN (método de pago) ========== -->
+                <ng-container *ngIf="!isLineaFinanciamiento()">
+
+                    <!-- ALERTA CON INFORMACIÓN DEL MONTO REQUERIDO -->
+                    <div class="alert alerta-roja mb-4">
+                        <i class="bi bi-info-circle me-2"></i>
+                        <strong>Monto total a desembolsar:</strong> {{ formatearMoneda(getMontoRequerido()) }}
+                        <br>
+                        <strong>Monto restante:</strong>
+                        <span [class]="getMontoRestante() === 0 ? 'text-success' : 'text-danger'">
+                            {{ formatearMoneda(getMontoRestante()) }}
+                        </span>
+                    </div>
+
+                    <!-- SELECT MÉTODO -->
+                    <div class="mb-3">
+                        <label class="form-label">Método de desembolso *</label>
+                        <select class="form-select" formControlName="metodoDesembolso" (change)="onMetodoChange()">
+                            <option value="">Seleccione metodo de pago</option>
+                            <option *ngFor="let paymentMetod of paymentMetods" [value]="paymentMetod.id">{{
+                                paymentMetod.name }}</option>
+                        </select>
+                    </div>
+
+                    <!-- CAMPOS CONDICIONALES SEGÚN MÉTODO -->
+                    <ng-container *ngIf="metodoSeleccionado">
+
+                        <!-- BANCO (solo transferencia) -->
+                        <div *ngIf="metodoSeleccionado === 'Transferencia'" class="mb-3">
+                            <label class="form-label">Banco *</label>
+                            <select class="form-select" formControlName="banco">
+                                <option value="">Seleccione el banco</option>
+                                <option *ngFor="let banco of bancos" [value]="banco.id">{{ banco.name }}</option>
+                            </select>
+                        </div>
+
+                        <div class="row">
+                            <!-- NÚMERO DE CUENTA (solo si no es Efectivo) -->
+                            <div *ngIf="metodoSeleccionado !== 'Efectivo'" class="col-lg-6 mb-3">
+                                <label class="form-label">Número de cuenta *</label>
+                                <input type="text" class="form-control" formControlName="numeroCuenta"
+                                    [placeholder]="metodoSeleccionado === 'Transferencia' ? 'Número de cuenta bancaria' : 'Número de ' + metodoSeleccionado">
+                            </div>
+
+                            <!-- CANTIDAD -->
+                            <div [class]="metodoSeleccionado === 'Efectivo' ? 'col-lg-12 mb-3' : 'col-lg-6 mb-3'">
+                                <label class="form-label">Cantidad *</label>
+                                <div class="input-group">
+                                    <span class="input-group-text">$</span>
+                                    <input type="text" class="form-control" formControlName="amount"
+                                        (input)="formatCurrency('amount')" placeholder="Ingrese el valor">
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- COMPROBANTE (solo si no es Efectivo) -->
+                        <div *ngIf="metodoSeleccionado !== 'Efectivo'" class="mb-3">
+                            <label class="form-label">Comprobante de pago *</label>
+                            <div class="input-group">
+                                <input type="file" class="form-control" accept="image/*,application/pdf"
+                                    (change)="onFileSelectedActividad2($event)">
+                                <label class="input-group-text">
+                                    <i class="bi bi-upload"></i>
+                                </label>
+                            </div>
+                            <small class="text-muted">Archivo cargado: {{ comprobanteTemp?.name || 'Ninguno' }}</small>
+                        </div>
+
+                        <!-- BOTÓN GUARDAR EN TABLA -->
+                        <div class="mb-4">
+                            <button type="button" class="btn btn-success" (click)="guardarEnTabla()">
+                                <i class="bi bi-plus-circle me-2"></i>Registrar
+                            </button>
+                        </div>
+
+                    </ng-container>
+
+                    <!-- TABLA DE DESEMBOLSOS -->
+                    <div class="card-body" *ngIf="desembolsos.length > 0">
+                        <h5 class="card-title mb-3">Desembolsos Registrados</h5>
+                        <div class="table-responsive-sm">
+                            <table class="table table-bordered tabla-roja mb-0">
+                                <thead>
+                                    <tr>
+                                        <th>Método</th>
+                                        <th>Número Cuenta/Banco</th>
+                                        <th>Cantidad</th>
+                                        <th class="text-center">Acción</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr *ngFor="let item of desembolsos; let i = index">
+                                        <td>{{ item.metodo }}</td>
+                                        <td>
+                                            <span *ngIf="item.metodo !== 'Efectivo'">
+                                                {{ item.numeroCuenta }}
+                                                <span *ngIf="item.banco !== 'N/A'"><br><small class="text-muted">{{
+                                                        item.banco }}</small></span>
+                                            </span>
+                                            <span *ngIf="item.metodo === 'Efectivo'">N/A</span>
+                                        </td>
+                                        <td>{{ formatearMoneda(item.cantidadNumerica) }}</td>
+                                        <td class="text-center">
+                                            <a href="javascript:void(0);" (click)="eliminarDesembolso(i)"
+                                                class="link-reset fs-20 p-1 icono-rojo" title="Eliminar">
+                                                <i class="ti ti-trash"></i>
+                                            </a>
+                                        </td>
+                                    </tr>
+                                    <tr class="table-active">
+                                        <td colspan="2" class="text-end"><strong>TOTAL:</strong></td>
+                                        <td><strong>{{ formatearMoneda(getTotalDesembolsos()) }}</strong></td>
+                                        <td></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <!-- ALERTA DE VALIDACIÓN -->
+                        <div *ngIf="!isMontoCompleto()" class="alert alerta-roja mt-3 mb-0">
+                            <i class="bi bi-exclamation-triangle me-2"></i>
+                            Falta registrar: <strong>{{ formatearMoneda(getMontoRestante()) }}</strong>
+                        </div>
+                        <div *ngIf="isMontoCompleto()" class="alert alerta-roja mt-3 mb-0">
+                            <i class="bi bi-check-circle me-2"></i>
+                            ¡Monto completo! Puede continuar a la siguiente fase.
+                        </div>
+                    </div>
+
+                </ng-container>
+
+                <!-- ========== CAMPOS PARA LÍNEA DE FINANCIAMIENTO ========== -->
+                <ng-container *ngIf="isLineaFinanciamiento()">
+
+                    <div class="alert alerta-roja mb-4">
+                        <i class="bi bi-info-circle me-2"></i>
+                        <strong>Línea de Financiamiento:</strong> Debe proporcionar la referencia y foto del producto.
+                    </div>
+
+                    <!-- Referencia del Producto -->
+                    <div class="mb-3">
+                        <label class="form-label">Referencia del Producto <span class="required">*</span></label>
+                        <input type="text" class="form-control" formControlName="productoReferencia"
+                            placeholder="Ingrese la referencia del producto"
+                            [ngClass]="{ 'is-invalid': submitted && form2.get('productoReferencia')?.invalid }">
+                        <div class="invalid-feedback">
+                            La referencia del producto es obligatoria
+                        </div>
+                    </div>
+
+                    <!-- Foto del Producto -->
+                    <div class="mb-4">
+                        <label class="form-label">Foto del Producto <span class="required">*</span></label>
+
+                        <!-- Preview si existe -->
+                        <div *ngIf="productoFotoPreview" class="mb-3 p-3 border rounded bg-light">
+                            <div class="d-flex align-items-start gap-3">
+                                <img [src]="productoFotoPreview" alt="Vista previa del producto" class="img-thumbnail"
+                                    style="max-width: 200px; max-height: 200px; object-fit: cover;">
+                                <div class="flex-grow-1">
+                                    <strong>Foto cargada:</strong> {{ productoFoto?.name }}
+                                    <br>
+                                    <small class="text-muted">
+                                        {{ productoFoto ? (productoFoto.size / 1024).toFixed(2) : '0' }} KB
+                                    </small>
+                                    <br>
+                                    <button type="button" class="btn btn-copy-red mt-1" (click)="removeProductoFoto()">
+                                        <i class="bi bi-trash"></i> Eliminar
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Input para cargar foto -->
+                        <div class="input-group">
+                            <input type="file" class="form-control" accept="image/*"
+                                (change)="onProductoFotoSelected($event)"
+                                [ngClass]="{ 'is-invalid': submitted && form2.get('productoFoto')?.invalid }">
+                            <label class="input-group-text">
+                                <i class="bi bi-upload"></i>
+                            </label>
+                        </div>
+
+                        <small class="text-muted">
+                            Formatos aceptados: JPG, PNG, WebP
+                        </small>
+
+                        <div class="invalid-feedback d-block" *ngIf="submitted && form2.get('productoFoto')?.invalid">
+                            Debe cargar la foto del producto
+                        </div>
+                    </div>
+
+                    <!-- CAMPOS DE CUOTA INICIAL -->
+                    <div class="alert alerta-roja mb-4">
+                        <i class="bi bi-wallet2 me-2"></i>
+                        <strong>Cuota inicial requerida:</strong> {{ formatearMoneda(credit.initialValuePayment) }}
+                        <br>
+                        <strong>Monto restante:</strong>
+                        <span [class]="getMontoRestante() === 0 ? 'text-success' : 'text-danger'">
+                            {{ formatearMoneda(getMontoRestante()) }}
+                        </span>
+                    </div>
+
+                    <!-- SELECT MÉTODO - USANDO paymentMetods igual que línea libre inversión -->
+                    <div class="mb-3">
+                        <label class="form-label">Método de pago de cuota inicial *</label>
+                        <select class="form-select" formControlName="metodoDesembolso" (change)="onMetodoChange()">
+                            <option value="">Seleccione método de pago</option>
+                            <option *ngFor="let paymentMetod of paymentMetods" [value]="paymentMetod.id">
+                                {{ paymentMetod.name }}
+                            </option>
+                        </select>
+                    </div>
+
+                    <!-- CAMPOS CONDICIONALES (igual que línea libre inversión) -->
+                    <ng-container *ngIf="metodoSeleccionado">
+
+                        <!-- BANCO (solo transferencia) -->
+                        <div *ngIf="metodoSeleccionado === 'Transferencia'" class="mb-3">
+                            <label class="form-label">Banco <span class="required">*</span></label>
+                            <select class="form-select" formControlName="banco"
+                                [ngClass]="{'is-invalid': submitted && form2.get('banco')?.invalid}">
+                                <option value="">Seleccione el banco</option>
+                                <option *ngFor="let banco of bancos" [value]="banco.id">
+                                    {{ banco.name }}
+                                </option>
+                            </select>
+                            <div class="invalid-feedback" *ngIf="submitted && form2.get('banco')?.errors?.['required']">
+                                Campo obligatorio
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <!-- NÚMERO DE CUENTA (solo si no es Efectivo) -->
+                            <div *ngIf="metodoSeleccionado !== 'Efectivo'" class="col-lg-6 mb-3">
+                                <label class="form-label">Número de cuenta *</label>
+                                <input type="text" class="form-control" formControlName="numeroCuenta"
+                                    [placeholder]="metodoSeleccionado === 'Transferencia' ? 'Número de cuenta bancaria' : 'Número de ' + metodoSeleccionado"
+                                    [ngClass]="{'is-invalid': submitted && form2.get('numeroCuenta')?.invalid}">
+                                <div class="invalid-feedback" *ngIf="form2.get('numeroCuenta')?.errors">
+                                    {{ getNumeroCuentaError() }}
+                                </div>
+                            </div>
+
+                            <!-- CANTIDAD -->
+                            <div [class]="metodoSeleccionado === 'Efectivo' ? 'col-lg-12 mb-3' : 'col-lg-6 mb-3'">
+                                <label class="form-label">Cantidad *</label>
+                                <div class="input-group">
+                                    <span class="input-group-text">$</span>
+                                    <input type="text" class="form-control" formControlName="amount"
+                                        (input)="formatCurrency('amount')" placeholder="Ingrese el valor"
+                                        [ngClass]="{'is-invalid': submitted && form2.get('amount')?.invalid}">
+                                </div>
+                                <div class="invalid-feedback d-block"
+                                    *ngIf="submitted && form2.get('amount')?.errors?.['required']">
+                                    La cantidad es obligatoria
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- COMPROBANTE (solo si no es Efectivo) -->
+                        <div *ngIf="metodoSeleccionado !== 'Efectivo'" class="mb-3">
+                            <label class="form-label">Comprobante de pago *</label>
+                            <div class="input-group">
+                                <input type="file" class="form-control" accept="image/*,application/pdf"
+                                    (change)="onFileSelectedActividad2($event)"
+                                    [ngClass]="{'is-invalid': submitted && form2.get('comprobante')?.invalid}">
+                                <label class="input-group-text">
+                                    <i class="bi bi-upload"></i>
+                                </label>
+                            </div>
+                            <small class="text-muted">Archivo cargado: {{ comprobanteTemp?.name || 'Ninguno' }}</small>
+                            <div class="invalid-feedback d-block"
+                                *ngIf="submitted && form2.get('comprobante')?.invalid">
+                                Debe adjuntar el comprobante de pago
+                            </div>
+                        </div>
+
+                        <!-- BOTÓN GUARDAR EN TABLA -->
+                        <div class="mb-4">
+                            <button type="button" class="btn btn-success" (click)="guardarEnTabla()">
+                                <i class="bi bi-plus-circle me-2"></i>Registrar
+                            </button>
+                        </div>
+                    </ng-container>
+
+                    <!-- TABLA DE DESEMBOLSOS (igual en ambas líneas) -->
+                    <div class="card-body" *ngIf="desembolsos.length > 0">
+                        <h5 class="card-title mb-3">Desembolsos Registrados</h5>
+                        <div class="table-responsive-sm">
+                            <table class="table table-bordered tabla-roja mb-0">
+                                <thead>
+                                    <tr>
+                                        <th>Método</th>
+                                        <th>Número Cuenta/Banco</th>
+                                        <th>Cantidad</th>
+                                        <th class="text-center">Acción</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr *ngFor="let item of desembolsos; let i = index">
+                                        <td>{{ item.metodo }}</td>
+                                        <td>
+                                            <span *ngIf="item.metodo !== 'Efectivo'">
+                                                {{ item.numeroCuenta }}
+                                                <span *ngIf="item.banco !== 'N/A'">
+                                                    <br><small class="text-muted">{{ item.banco }}</small>
+                                                </span>
+                                            </span>
+                                            <span *ngIf="item.metodo === 'Efectivo'">N/A</span>
+                                        </td>
+                                        <td>{{ formatearMoneda(item.cantidadNumerica) }}</td>
+                                        <td class="text-center">
+                                            <a href="javascript:void(0);" (click)="eliminarDesembolso(i)"
+                                                class="link-reset fs-20 p-1 icono-rojo" title="Eliminar">
+                                                <i class="ti ti-trash"></i>
+                                            </a>
+                                        </td>
+                                    </tr>
+                                    <tr class="table-active">
+                                        <td colspan="2" class="text-end"><strong>TOTAL:</strong></td>
+                                        <td><strong>{{ formatearMoneda(getTotalDesembolsos()) }}</strong></td>
+                                        <td></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <!-- ALERTA DE VALIDACIÓN -->
+                        <div *ngIf="!isMontoCompleto()" class="alert alerta-roja mt-3 mb-0">
+                            <i class="bi bi-exclamation-triangle me-2"></i>
+                            Falta registrar: <strong>{{ formatearMoneda(getMontoRestante()) }}</strong>
+                        </div>
+                        <div *ngIf="isMontoCompleto()" class="alert alerta-roja mt-3 mb-0">
+                            <i class="bi bi-check-circle me-2"></i>
+                            ¡Monto completo! Puede continuar a la siguiente fase.
+                        </div>
+                    </div>
+
+                </ng-container>
+
+                <!-- BOTONES -->
+                <div class="d-flex justify-content-between mt-4">
+                    <button (click)="previousStep()" class="btn btn-primary">
+                        <i class="bx bx-left-arrow-alt me-2"></i>Atrás
+                    </button>
+
+                    <button class="btn btn-danger" (click)="onSubmitActividad2()" [disabled]="!isActividad2Complete()">
+
+                        {{ hasActividad2Changes() ? 'Guardar y Continuar' : 'Siguiente' }}
+                        <i class="bx bx-right-arrow-alt ms-2"></i>
+                    </button>
+                </div>
+
+            </div>
+        </mat-step>
+
+
+        <!-- ACTIVIDAD 3: Causar credito -->
+        <mat-step [stepControl]="form3">
+            <ng-template matStepLabel>
+                Actividad 3 - Causar credito
+            </ng-template>
+            <form [formGroup]="form3">
+                <div class="step-content">
+                    <br>
+                    <mat-radio-group formControlName="decision" class="d-flex flex-column gap-3 mb-3"
+                        [disabled]="isPhaseCompleted">
+                        <mat-radio-button value="aprobar" class="p-3 border rounded bg-success bg-opacity-10">
+                            <div class="d-flex align-items-center">
+                                <i class="bi bi-check-circle text-success fs-4 me-3"></i>
+                                <div>
+                                    <strong class="d-block">Terminar proceso de presolicitud</strong>
+                                    <small class="text-muted">Causar crecito y registrar en cartera</small>
+                                </div>
+                            </div>
+                        </mat-radio-button>
+                    </mat-radio-group>
+
+                    <!-- Mensaje de validación -->
+                    <div *ngIf="submitted && form3.get('decision')?.invalid" class="alert alert-danger">
+                        <i class="bi bi-exclamation-circle me-2"></i>
+                        Seleccione para terminar proceso
+                    </div>
+                </div>
+            </form>
+            <div class="d-flex wizard justify-content-end flex-wrap gap-2 mt-3">
+                <!-- Mostrar botón solo si NO ha sido completado -->
+                <div class="next" *ngIf="!isPhaseCompleted">
+                    <button (click)="onSubmitActividad3()" class="btn btn-danger mt-3 mt-md-0"
+                        [disabled]="isSaving || form3.invalid">
+                        <span *ngIf="!isSaving">
+                            Confirmar <i class="bx bx-right-arrow-alt ms-2"></i>
+                        </span>
+                        <span *ngIf="isSaving">
+                            Procesando...
+                        </span>
+                    </button>
+                </div>
+
+                <!-- Mensaje de confirmación cuando se completa -->
+                <div *ngIf="isPhaseCompleted" class="alert alert-success w-100 mb-0">
+                    <i class="bi bi-check-circle me-2"></i>
+                    <strong>Proceso completado.</strong>
+                    {{ decisionTomada === 'rechazar' ?
+                    'La presolicitud ha sido rechazada.' :
+                    'El crédito ha sido causado correctamente.' }}
+                </div>
+            </div>
+        </mat-step>
+
+    </mat-stepper>
+</div>

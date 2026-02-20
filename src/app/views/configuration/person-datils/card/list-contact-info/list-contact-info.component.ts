@@ -16,7 +16,6 @@ export class ListContactInfoComponent {
   contactInfoList: any[] = [];
   noContactInfoMessage: string = '';
 
-  // 👇 referencias a los templates
   @ViewChild('confirmDelete', { static: true }) confirmDeleteTpl!: TemplateRef<any>;
   @ViewChild('successalert', { static: true }) successAlertTpl!: TemplateRef<any>;
   @ViewChild('erroralert', { static: true }) errorAlertTpl!: TemplateRef<any>;
@@ -24,6 +23,8 @@ export class ListContactInfoComponent {
   deleteTarget: any = null;
   successDetails: string = '';
   lastErrorMessage: string = '';
+  loading: boolean = false;
+
 
   constructor(
     private contactInfoService: ContactInfoService,
@@ -39,21 +40,28 @@ export class ListContactInfoComponent {
   loadContactInfoList(personId?: number) {
     if (!personId) {
       this.noContactInfoMessage = 'No se ha seleccionado una persona.';
+      this.loading = false; 
       return;
     }
+
+    this.loading = true;
+    this.contactInfoList = []; 
+
     this.contactInfoService.getContactInfoByPersonId(personId).subscribe({
       next: (res) => {
         this.contactInfoList = res.data || [];
-        this.noContactInfoMessage =
-          this.contactInfoList.length === 0
-            ? 'La persona no tiene aún información de contacto registrada.'
-            : '';
+        this.noContactInfoMessage = this.contactInfoList.length === 0
+          ? 'La persona no tiene aún información de contacto registrada.'
+          : '';
+        this.loading = false; 
       },
       error: () => {
-        this.noContactInfoMessage = 'Ocurrió un error al cargar la información de contacto.';
+        this.loading = false;
+        this.noContactInfoMessage = 'Ocurrió un error al cargar la información.';
       },
     });
   }
+
 
   editContactInfo(item: any) {
     const modalRef = this.modalService.open(UpdateContactInfoComponent, {
@@ -73,7 +81,7 @@ export class ListContactInfoComponent {
           console.warn('No se pudo recargar la lista porque no hay personId definido.');
         }
       },
-      () => { /* cerrado sin guardar */ }
+      () => { }
     );
   }
   // Abre modal de confirmación
@@ -108,4 +116,16 @@ export class ListContactInfoComponent {
       },
     });
   }
+
+  isPrincipal(typeName: string): boolean {
+    if (!typeName) return false;
+    const principales = [
+      'CORREO PRINCIPAL',
+      'CELULAR PRINCIPAL',
+      'TELÉFONO PRINCIPAL',
+      'DIRECCIÓN PRINCIPAL'
+    ];
+    return principales.includes(typeName.toUpperCase());
+  }
+
 }

@@ -1,11 +1,12 @@
 import { CommonModule } from '@angular/common';
-import { Component, Input, OnInit, OnDestroy } from '@angular/core';
+import { Component, Input, OnInit, OnDestroy, ViewChild, TemplateRef } from '@angular/core';
 import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
-import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
+import { NgbActiveModal, NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { ContactInfoService } from '@core/services/contactInfo.service';
 import { GlotypesService } from '@core/services/glotypes.service';
 import { UbicacionService } from '@core/services/ubicacion.service';
 import { of, Subject, switchMap, tap, distinctUntilChanged, takeUntil } from 'rxjs';
+import { LoadingComponent } from '@views/ui/loading/loading.component';
 
 @Component({
   selector: 'app-update-contact-info',
@@ -17,6 +18,14 @@ import { of, Subject, switchMap, tap, distinctUntilChanged, takeUntil } from 'rx
 export class UpdateContactInfoComponent implements OnInit, OnDestroy {
   @Input() contactInfo: any;
   @Input() person: any;
+
+  @ViewChild('successalert', { static: true }) successAlertTpl!: TemplateRef<any>;
+  @ViewChild('erroralert', { static: true }) errorAlertTpl!: TemplateRef<any>;
+
+  errorMessage = '';
+  lastErrorMessage = '';
+  successDetails: string = '';
+  formSubmitted = false; // Nueva propiedad para tracking
 
   form!: FormGroup;
   parametersGlotypes: any[] = [];
@@ -32,11 +41,11 @@ export class UpdateContactInfoComponent implements OnInit, OnDestroy {
     private fb: FormBuilder,
     private contactInfoService: ContactInfoService,
     private glotypesService: GlotypesService,
-    private ubicacionService: UbicacionService
+    private ubicacionService: UbicacionService,
+    private modalService: NgbModal
   ) { }
 
   ngOnInit() {
-    // 1) Crear UNA SOLA VEZ el form (no volver a reasignarlo)
     this.form = this.fb.group({
       typeInfo: ['', Validators.required],
       direccion: [''],
@@ -49,14 +58,10 @@ export class UpdateContactInfoComponent implements OnInit, OnDestroy {
       descripcion: ['']
     });
 
-    // 2) Cargar tipos y setear valores iniciales SIN reconstruir el form
     this.loadTypesAndPatchInitial();
-
-    // 3) Cargar ubicación y preseleccionar valores iniciales SIN disparar valueChanges
     this.loadUbicacionInicial();
-
-    // 4) Registrar listeners (sobre la instancia actual del form)
     this.setupListeners();
+    this.setupTypeInfoListener();
   }
 
   ngOnDestroy() {
@@ -64,25 +69,30 @@ export class UpdateContactInfoComponent implements OnInit, OnDestroy {
     this.destroy$.complete();
   }
 
-  // ---------- Carga de tipos y patch inicial ----------
+  // Método helper para verificar si un campo es inválido
+  isFieldInvalid(fieldName: string): boolean {
+    const field = this.form.get(fieldName);
+    return !!(field && field.invalid && (field.dirty || field.touched || this.formSubmitted));
+  }
+
   private loadTypesAndPatchInitial() {
     this.glotypesService.getGlotypesByKey('TIPUBI').subscribe(types => {
-      this.parametersGlotypes = types.map(d => {
-        if (d.name.toUpperCase().includes('DIRECCIÓN')) return { ...d, key: 'DIR' };
-        if (d.name.toUpperCase().includes('TELÉFONO')) return { ...d, key: 'TEL' };
-        if (d.name.toUpperCase().includes('CELULAR')) return { ...d, key: 'CEL' };
-        if (d.name.toUpperCase().includes('CORREO')) return { ...d, key: 'COR' };
-        return d;
-      });
+      this.parametersGlotypes = types;
 
-      // Parchear valores base (NO reconstruir form)
       this.form.patchValue({
         typeInfo: this.contactInfo?.typeCode || '',
-        direccion: this.contactInfo?.typeCode === 'DIR' ? this.contactInfo?.value : '',
-        telefono: (this.contactInfo?.typeCode === 'TEL' || this.contactInfo?.typeCode === 'CEL') ? this.contactInfo?.value : '',
-        correo: this.contactInfo?.typeCode === 'COR' ? this.contactInfo?.value : '',
+        direccion: (this.contactInfo?.typeCode === 'DIR' || this.contactInfo?.typeCode === 'DIRPRIN')
+          ? this.contactInfo?.value : '',
+        telefono: (this.contactInfo?.typeCode === 'TEL' || this.contactInfo?.typeCode === 'TELPRIN'
+          || this.contactInfo?.typeCode === 'CEL' || this.contactInfo?.typeCode === 'CEPRIN')
+          ? this.contactInfo?.value : '',
+        correo: (this.contactInfo?.typeCode === 'COR' || this.contactInfo?.typeCode === 'COPRIN')
+          ? this.contactInfo?.value : '',
         descripcion: this.contactInfo?.description || ''
       }, { emitEvent: false });
+
+      // Aplicar validadores después de cargar los datos
+      this.updateValidators(this.contactInfo?.typeCode || '');
     });
   }
 
@@ -100,10 +110,8 @@ export class UpdateContactInfoComponent implements OnInit, OnDestroy {
     if (!label) return null;
     const match = list.find(item => item.label?.toLowerCase() === label.toLowerCase());
     return match ? match.id : null;
-    // Si tu backend expone también 'code' o 'value', ajusta aquí.
   }
 
-  // ---------- Carga inicial en cascada (sin disparar listeners) ----------
   private loadUbicacionInicial() {
     this.ubicacionService.getPaises().pipe(
       tap(paises => this.paises = paises),
@@ -132,9 +140,7 @@ export class UpdateContactInfoComponent implements OnInit, OnDestroy {
     ).subscribe();
   }
 
-  // ---------- Listeners en cascada ----------
   private setupListeners() {
-    // País → Departamentos
     this.form.get('pais')?.valueChanges.pipe(
       distinctUntilChanged(),
       takeUntil(this.destroy$),
@@ -152,11 +158,9 @@ export class UpdateContactInfoComponent implements OnInit, OnDestroy {
       this.departamentos = deps;
       this.ciudades = [];
       this.barrios = [];
-      // Limpiar hijos sin disparar más eventos
       this.form.patchValue({ departamento: null, ciudad: null, barrio: null }, { emitEvent: false });
     });
 
-    // Departamento → Municipios/Ciudades
     this.form.get('departamento')?.valueChanges.pipe(
       distinctUntilChanged(),
       takeUntil(this.destroy$),
@@ -175,7 +179,6 @@ export class UpdateContactInfoComponent implements OnInit, OnDestroy {
       this.form.patchValue({ ciudad: null, barrio: null }, { emitEvent: false });
     });
 
-    // Ciudad/Municipio → Barrios
     this.form.get('ciudad')?.valueChanges.pipe(
       distinctUntilChanged(),
       takeUntil(this.destroy$),
@@ -193,12 +196,79 @@ export class UpdateContactInfoComponent implements OnInit, OnDestroy {
     });
   }
 
-  // ---------- Guardado ----------
-  onSubmit() {
-    if (this.form.invalid) return;
+  private setupTypeInfoListener() {
+    // Escuchar cambios en typeInfo
+    this.form.get('typeInfo')?.valueChanges.pipe(
+      takeUntil(this.destroy$)
+    ).subscribe(typeInfo => {
+      this.updateValidators(typeInfo);
+    });
+  }
 
-    const typeSelected = this.parametersGlotypes.find(t => t.key === this.form.value.typeInfo);
-    if (!typeSelected) return;
+  private updateValidators(typeInfo: string) {
+    // Limpiar todos los validadores primero
+    this.form.get('direccion')?.clearValidators();
+    this.form.get('pais')?.clearValidators();
+    this.form.get('departamento')?.clearValidators();
+    this.form.get('ciudad')?.clearValidators();
+    this.form.get('barrio')?.clearValidators();
+    this.form.get('descripcion')?.clearValidators();
+    this.form.get('telefono')?.clearValidators();
+    this.form.get('correo')?.clearValidators();
+
+    // Aplicar validadores según el tipo
+    if (typeInfo === 'DIR' || typeInfo === 'DIRPRIN') {
+      this.form.get('direccion')?.setValidators([Validators.required]);
+      this.form.get('pais')?.setValidators([Validators.required]);
+      this.form.get('departamento')?.setValidators([Validators.required]);
+      this.form.get('ciudad')?.setValidators([Validators.required]);
+      this.form.get('barrio')?.setValidators([Validators.required]);
+      this.form.get('descripcion')?.setValidators([Validators.required]);
+    } else if (typeInfo === 'TEL' || typeInfo === 'TELPRIN' || typeInfo === 'CEL' || typeInfo === 'CEPRIN' || typeInfo === 'WHA') {
+      this.form.get('telefono')?.setValidators([Validators.required]);
+    } else if (typeInfo === 'COR' || typeInfo === 'COPRIN') {
+      this.form.get('correo')?.setValidators([Validators.required, Validators.email]);
+    }
+
+    // Actualizar el estado de validación
+    this.form.get('direccion')?.updateValueAndValidity();
+    this.form.get('pais')?.updateValueAndValidity();
+    this.form.get('departamento')?.updateValueAndValidity();
+    this.form.get('ciudad')?.updateValueAndValidity();
+    this.form.get('barrio')?.updateValueAndValidity();
+    this.form.get('descripcion')?.updateValueAndValidity();
+    this.form.get('telefono')?.updateValueAndValidity();
+    this.form.get('correo')?.updateValueAndValidity();
+  }
+
+  onSubmit() {
+    this.formSubmitted = true;
+    console.log('Submit ejecutado', this.form.value);
+
+    if (this.form.invalid) {
+      console.warn('Formulario inválido', this.form.errors, this.form.value);
+      // Marcar todos los campos como touched para mostrar errores
+      Object.keys(this.form.controls).forEach(key => {
+        this.form.get(key)?.markAsTouched();
+      });
+      return;
+    }
+
+    const mapCodeToName: any = {
+      DIR: 'DIRECCIÓN',
+      DIRPRIN: 'DIRECCIÓN PRINCIPAL',
+      TEL: 'TELÉFONO',
+      TELPRIN: 'TELÉFONO PRINCIPAL',
+      CEL: 'CELULAR',
+      CEPRIN: 'CELULAR PRINCIPAL',
+      COR: 'CORREO',
+      COPRIN: 'CORREO PRINCIPAL',
+      WHA: 'WHATSAPP'
+    };
+
+    const typeSelected = this.parametersGlotypes.find(
+      t => t.name.toUpperCase() === mapCodeToName[this.form.value.typeInfo]
+    );
 
     const payload: any = {
       personId: this.person.id,
@@ -207,6 +277,7 @@ export class UpdateContactInfoComponent implements OnInit, OnDestroy {
 
     switch (this.form.value.typeInfo) {
       case 'DIR':
+      case 'DIRPRIN':
         payload.value = this.form.value.direccion.toUpperCase() || '';
         payload.country = this.form.value.pais;
         payload.department = this.form.value.departamento;
@@ -214,16 +285,64 @@ export class UpdateContactInfoComponent implements OnInit, OnDestroy {
         payload.neighborhood = this.form.value.barrio;
         payload.description = this.form.value.descripcion.toUpperCase() || '';
         break;
+
       case 'TEL':
+      case 'TELPRIN':
       case 'CEL':
+      case 'CEPRIN':
+      case 'WHA':
         payload.value = this.form.value.telefono;
         break;
+
       case 'COR':
+      case 'COPRIN':
         payload.value = this.form.value.correo;
         break;
     }
 
+    const loadingRef = this.modalService.open(LoadingComponent, {
+      centered: true,
+      backdrop: 'static',
+      keyboard: false,
+      size: 'sm',
+      modalDialogClass: 'modal-loading'
+    });
+
     this.contactInfoService.updateContactInfo(this.contactInfo.id, payload)
-      .subscribe(() => this.activeModal.close(true));
+      .subscribe({
+        next: (res) => {
+          loadingRef.close();
+          this.successDetails = res.details || 'La información de contacto fue actualizada correctamente';
+          const modalRef = this.modalService.open(this.successAlertTpl, {
+            centered: true,
+            size: 'sm',
+            backdrop: 'static'
+          });
+          modalRef.result.then(
+            () => this.activeModal.close(true),
+            () => this.activeModal.close(true)
+          );
+        },
+        error: (err) => {
+          loadingRef.close();
+          this.lastErrorMessage = err?.datils || 'No se pudo actualizar la información de contacto';
+          this.modalService.open(this.errorAlertTpl, {
+            centered: true,
+            size: 'sm',
+            backdrop: 'static'
+          });
+        }
+      });
+  }
+
+  onSuccessContinue(modal: any) {
+    modal.close();
+  }
+
+  soloNumeros(event: KeyboardEvent) {
+    const char = event.key;
+    if (!/^[0-9]$/.test(char) && event.key !== 'Backspace' && event.key !== 'Tab') {
+      event.preventDefault();
+    }
   }
 }

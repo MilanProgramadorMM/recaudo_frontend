@@ -1,0 +1,11 @@
+::ng-deep .mat-mdc-dialog-surface {
+    background: transparent !important;
+    overflow: hidden !important;
+}
+
+.spinner-border {
+    width: 5rem !important;
+    height: 5rem !important;
+    font-size: large !important;
+    color: red !important;
+}

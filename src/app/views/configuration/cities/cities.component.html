@@ -6,27 +6,27 @@
       <div class="card-header d-flex align-items-center justify-content-between border-bottom border-light">
         <h4 class="header-title">Municipios</h4>
         <div>
-          <button (click)="openCityModal()" class="btn btn-success bg-gradient me-1">
+          <button (click)="openCityModal()" class="btn btn-danger bg-gradient me-1">
             <i class="ti ti-plus me-1"></i> Agregar
           </button>
         </div>
       </div>
 
-      <div class="mb-3 row align-items-center">
+      <div class="mb-3 row align-items-center ms-3">
         <label for="city-search" class="col-sm-auto col-form-label">Buscar:</label>
         <div class="col-6">
-          <input id="city-search" class="form-control" type="text" placeholder="Por nombre o departamento..."
-            [(ngModel)]="searchTerm" (ngModelChange)="applyFilter()" />
+          <input id="city-search" class="form-control text-uppercase" type="text"
+            placeholder="Por nombre o departamento..." [(ngModel)]="searchTerm" (ngModelChange)="applyFilter()" />
         </div>
       </div>
 
-      <div class="table-responsive">
+      <div class="table-responsive" style="max-height: 400px; overflow-y: auto;">
         <div *ngIf="loading" class="text-center my-3">
           <div class="spinner-border spinner-border-sm text-primary" role="status"></div>
           <span class="ms-2">Cargando municipios..</span>
         </div>
         <table *ngIf="!loading" class="table table-nowrap mb-0">
-          <thead class="table-dark bg-light-subtle">
+          <thead class="table-dark bg-light-subtle" style="position: sticky; top: 0; z-index: 2;">
             <tr>
               <th>Nombre</th>
               <th>Departamento</th>
@@ -35,7 +35,7 @@
             </tr>
           </thead>
           <tbody>
-            <tr *ngFor="let muni of filteredMunicipios">
+            <tr *ngFor="let muni of pagedCities">
               <td>{{muni.nombre}}</td>
               <td>{{muni.nombreDepartamento}}</td>
               <td>{{muni.nombrePais}}</td>
@@ -58,10 +58,13 @@
 
       <div class="card-footer">
         <div class="d-flex justify-content-end">
-          <ngb-pagination [collectionSize]="municipios.length" [(page)]="page"
-            aria-label="Default pagination"></ngb-pagination>
+          <ngb-pagination [(page)]="page" [pageSize]="pageSize" [collectionSize]="filteredMunicipios.length"
+            [boundaryLinks]="true" [directionLinks]="true" [ellipses]="true" [maxSize]="5"
+            aria-label="Paginación de municipios">
+          </ngb-pagination>
         </div>
       </div>
+
     </div>
   </div>
 </div>

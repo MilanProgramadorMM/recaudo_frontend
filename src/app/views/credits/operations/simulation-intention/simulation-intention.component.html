@@ -1,0 +1,756 @@
+<page-title subtitle="Simulacion" title="Simulacion de intencion de credito" />
+
+<div class="col-lg-12">
+    <div class="card">
+        <div class="card-body">
+            <p *ngIf="errorMessage" class="fs-14 text-danger">{{ errorMessage }}</p>
+
+            <div id="credit-wizard">
+                <ng-stepper cdkStepper #stepper [linear]="true" class="cdksteppercontent nav nav-pills">
+
+                    <!-- ======================= PASO 1: DATOS PERSONALES ====================== -->
+                    <cdk-step class="nav-justified mb-4">
+                        <ng-template cdkStepLabel>
+                            <li class="nav-item form-wizard-header"
+                                (click)="$event.preventDefault(); $event.stopPropagation()">
+                                <span class="nav-link rounded-0 py-2 bg-dark text-white"
+                                    [ngClass]="{ 'active': stepper.selectedIndex === 0 }">
+                                    <i class="bi bi-patch-check fs-18 align-middle me-1"></i>
+                                    <span class="d-none d-sm-inline">Datos Personales</span>
+                                </span>
+                            </li>
+                        </ng-template>
+
+                        <div class="tab-pane" id="step1">
+                            <form [formGroup]="form">
+                                <fieldset>
+                                    <legend>Información del solicitante</legend>
+
+                                    <div class="row">
+                                        <div class="col-lg-6 mb-3">
+                                            <label class="form-label">
+                                                Tipo de documento <span class="required">*</span>
+                                            </label>
+                                            <select formControlName="document_type" class="form-control form-select"
+                                                [ngClass]="{ 'is-invalid': submitted && form.get('document_type')?.invalid }">
+                                                <option value="">Seleccione</option>
+                                                <option *ngFor="let doc of documentTypes" [value]="doc.id">
+                                                    {{ doc.name }}
+                                                </option>
+                                            </select>
+                                            <div class="invalid-feedback"
+                                                *ngIf="submitted && form.get('document_type')?.errors?.['required']">
+                                                Campo obligatorio
+                                            </div>
+                                        </div>
+
+                                        <div class="col-lg-6 mb-3">
+                                            <label class="form-label">Número de documento <span
+                                                    class="required">*</span></label>
+                                            <div class="input-group mb-2">
+                                                <input formControlName="document" type="text"
+                                                    (keydown.enter)="getClient()" class="form-control"
+                                                    (keypress)="soloNumeros($event)"
+                                                    [ngClass]="{ 'is-invalid': submitted && form.get('document')?.invalid }">
+                                                <button class="btn btn-outline-danger" type="button"
+                                                    (click)="getClient()">
+                                                    <i class="bi bi-search"></i>
+                                                </button>
+                                            </div>
+                                            <div class="invalid-feedback d-block"
+                                                *ngIf="submitted && form.get('document')?.errors?.['required']">
+                                                Campo obligatorio
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="row">
+                                        <div class="col-lg-3 mb-3">
+                                            <label class="form-label">Primer nombre <span
+                                                    class="required">*</span></label>
+                                            <input formControlName="firstname" type="text"
+                                                class="form-control text-uppercase"
+                                                [ngClass]="{ 'is-invalid': submitted && form.get('firstname')?.invalid }">
+                                            <div class="invalid-feedback"
+                                                *ngIf="submitted && form.get('firstname')?.errors?.['required']">
+                                                Campo obligatorio
+                                            </div>
+                                        </div>
+                                        <div class="col-lg-3 mb-3">
+                                            <label class="form-label">Segundo nombre</label>
+                                            <input formControlName="middlename" type="text"
+                                                class="form-control text-uppercase">
+                                        </div>
+                                        <div class="col-lg-3 mb-3">
+                                            <label class="form-label">Primer apellido <span
+                                                    class="required">*</span></label>
+                                            <input formControlName="lastname" type="text"
+                                                class="form-control text-uppercase"
+                                                [ngClass]="{ 'is-invalid': submitted && form.get('lastname')?.invalid }">
+                                            <div class="invalid-feedback"
+                                                *ngIf="submitted && form.get('lastname')?.errors?.['required']">
+                                                Campo obligatorio
+                                            </div>
+                                        </div>
+                                        <div class="col-lg-3 mb-3">
+                                            <label class="form-label">Segundo apellido</label>
+                                            <input formControlName="maternal_lastname" type="text"
+                                                class="form-control text-uppercase">
+                                        </div>
+                                    </div>
+
+                                    <div class="row">
+                                        <div class="col-lg-12 mb-3">
+                                            <label class="form-label">Nombre completo</label>
+                                            <input type="text" class="form-control text-uppercase"
+                                                formControlName="fullname" readonly>
+                                        </div>
+                                    </div>
+
+                                    <div class="row">
+                                        <div class="col-lg-6 mb-3">
+                                            <label class="form-label">Género <span class="required">*</span></label>
+                                            <select class="form-control form-select" formControlName="gender"
+                                                [ngClass]="{ 'is-invalid': submitted && form.get('gender')?.invalid }">
+                                                <option value="">Seleccione</option>
+                                                <option *ngFor="let type of genderGlotypes" [value]="type.id">
+                                                    {{ type.name }}
+                                                </option>
+                                            </select>
+                                            <div class="invalid-feedback"
+                                                *ngIf="submitted && form.get('gender')?.errors?.['required']">
+                                                Campo obligatorio
+                                            </div>
+                                        </div>
+
+                                        <div class="col-lg-6 mb-3">
+                                            <label class="form-label">Ocupación <span class="required">*</span></label>
+                                            <input formControlName="occupation" type="text"
+                                                class="form-control text-uppercase"
+                                                [ngClass]="{ 'is-invalid': submitted && form.get('occupation')?.invalid }">
+                                            <div class="invalid-feedback"
+                                                *ngIf="submitted && form.get('occupation')?.errors?.['required']">
+                                                Campo obligatorio
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="row">
+                                        <div class="col-lg-12 mb-3">
+                                            <label class="form-label">Descripción</label>
+                                            <textarea class="form-control text-uppercase" formControlName="description"
+                                                rows="3"></textarea>
+                                        </div>
+                                    </div>
+                                </fieldset>
+                            </form>
+
+                            <div
+                                class="d-flex wizard justify-content-center justify-content-md-end flex-wrap gap-2 mt-3">
+                                <div class="next">
+                                    <button (click)="nextStep(1)" class="btn btn-danger w-100 w-md-auto px-4 py-2">
+                                        Siguiente <i class="bx bx-right-arrow-alt ms-2"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </cdk-step>
+
+                    <!-- ======================= PASO 2: DATOS CONTACTO ====================== -->
+                    <cdk-step>
+                        <ng-template cdkStepLabel>
+                            <li class="nav-item form-wizard-header"
+                                (click)="$event.preventDefault(); $event.stopPropagation()">
+                                <span class="nav-link rounded-0 py-2 bg-dark text-white"
+                                    [ngClass]="{ 'active': stepper.selectedIndex === 1 }">
+                                    <i class="bi bi-telephone fs-18 align-middle me-1"></i>
+                                    <span class="d-none d-sm-inline">Datos de Contacto</span>
+                                </span>
+                            </li>
+                        </ng-template>
+
+                        <div class="tab-pane" id="step2">
+                            <form [formGroup]="form">
+                                <fieldset>
+                                    <legend>Información de contacto</legend>
+
+                                    <div class="row">
+                                        <div class="col-lg-4 mb-3">
+                                            <label class="form-label">Correo <span class="required">*</span></label>
+                                            <input type="email" class="form-control" formControlName="email"
+                                                placeholder="example@mail.com"
+                                                [ngClass]="{ 'is-invalid': submitted && form.get('email')?.invalid }" />
+                                            <div class="invalid-feedback"
+                                                *ngIf="submitted && form.get('email')?.errors?.['required']">
+                                                Campo obligatorio
+                                            </div>
+                                            <div class="invalid-feedback"
+                                                *ngIf="submitted && form.get('email')?.errors?.['email']">
+                                                Ingrese un correo válido
+                                            </div>
+                                        </div>
+
+                                        <div class="col-lg-4 mb-3">
+                                            <label class="form-label">Celular <span class="required">*</span></label>
+                                            <input type="tel" class="form-control" formControlName="phone_number"
+                                                placeholder="Ingrese solo números" pattern="[0-9]*" inputmode="numeric"
+                                                (keypress)="soloNumeros($event)"
+                                                [ngClass]="{ 'is-invalid': submitted && form.get('phone_number')?.invalid }" />
+                                            <div class="invalid-feedback"
+                                                *ngIf="submitted && form.get('phone_number')?.errors?.['required']">
+                                                Campo obligatorio
+                                            </div>
+                                        </div>
+
+                                        <div class="col-lg-4 mb-3">
+                                            <label class="form-label">WhatsApp <span class="required">*</span></label>
+                                            <input type="text" class="form-control" formControlName="whatsapp_number"
+                                                placeholder="Ingrese solo números" pattern="[0-9]*" inputmode="numeric"
+                                                (keypress)="soloNumeros($event)"
+                                                [ngClass]="{ 'is-invalid': submitted && form.get('whatsapp_number')?.invalid }" />
+                                            <div class="invalid-feedback"
+                                                *ngIf="submitted && form.get('whatsapp_number')?.errors?.['required']">
+                                                Campo obligatorio
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="row">
+                                        <div class="col-lg-6 mb-3">
+                                            <label class="form-label">Zona <span class="required">*</span></label>
+                                            <select class="form-control form-select" formControlName="zone_id"
+                                                [ngClass]="{ 'is-invalid': submitted && form.get('zone_id')?.invalid }">
+                                                <option value="">Seleccione</option>
+                                                <option *ngFor="let z of zonas" [value]="z.id">{{ z.value }}</option>
+                                            </select>
+                                            <div class="invalid-feedback"
+                                                *ngIf="submitted && form.get('zone_id')?.errors?.['required']">
+                                                Campo obligatorio
+                                            </div>
+                                        </div>
+
+                                        <div class="col-lg-6 mb-3">
+                                            <label class="form-label">País <span class="required">*</span></label>
+                                            <select class="form-control form-select" formControlName="country_id"
+                                                [ngClass]="{ 'is-invalid': submitted && form.get('country_id')?.invalid }">
+                                                <option value="">Seleccione</option>
+                                                <option *ngFor="let p of paises" [value]="p.id">
+                                                    {{ p.label }}
+                                                </option>
+                                            </select>
+                                            <div class="invalid-feedback"
+                                                *ngIf="submitted && form.get('country_id')?.errors?.['required']">
+                                                Campo obligatorio
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="row">
+                                        <div class="col-lg-4 mb-3">
+                                            <label class="form-label">Departamento <span
+                                                    class="required">*</span></label>
+                                            <select class="form-control form-select" formControlName="department_id"
+                                                [ngClass]="{ 'is-invalid': submitted && form.get('department_id')?.invalid }">
+                                                <option value="">Seleccione</option>
+                                                <option *ngFor="let d of departamentos" [value]="d.id">
+                                                    {{ d.label }}
+                                                </option>
+                                            </select>
+                                            <div class="invalid-feedback"
+                                                *ngIf="submitted && form.get('department_id')?.errors?.['required']">
+                                                Campo obligatorio
+                                            </div>
+                                        </div>
+
+                                        <div class="col-lg-4 mb-3">
+                                            <label class="form-label">Municipio <span class="required">*</span></label>
+                                            <select class="form-control form-select" formControlName="municipality_id"
+                                                [ngClass]="{ 'is-invalid': submitted && form.get('municipality_id')?.invalid }">
+                                                <option value="">Seleccione</option>
+                                                <option *ngFor="let c of municipios" [value]="c.id">
+                                                    {{ c.label }}
+                                                </option>
+                                            </select>
+                                            <div class="invalid-feedback"
+                                                *ngIf="submitted && form.get('municipality_id')?.errors?.['required']">
+                                                Campo obligatorio
+                                            </div>
+                                        </div>
+
+                                        <div class="col-lg-4 mb-3">
+                                            <label class="form-label">Barrio <span class="required">*</span></label>
+                                            <select class="form-control form-select" formControlName="neighborhood_id"
+                                                [ngClass]="{ 'is-invalid': submitted && form.get('neighborhood_id')?.invalid }">
+                                                <option value="">Seleccione</option>
+                                                <option *ngFor="let b of barrios" [value]="b.id">
+                                                    {{ b.label }}
+                                                </option>
+                                            </select>
+                                            <div class="invalid-feedback"
+                                                *ngIf="submitted && form.get('neighborhood_id')?.errors?.['required']">
+                                                Campo obligatorio
+                                            </div>
+                                        </div>
+
+                                        <div class="col-lg-12 mb-3">
+                                            <label class="form-label">Dirección <span class="required">*</span></label>
+                                            <input type="text" class="form-control text-uppercase"
+                                                formControlName="home_address" placeholder="Ingrese dirección"
+                                                [ngClass]="{ 'is-invalid': submitted && form.get('home_address')?.invalid }" />
+                                            <div class="invalid-feedback"
+                                                *ngIf="submitted && form.get('home_address')?.errors?.['required']">
+                                                Campo obligatorio
+                                            </div>
+                                        </div>
+                                    </div>
+                                </fieldset>
+                            </form>
+
+                            <div class="d-flex wizard justify-content-between flex-wrap gap-2 mt-3">
+                                <div class="first">
+                                    <button cdkStepperPrevious class="btn btn-primary mt-3 mt-md-0">
+                                        <i class="bx bx-left-arrow-alt me-2"></i>Atrás
+                                    </button>
+                                </div>
+                                <div class="next">
+                                    <button (click)="nextStep(2)" class="btn btn-danger mt-3 mt-md-0">
+                                        Siguiente <i class="bx bx-right-arrow-alt ms-2"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </cdk-step>
+
+                    <!-- ======================= PASO 3: DATOS DEL CRÉDITO ====================== -->
+                    <cdk-step>
+                        <ng-template cdkStepLabel>
+                            <li class="nav-item form-wizard-header"
+                                (click)="$event.preventDefault(); $event.stopPropagation()">
+                                <span class="nav-link rounded-0 py-2 bg-dark text-white"
+                                    [ngClass]="{ 'active': stepper.selectedIndex === 2 }">
+                                    <i class="bi bi-credit-card fs-18 align-middle me-1"></i>
+                                    <span class="d-none d-sm-inline">Datos del Crédito</span>
+                                </span>
+                            </li>
+                        </ng-template>
+
+                        <div class="tab-pane" id="step3">
+                            <form [formGroup]="form">
+                                <fieldset>
+                                    <legend>Información del crédito</legend>
+
+                                    <div class="row">
+                                        <div class="col-lg-4 mb-3">
+                                            <label class="form-label">Línea de crédito <span
+                                                    class="required">*</span></label>
+                                            <select class="form-control form-select" formControlName="credit_line_id"
+                                                (change)="onCreditLineChange()"
+                                                [ngClass]="{ 'is-invalid': submitted && form.get('credit_line_id')?.invalid }">
+                                                <option value="">Seleccione</option>
+                                                <option *ngFor="let c of creditLines" [ngValue]="c.id">
+                                                    {{ c.name }}
+                                                </option>
+                                            </select>
+                                            <div class="invalid-feedback"
+                                                *ngIf="submitted && form.get('credit_line_id')?.errors?.['required']">
+                                                Campo obligatorio
+                                            </div>
+                                        </div>
+
+                                        <div class="col-lg-4 mb-3">
+                                            <label class="form-label">Periodo <span class="required">*</span></label>
+                                            <select class="form-control form-select" formControlName="period_id"
+                                                (change)="onPeriodChange()"
+                                                [ngClass]="{ 'is-invalid': submitted && form.get('period_id')?.invalid }">
+                                                <option value="">Seleccione</option>
+                                                <option *ngFor="let p of periods" [ngValue]="p.id">
+                                                    {{ p.name }}
+                                                </option>
+                                            </select>
+                                            <div class="invalid-feedback"
+                                                *ngIf="submitted && form.get('period_id')?.errors?.['required']">
+                                                Campo obligatorio
+                                            </div>
+                                        </div>
+
+                                        <div class="col-lg-4 mb-3">
+                                            <label class="form-label">
+                                                Número de cuotas <span class="required">*</span>
+                                            </label>
+
+                                            <input type="number" class="form-control" formControlName="period_quantity"
+                                                min="2" max="100" (keypress)="soloNumeros($event)"
+                                                [placeholder]="'Ingrese el numero de coutas'"
+                                                (blur)="limitarCuotas($event)" [ngClass]="{
+                                                    'is-invalid':
+                                                        submitted &&
+                                                        (form.get('period_quantity')?.invalid || numeroCoutasInForm)
+                                                    }">
+
+                                            <!-- Error por required -->
+                                            <div class="invalid-feedback"
+                                                *ngIf="submitted && form.get('period_quantity')?.errors?.['required']">
+                                                Campo obligatorio
+                                            </div>
+
+                                            <!-- Error por rango -->
+                                            <small class="text-danger" *ngIf="numeroCoutasInForm">
+                                                {{ numeroCoutasInForm }}
+                                            </small>
+                                        </div>
+
+                                    </div>
+
+                                    <div class="row">
+
+                                        <div class="col-lg-4 mb-3">
+                                            <label class="form-label">Seleccione la fecha de inicio <span
+                                                    class="required">*</span></label>
+                                            <input type="date" class="form-control" formControlName="start_date"
+<<<<<<< Updated upstream
+=======
+                                                [min]="today"
+>>>>>>> Stashed changes
+                                                [ngClass]="{ 'is-invalid': submitted && form.get('start_date')?.invalid }">
+                                            <div class="invalid-feedback"
+                                                *ngIf="submitted && form.get('start_date')?.errors?.['required']">
+                                                Campo obligatorio
+                                            </div>
+                                        </div>
+
+                                        <div class="col-lg-4 mb-3">
+                                            <label class="form-label">
+                                                Día inicial quincena
+                                                <span class="required" *ngIf="isQuincenal">*</span>
+                                            </label>
+
+                                            <input type="number" class="form-control" formControlName="inicio_quincena"
+                                                min="1" max="31" [placeholder]="isQuincenal ? 'Ej: 1' : 'No aplica'"
+                                                (keypress)="soloNumeros($event)"
+                                                (blur)="limitarDiaInicioQuincena($event)" [ngClass]="{
+                                                    'is-invalid':
+                                                        submitted &&
+                                                        isQuincenal &&
+                                                        form.get('inicio_quincena')?.invalid
+                                                    }" />
+
+                                            <!-- requerido -->
+                                            <div class="invalid-feedback"
+                                                *ngIf="submitted && isQuincenal && form.get('inicio_quincena')?.errors?.['required']">
+                                                Campo obligatorio
+                                            </div>
+
+                                            <!-- errores personalizados -->
+                                            <small class="text-danger" *ngIf="errorInicioQuincena">
+                                                {{ errorInicioQuincena }}
+                                            </small>
+                                        </div>
+                                        <!-- Día final quincena -->
+                                        <div class="col-lg-4 mb-3">
+                                            <label class="form-label">
+                                                Día final quincena
+                                                <span class="required" *ngIf="isQuincenal">*</span>
+                                            </label>
+
+                                            <input type="number" class="form-control" formControlName="fin_quincena"
+                                                min="1" max="31" [placeholder]="isQuincenal ? 'Ej: 15' : 'No aplica'"
+                                                (keypress)="soloNumeros($event)" (blur)="limitarDiaFinQuincena($event)"
+                                                [ngClass]="{
+                                                    'is-invalid':
+                                                        submitted &&
+                                                        isQuincenal &&
+                                                        form.get('fin_quincena')?.invalid
+                                                    }" />
+
+                                            <!-- requerido -->
+                                            <div class="invalid-feedback"
+                                                *ngIf="submitted && isQuincenal && form.get('fin_quincena')?.errors?.['required']">
+                                                Campo obligatorio
+                                            </div>
+
+                                            <!-- errores personalizados -->
+                                            <small class="text-danger" *ngIf="errorFinQuincena">
+                                                {{ errorFinQuincena }}
+                                            </small>
+                                        </div>
+
+                                    </div>
+
+                                    <div class="row">
+                                        <div class="col-lg-4 mb-3">
+                                            <label class="form-label">Valor desembolso</label>
+                                            <div class="input-group">
+                                                <span class="input-group-text">$</span>
+                                                <input type="text" class="form-control"
+                                                    formControlName="desembolso_value" [placeholder]="'Ingrese valor'"
+                                                    (input)="formatCurrency('desembolso_value')" [ngClass]="{
+                                                    'is-invalid': submitted && form.get('desembolso_value')?.invalid
+                                                      }">
+                                            </div>
+                                            <div class="invalid-feedback"
+                                                *ngIf="submitted && form.get('desembolso_value')?.errors?.['required']">
+                                                Campo obligatorio
+                                            </div>
+                                        </div>
+
+                                        <div class="col-lg-4 mb-3">
+                                            <label class="form-label">
+                                                Valor cuota
+                                            </label>
+
+                                            <div class="input-group">
+                                                <span class="input-group-text">$</span>
+
+                                                <input type="text" class="form-control" formControlName="quota_value"
+                                                    (input)="formatCurrency('quota_value')"
+                                                    [placeholder]="'Ingrese el valor de la cuota'" [ngClass]="{
+                                                    'is-invalid': submitted && form.get('quota_value')?.invalid
+                                                      }">
+                                            </div>
+                                            <div class="invalid-feedback"
+                                                *ngIf="submitted && form.get('quota_value')?.errors?.['required']">
+                                                Campo obligatorio
+                                            </div>
+
+                                        </div>
+
+                                        <div class="col-lg-4 mb-3">
+                                            <label class="form-label">
+                                                Tasa
+                                            </label>
+                                            <div class="input-group">
+                                                <span class="input-group-text">(%)</span>
+
+                                                <input class="form-control" type="number" step="0.01"
+                                                    formControlName="tax_value" [placeholder]="'Ingrese la tasa'"
+                                                    [ngClass]="{
+                                                    'is-invalid': submitted && form.get('tax_value')?.invalid
+                                                      }">
+
+                                            </div>
+                                            <div class="invalid-feedback"
+                                                *ngIf="submitted && form.get('tax_value')?.errors?.['required']">
+                                                Campo obligatorio
+                                            </div>
+
+                                        </div>
+
+
+                                        <!-- <div class="col-lg-4 mb-3">
+                                            <label class="form-label">Cargos</label>
+                                            <input type="number" class="form-control" formControlName="cargos"
+                                                (keypress)="soloNumeros($event)">
+                                        </div> -->
+
+
+                                    </div>
+
+                                    <div class="row">
+                                        <div class="col-lg-4 mb-3">
+                                            <label class="form-label">
+                                                Valor producto
+                                            </label>
+
+                                            <div class="input-group">
+                                                <span class="input-group-text">$</span>
+
+                                                <input type="text" class="form-control" formControlName="item_value"
+                                                    (input)="formatCurrency('item_value')"
+                                                    placeholder="Ingrese el valor" [ngClass]="{
+                    'is-invalid': submitted && form.get('item_value')?.invalid
+                }">
+                                            </div>
+
+                                            <div class="invalid-feedback"
+                                                *ngIf="submitted && form.get('item_value')?.errors?.['required']">
+                                                Campo obligatorio
+                                            </div>
+                                        </div>
+                                        <div class="col-lg-4 mb-3">
+                                            <label class="form-label">
+                                                Valor a financiar
+                                            </label>
+
+                                            <div class="input-group">
+                                                <span class="input-group-text">$</span>
+
+                                                <input type="text" class="form-control"
+                                                    formControlName="value_to_financiate"
+                                                    (input)="formatCurrency('value_to_financiate')"
+                                                    placeholder="Se calcula automáticamente" readonly [ngClass]="{
+                    'is-invalid': submitted && form.get('value_to_financiate')?.invalid
+                }">
+                                            </div>
+
+                                            <div class="invalid-feedback"
+                                                *ngIf="submitted && form.get('value_to_financiate')?.errors?.['required']">
+                                                Campo obligatorio
+                                            </div>
+
+                                            <small class="form-text text-muted">
+                                                <i class="bi bi-info-circle me-1"></i>Este valor se calcula como: Valor
+                                                producto - Cuota inicial
+                                            </small>
+                                        </div>
+                                        <div class="col-lg-4 mb-3">
+                                            <label class="form-label">
+                                                Cuota inicial
+                                            </label>
+
+                                            <div class="input-group">
+                                                <span class="input-group-text">$</span>
+
+                                                <input type="text" class="form-control" formControlName="initial_quota"
+                                                    (input)="formatCurrency('initial_quota')"
+                                                    [placeholder]="'Ingrese el valor de la cuota inicial'" [ngClass]="{
+                    'is-invalid': submitted && form.get('initial_quota')?.invalid || errorValueToFinanciate
+                }">
+                                            </div>
+
+                                            <div class="invalid-feedback"
+                                                *ngIf="submitted && form.get('initial_quota')?.errors?.['required']">
+                                                Campo obligatorio
+                                            </div>
+
+                                            <!-- Mensaje de error dinámico -->
+                                            <small class="text-danger d-block" *ngIf="errorValueToFinanciate">
+                                                <i class="bi bi-exclamation-circle me-1"></i>{{ errorValueToFinanciate
+                                                }}
+                                            </small>
+                                        </div>
+
+
+                                    </div>
+
+                                    <div class="row">
+                                        <div class="col-lg-6 mb-3">
+                                            <label class="form-label">Valor de solicitud</label>
+                                            <div class="input-group">
+                                                <span class="input-group-text">$</span>
+                                                <input type="text" class="form-control"
+                                                    formControlName="total_intention_value"
+                                                    (input)="formatCurrency('total_intention_value')" readonly>
+                                            </div>
+                                            <small class="form-text text-muted">
+                                                Este valor se calcula automáticamente
+                                            </small>
+                                        </div>
+                                    </div>
+
+                                    <div class="row">
+                                        <div *ngIf="requiresDocumentation()" class="mt-4">
+                                            <fieldset>
+                                                <legend>Documentación Requerida</legend>
+                                                <!-- Iterar sobre cada documento requerido -->
+                                                <div *ngFor="let doc of getOnlyCedulaDocuments(); let i = index"
+                                                    class="mb-4">
+
+                                                    <!-- Verificar si el documento requiere dos lados (cédula) -->
+                                                    <ng-container *ngIf="requiresTwoSides(doc.name)">
+                                                        <div class="card border-primary">
+                                                            <div
+                                                                class="card-header bg-primary bg-opacity-10 border-bottom border-primary">
+                                                                <div class="d-flex align-items-center">
+                                                                    <i class="ti ti-id me-2 text-primary fs-4"></i>
+                                                                    <h5 class="header-title mb-0 text-primary">{{
+                                                                        doc.name }}</h5>
+                                                                </div>
+                                                                <p class="text-muted mb-0 mt-1 small"
+                                                                    *ngIf="doc.description">
+                                                                    {{ doc.description }}
+                                                                </p>
+                                                            </div>
+
+                                                            <div class="card-body">
+                                                                <div class="row">
+                                                                    <!-- Lado Frontal -->
+                                                                    <div class="col-lg-6 mb-3 mb-lg-0">
+                                                                        <div class="document-side-container">
+                                                                            <div class="d-flex align-items-center mb-3">
+                                                                                <div class="badge bg-primary me-2">
+                                                                                    <i class="ti ti-id-badge"></i>
+                                                                                </div>
+                                                                                <h6 class="mb-0 fw-semibold">Lado
+                                                                                    Frontal</h6>
+                                                                            </div>
+                                                                            <FileUploader [showPreview]="true"
+                                                                                [side]="'front'" [maxFiles]="1"
+                                                                                (filesChange)="onDocumentFileChange($event, doc.id, 'front')" />
+                                                                        </div>
+                                                                    </div>
+
+                                                                    <!-- Lado Trasero -->
+                                                                    <div class="col-lg-6">
+                                                                        <div class="document-side-container">
+                                                                            <div class="d-flex align-items-center mb-3">
+                                                                                <div class="badge bg-secondary me-2">
+                                                                                    <i class="ti ti-id-badge-2"></i>
+                                                                                </div>
+                                                                                <h6 class="mb-0 fw-semibold">Lado
+                                                                                    Trasero</h6>
+                                                                            </div>
+                                                                            <FileUploader [showPreview]="true"
+                                                                                [side]="'back'" [maxFiles]="1"
+                                                                                (filesChange)="onDocumentFileChange($event, doc.id, 'back')" />
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </ng-container>
+
+                                                    <!-- Documentos que solo requieren un lado -->
+                                                    <ng-container *ngIf="!requiresTwoSides(doc.name)">
+                                                        <div class="card">
+                                                            <div
+                                                                class="card-header border-bottom border-dashed d-flex align-items-center">
+                                                                <i class="ti ti-file-upload me-2 text-primary"></i>
+                                                                <h5 class="header-title mb-0">{{ doc.name }}</h5>
+                                                            </div>
+
+                                                            <div class="card-body">
+                                                                <p class="text-muted mb-3" *ngIf="doc.description">
+                                                                    {{ doc.description }}
+                                                                </p>
+                                                                <FileUploader [showPreview]="true" [maxFiles]="1"
+                                                                    (filesChange)="onDocumentFileChange($event, doc.id, null)" />
+                                                            </div>
+                                                        </div>
+                                                    </ng-container>
+                                                </div>
+                                            </fieldset>
+                                        </div>
+                                    </div>
+                                </fieldset>
+                            </form>
+
+                            <div class="d-flex wizard justify-content-between flex-wrap gap-2 mt-3">
+                                <div class="first">
+                                    <button cdkStepperPrevious class="btn btn-primary mt-3 mt-md-0">
+                                        <i class="bx bx-left-arrow-alt me-2"></i>Atrás
+                                    </button>
+                                </div>
+                                <div class="next d-flex gap-2">
+                                    <!-- Botón de Simulación -->
+                                    <button class="btn btn-primary mt-3 mt-md-0" (click)="simulate()">
+                                        <i class="bi bi-calculator me-2"></i>
+                                        Simular Crédito
+                                    </button>
+
+                                    <!-- Botón de Guardar -->
+                                    <button class="btn btn-success mt-3 mt-md-0" (click)="saveIntention()"
+                                        [disabled]="!simulationCompleted"
+                                        [title]="!simulationCompleted ? 'Debe simular el crédito primero' : 'Guardar intención de crédito'">
+                                        <i class="bi bi-check-circle me-2"></i>
+                                        Guardar Intención
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </cdk-step>
+
+                </ng-stepper>
+            </div>
+        </div>
+    </div>
+</div>

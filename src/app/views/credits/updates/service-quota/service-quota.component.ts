@@ -68,7 +68,7 @@ export class ServiceQuotaComponent {
     onDeleteTypeServiceQuota(id: number): void {
       Swal.fire({
         title: '¿Estás seguro?',
-        text: 'Esta acción marcará al tipo de de cargo por servicio como inactiva.',
+        text: 'Esta acción marcará al tipo de cargo por servicio como inactiva.',
         icon: 'warning',
         showCancelButton: true,
         confirmButtonText: 'Sí, eliminar',
@@ -83,8 +83,8 @@ export class ServiceQuotaComponent {
               this.fetchServiceQuota();
             },
             error: (err) => {
-              console.error('Error eliminando tipo de de cargo por servicio', err);
-              Swal.fire('Error', err.error?.message || 'Error al eliminar tipo de amortizacion', 'error');
+              console.error('Error eliminando tipo de seguro', err);
+              Swal.fire('Error', err.error?.message || 'Error al eliminar tipo de seguro', 'error');
             }
           });
         }

@@ -25,7 +25,8 @@ import { DecimalPipe } from '@angular/common'
 import { CookieService } from 'ngx-cookie-service'
 import { BrowserModule } from '@angular/platform-browser'
 import { JwtInterceptor } from '@core/helper/jwt.interceptor'
-import { ErrorInterceptor } from '@core/helper/error.interceptor'
+import { ErrorInterceptor } from '@core/helper/error.interceptor';
+import { provideAnimationsAsync } from '@angular/platform-browser/animations/async'
 
 
 export const appConfig: ApplicationConfig = {
@@ -40,6 +41,6 @@ export const appConfig: ApplicationConfig = {
     importProvidersFrom(BrowserAnimationsModule, BrowserModule),
     provideStoreDevtools({ maxAge: 25, logOnly: !isDevMode() }),
     provideEffects(AuthenticationEffects, CalendarEffects),
-    provideHttpClient(withFetch(), withInterceptorsFromDi()),
+    provideHttpClient(withFetch(), withInterceptorsFromDi()), provideAnimationsAsync(),
   ],
 }

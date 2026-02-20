@@ -1,56 +1,59 @@
 import { Component, TemplateRef, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
 import { UserService } from '@core/services/user.service';
-import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { NgbActiveModal, NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { AuthenticationService } from '@core/services/auth.service';
+import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 
 @Component({
   selector: 'create-pass',
   standalone: true,
-  imports: [FormsModule, CommonModule],
+  imports: [CommonModule, ReactiveFormsModule],
   templateUrl: './create-pass.component.html',
   styles: ``
 })
 export class CreatePassComponent {
-  passwordActual = '';
-  newPassword = '';
-  confirmPassword = '';
+  form!: FormGroup;
+  submitted = false;
   errorMessage = '';
+
+  showPasswordActual = false;
+  showNewPassword = false;
+  showConfirmPassword = false;
+
   @ViewChild('passwordChanged') passwordChangedTpl!: TemplateRef<any>;
 
-
   constructor(
+    private fb: FormBuilder,
     private userService: UserService,
     private router: Router,
     public activeModal: NgbActiveModal,
-    private AuthService: AuthenticationService,
+    private authService: AuthenticationService,
     private modalService: NgbModal
+  ) {
+    this.form = this.fb.group({
+      passwordActual: ['', Validators.required],
+      newPassword: ['', [Validators.required, Validators.minLength(8)]],
+      confirmPassword: ['', Validators.required],
+    }, { validators: this.passwordsMatchValidator });
+  }
 
-
-  ) { }
-
+  // Custom validator para confirmar contraseñas
+  private passwordsMatchValidator(group: FormGroup) {
+    const newPass = group.get('newPassword')?.value;
+    const confirm = group.get('confirmPassword')?.value;
+    return newPass === confirm ? null : { notMatching: true };
+  }
 
   changePassword() {
-    if (!this.passwordActual || !this.newPassword || !this.confirmPassword) {
-      this.errorMessage = 'Todos los campos son obligatorios.';
-      return;
-    }
+    this.submitted = true;
+    if (this.form.invalid) return;
 
-    if (this.newPassword.length < 8) {
-      this.errorMessage = 'La contraseña debe tener al menos 8 caracteres.';
-      return;
-    }
+    const { passwordActual, newPassword } = this.form.value;
 
-    if (this.newPassword !== this.confirmPassword) {
-      this.errorMessage = 'Las contraseñas no coinciden.';
-      return;
-    }
-
-    this.userService.updateLoggedUserPassword(this.passwordActual, this.newPassword).subscribe({
+    this.userService.updateLoggedUserPassword(passwordActual, newPassword).subscribe({
       next: () => {
-        // Abrir modal de confirmación en lugar de cerrar directo
         this.modalService.open(this.passwordChangedTpl, { centered: true, backdrop: 'static', keyboard: false });
       },
       error: (err) => {
@@ -61,11 +64,7 @@ export class CreatePassComponent {
 
   onConfirmPasswordChange(modal: any) {
     modal.close();
-    this.AuthService.logout();
+    this.authService.logout();
     this.router.navigate(['/auth/login']);
   }
 }
-
-
-
-

@@ -1,0 +1,62 @@
+// En closing.component.scss
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.spin {
+  animation: spin 1s linear infinite;
+}
+
+@media (max-width: 768px) {
+
+  legend {
+    font-size: 1rem;
+  }
+
+  .table {
+    font-size: 0.85rem;
+  }
+
+  .badge {
+    font-size: 0.75rem;
+  }
+
+  .btn {
+    width: 100%;
+  }
+
+  .wizard .btn {
+    width: 100%;
+  }
+
+  .nav-link i {
+    font-size: 1.25rem;
+  }
+}
+
+span.active {
+  color: #e31010 !important
+}
+
+:host ::ng-deep file-uploader input[type="file"] {
+  height: 30px;
+  font-size: 0.8rem;
+  padding: 2px 6px;
+}
+
+.badge-zone-red {
+  background-color: #e31010;
+  color: #fff;
+  font-weight: 600;
+  padding: 0.35em 0.6em;
+  border-radius: 0.375rem; // estilo Bootstrap
+  font-size: 0.75rem;
+  letter-spacing: 0.3px;
+  box-shadow: 0 0 0 1px rgba(227, 16, 16, 0.35);
+}
