@@ -77,7 +77,7 @@ export class StatsComponent implements OnInit, OnDestroy {
   private updateStats(data: DashboardSummaryDto[]): void {
     const totals = data.reduce((acc, item) => ({
       debidoCobrar: acc.debidoCobrar + (item.totalDebidoCobrar || 0),
-      recaudado: acc.recaudado + (item.totalRecaudado || 0),
+      recaudado: acc.recaudado + (item.totalRecaudado || 0) * -1,
       noPagado: acc.noPagado + (item.totalNoPagado || 0),
     }), { debidoCobrar: 0, recaudado: 0, noPagado: 0 });
 

@@ -83,7 +83,7 @@ export class OverviewChartComponent implements OnInit, OnDestroy {
 
   private updateChartData(data: DashboardSummaryDto[]): void {
     const totals = data.reduce((acc, item) => ({
-      recaudado: acc.recaudado + (item.totalRecaudado || 0),
+      recaudado: acc.recaudado + (item.totalRecaudado || 0) * -1,
       debidoCobrar: acc.debidoCobrar + (item.totalDebidoCobrar || 0),
       noPagado: acc.noPagado + (item.totalNoPagado || 0)
     }), { recaudado: 0, debidoCobrar: 0, noPagado: 0 });
