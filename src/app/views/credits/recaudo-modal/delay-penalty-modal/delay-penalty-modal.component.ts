@@ -40,7 +40,7 @@ export class DelayPenaltyModalComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
-    this.paymentDate = new Date().toISOString().split('T')[0];
+    this.paymentDate = new Date().toLocaleDateString('en-CA');
     this.loadPendingQuotas();
   }
 

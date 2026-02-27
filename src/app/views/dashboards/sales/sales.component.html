@@ -7,7 +7,7 @@
           <h4 class="fs-18 fw-semibold m-0">Informes</h4>
         </div>
         <div class="w-100 w-sm-auto">
-           <form [formGroup]="filterForm">
+          <form [formGroup]="filterForm">
             <div class="row g-2 align-items-center justify-content-center justify-content-sm-end">
               <!-- SELECT DE ZONAS -->
               <div class="col-12 col-sm-auto" style="min-width: 180px;">
@@ -58,13 +58,13 @@
       <app-stats></app-stats>
     </div>
     <!-- Intenciones de credito -->
-    <div class="col-12 col-lg-6">
+    <div class="col-12 col-lg-6" *ngIf="currentUserRole?.toLowerCase() !== 'asesor'">
       <div class="card">
         <recent-orders></recent-orders>
       </div>
     </div>
   </div>
-   <!-- Gráfico -->
+  <!-- Gráfico -->
   <div class="row mt-3" *ngIf="!loading && zonas.length > 0">
     <div class="col-12">
       <overview-chart></overview-chart>

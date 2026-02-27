@@ -174,7 +174,7 @@ export class ClosingComponent implements OnInit {
   loadRecaudosByUser() {
     if (!this.currentZone) return; // Sin mensaje, simplemente no ejecuta
 
-    const today = new Date().toISOString().split('T')[0];
+    const today = new Date().toLocaleDateString('en-CA'); 
     this.recaudoService
       .getRecaudosByUserAndDate(this.closingId!, today, this.currentZone)
       .subscribe({
@@ -1515,5 +1515,27 @@ export class ClosingComponent implements OnInit {
       (total, i) => total + i.totalIntentionValue,
       0
     );
+  }
+
+  downloadEvidence(spend: ClosingSpend): void {
+    if (!spend.id) return;
+
+    this.closingSpendService.downloadEvidence(spend.id).subscribe({
+      next: (blob) => {
+        const url = window.URL.createObjectURL(blob);
+        const link = document.createElement('a');
+        link.href = url;
+        link.download = spend.fileName || 'evidencia';
+        link.click();
+        window.URL.revokeObjectURL(url);
+      },
+      error: () => {
+        Swal.fire({
+          icon: 'error',
+          title: 'Error',
+          text: 'No se pudo descargar la evidencia'
+        });
+      }
+    });
   }
 }

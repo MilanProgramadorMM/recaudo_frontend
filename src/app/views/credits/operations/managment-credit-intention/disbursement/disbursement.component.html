@@ -14,10 +14,14 @@
                             <label class="form-label">Definir fecha tentativa de inicio <span
                                     class="required">*</span></label>
                             <input type="date" class="form-control" formControlName="fecha_inicio_tentativa"
+                                [min]="minDate"
                                 [ngClass]="{ 'is-invalid': submitted && form1.get('fecha_inicio_tentativa')?.invalid }">
                             <div class="invalid-feedback">
                                 La fecha de inicio es obligatoria
                             </div>
+                            <small class="text-danger" *ngIf="errorMessage && errorMessage.includes('anterior')">
+                                {{ errorMessage }}
+                            </small>
                         </div>
                     </div>
                 </form>

@@ -88,59 +88,55 @@
                             <!-- Estado -->
                             <div class="mb-3">
                                 <span class="badge d-inline-block mt-1" style="width: fit-content;" [ngClass]="{
-                                    'bg-success': cliente.paidFull === 'S',
-                                    'bg-primary': cliente.paidToday === 1 && cliente.paidFull !== 'S',
-                                    'bg-warning text-dark': cliente.paidToday === 0 && cliente.paymentPromiseDate && cliente.noPago !== 1,
-                                    'bg-danger': cliente.paidToday === 0 && !cliente.paymentPromiseDate && cliente.noPago !== 1,
-                                    'bg-secondary': cliente.noPago === 1
-                                }">
+                    'bg-success': cliente.paidFull === 'S',
+                    'bg-primary': cliente.paidToday === 1 && cliente.paidFull !== 'S',
+                    'bg-warning text-dark': cliente.paidToday === 0 && cliente.paymentPromiseDate && cliente.noPago !== 1,
+                    'bg-danger': cliente.paidToday === 0 && !cliente.paymentPromiseDate && cliente.noPago !== 1,
+                    'bg-secondary': cliente.noPago === 1
+                }">
                                     {{
-                                    cliente.paidFull === 'S'
-                                    ? 'Cuota Pagada Completamente'
-                                    : cliente.paidToday === 1
-                                    ? 'Pagado hoy (Parcial)'
-                                    : cliente.noPago === 1
-                                    ? 'No pagó - ' + cliente.noPagoReason
-                                    : cliente.paymentPromiseDate
-                                    ? 'Promesa ' + (cliente.paymentPromiseDate | date)
+                                    cliente.paidFull === 'S' ? 'Cuota Pagada Completamente'
+                                    : cliente.paidToday === 1 ? 'Pagado hoy (Parcial)'
+                                    : cliente.noPago === 1 ? 'No pagó - ' + cliente.noPagoReason
+                                    : cliente.paymentPromiseDate ? 'Promesa ' + (cliente.paymentPromiseDate | date)
                                     : 'Pendiente'
                                     }}
                                 </span>
                             </div>
 
-                            <!-- Vista móvil -->
+                            <!-- Botones mobile: solo iconos, tamaño fijo -->
                             <div class="d-flex gap-2">
-                                <!-- Botón Ver Detalle (si está pagada completamente) -->
-                                <button type="button" class="btn btn-info btn-sm flex-grow-1"
-                                    *ngIf="cliente.paidFull === 'S'" (click)="openRecaudoDetailModal(cliente)"
-                                    title="Ver detalle del recaudo">
-                                    <i class="ti ti-eye me-1"></i>
-                                    Ver Detalle
+
+                                <button type="button"
+                                    class="btn btn-info btn-sm flex-fill d-flex flex-column align-items-center py-2"
+                                    *ngIf="cliente.paidFull === 'S'" (click)="openRecaudoDetailModal(cliente)">
+                                    <i class="ti ti-eye mb-1"></i>
+                                    <span style="font-size: 10px; line-height: 1;">Ver</span>
                                 </button>
 
-                                <!-- Botón Recaudar (si NO está pagada completamente) -->
-                                <button type="button" class="btn btn-recaudo btn-sm flex-grow-1"
-                                    (click)="openRecaudoModal(cliente)" title="Registrar recaudo">
-                                    title="Registrar recaudo">
-                                    <i class="ti ti-cash me-1"></i>
-                                    Recaudar
+                                <button type="button"
+                                    class="btn btn-recaudo btn-sm flex-fill d-flex flex-column align-items-center py-2"
+                                    (click)="openRecaudoModal(cliente)">
+                                    <i class="ti ti-cash mb-1"></i>
+                                    <span style="font-size: 10px; line-height: 1;">Recaudar</span>
                                 </button>
 
-                                <!-- Botón Promesa (solo si no está pagada ni liquidada) -->
-                                <button type="button" class="btn btn-outline-warning btn-sm flex-grow-1"
+                                <button type="button"
+                                    class="btn btn-outline-warning btn-sm flex-fill d-flex flex-column align-items-center py-2"
                                     *ngIf="cliente.paidFull !== 'S' && cliente.liquidated !== 'S' && cliente.paidToday !== 1"
-                                    (click)="registrarPromesa(cliente)" title="Registrar promesa">
-                                    <i class="ti ti-calendar-event me-1"></i>
-                                    Promesa
+                                    (click)="registrarPromesa(cliente)">
+                                    <i class="ti ti-calendar-event mb-1"></i>
+                                    <span style="font-size: 10px; line-height: 1;">Promesa</span>
                                 </button>
 
-                                <!-- Botón No pagó (solo si no está pagada ni liquidada) -->
-                                <button type="button" class="btn btn-outline-secondary btn-sm"
+                                <button type="button"
+                                    class="btn btn-outline-secondary btn-sm flex-fill d-flex flex-column align-items-center py-2"
                                     *ngIf="cliente.paidFull !== 'S' && cliente.liquidated !== 'S' && cliente.paidToday !== 1"
-                                    (click)="registrarNoPago(cliente)" title="No pagó">
-                                    <i class="ti ti-x me-1"></i>
-                                    No pagó
+                                    (click)="registrarNoPago(cliente)">
+                                    <i class="ti ti-x mb-1"></i>
+                                    <span style="font-size: 10px; line-height: 1;">No pagó</span>
                                 </button>
+
                             </div>
                         </div>
                     </div>
@@ -192,7 +188,7 @@
                                 <!-- Vista desktop - Reemplazar la sección de botones en la columna de acciones -->
                                 <td class="text-center">
                                     <div class="d-flex gap-2 justify-content-center flex-wrap">
-                                        <!-- Botón Ver Detalle (si está pagada completamente) -->
+                                        <!-- Botón Ver Detalle -->
                                         <button type="button" class="btn btn-info btn-sm"
                                             *ngIf="cliente.paidFull === 'S'" (click)="openRecaudoDetailModal(cliente)"
                                             title="Ver detalle del recaudo">
@@ -201,9 +197,8 @@
                                         </button>
 
                                         <!-- Botón Recaudar (si NO está pagada completamente) -->
-                                         <button type="button" class="btn btn-recaudo btn-sm"
+                                        <button type="button" class="btn btn-recaudo btn-sm"
                                             (click)="openRecaudoModal(cliente)" title="Registrar recaudo">
-                                            title="Registrar recaudo">
                                             <i class="ti ti-cash me-1"></i>
                                             Recaudar
                                         </button>

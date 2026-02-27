@@ -233,6 +233,7 @@ export class ManagmentCreditIntentionComponent implements OnInit, AfterViewInit 
     console.log('Fase de Aprobación completada:', completed);
 
     if (completed) {
+      this.reloadCreditIntention();
       setTimeout(() => {
         if (this.stepper.selectedIndex < this.stepper.steps.length - 1) {
           this.stepper.next();
@@ -247,6 +248,7 @@ export class ManagmentCreditIntentionComponent implements OnInit, AfterViewInit 
     console.log('Fase de Perfeccionamiento completada:', completed);
 
     if (completed) {
+      this.reloadCreditIntention();
       setTimeout(() => {
         if (this.stepper.selectedIndex < this.stepper.steps.length - 1) {
           this.stepper.next();
