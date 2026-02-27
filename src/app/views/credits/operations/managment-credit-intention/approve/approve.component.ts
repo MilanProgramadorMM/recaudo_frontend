@@ -34,6 +34,8 @@ import { CreditIntentionStatusService } from '@core/services/creditIntentionStat
 })
 export class ApproveComponent implements OnInit {
   private _credit!: CreditIntentionResponseDto;
+  today: string = new Date().toLocaleDateString('en-CA');
+  minDate: string = this.today;
 
   @Input()
   set credit(value: CreditIntentionResponseDto) {
@@ -130,6 +132,10 @@ export class ApproveComponent implements OnInit {
   }
 
   patchFormWithCredit() {
+
+    const fechaInicio = this.formatDateForInput(this.credit.fechaInicio);
+    this.minDate = fechaInicio || this.today;
+
     this.form1.patchValue({
       credit_line_id: this.credit.creditLineId,
       period_id: this.credit.periodId,
@@ -140,7 +146,7 @@ export class ApproveComponent implements OnInit {
       fin_quincena: this.credit.endQuincena,
       item_value: this.formatNumberToCurrency(this.credit.itemValue),
       total_intention_value: this.formatNumberToCurrency(this.credit.totalIntentionValue),
-      start_date: this.formatDateForInput(this.credit.createdAt),
+      start_date: fechaInicio,
       desembolso_value: this.formatNumberToCurrency(this.credit.totalCapitalValue),
       value_to_financiate: this.formatNumberToCurrency(this.credit.totalCapitalValue),
       initial_quota: this.formatNumberToCurrency(this.credit.initialValuePayment),
@@ -181,6 +187,7 @@ export class ApproveComponent implements OnInit {
       }
     });
   }
+
   private initializeForms(): void {
     this.form1 = this.fb.group({
       credit_line_id: [null, Validators.required],

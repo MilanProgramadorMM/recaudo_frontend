@@ -154,7 +154,6 @@
                                 No hay gastos registrados aún
                             </div>
 
-                            <!-- Tabla de gastos -->
                             <div *ngIf="spendsList.length > 0" class="card border-secondary mb-4">
                                 <div class="card-header bg-light">
                                     <h5 class="mb-0">
@@ -168,9 +167,11 @@
                                             <thead class="table-light">
                                                 <tr>
                                                     <th>Tipo</th>
-                                                    <th>Descripción</th>
+                                                    <th class="d-none d-md-table-cell">Descripción</th>
+                                                    <!-- oculta en mobile -->
                                                     <th class="text-end">Valor</th>
-                                                    <th>Evidencia</th>
+                                                    <th class="d-none d-md-table-cell">Evidencia</th>
+                                                    <!-- oculta en mobile -->
                                                     <th *ngIf="canAddSpends" class="text-center">Acciones</th>
                                                 </tr>
                                             </thead>
@@ -182,11 +183,12 @@
                                                             {{ spend.spendTypeName }}
                                                         </span>
                                                     </td>
-                                                    <td>{{ spend.description || '-' }}</td>
+                                                    <td class="d-none d-md-table-cell">{{ spend.description || '-' }}
+                                                    </td> <!-- oculta en mobile -->
                                                     <td class="text-end">
                                                         <strong>${{ formatCurrency(spend.amount) }}</strong>
                                                     </td>
-                                                    <td>
+                                                    <td class="d-none d-md-table-cell"> <!-- oculta en mobile -->
                                                         <span *ngIf="spend.fileName" class="text-success">
                                                             <i class="bi bi-file-earmark-check me-1"></i>
                                                             {{ spend.fileName }}
@@ -210,21 +212,21 @@
                                             </tbody>
                                             <tfoot class="table-light">
                                                 <tr>
-                                                    <th colspan="2">TOTAL:</th>
+                                                    <th>TOTAL:</th>
+                                                    <th class="d-none d-md-table-cell"></th> <!-- oculta en mobile -->
                                                     <th class="text-end">
                                                         <span class="fs-5 text-primary">
                                                             ${{ formatCurrency(getTotalSpends()) }}
                                                         </span>
                                                     </th>
-                                                    <th [attr.colspan]="canAddSpends ? 2 : 1"></th>
+                                                    <th class="d-none d-md-table-cell"></th> <!-- oculta en mobile -->
+                                                    <th *ngIf="canAddSpends"></th>
                                                 </tr>
                                             </tfoot>
                                         </table>
                                     </div>
                                 </div>
                             </div>
-
-
                         </fieldset>
 
                         <fieldset class="mt-4">
@@ -343,12 +345,12 @@
                         </fieldset>
 
                         <!-- Alertas según estado -->
-                        <div *ngIf="currentStatus === 'PRE_CIERRE'" class="alert alert-info mt-3">
+                        <!-- <div *ngIf="currentStatus === 'PRE_CIERRE'" class="alert alert-info mt-3">
                             <i class="bi bi-info-circle me-2"></i>
                             Registre todos los gastos del día y luego presione "Finalizar" para enviar a revisión
-                        </div>
+                        </div> -->
 
-                        <div *ngIf="currentStatus === 'STUDY'" class="alert alert-primary mt-3">
+                        <!-- <div *ngIf="currentStatus === 'STUDY'" class="alert alert-primary mt-3">
                             <i class="bi bi-clock-history me-2"></i>
                             El cierre está en fase de ESTUDIO. Use el botón "Consultar Estado" para verificar el
                             progreso.
@@ -358,7 +360,7 @@
                             <i class="bi bi-hourglass-split me-2"></i>
                             El cierre está en pre-aprobación. Use el botón "Consultar Estado" para verificar el
                             progreso.
-                        </div>
+                        </div> -->
 
                         <div *ngIf="currentStatus === 'APPROVED'" class="alert alert-success mt-3">
                             <i class="bi bi-check-circle-fill me-2"></i>
@@ -577,6 +579,11 @@
                                                                 {{ r.zona || 'Pago de cuota' }}
                                                             </span>
                                                         </td>
+                                                        <td>
+                                                            <span class="badge badge-zone-red">
+                                                                {{ r.description || 'Pago de cuota' }}
+                                                            </span>
+                                                        </td>
 
                                                         <td>
                                                             {{ r.clientName || '-' }}
@@ -603,7 +610,7 @@
                                     </div>
                                 </div>
                             </fieldset>
-                            
+
                             <fieldset class="mt-4">
                                 <legend>Intenciones de Crédito registradas el dia de hoy por el Asesor</legend>
 
@@ -788,12 +795,23 @@
                                                         <td>
                                                             <strong>${{ formatCurrency(spend.amount) }}</strong>
                                                         </td>
-                                                        <td class="text-center">
-                                                            <i *ngIf="spend.fileName"
-                                                                class="bi bi-check-circle-fill text-success"
-                                                                [title]="spend.fileName"></i>
-                                                            <i *ngIf="!spend.fileName"
-                                                                class="bi bi-dash-circle text-muted"></i>
+                                                        <td class="d-none d-md-table-cell">
+                                                            <ng-container *ngIf="spend.fileName; else sinEvidencia">
+                                                                <span class="text-success me-2">
+                                                                    <i class="bi bi-file-earmark-check me-1"></i>
+                                                                    {{ spend.fileName }}
+                                                                </span>
+                                                                <!-- Botón descargar evidencia -->
+                                                                <button type="button"
+                                                                    class="btn btn-sm btn-outline-primary"
+                                                                    (click)="downloadEvidence(spend)"
+                                                                    title="Descargar evidencia">
+                                                                    <i class="bi bi-download"></i>
+                                                                </button>
+                                                            </ng-container>
+                                                            <ng-template #sinEvidencia>
+                                                                <span class="text-muted">Sin evidencia</span>
+                                                            </ng-template>
                                                         </td>
                                                     </tr>
                                                 </tbody>
@@ -828,7 +846,6 @@
                                                     <tr>
                                                         <th>#</th>
                                                         <th>Zona</th>
-                                                        <th>Descripción</th>
                                                         <th>Cliente</th>
                                                         <th>Monto</th>
                                                     </tr>
@@ -841,7 +858,6 @@
                                                                 {{ r.zona || 'Pago de cuota' }}
                                                             </span>
                                                         </td>
-
                                                         <td>
                                                             {{ r.clientName || '-' }}
                                                         </td>
@@ -854,7 +870,7 @@
                                                 </tbody>
                                                 <tfoot class="table-light">
                                                     <tr>
-                                                        <th colspan="4">TOTAL:</th>
+                                                        <th colspan="3">TOTAL:</th>
                                                         <th>
                                                             <span class="fs-5 text-primary">
                                                                 ${{ formatCurrency(getTotalRecaudos()) }}
@@ -933,8 +949,6 @@
                                         </div>
                                     </div>
                                 </fieldset>
-
-                                <!-- Estado y Acciones según Rol -->
 
                                 <!-- BACKOFFICE/ADMIN en STUDY (Revisión Inicial) -->
                                 <div *ngIf="currentStatus === 'STUDY' && (isAsistente || isAdmin) && canApprove"
@@ -1297,7 +1311,6 @@
                                     </p>
                                 </div>
 
-                                <!-- Estados finales -->
                                 <!-- Estados finales -->
 
                                 <!-- APPROVED - Mostrar distribución -->

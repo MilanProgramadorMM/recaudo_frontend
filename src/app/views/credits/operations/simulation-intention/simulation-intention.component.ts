@@ -146,7 +146,7 @@ export class SimulationIntentionComponent implements OnInit {
 
       cargos: ['', Validators.required],
       initial_quota: [''],
-      start_date: ['', Validators.required],      
+      start_date: ['', Validators.required],
       inicio_quincena: [{ value: null, disabled: true }],
       fin_quincena: [{ value: null, disabled: true }],
 
@@ -671,10 +671,11 @@ export class SimulationIntentionComponent implements OnInit {
       return false;
     }
 
-    const today = new Date();
-    today.setHours(0, 0, 0, 0);
+    const [year, month, day] = raw.start_date.split('-').map(Number);
+    const selectedDate = new Date(year, month - 1, day);
 
-    const selectedDate = new Date(raw.start_date);
+    const today = new Date();         
+    today.setHours(0, 0, 0, 0);       
 
     if (selectedDate < today) {
       this.errorMessage = 'La fecha de inicio no puede ser anterior a hoy';

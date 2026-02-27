@@ -44,6 +44,8 @@ export class StadyComponent implements OnInit {
 
   //Variable para trackear el estado
   isPhaseCompleted = false;
+  today: string = new Date().toLocaleDateString('en-CA');
+
 
 
   @Input()
@@ -195,6 +197,8 @@ export class StadyComponent implements OnInit {
       fecha_inicio_tentativa: this.formatDateForInput(this.credit.fechaInicio),
 
     });
+    console.log('Fecha tentativa:', this.formatDateForInput(this.credit.fechaInicio))
+
 
     if (this.credit.countryId) {
       this.ubicacionService.getDepartamentos(this.credit.countryId).subscribe(deps => {
@@ -484,14 +488,24 @@ export class StadyComponent implements OnInit {
 
     const fechaActual = this.form2.getRawValue().fecha_inicio_tentativa;
 
+    // Validación de fecha igual que el ejemplo
+    const [year, month, day] = fechaActual.split('-').map(Number);
+    const selectedDate = new Date(year, month - 1, day);
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+
+    if (selectedDate < today) {
+      this.errorMessage = 'La fecha de inicio no puede ser anterior a hoy';
+      return;
+    }
+
     if (fechaActual === this.fechaTentativaOriginal) {
       this.stepper.next();
       window.scrollTo({ top: 0, behavior: 'smooth' });
       return;
     }
-    const dialogRef = this.dialog.open(LoadingComponent, {
-      disableClose: true,
-    });
+
+    const dialogRef = this.dialog.open(LoadingComponent, { disableClose: true });
 
     const payload: UpdateFechaTentativaCreditIntentionUpdateDto = {
       start_date: fechaActual
@@ -499,12 +513,7 @@ export class StadyComponent implements OnInit {
 
     this.creditIntencionService
       .updateFechaTentativaData(this.credit.id, payload)
-      .pipe(
-        finalize(() => {
-          this.isSaving = false;
-          dialogRef.close();
-        })
-      )
+      .pipe(finalize(() => { this.isSaving = false; dialogRef.close(); }))
       .subscribe({
         next: () => {
           Swal.fire({
@@ -513,9 +522,7 @@ export class StadyComponent implements OnInit {
             icon: 'success',
             buttonsStyling: false,
             confirmButtonText: 'Aceptar',
-            customClass: {
-              confirmButton: 'btn btn-success'
-            }
+            customClass: { confirmButton: 'btn btn-success' }
           }).then(() => {
             this.stepper.next();
             window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -527,9 +534,7 @@ export class StadyComponent implements OnInit {
             text: err?.error?.message || 'No se pudo actualizar la fecha tentativa',
             icon: 'error',
             confirmButtonText: 'Cerrar',
-            customClass: {
-              confirmButton: 'btn btn-danger'
-            }
+            customClass: { confirmButton: 'btn btn-danger' }
           });
         }
       });
@@ -780,31 +785,26 @@ export class StadyComponent implements OnInit {
   }
 
   private validateActividad2(): boolean {
-    const camposActividad2 = [
-      'fecha_inicio_tentativa',
-    ];
+    const raw = this.form2.getRawValue();
 
-    let isValid = true;
-
-    camposActividad2.forEach(field => {
-      const control = this.form2.get(field);
-      if (control) {
-        control.markAsTouched();
-        if (control.invalid) {
-          isValid = false;
-          console.log(`Campo ${field} inválido:`, control.errors);
-
-        }
-      }
-    });
-
-    if (!isValid) {
+    if (!raw.fecha_inicio_tentativa) {
       this.errorMessage = 'Por favor complete todos los campos obligatorios del paso 2';
-    } else {
-      this.errorMessage = '';
+      return false;
     }
 
-    return isValid;
+    // Igual que validateStep3 del ejemplo
+    const [year, month, day] = raw.fecha_inicio_tentativa.split('-').map(Number);
+    const selectedDate = new Date(year, month - 1, day);
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+
+    if (selectedDate < today) {
+      this.errorMessage = 'La fecha de inicio no puede ser anterior a hoy';
+      return false;
+    }
+
+    this.errorMessage = '';
+    return true;
   }
 
   private validateActividad3(): boolean {

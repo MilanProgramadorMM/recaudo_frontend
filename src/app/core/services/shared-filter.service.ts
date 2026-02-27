@@ -13,7 +13,7 @@ export interface DashboardFilters {
     providedIn: 'root'
 })
 export class SharedFilterService {
-    private readonly today = new Date().toISOString().split('T')[0];
+    private readonly today = new Date().toLocaleDateString('en-CA');
 
     private filtersSubject = new BehaviorSubject<DashboardFilters>({
         zona: 'all',

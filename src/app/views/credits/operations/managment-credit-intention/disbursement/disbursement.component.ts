@@ -8,14 +8,10 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatRadioModule } from '@angular/material/radio';
 import { Glotypes, GlotypesService } from '@core/services/glotypes.service';
-import { OptionDTO, UbicacionService } from '@core/services/ubicacion.service';
-import { ZonaResponseDto, ZonaService } from '@core/services/zona.service';
 import { MatDialog } from '@angular/material/dialog';
-import { Router } from '@angular/router';
 import { LoadingComponent } from '@views/ui/loading/loading.component';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import Swal from 'sweetalert2';
-import { CreditIntentionStatusService } from '@core/services/creditIntentionStatus.service';
 import { finalize, switchMap } from 'rxjs';
 import { PersonRegisterDto, PersonService } from '@core/services/person.service';
 import { CreditRegisterDto, CreditService } from '@core/services/credit.service';
@@ -46,6 +42,16 @@ export class DisbursementComponent {
 
   //Variable para trackear el estado
   isPhaseCompleted = false;
+
+  today: string = (() => {
+    const d = new Date();
+    const yyyy = d.getFullYear();
+    const mm = String(d.getMonth() + 1).padStart(2, '0');
+    const dd = String(d.getDate()).padStart(2, '0');
+    return `${yyyy}-${mm}-${dd}`;
+  })();
+
+  minDate: string = '';
 
 
   @Input()
@@ -100,6 +106,11 @@ export class DisbursementComponent {
   ) { }
 
   ngOnInit(): void {
+    const d = new Date();
+    const yyyy = d.getFullYear();
+    const mm = String(d.getMonth() + 1).padStart(2, '0');
+    const dd = String(d.getDate()).padStart(2, '0');
+    this.today = `${yyyy}-${mm}-${dd}`;
     this.initializeForms();
     this.loadBanks();
     this.loadPaymentMetods();
@@ -366,9 +377,14 @@ export class DisbursementComponent {
 
 
   patchFormWithDate() {
-    this.form1.patchValue({
-      fecha_inicio_tentativa: this.formatDateForInput(this.credit.fechaInicio),
+    const fechaCredito = this.formatDateForInput(this.credit.fechaInicio);
 
+    // El mínimo seleccionable es la fecha de la intención
+    this.minDate = fechaCredito;
+    this.fechaTentativaOriginal = fechaCredito;
+
+    this.form1.patchValue({
+      fecha_inicio_tentativa: fechaCredito
     });
   }
 
@@ -377,7 +393,23 @@ export class DisbursementComponent {
     this.submitted = true;
 
     if (this.form1.invalid) return;
+
     const fechaActual = this.form1.getRawValue().fecha_inicio_tentativa;
+
+    const [year, month, day] = fechaActual.split('-').map(Number);
+    const selectedDate = new Date(year, month - 1, day);
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+
+    if (selectedDate < new Date(this.minDate + 'T00:00:00')) {
+      Swal.fire({
+        title: 'Fecha inválida',
+        text: 'La fecha no puede ser anterior a la fecha registrada en la intención',
+        icon: 'warning',
+        confirmButtonText: 'Aceptar'
+      });
+      return;
+    }
 
     if (fechaActual === this.fechaTentativaOriginal) {
       this.stepper.next();
@@ -754,29 +786,26 @@ export class DisbursementComponent {
   }
 
   private validateActividad1(): boolean {
-    const camposActividad2 = [
-      'fecha_inicio_tentativa',
-    ];
+    const raw = this.form1.getRawValue();
 
-    let isValid = true;
-
-    camposActividad2.forEach(field => {
-      const control = this.form2.get(field);
-      if (control) {
-        control.markAsTouched();
-        if (control.invalid) {
-          isValid = false;
-        }
-      }
-    });
-
-    if (!isValid) {
-      this.errorMessage = 'Por favor complete todos los campos obligatorios del paso 2';
-    } else {
-      this.errorMessage = '';
+    if (!raw.fecha_inicio_tentativa) {
+      this.errorMessage = 'Por favor complete todos los campos obligatorios del paso 1';
+      return false;
     }
 
-    return isValid;
+    // Validación fecha no anterior a hoy
+    const [year, month, day] = raw.fecha_inicio_tentativa.split('-').map(Number);
+    const selectedDate = new Date(year, month - 1, day);
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+
+    if (selectedDate < today) {
+      this.errorMessage = 'La fecha de inicio no puede ser anterior a hoy';
+      return false;
+    }
+
+    this.errorMessage = '';
+    return true;
   }
 
   private validateActividad2(): boolean {

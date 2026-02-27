@@ -7,6 +7,7 @@ import { CreditPaymentManagmentModalComponent } from './credit-payment-managment
 import { NgbDropdownModule } from '@ng-bootstrap/ng-bootstrap';
 import { ReversePaymentModalComponent } from './reverse-payment-modal/reverse-payment-modal.component';
 import Swal from 'sweetalert2';
+import { AuthenticationService } from '@core/services/auth.service';
 
 
 interface CreditPaymentStatus {
@@ -56,6 +57,14 @@ interface RecaudoDetail {
   userCreate: string;
   createdAt: string;
 }
+
+enum UserRole {
+  ASISTENTE = 'BACKOFFICE',
+  ASESOR = 'Asesor',
+  ADMIN = 'Administrador'
+}
+
+
 @Component({
   selector: 'app-recaudo-modal',
   imports: [CommonModule, NgbDropdownModule],
@@ -73,13 +82,25 @@ export class RecaudoModalComponent {
   paymentStatus: CreditPaymentStatus | null = null;
   currency = '$';
 
+  currentRole: string = '';
+  isAsesor = false;
+  isAdmin = false;
+  isAsistente = false;
+
+
   constructor(
     public activeModal: NgbActiveModal,
     private modalService: NgbModal,
-    private recaudoService: RecaudoService
+    private recaudoService: RecaudoService,
+    private authService: AuthenticationService
+
   ) { }
 
   ngOnInit(): void {
+    this.currentRole = this.authService.getUserRole() || '';
+    this.isAsesor = this.currentRole === UserRole.ASESOR;
+    this.isAdmin = this.currentRole === UserRole.ADMIN;
+    this.isAsistente = this.currentRole === UserRole.ASISTENTE;
     this.loadRecaudoStatus();
   }
 
@@ -255,21 +276,21 @@ export class RecaudoModalComponent {
 
   //IDENTIFICAR NATURALEZA DE CREDITO
   getRecaudoNaturaleza(conceptName: string): 'DEBITO' | 'CREDITO' {
-  const conceptosCredito = ['RECAUDO EN RUTA', 'NOTA CREDITO', 'LIQUIDACIÓN ANTICIPADA CREDITO', 'AJUSTE POR PERDIDA'];
-  const conceptosDebito = ['NOTA DEBITO', 'REFINANCIACION'];
-  
-  if (conceptosCredito.includes(conceptName)) {
-    return 'CREDITO';
-  } else if (conceptosDebito.includes(conceptName)) {
-    return 'DEBITO';
-  }
-  
-  return 'DEBITO'; // Por defecto
-}
+    const conceptosCredito = ['RECAUDO EN RUTA', 'NOTA CREDITO', 'LIQUIDACIÓN ANTICIPADA CREDITO', 'AJUSTE POR PERDIDA'];
+    const conceptosDebito = ['NOTA DEBITO', 'REFINANCIACION'];
 
-getRecaudoClass(conceptName: string): string {
-  const naturaleza = this.getRecaudoNaturaleza(conceptName);
-  return naturaleza === 'CREDITO' ? 'text-success' : 'text-danger';
-}
+    if (conceptosCredito.includes(conceptName)) {
+      return 'CREDITO';
+    } else if (conceptosDebito.includes(conceptName)) {
+      return 'DEBITO';
+    }
+
+    return 'DEBITO'; // Por defecto
+  }
+
+  getRecaudoClass(conceptName: string): string {
+    const naturaleza = this.getRecaudoNaturaleza(conceptName);
+    return naturaleza === 'CREDITO' ? 'text-success' : 'text-danger';
+  }
 
 }

@@ -251,66 +251,49 @@
 </div>
 
 <div class="modal-footer d-flex gap-2">
-    <!-- Botón Ajustes de Crédito (con dropdown) -->
-    <div ngbDropdown class="d-inline-block">
-        <button type="button" class="btn btn-info mt-1" ngbDropdownToggle [disabled]="loading">
-            <i class="ti ti-settings me-1"></i>
-            Ajustes de Crédito
-        </button>
 
-        <div ngbDropdownMenu>
-            <h6 class="dropdown-header fw-bold text-uppercase">
-                Ajustes tipo crédito
-            </h6>
-            <button ngbDropdownItem (click)="openPaymentModal('NORMAL')">
-                <i class="ti ti-coin me-2"></i>
-                Recaudo Normal
+    <ng-container *ngIf="isAdmin || isAsistente">
+        <!-- Botón Ajustes de Crédito (con dropdown) -->
+        <div ngbDropdown class="d-inline-block">
+            <button type="button" class="btn btn-info mt-1" ngbDropdownToggle [disabled]="loading">
+                <i class="ti ti-settings me-1"></i>
+                Ajustes de Crédito
             </button>
-
-            <button ngbDropdownItem (click)="openPaymentModal('RECAUDO_CAPITAL')">
-                <i class="ti ti-wallet me-2"></i>
-                Recaudo Solo Capital
-            </button>
-
-            <button ngbDropdownItem (click)="openPaymentModal('RECAUDO_INTERESES')">
-                <i class="ti ti-percentage me-2"></i>
-                Recaudo Solo Intereses
-            </button>
-
-            <button ngbDropdownItem (click)="openPaymentModal('AJUSTE_PERDIDA')">
-                <i class="ti ti-alert-triangle me-2"></i>
-                Recaudo Ajuste de Pérdida
-            </button>
-
-            <div class="dropdown-divider"></div>
-
-            <h6 class="dropdown-header fw-bold text-uppercase">
-                Ajustes tipo débito
-            </h6>
-
-            <button ngbDropdownItem (click)="openReverseModal('RECAUDO')">
-                <i class="ti ti-arrow-back-up me-2 text-danger"></i>
-                Reversar Recaudos
-            </button>
-
-            <button ngbDropdownItem (click)="openReverseModal('CAPITAL')">
-                <i class="ti ti-arrow-back-up me-2 text-danger"></i>
-                Reversar Capital
-            </button>
-
-            <button ngbDropdownItem (click)="openReverseModal('INTERESES')">
-                <i class="ti ti-arrow-back-up me-2 text-danger"></i>
-                Reversar Intereses
-            </button>
+            <div ngbDropdownMenu>
+                <h6 class="dropdown-header fw-bold text-uppercase">Ajustes tipo crédito</h6>
+                <button ngbDropdownItem (click)="openPaymentModal('NORMAL')">
+                    <i class="ti ti-coin me-2"></i>Recaudo Normal
+                </button>
+                <button ngbDropdownItem (click)="openPaymentModal('RECAUDO_CAPITAL')">
+                    <i class="ti ti-wallet me-2"></i>Recaudo Solo Capital
+                </button>
+                <button ngbDropdownItem (click)="openPaymentModal('RECAUDO_INTERESES')">
+                    <i class="ti ti-percentage me-2"></i>Recaudo Solo Intereses
+                </button>
+                <button ngbDropdownItem (click)="openPaymentModal('AJUSTE_PERDIDA')">
+                    <i class="ti ti-alert-triangle me-2"></i>Recaudo Ajuste de Pérdida
+                </button>
+                <div class="dropdown-divider"></div>
+                <h6 class="dropdown-header fw-bold text-uppercase">Ajustes tipo débito</h6>
+                <button ngbDropdownItem (click)="openReverseModal('RECAUDO')">
+                    <i class="ti ti-arrow-back-up me-2 text-danger"></i>Reversar Recaudos
+                </button>
+                <button ngbDropdownItem (click)="openReverseModal('CAPITAL')">
+                    <i class="ti ti-arrow-back-up me-2 text-danger"></i>Reversar Capital
+                </button>
+                <button ngbDropdownItem (click)="openReverseModal('INTERESES')">
+                    <i class="ti ti-arrow-back-up me-2 text-danger"></i>Reversar Intereses
+                </button>
+            </div>
         </div>
-    </div>
 
-    <button type="button" class="btn btn-warning mt-1" (click)="openDelayPenaltyModal()" [disabled]="loading">
-        <i class="ti ti-alert-triangle me-1"></i>
-        Gestionar intereses moratorios
-    </button>
+        <button type="button" class="btn btn-warning mt-1" (click)="openDelayPenaltyModal()" [disabled]="loading">
+            <i class="ti ti-alert-triangle me-1"></i>
+            Gestionar intereses moratorios
+        </button>
+    </ng-container>
+
     <button type="button" class="btn btn-copy-red mt-1" (click)="close()">
         <i class="ti ti-x me-1"></i>Cerrar
     </button>
-
 </div>
