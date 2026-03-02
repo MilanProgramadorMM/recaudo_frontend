@@ -13,6 +13,14 @@
     color: #dc3545;
 }
 
+.alerta-success {
+    color: #20963c;
+}
+
+.alerta-orange {
+    color: #eb8007;
+}
+
 .btn-copy-red {
     background-color: #dc3545;
     /* rojo Bootstrap */
@@ -79,4 +87,31 @@
 /* Texto cantidad */
 .tabla-roja td:nth-child(3) {
     font-weight: 600;
+}
+
+.tabla-negra {
+    border-color: #212529;
+
+    th,
+    td {
+        border-color: #212529 !important;
+    }
+
+    thead th {
+        background-color: rgba(0, 0, 0, 0.05);
+        color: #212529;
+        font-weight: 600;
+    }
+
+    tbody tr.table-active {
+        background-color: rgba(0, 0, 0, 0.04);
+    }
+
+    tbody tr:hover {
+        background-color: rgba(0, 0, 0, 0.03);
+    }
+
+    td:nth-child(3) {
+        font-weight: 600;
+    }
 }

@@ -31,6 +31,22 @@
   color: #dc3545;
 }
 
+.icon-wrapper {
+  width: 100px;
+  height: 100px;
+  margin: 0 auto;
+  border-radius: 50%;
+  background-color: #d1e7dd; // verde suave
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.icon-wrapper i {
+  font-size: 3rem;
+  color: #198754; // verde bootstrap
+}
+
 
 
 .btn-lg {

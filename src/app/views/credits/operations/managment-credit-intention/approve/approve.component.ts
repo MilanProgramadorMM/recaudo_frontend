@@ -126,8 +126,6 @@ export class ApproveComponent implements OnInit {
     this.setupFormChangeDetection();
     this.interactionCamposParaCalculo();
     this.setupValueToFinanciateCalculation();
-    this.onCreditLineChange();
-    this.onPeriodChange();
 
   }
 
@@ -350,74 +348,50 @@ export class ApproveComponent implements OnInit {
   }
 
   private setupFormChangeDetection(): void {
-    this.formSubscription = this.form1.valueChanges.subscribe(() => {
-      // Solo verificar cambios si ya tenemos valores iniciales cargados
-      if (this.initialFormValues && !this.updatingFromBackend) {
-        const currentValues = this.form1.getRawValue();
-        const hasChanges = this.hasFormChanged(this.initialFormValues, currentValues);
+    const triggerFields = ['credit_line_id', 'period_id', 'period_quantity', 'start_date'];
 
-        if (hasChanges) {
-          // Si hay cambios, deshabilitar los botones guardar y siguiente
-          if (this.simulationCompleted) {
-            console.warn('Formulario modificado. Desactivando botones guardar y siguiente.');
-            this.simulationCompleted = false;
-            this.simulationResult = null;
-            this.intentionSaved = false; // Deshabilitar botón Siguiente
+    triggerFields.forEach(fieldName => {
+      this.form1.get(fieldName)?.valueChanges.subscribe(() => {
+        if (this.updatingFromBackend) return;
+        if (!this.simulationCompleted) return;
 
-            // Opcional: Mostrar mensaje al usuario
-            this.errorMessage = 'Los datos han cambiado. Debe simular nuevamente antes de guardar.';
+        this.simulationCompleted = false;
+        this.simulationResult = null;
+        this.intentionSaved = false;
+        this.errorMessage = 'Los datos han cambiado. Debe simular nuevamente antes de guardar.';
+        this.clearCalculatedFields();
 
-            // Limpiar mensaje después de unos segundos
-            setTimeout(() => {
-              if (this.errorMessage === 'Los datos han cambiado. Debe simular nuevamente antes de guardar.') {
-                this.errorMessage = '';
-              }
-            }, 5000);
+        setTimeout(() => {
+          if (this.errorMessage === 'Los datos han cambiado. Debe simular nuevamente antes de guardar.') {
+            this.errorMessage = '';
           }
+        }, 5000);
+      });
+    });
+
+    // initial_quota: solo invalida simulación, NO limpia campos
+    this.form1.get('initial_quota')?.valueChanges.subscribe(() => {
+      if (this.updatingFromBackend) return;
+      if (!this.simulationCompleted) return;
+
+      this.simulationCompleted = false;
+      this.simulationResult = null;
+      this.intentionSaved = false;
+      this.errorMessage = 'Los datos han cambiado. Debe simular nuevamente antes de guardar.';
+
+      // ✅ Limpiar cuota cuando el usuario modifica cuota inicial post-simulación
+      this.form1.get('quota_value')?.setValue(null, { emitEvent: true });
+      this.form1.get('quota_value')?.enable({ emitEvent: false });
+
+      this.interactionCamposParaCalculo();
+      setTimeout(() => {
+        if (this.errorMessage === 'Los datos han cambiado. Debe simular nuevamente antes de guardar.') {
+          this.errorMessage = '';
         }
-      }
+      }, 5000);
     });
   }
 
-  // Método auxiliar para comparar valores del formulario
-  private hasFormChanged(initial: any, current: any): boolean {
-    // Comparar los campos relevantes
-    const relevantFields = [
-      'credit_line_id',
-      'period_id',
-      'period_quantity',
-      'quota_value',
-      'tax_value',
-      'inicio_quincena',
-      'fin_quincena',
-      'item_value',
-      'desembolso_value',
-      'value_to_financiate',
-      'initial_quota',
-      'start_date'
-    ];
-
-    for (const field of relevantFields) {
-      // Normalizar valores para comparación (null, undefined, '' se consideran iguales)
-      const initialVal = this.normalizeValue(initial[field]);
-      const currentVal = this.normalizeValue(current[field]);
-
-      if (initialVal !== currentVal) {
-        console.log(`Campo ${field} cambió de "${initialVal}" a "${currentVal}"`);
-        return true;
-      }
-    }
-
-    return false;
-  }
-
-  // Normalizar valores para comparación consistente
-  private normalizeValue(value: any): string {
-    if (value === null || value === undefined || value === '') {
-      return '';
-    }
-    return String(value).trim();
-  }
 
   nextStep(step: number): void {
     let currentForm: FormGroup | null = null;
@@ -1136,15 +1110,19 @@ export class ApproveComponent implements OnInit {
         else if (tipo_calculo === 'CALCULAR_CAPITAL') {
           const cuotaActual = this.toNumber(this.form1.get('quota_value')?.value);
           const valorSolicitud = cuotaActual * numeroCuotas;
+          const valorBase = data.dcreVlrBase ?? data.dcreCapital ?? 0;
+          const initialQuota = this.toNumber(this.form1.get('initial_quota')?.value);
 
           if (grupo === 'GRUPO2') {
             this.form1.patchValue({
-              desembolso_value: dcreCapital,
+              desembolso_value: valorBase,
+              quota_value: data.dcreVlrcuota,
               total_intention_value: valorSolicitud,
               item_value: null
             }, { emitEvent: false });
 
             this.formatCurrency('desembolso_value');
+            this.formatCurrency('quota_value');
             this.formatCurrency('total_intention_value');
 
             setTimeout(() => {
@@ -1155,13 +1133,20 @@ export class ApproveComponent implements OnInit {
             }, 50);
 
           } else {
+            const itemValueFinal = initialQuota > 0 ? valorBase + initialQuota : valorBase;
+
             this.form1.patchValue({
-              item_value: dcreCapital,
+              item_value: itemValueFinal,
+              value_to_financiate: valorBase,
+              quota_value: data.dcreVlrcuota,
               total_intention_value: valorSolicitud,
               desembolso_value: null
             }, { emitEvent: false });
 
+
             this.formatCurrency('item_value');
+            this.formatCurrency('value_to_financiate');
+            this.formatCurrency('quota_value');
             this.formatCurrency('total_intention_value');
 
 
@@ -1334,6 +1319,46 @@ export class ApproveComponent implements OnInit {
           });
         }
       });
+  }
+
+  private clearCalculatedFields(): void {
+    this.updatingFromBackend = true;
+
+    this.form1.patchValue({
+      quota_value: null,
+      tax_value: null,
+      item_value: null,
+      desembolso_value: null,
+      value_to_financiate: null,
+      initial_quota: null,
+      total_intention_value: null,
+    }, { emitEvent: false });
+
+    const hasDisbursement = this.selectedCreditLine?.loanDisbursement ?? false;
+
+    this.form1.get('quota_value')?.enable({ emitEvent: false });
+    this.form1.get('tax_value')?.enable({ emitEvent: false });
+
+    if (hasDisbursement) {
+      this.form1.get('desembolso_value')?.enable({ emitEvent: false });
+      this.form1.get('item_value')?.disable({ emitEvent: false });
+      this.form1.get('value_to_financiate')?.disable({ emitEvent: false });
+      this.form1.get('initial_quota')?.disable({ emitEvent: false });
+    } else {
+      this.form1.get('item_value')?.enable({ emitEvent: false });
+      this.form1.get('value_to_financiate')?.enable({ emitEvent: false });
+      this.form1.get('initial_quota')?.enable({ emitEvent: false });
+      this.form1.get('desembolso_value')?.disable({ emitEvent: false });
+    }
+
+    this.numeroCoutasInForm = null;
+    this.errorInicioQuincena = null;
+    this.errorFinQuincena = null;
+    this.errorValueToFinanciate = '';
+
+    setTimeout(() => {
+      this.updatingFromBackend = false;
+    }, 100);
   }
 
 }

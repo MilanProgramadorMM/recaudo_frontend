@@ -66,9 +66,9 @@ export class CreditApprovalComponent implements OnInit {
 
           // Manejo más seguro del mensaje de error
           if (err?.error?.error) {
-            this.error = err.error.error; // backend envía { "error": "mensaje" }
+            this.error = err.error.error;
           } else if (err?.error?.message) {
-            this.error = err.error.message; // backend envía { "message": "mensaje" }
+            this.error = err.error.message;
           } else if (err?.message) {
             this.error = err.message; // error del cliente HTTP
           } else {
@@ -87,8 +87,7 @@ export class CreditApprovalComponent implements OnInit {
     Swal.fire({
       title: '¿Confirmar aprobación?',
       html: `
-        <p>Estás a punto de <strong>APROBAR</strong> esta solicitud de crédito.</p>
-        <p class="text-muted small">Esta acción no se puede deshacer.</p>
+        <p>Estás a punto de <strong>APROBAR</strong> este crédito.</p>
       `,
       icon: 'question',
       showCancelButton: true,
@@ -183,14 +182,13 @@ export class CreditApprovalComponent implements OnInit {
   private getStatusMessage(status: string): string {
     switch (status) {
       case 'APPROVED':
-        return 'Esta solicitud ya fue aprobada anteriormente';
+        return 'Has aceptado el crédito exitosamente.';
       case 'REJECTED':
-        return 'Esta solicitud ya fue rechazada anteriormente';
+        return 'Has rechazado la oferta de crédito.';
       default:
-        return 'Esta solicitud ya fue procesada';
+        return 'Esta solicitud ya fue procesada anteriormente.';
     }
   }
-
   /**
    * Formatear moneda
    */
@@ -233,4 +231,36 @@ export class CreditApprovalComponent implements OnInit {
         return status;
     }
   }
+
+  getErrorIcon(): string {
+    if (!this.creditIntention) {
+      return 'bi-exclamation-triangle';
+    }
+
+    switch (this.creditIntention.approvalStatus) {
+      case 'APPROVED':
+        return 'bi-check-circle-fill';
+      case 'REJECTED':
+        return 'bi-x-circle-fill';
+      default:
+        return 'bi-exclamation-triangle';
+    }
+  }
+
+  getErrorIconClass(): string {
+    if (!this.creditIntention) {
+      return 'text-warning';
+    }
+
+    switch (this.creditIntention.approvalStatus) {
+      case 'APPROVED':
+        return 'text-success';
+      case 'REJECTED':
+        return 'text-danger';
+      default:
+        return 'text-warning';
+    }
+  }
+
+
 }

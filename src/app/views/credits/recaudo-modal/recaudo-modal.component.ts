@@ -101,6 +101,9 @@ export class RecaudoModalComponent {
     this.isAsesor = this.currentRole === UserRole.ASESOR;
     this.isAdmin = this.currentRole === UserRole.ADMIN;
     this.isAsistente = this.currentRole === UserRole.ASISTENTE;
+    console.log('ROL ACTUAL:', this.currentRole);
+    console.log('isAsesor:', this.isAsesor, '| isAdmin:', this.isAdmin, '| isAsistente:', this.isAsistente);
+
     this.loadRecaudoStatus();
   }
 
@@ -291,6 +294,21 @@ export class RecaudoModalComponent {
   getRecaudoClass(conceptName: string): string {
     const naturaleza = this.getRecaudoNaturaleza(conceptName);
     return naturaleza === 'CREDITO' ? 'text-success' : 'text-danger';
+  }
+
+  getRecaudoDeHoy(): RecaudoDetail[] {
+    if (!this.paymentStatus) return [];
+
+    const hoy = new Date().toISOString().split('T')[0];
+
+    return this.paymentStatus.recaudos.filter(r => {
+      const fechaRecaudo = r.createdAt?.split('T')[0] ?? r.createdAt?.split(' ')[0];
+      return fechaRecaudo === hoy && r.conceptName === 'RECAUDO EN RUTA';
+    });
+  }
+
+  getTotalAbonadoHoy(): number {
+    return this.getRecaudoDeHoy().reduce((sum, r) => sum + Math.abs(r.valuePaid), 0);
   }
 
 }

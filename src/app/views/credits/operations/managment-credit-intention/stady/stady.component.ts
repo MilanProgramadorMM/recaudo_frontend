@@ -18,6 +18,10 @@ import Swal from 'sweetalert2';
 import { CreditIntentionStatusService } from '@core/services/creditIntentionStatus.service';
 import { finalize, switchMap } from 'rxjs';
 import { PersonRegisterDto, PersonService } from '@core/services/person.service';
+import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import { RecaudoModalComponent } from '@views/credits/recaudo-modal/recaudo-modal.component';
+import { CreditResponseDto, CreditService } from '@core/services/credit.service';
+
 
 @Component({
   selector: 'app-stady',
@@ -38,6 +42,8 @@ import { PersonRegisterDto, PersonService } from '@core/services/person.service'
 export class StadyComponent implements OnInit {
   private _credit!: CreditIntentionResponseDto;
   loading: boolean = false;
+  loadingCredito: boolean = false;
+
 
   //Output para notificar al padre
   @Output() allActivitiesCompleted = new EventEmitter<boolean>();
@@ -77,7 +83,9 @@ export class StadyComponent implements OnInit {
   isSaving = false;
   fechaTentativaOriginal!: string;
 
+
   documentTypes: Glotypes[] = [];
+
   genderGlotypes: Glotypes[] = [];
   paises: OptionDTO[] = [];
   departamentos: OptionDTO[] = [];
@@ -85,7 +93,7 @@ export class StadyComponent implements OnInit {
   barrios: OptionDTO[] = [];
   zonas: ZonaResponseDto[] = [];
 
-  creditosCliente: any[] = [];
+  creditosCliente: CreditResponseDto[] = [];
   observacionesSeguimiento: any[] = [];
 
   constructor(
@@ -97,7 +105,9 @@ export class StadyComponent implements OnInit {
     private router: Router,
     private creditIntencionService: CreditIntentionService,
     private creditIntencionStatusService: CreditIntentionStatusService,
-    private personService: PersonService
+    private personService: PersonService,
+    private modalService: NgbModal,
+    private creditService: CreditService
 
   ) { }
 
@@ -114,6 +124,9 @@ export class StadyComponent implements OnInit {
     });
 
     this.setupLocationListeners();
+    if (this.credit) {
+      this.loadCreditoByPersonId();
+    }
   }
 
   private initializeForms(): void {
@@ -190,6 +203,8 @@ export class StadyComponent implements OnInit {
       home_address: this.credit.homeAddress,
       description: this.credit.description,
       es_cliente_nuevo: esClienteNuevo,
+      referido: this.credit.referido === true || this.credit.referido === 1,
+      call_success: this.credit.callSuccess === true || this.credit.callSuccess === 1,
 
     });
     //ACTIVIDAD 2
@@ -316,6 +331,30 @@ export class StadyComponent implements OnInit {
 
   }
 
+  loadCreditoByPersonId(): void {
+    const document = this.credit?.document;
+    if (!document) return;
+
+    this.loadingCredito = true;
+
+    this.personService.getPersonByDocument(document).pipe(
+      switchMap(personResponse => {
+        const personId = personResponse?.data?.id;
+        if (!personId) throw new Error('Sin personId');
+        return this.creditService.getCreditsbyPersonId(personId);
+      })
+    ).subscribe({
+      next: (response) => {
+        this.creditosCliente = response.data ?? [];
+        this.loadingCredito = false;
+      },
+      error: () => {
+        this.creditosCliente = [];
+        this.loadingCredito = false;
+      }
+    });
+  }
+
   updateFullName(): void {
     const { firstname, middlename, lastname, maternal_lastname } = this.form1.value;
     const fullname = [firstname, middlename, lastname, maternal_lastname]
@@ -332,6 +371,21 @@ export class StadyComponent implements OnInit {
     this.submitted = true;
 
     if (this.form1.invalid) return;
+
+    const callSuccess = this.form1.get('call_success')?.value;
+  if (!callSuccess) {
+    Swal.fire({
+      title: 'Datos no confirmados',
+      text: 'Debe confirmar los datos por llamada antes de continuar.',
+      icon: 'warning',
+      confirmButtonText: 'Entendido',
+      buttonsStyling: false,
+      customClass: {
+        confirmButton: 'btn btn-warning'
+      }
+    });
+    return;
+  }
 
     this.isSaving = true;
 
@@ -915,6 +969,18 @@ export class StadyComponent implements OnInit {
       return false;
     }
     return true;
+  }
+
+  openCreditDetail(creditId: number): void {
+    const modalRef = this.modalService.open(RecaudoModalComponent, {
+      size: 'xl',
+      backdrop: 'static',
+      keyboard: true,
+      centered: true,
+      scrollable: true,
+      windowClass: 'modal-extra-large'
+    });
+    modalRef.componentInstance.creditId = creditId;
   }
 
   // Función de utilidad para convertir fecha a formato "YYYY-MM-DD"

@@ -15,6 +15,7 @@ import { ClosingSpendService } from '@core/services/closingSpend.service';
 import { LoadingComponent } from '@views/ui/loading/loading.component';
 import { Glotypes, GlotypesService } from '@core/services/glotypes.service';
 import { CreditIntentionDetail, RecaudoDetail, RecaudoService } from '@core/services/recaudo.service';
+import { CreditCausadoDetail, CreditService } from '@core/services/credit.service';
 
 enum UserRole {
   ASISTENTE = 'BACKOFFICE',
@@ -70,6 +71,7 @@ export class ClosingComponent implements OnInit {
   spendGlotypes: Glotypes[] = [];
   recaudos: RecaudoDetail[] = [];
   spendsList: ClosingSpend[] = [];
+  creditsCausados: CreditCausadoDetail[] = [];
   intentions: CreditIntentionDetail[] = [];
 
   baseSpendTypeId: number | null = null;
@@ -116,7 +118,8 @@ export class ClosingComponent implements OnInit {
     private route: ActivatedRoute,
     private router: Router,
     private dialog: MatDialog,
-    private glotypesService: GlotypesService
+    private glotypesService: GlotypesService,
+    private creditService: CreditService
   ) { }
 
   ngOnInit(): void {
@@ -174,7 +177,7 @@ export class ClosingComponent implements OnInit {
   loadRecaudosByUser() {
     if (!this.currentZone) return; // Sin mensaje, simplemente no ejecuta
 
-    const today = new Date().toLocaleDateString('en-CA'); 
+    const today = new Date().toLocaleDateString('en-CA');
     this.recaudoService
       .getRecaudosByUserAndDate(this.closingId!, today, this.currentZone)
       .subscribe({
@@ -271,6 +274,7 @@ export class ClosingComponent implements OnInit {
         this.updatePermissions();
         this.updateStepperPosition();
         this.loadRecaudosByUser(); // Cargar recaudos después de tener la zona
+        this.loadCreditsCausados();
       },
       error: (err) => {
         this.currentStatus = ClosingStatus.PRE_CIERRE;
@@ -1358,7 +1362,9 @@ export class ClosingComponent implements OnInit {
     const base = this.toNumber(this.baseForm.get('base')?.value);
     const recaudos = this.getTotalRecaudos();
     const gastos = this.getTotalSpends();
-    return (base + recaudos) + gastos;
+    const creditos = this.getTotalCreditsCausados();
+
+    return (base + recaudos) - (gastos + creditos);
   }
 
   addSpendInPreApproval(): void {
@@ -1536,6 +1542,35 @@ export class ClosingComponent implements OnInit {
           text: 'No se pudo descargar la evidencia'
         });
       }
+    });
+  }
+
+  loadCreditsCausados(): void {
+    if (!this.closingId) return;
+
+    this.creditService.getCreditsCausadosByClosing(this.closingId).subscribe({
+      next: (response) => {
+        this.creditsCausados = response.data ?? [];
+      },
+      error: () => {
+        this.creditsCausados = [];
+      }
+    });
+  }
+
+  getTotalCreditsCausados(): number {
+    return this.creditsCausados.reduce((sum, c) => sum + c.totalCapitalValue, 0);
+  }
+
+  formatDateTime(dateStr: string): string {
+    if (!dateStr) return '-';
+    const date = new Date(dateStr);
+    return date.toLocaleString('es-CO', {
+      day: '2-digit',
+      month: '2-digit',
+      year: 'numeric',
+      hour: '2-digit',
+      minute: '2-digit'
     });
   }
 }

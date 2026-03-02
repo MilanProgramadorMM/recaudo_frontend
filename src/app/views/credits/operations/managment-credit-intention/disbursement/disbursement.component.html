@@ -47,7 +47,7 @@
                 <ng-container *ngIf="!isLineaFinanciamiento()">
 
                     <!-- ALERTA CON INFORMACIÓN DEL MONTO REQUERIDO -->
-                    <div class="alert alerta-roja mb-4">
+                    <div class="alert alerta-orange mb-4">
                         <i class="bi bi-info-circle me-2"></i>
                         <strong>Monto total a desembolsar:</strong> {{ formatearMoneda(getMontoRequerido()) }}
                         <br>
@@ -124,7 +124,7 @@
                     <div class="card-body" *ngIf="desembolsos.length > 0">
                         <h5 class="card-title mb-3">Desembolsos Registrados</h5>
                         <div class="table-responsive-sm">
-                            <table class="table table-bordered tabla-roja mb-0">
+                            <table class="table table-bordered tabla-negra mb-0">
                                 <thead>
                                     <tr>
                                         <th>Método</th>
@@ -166,9 +166,9 @@
                             <i class="bi bi-exclamation-triangle me-2"></i>
                             Falta registrar: <strong>{{ formatearMoneda(getMontoRestante()) }}</strong>
                         </div>
-                        <div *ngIf="isMontoCompleto()" class="alert alerta-roja mt-3 mb-0">
+                        <div *ngIf="isMontoCompleto()" class="alert alerta-success mt-3 mb-0">
                             <i class="bi bi-check-circle me-2"></i>
-                            ¡Monto completo! Puede continuar a la siguiente fase.
+                            ¡Desembolso completo! Puede continuar a la siguiente fase.
                         </div>
                     </div>
 
@@ -177,7 +177,7 @@
                 <!-- ========== CAMPOS PARA LÍNEA DE FINANCIAMIENTO ========== -->
                 <ng-container *ngIf="isLineaFinanciamiento()">
 
-                    <div class="alert alerta-roja mb-4">
+                    <div class="alert alerta-orange mb-4">
                         <i class="bi bi-info-circle me-2"></i>
                         <strong>Línea de Financiamiento:</strong> Debe proporcionar la referencia y foto del producto.
                     </div>
@@ -236,7 +236,7 @@
                     </div>
 
                     <!-- CAMPOS DE CUOTA INICIAL -->
-                    <div class="alert alerta-roja mb-4">
+                    <div class="alert alerta-orange mb-4">
                         <i class="bi bi-wallet2 me-2"></i>
                         <strong>Cuota inicial requerida:</strong> {{ formatearMoneda(credit.initialValuePayment) }}
                         <br>
@@ -333,7 +333,7 @@
                     <div class="card-body" *ngIf="desembolsos.length > 0">
                         <h5 class="card-title mb-3">Desembolsos Registrados</h5>
                         <div class="table-responsive-sm">
-                            <table class="table table-bordered tabla-roja mb-0">
+                            <table class="table table-bordered tabla-negra mb-0">
                                 <thead>
                                     <tr>
                                         <th>Método</th>
@@ -376,9 +376,9 @@
                             <i class="bi bi-exclamation-triangle me-2"></i>
                             Falta registrar: <strong>{{ formatearMoneda(getMontoRestante()) }}</strong>
                         </div>
-                        <div *ngIf="isMontoCompleto()" class="alert alerta-roja mt-3 mb-0">
+                        <div *ngIf="isMontoCompleto()" class="alert alerta-success mt-3 mb-0">
                             <i class="bi bi-check-circle me-2"></i>
-                            ¡Monto completo! Puede continuar a la siguiente fase.
+                            ¡Desembolso completo! Puede continuar a la siguiente fase.
                         </div>
                     </div>
 
@@ -401,7 +401,7 @@
         </mat-step>
 
 
-        <!-- ACTIVIDAD 3: Causar credito -->
+        <!-- ACTIVIDAD 3: Causar credito 
         <mat-step [stepControl]="form3">
             <ng-template matStepLabel>
                 Actividad 3 - Causar credito
@@ -422,7 +422,7 @@
                         </mat-radio-button>
                     </mat-radio-group>
 
-                    <!-- Mensaje de validación -->
+                    Mensaje de validación 
                     <div *ngIf="submitted && form3.get('decision')?.invalid" class="alert alert-danger">
                         <i class="bi bi-exclamation-circle me-2"></i>
                         Seleccione para terminar proceso
@@ -430,7 +430,7 @@
                 </div>
             </form>
             <div class="d-flex wizard justify-content-end flex-wrap gap-2 mt-3">
-                <!-- Mostrar botón solo si NO ha sido completado -->
+                Mostrar botón solo si NO ha sido completado 
                 <div class="next" *ngIf="!isPhaseCompleted">
                     <button (click)="onSubmitActividad3()" class="btn btn-danger mt-3 mt-md-0"
                         [disabled]="isSaving || form3.invalid">
@@ -443,7 +443,7 @@
                     </button>
                 </div>
 
-                <!-- Mensaje de confirmación cuando se completa -->
+                Mensaje de confirmación cuando se completa 
                 <div *ngIf="isPhaseCompleted" class="alert alert-success w-100 mb-0">
                     <i class="bi bi-check-circle me-2"></i>
                     <strong>Proceso completado.</strong>
@@ -453,6 +453,7 @@
                 </div>
             </div>
         </mat-step>
+        -->
 
     </mat-stepper>
 </div>

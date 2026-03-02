@@ -262,8 +262,8 @@ export class ManagmentCreditIntentionComponent implements OnInit, AfterViewInit 
     console.log('Fase de Desembolso completada:', completed);
 
     if (completed) {
-      // Aquí podrías redirigir a otra página o mostrar mensaje de finalización
-      console.log('¡Proceso de crédito completado!');
+      // Redirigir automáticamente a la lista de intenciones
+      this.router.navigate(['/operaciones/intencion'], { replaceUrl: true });
     }
   }
 
@@ -303,8 +303,6 @@ export class ManagmentCreditIntentionComponent implements OnInit, AfterViewInit 
     );
   }
 
-  // En tu componente .ts
-
   downloadCedula(): void {
     if (!this.creditIntentionId) {
       this.showErrorToast('No hay intención de crédito seleccionada');
@@ -339,15 +337,14 @@ export class ManagmentCreditIntentionComponent implements OnInit, AfterViewInit 
   // Métodos auxiliares para toast (si los tienes)
   showSuccessToast(message: string): void {
     // Implementa según tu librería de toasts
-    console.log('✅', message);
   }
 
   showWarningToast(message: string): void {
-    console.warn('⚠️', message);
+    console.warn('', message);
   }
 
   showErrorToast(message: string): void {
-    console.error('❌', message);
+    console.error('', message);
   }
 
 

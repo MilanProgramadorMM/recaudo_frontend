@@ -19,7 +19,7 @@ export interface PublicCreditIntentionResponse {
     quotaValue: number;
     periodQuantity: number;
     periodName: string;
-    totalIntentionValue: number;
+    totalCapitalValue: number;
     approvalStatus: 'PENDING' | 'APPROVED' | 'REJECTED';
     tokenExpired: boolean;
 }

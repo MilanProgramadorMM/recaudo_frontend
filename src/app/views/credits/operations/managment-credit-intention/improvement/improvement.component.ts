@@ -857,7 +857,7 @@ export class ImprovementComponent implements OnInit {
             buttonsStyling: false,
             confirmButtonText: 'Enviar por WhatsApp',
             customClass: {
-              confirmButton: 'btn btn-copy-red'
+              confirmButton: 'btn btn-success'
             }
           }).then((result) => {
             if (result.isConfirmed) {

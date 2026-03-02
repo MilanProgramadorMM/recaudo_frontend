@@ -14,9 +14,12 @@ import { OptionDTO, UbicacionService } from '@core/services/ubicacion.service';
 import { ZonaResponseDto, ZonaService } from '@core/services/zona.service';
 import { LoadingComponent } from '@views/ui/loading/loading.component';
 import { NgStepperComponent, NgStepperModule } from 'angular-ng-stepper';
-import { debounceTime, firstValueFrom, merge, Subscription } from 'rxjs';
+import { debounceTime, firstValueFrom, merge, Subscription, switchMap } from 'rxjs';
 import Swal from 'sweetalert2';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import { UserService } from '@core/services/user.service';
+import { AuthenticationService } from '@core/services/auth.service';
+import { PersonZonaService } from '@core/services/person-zona.service';
 
 
 @Component({
@@ -53,6 +56,8 @@ export class SimulationIntentionComponent implements OnInit {
   simulationCompleted: boolean = false;
   simulationResult: CreditProjectionDto | null = null;
   private formSubscription?: Subscription;
+  currentUserRole: string | null = null;
+  currentUserId: number | null = null;
 
 
 
@@ -107,7 +112,12 @@ export class SimulationIntentionComponent implements OnInit {
     private personService: PersonService,
     private dialog: MatDialog,
     private creditIntentionService: CreditIntentionService,
-    private snackBar: MatSnackBar
+    private snackBar: MatSnackBar,
+    private userService: UserService,
+    private authService: AuthenticationService,
+    private personZonaService: PersonZonaService
+
+
   ) { }
 
   ngOnInit(): void {
@@ -167,8 +177,9 @@ export class SimulationIntentionComponent implements OnInit {
     this.loadGender();
     this.fetchLines();
     this.fetchPeriods();
-    this.loadZonas();
+    this.getUserDataFromToken();
 
+    this.loadZonasByRole();
 
 
     this.ubicacionService.getPaises().subscribe(data => this.paises = data);
@@ -216,23 +227,47 @@ export class SimulationIntentionComponent implements OnInit {
   }
 
   private setupFormChangeDetection(): void {
-    this.formSubscription = this.form.valueChanges.subscribe(() => {
-      // Si hay una simulación completada y el usuario cambia algo
-      if (this.simulationCompleted) {
-        console.warn('Formulario modificado después de la simulación. Desactivando botón guardar.');
+    // Campos que SÍ deben limpiar los calculados cuando cambian
+    const triggerFields = ['credit_line_id', 'period_id', 'period_quantity', 'start_date'];
+
+    triggerFields.forEach(fieldName => {
+      this.form.get(fieldName)?.valueChanges.subscribe((newValue) => {
+        if (this.updatingFromBackend) return;
+        if (!this.simulationCompleted) return; // Solo actuar si ya se simuló
+
+        console.warn(`Campo "${fieldName}" cambió. Limpiando campos calculados.`);
         this.simulationCompleted = false;
         this.simulationResult = null;
-
-        // Opcional: Mostrar mensaje al usuario
         this.errorMessage = 'Los datos han cambiado. Debe simular nuevamente antes de guardar.';
 
-        // Limpiar mensaje después de unos segundos
+        this.clearCalculatedFields();
+
         setTimeout(() => {
           if (this.errorMessage === 'Los datos han cambiado. Debe simular nuevamente antes de guardar.') {
             this.errorMessage = '';
           }
         }, 5000);
-      }
+      });
+    });
+
+    this.form.get('initial_quota')?.valueChanges.subscribe(() => {
+      if (this.updatingFromBackend) return;
+      if (!this.simulationCompleted) return;
+
+      this.simulationCompleted = false;
+      this.simulationResult = null;
+      this.errorMessage = 'Los datos han cambiado. Debe simular nuevamente antes de guardar.';
+
+      // ✅ Limpiar cuota cuando el usuario modifica cuota inicial post-simulación
+      this.form.get('quota_value')?.setValue(null, { emitEvent: true });
+      this.form.get('quota_value')?.enable({ emitEvent: false });
+
+      this.interactionCamposParaCalculo();
+      setTimeout(() => {
+        if (this.errorMessage === 'Los datos han cambiado. Debe simular nuevamente antes de guardar.') {
+          this.errorMessage = '';
+        }
+      }, 5000);
     });
   }
 
@@ -271,6 +306,63 @@ export class SimulationIntentionComponent implements OnInit {
       }
     });
   }
+
+  getUserDataFromToken(): void {
+    this.currentUserRole = this.authService.getUserRole();
+    this.currentUserId = this.authService.getUserId();
+
+    console.log('Usuario logueado:', {
+      role: this.currentUserRole,
+      userId: this.currentUserId
+    });
+  }
+
+  loadZonasByRole(): void {
+    // Verificar si el rol es 'asesor'
+    if (this.currentUserRole?.toLowerCase() === 'asesor') {
+      this.loadZonasForAsesor();
+    } else {
+      // Para 'admin', 'backoffice' o cualquier otro rol
+      this.loadZonas();
+    }
+  }
+
+  private loadZonasForAsesor(): void {
+    if (!this.currentUserId) {
+      console.error('No se pudo obtener el ID del asesor');
+      return;
+    }
+
+    this.userService.getUserById(this.currentUserId).pipe(
+      switchMap(response => {
+        const user = response.data;
+
+        if (!user?.person_id) {
+          throw new Error('El usuario no tiene person_id');
+        }
+
+        console.log('User obtenido:', user);
+
+        return this.personZonaService.getZonasByAsesor(user.person_id);
+      })
+    ).subscribe({
+      next: (response) => {
+        this.zonas = response.data.map(az => ({
+          id: az.zonaId,
+          value: az.zonaName,
+          description: '',
+          status: true
+        }));
+
+        console.log('Zonas del asesor cargadas:', this.zonas);
+      },
+      error: (err) => {
+        console.error('Error al cargar zonas del asesor:', err);
+        this.zonas = [];
+      }
+    });
+  }
+
 
   loadDocumentTypes() {
     this.glotypesService.getGlotypesByKey('TIPDOC').subscribe({
@@ -674,8 +766,8 @@ export class SimulationIntentionComponent implements OnInit {
     const [year, month, day] = raw.start_date.split('-').map(Number);
     const selectedDate = new Date(year, month - 1, day);
 
-    const today = new Date();         
-    today.setHours(0, 0, 0, 0);       
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
 
     if (selectedDate < today) {
       this.errorMessage = 'La fecha de inicio no puede ser anterior a hoy';
@@ -979,7 +1071,10 @@ export class SimulationIntentionComponent implements OnInit {
         // ==================== CALCULAR_CUOTA ====================
         if (tipo_calculo === 'CALCULAR_CUOTA') {
           const cuotaCalculada = data.dcreVlrcuota ?? 0;
+          console.log('Cuota calculada:', cuotaCalculada);
           const valorSolicitud = cuotaCalculada * numeroCuotas;
+          console.log('Valor soli:', valorSolicitud);
+
 
           if (grupo === 'GRUPO2') {
             this.form.patchValue({
@@ -1022,7 +1117,7 @@ export class SimulationIntentionComponent implements OnInit {
         // ==================== CALCULAR_TASA ====================
         else if (tipo_calculo === 'CALCULAR_TASA') {
           const tasaCalculada = data.dcreTasa ?? 0;
-          const cuotaActual = this.toNumber(this.form.get('quota_value')?.value);
+          const cuotaActual = data.dcreVlrcuota ?? 0;
           const valorSolicitud = cuotaActual * numeroCuotas;
 
           if (grupo === 'GRUPO2') {
@@ -1063,34 +1158,45 @@ export class SimulationIntentionComponent implements OnInit {
 
         // ==================== CALCULAR_CAPITAL ====================
         else if (tipo_calculo === 'CALCULAR_CAPITAL') {
-          const cuotaActual = this.toNumber(this.form.get('quota_value')?.value);
+          const cuotaActual = data.dcreVlrcuota ?? 0;
           const valorSolicitud = cuotaActual * numeroCuotas;
+          console.log('Valor solicitud:', cuotaActual, valorSolicitud);
+
+          const valorBase = data.dcreVlrBase ?? data.dcreCapital ?? 0;
+          const initialQuota = this.toNumber(this.form.get('initial_quota')?.value);
 
           if (grupo === 'GRUPO2') {
             this.form.patchValue({
-              desembolso_value: dcreCapital,
+              desembolso_value: valorBase,
+              quota_value: data.dcreVlrcuota,
               total_intention_value: valorSolicitud,
               item_value: null
             }, { emitEvent: false });
 
             this.formatCurrency('desembolso_value');
+            this.formatCurrency('quota_value');
             this.formatCurrency('total_intention_value');
 
             setTimeout(() => {
-              this.form.get('quota_value')?.enable({ emitEvent: false });
+              // this.form.get('quota_value')?.enable({ emitEvent: false });
               this.form.get('tax_value')?.enable({ emitEvent: false });
               this.form.get('desembolso_value')?.enable({ emitEvent: false });
               this.form.get('item_value')?.disable({ emitEvent: false });
+              this.form.get('quota_value')?.enable({ emitEvent: false });
             }, 50);
 
           } else {
             this.form.patchValue({
-              item_value: dcreCapital,
               total_intention_value: valorSolicitud,
+              quota_value: data.dcreVlrcuota,
               desembolso_value: null
             }, { emitEvent: false });
+            this.form.patchValue({
+              item_value: valorBase,
+            }, { emitEvent: true });
 
             this.formatCurrency('item_value');
+            this.formatCurrency('quota_value');
             this.formatCurrency('total_intention_value');
 
 
@@ -1099,6 +1205,7 @@ export class SimulationIntentionComponent implements OnInit {
               this.form.get('tax_value')?.enable({ emitEvent: false });
               this.form.get('item_value')?.enable({ emitEvent: false });
               this.form.get('desembolso_value')?.disable({ emitEvent: false });
+              //this.form.get('item_value').
             }, 50);
           }
         }
@@ -1326,7 +1433,7 @@ export class SimulationIntentionComponent implements OnInit {
       // Habilitar campos del GRUPO 1
       itemCtrl?.enable({ emitEvent: false });
       financiateCtrl?.enable({ emitEvent: false });
-      initialQuotaCtrl?.enable({ emitEvent: false });
+      initialQuotaCtrl?.disable({ emitEvent: false });
       quotaCtrl?.enable({ emitEvent: false });
       taxCtrl?.enable({ emitEvent: false });
 
@@ -1621,9 +1728,17 @@ export class SimulationIntentionComponent implements OnInit {
     fecha?.updateValueAndValidity({ emitEvent: false });
 
   }
+
   setupValueToFinanciateCalculation(): void {
     this.form.get('item_value')?.valueChanges.subscribe(() => {
       this.calculateValueToFinanciate();
+      const itemValue = this.toNumber(this.form.get('item_value')?.value);
+      if (itemValue > 0) {
+        this.form.get('initial_quota')?.enable({ emitEvent: false });
+      } else {
+        // this.form.get('initial_quota')?.setValue(null, { emitEvent: false });
+        this.form.get('initial_quota')?.disable({ emitEvent: false });
+      }
     });
 
     this.form.get('initial_quota')?.valueChanges.subscribe(() => {
@@ -1667,6 +1782,48 @@ export class SimulationIntentionComponent implements OnInit {
       }, { emitEvent: false });
       this.formatCurrency('value_to_financiate');
     }
+  }
+
+  private clearCalculatedFields(): void {
+    this.updatingFromBackend = true;
+
+    this.form.patchValue({
+      quota_value: null,
+      tax_value: null,
+      item_value: null,
+      desembolso_value: null,
+      value_to_financiate: null,
+      initial_quota: null,
+      total_intention_value: null,
+    }, { emitEvent: false });
+
+    // Resetear estados de campos según el grupo activo
+    const hasDisbursement = this.selectedCreditLine?.loanDisbursement ?? false;
+
+    this.form.get('quota_value')?.enable({ emitEvent: false });
+    this.form.get('tax_value')?.enable({ emitEvent: false });
+
+    if (hasDisbursement) {
+      this.form.get('desembolso_value')?.enable({ emitEvent: false });
+      this.form.get('item_value')?.disable({ emitEvent: false });
+      this.form.get('value_to_financiate')?.disable({ emitEvent: false });
+      this.form.get('initial_quota')?.disable({ emitEvent: false });
+    } else {
+      this.form.get('item_value')?.enable({ emitEvent: false });
+      this.form.get('value_to_financiate')?.enable({ emitEvent: false });
+      this.form.get('initial_quota')?.enable({ emitEvent: false });
+      this.form.get('desembolso_value')?.disable({ emitEvent: false });
+    }
+
+    this.isQuincenal = false;
+    this.numeroCoutasInForm = null;
+    this.errorInicioQuincena = null;
+    this.errorFinQuincena = null;
+    this.errorValueToFinanciate = '';
+
+    setTimeout(() => {
+      this.updatingFromBackend = false;
+    }, 100);
   }
 
 

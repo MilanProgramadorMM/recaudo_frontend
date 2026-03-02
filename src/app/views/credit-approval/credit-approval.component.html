@@ -18,11 +18,16 @@
                 <!-- Error State -->
                 <div *ngIf="!loading && error" class="card shadow-lg border-0">
                     <div class="card-body text-center py-5">
-                        <i class="bi bi-exclamation-triangle text-warning" style="font-size: 4rem;"></i>
+
+                        <div class="icon-wrapper mb-4">
+                            <i class="bi bi-check-lg"></i>
+                        </div>
                         <h3 class="mt-3 mb-2">{{ error }}</h3>
+
                         <p class="text-muted">
                             Si crees que esto es un error, contacta con soporte.
                         </p>
+
                     </div>
                 </div>
 
@@ -32,7 +37,7 @@
                     <div class="card-header bg-custom-red text-white text-center py-4">
                         <h3 class="mb-1">
                             <i class="bi bi-file-text me-2"></i>
-                            Confirmación de Solicitud de Crédito
+                            Confirmación o rechazo de Crédito
                         </h3>
                         <p class="mb-0 small opacity-75">Revisa los detalles y confirma tu decisión</p>
                     </div>
@@ -78,17 +83,17 @@
 
                             <div class="row g-3">
                                 <!-- Línea de crédito -->
-                                <div class="col-12">
+                                <!-- <div class="col-12">
                                     <div class="card bg-light border-0">
                                         <div class="card-body">
                                             <small class="text-muted d-block mb-1">Línea de Crédito</small>
                                             <h6 class="mb-0">{{ creditIntention.nameLine }}</h6>
                                         </div>
                                     </div>
-                                </div>
+                                </div> -->
 
                                 <!-- Valor de la cuota -->
-                                <div class="col-md-4">
+                                <!-- <div class="col-md-4">
                                     <div class="card bg-light border-0">
                                         <div class="card-body">
                                             <small class="text-muted d-block mb-1">Valor de la Cuota</small>
@@ -97,10 +102,10 @@
                                             </h6>
                                         </div>
                                     </div>
-                                </div>
+                                </div> -->
 
                                 <!-- Plazo -->
-                                <div class="col-md-4">
+                                <!-- <div class="col-md-4">
                                     <div class="card bg-light border-0">
                                         <div class="card-body">
                                             <small class="text-muted d-block mb-1">Numero de cuotas</small>
@@ -109,9 +114,9 @@
                                             </h6>
                                         </div>
                                     </div>
-                                </div>
+                                </div> -->
 
-                                <div class="col-md-4">
+                                <!-- <div class="col-md-4">
                                     <div class="card bg-light border-0">
                                         <div class="card-body">
                                             <small class="text-muted d-block mb-1">Periodo</small>
@@ -120,19 +125,19 @@
                                             </h6>
                                         </div>
                                     </div>
-                                </div>
+                                </div> -->
 
                                 <!-- Valor total -->
-                                <!-- <div class="col-12">
+                                <div class="col-12">
                                     <div class="card border-primary">
                                         <div class="card-body text-center">
                                             <small class="text-muted d-block mb-1">Valor Total del Crédito</small>
                                             <h4 class="mb-0 text-primary fw-bold">
-                                                {{ formatCurrency(creditIntention.totalIntentionValue) }}
+                                                {{ formatCurrency(creditIntention.totalCapitalValue) }}
                                             </h4>
                                         </div>
                                     </div>
-                                </div> -->
+                                </div>
                             </div>
                         </div>
 
@@ -142,7 +147,7 @@
                             <hr class="my-4">
 
                             <h5 class="text-center mb-4">
-                                ¿Deseas aprobar esta solicitud de crédito?
+                                ¿Deseas aprobar este de crédito?
                             </h5>
 
                             <div class="row g-3">

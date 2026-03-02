@@ -19,6 +19,9 @@ export interface CreditProjectionDto {
 
     dcreFvence: string | null;
     dcreFvenceRaw: string | null;
+    dcreVlrBase: number;       
+    dcreVlrPapeleia: number;   
+    dcreVlrBasePapeleria: number;
 }
 
 export interface CreditIntentionDocumentResponseDto {
@@ -53,6 +56,8 @@ export interface CreditIntentionResponseDto {
     id: number;
 
     zoneId: number;
+    personId: number;
+
     zoneName: string;
     zoneDescription: string;
 
@@ -115,8 +120,8 @@ export interface CreditIntentionResponseDto {
     clientExists?: number;
     initialQuincena?: number | null;
     endQuincena?: number | null;
-    referido?: number;
-    callSuccess?: number;
+    referido?: boolean | number;
+    callSuccess?: boolean | number;
     estadoActual?: string;
 
     approvalLink?: string;
@@ -210,7 +215,7 @@ export interface PublicCreditIntentionResponse {
     quotaValue: number;
     periodQuantity: number;
     periodName: string;
-    totalIntentionValue: number;
+    totalCapitalValue: number;
     approvalStatus: 'PENDING' | 'APPROVED' | 'REJECTED';
     tokenExpired: boolean;
 }

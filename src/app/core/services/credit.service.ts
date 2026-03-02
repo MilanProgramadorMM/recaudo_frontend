@@ -23,6 +23,13 @@ export interface CreditRegisterDto {
     stationery: number;
 }
 
+export interface CreditCausadoDetail {
+    id: number;
+    totalCapitalValue: number;
+    createdAt: string;
+    clientName: string;
+}
+
 export interface CreditResponseDto {
     id: number;
     creditIntentionId: number;
@@ -47,6 +54,8 @@ export interface CreditResponseDto {
 
     createdAt: string | null;
     editedAt: string | null;
+
+    periodName: string;
 }
 
 
@@ -101,10 +110,15 @@ export class CreditService {
     }
 
     getCreditsbyPersonId(id: number) {
-        return this.http.get<
-            DefaultResponseDto<CreditResponseDto>
-        >(
+        return this.http.get<DefaultResponseDto<CreditResponseDto[]>>(
             `${baseUrl}credits/get-by-person/${id}`,
+            { headers: this.getHeaders() }
+        );
+    }
+
+    getCreditsCausadosByClosing(closingId: number) {
+        return this.http.get<DefaultResponseDto<CreditCausadoDetail[]>>(
+            `${baseUrl}credits/causados-by-closing/${closingId}`,
             { headers: this.getHeaders() }
         );
     }

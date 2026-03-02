@@ -72,7 +72,7 @@ export class DisbursementComponent {
 
   form1!: FormGroup;
   form2!: FormGroup;
-  form3!: FormGroup;
+  // form3!: FormGroup;
 
   isLinear = true;
   submitted = false;
@@ -160,9 +160,9 @@ export class DisbursementComponent {
       productoFoto: [null, this.isLineaFinanciamiento() ? Validators.required : []]
     });
 
-    this.form3 = this.fb.group({
-      decision: ['', Validators.required]
-    });
+    // this.form3 = this.fb.group({
+    //   decision: ['', Validators.required]
+    // });
   }
 
   formatCurrency(controlName: string) {
@@ -471,39 +471,21 @@ export class DisbursementComponent {
       return;
     }
 
-    // Si no hay desembolsos, avanzar directamente
     if (this.desembolsos.length === 0) {
-      this.stepper.next();
-      window.scrollTo({ top: 0, behavior: 'smooth' });
+      // Sin desembolsos: causar directamente
+      this.causarCreditoDirectamente();
       return;
     }
 
-    // Mostrar loading
-    const dialogRef = this.dialog.open(LoadingComponent, {
-      disableClose: true,
-    });
-
+    const dialogRef = this.dialog.open(LoadingComponent, { disableClose: true });
     this.isSaving = true;
 
-    // Guardar desembolsos
     this.saveDisbursementsToDatabase()
       .then(() => {
         dialogRef.close();
         this.isSaving = false;
-
-        Swal.fire({
-          title: '¡Éxito!',
-          text: 'Desembolsos guardados correctamente.',
-          icon: 'success',
-          buttonsStyling: false,
-          confirmButtonText: 'Aceptar',
-          customClass: {
-            confirmButton: 'btn btn-success'
-          }
-        }).then(() => {
-          this.stepper.next();
-          window.scrollTo({ top: 0, behavior: 'smooth' });
-        });
+        // Causar crédito automáticamente sin pasar al paso 3
+        this.causarCreditoDirectamente();
       })
       .catch((error) => {
         dialogRef.close();
@@ -512,27 +494,27 @@ export class DisbursementComponent {
       });
   }
 
-  onSubmitActividad3(): void {
-    if (this.isSaving) return;
+  // onSubmitActividad3(): void {
+  //   if (this.isSaving) return;
 
-    this.submitted = true;
+  //   this.submitted = true;
 
-    if (this.form3.invalid) {
-      this.form3.markAllAsTouched();
-      return;
-    }
+  //   if (this.form3.invalid) {
+  //     this.form3.markAllAsTouched();
+  //     return;
+  //   }
 
-    const decision = this.form3.get('decision')?.value;
-    this.decisionTomada = decision;
+  //   const decision = this.form3.get('decision')?.value;
+  //   this.decisionTomada = decision;
 
-    this.isSaving = true;
+  //   this.isSaving = true;
 
-    const dialogRef = this.dialog.open(LoadingComponent, {
-      disableClose: true,
-    });
+  //   const dialogRef = this.dialog.open(LoadingComponent, {
+  //     disableClose: true,
+  //   });
 
-    this.createOrUpdatePerson(dialogRef);
-  }
+  //   this.createOrUpdatePerson(dialogRef);
+  // }
 
   private createOrUpdatePerson(dialogRef: any): void {
     const credit = this._credit;
@@ -588,6 +570,12 @@ export class DisbursementComponent {
     }
   }
 
+  private causarCreditoDirectamente(): void {
+    this.isSaving = true;
+    const dialogRef = this.dialog.open(LoadingComponent, { disableClose: true });
+    this.createOrUpdatePerson(dialogRef);
+  }
+
   private createCreditRecord(personId: number, dialogRef: any): void {
     const credit = this._credit;
 
@@ -612,23 +600,27 @@ export class DisbursementComponent {
     this.creditService.createCredit(creditPayload).pipe(
       finalize(() => {
         this.isSaving = false;
-        debugger;
         dialogRef.close();
       })
     ).subscribe({
       next: (response) => {
+        this.isPhaseCompleted = true;
+
         Swal.fire({
-          title: '¡Éxito!',
-          text: response.message || 'El crédito ha sido causado y registrado en cartera correctamente.',
+          title: '¡Crédito causado exitosamente!',
+          html: `
+          <p>${response.message || 'El crédito ha sido causado y registrado en cartera correctamente.'}</p>
+        `,
           icon: 'success',
           buttonsStyling: false,
-          confirmButtonText: 'Aceptar',
+          confirmButtonText: '<i class="bx bx-list-ul me-2"></i>Ir a lista',
           customClass: {
-            confirmButton: 'btn btn-success'
-          }
+            confirmButton: 'btn btn-success px-4'
+          },
+          allowOutsideClick: false,
+          allowEscapeKey: false
         }).then(() => {
-          this.isPhaseCompleted = true;
-          this.allActivitiesCompleted.emit(this.isPhaseCompleted);
+          this.allActivitiesCompleted.emit(true);
         });
       },
       error: (error) => {
@@ -727,10 +719,10 @@ export class DisbursementComponent {
         isValid = this.validateActividad2();
         break;
 
-      case 3:
-        currentForm = this.form3;
-        isValid = this.validateActividad3();
-        break;
+      // case 3:
+      //   currentForm = this.form3;
+      //   isValid = this.validateActividad3();
+      //   break;
     }
 
     if (isValid && currentForm) {
@@ -809,45 +801,24 @@ export class DisbursementComponent {
   }
 
   private validateActividad2(): boolean {
-    const camposActividad3 = [
-      'observacion_actividad3',
-    ];
-
-    let isValid = true;
-
-    camposActividad3.forEach(field => {
-      const control = this.form3.get(field);
-      if (control) {
-        control.markAsTouched();
-        if (control.invalid) {
-          isValid = false;
-        }
-      }
-    });
-
-    if (!isValid) {
-      this.errorMessage = 'Por favor complete todos los campos obligatorios del paso 2';
-    } else {
-      this.errorMessage = '';
-    }
-
-    return isValid;
-  }
-
-  private validateActividad3(): boolean {
-    const decision = this.form3.get('decision');
-
-    if (decision) {
-      decision.markAsTouched();
-      if (decision.invalid) {
-        this.errorMessage = 'Por favor seleccione una decisión (Aprobar o Rechazar)';
-        return false;
-      }
-    }
-
     this.errorMessage = '';
     return true;
   }
+  
+  // private validateActividad3(): boolean {
+  //   const decision = this.form3.get('decision');
+
+  //   if (decision) {
+  //     decision.markAsTouched();
+  //     if (decision.invalid) {
+  //       this.errorMessage = 'Por favor seleccione una decisión (Aprobar o Rechazar)';
+  //       return false;
+  //     }
+  //   }
+
+  //   this.errorMessage = '';
+  //   return true;
+  // }
 
   isCompleted(): boolean {
     return this.isPhaseCompleted;

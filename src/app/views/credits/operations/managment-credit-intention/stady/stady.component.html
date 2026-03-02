@@ -356,55 +356,69 @@
                 Actividad 3 - Créditos del Cliente
             </ng-template>
             <form [formGroup]="form3">
-
                 <div class="step-content">
-                    <div *ngIf="!loading" class="table table-nowrap table-hover mb-0">
-                        <div *ngIf="loading" class="text-center my-3">
-                            <div class="spinner-border spinner-border-sm text-primary" role="status"></div>
-                            <span class="ms-2">Cargando historial de credito...</span>
-                        </div>
-                        <table class="table table-bordered table-sm">
-                            <thead class="table-dark bg-light-subtle">
-                                <tr>
-                                    <th>ID</th>
-                                    <th>Monto</th>
-                                    <th>Saldo</th>
-                                    <th>Estado</th>
-                                    <th>Cuotas</th>
-                                    <th>Proyección vs Recaudo</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr *ngFor="let credito of creditosCliente">
-                                    <td>{{ credito.id }}</td>
-                                    <td>{{ credito.monto | currency:'COP':'symbol-narrow':'1.0-0' }}</td>
-                                    <td>{{ credito.saldo | currency:'COP':'symbol-narrow':'1.0-0' }}</td>
-                                    <td>
-                                        <span class="badge"
-                                            [ngClass]="credito.estado === 'Activo' ? 'bg-success' : 'bg-secondary'">
-                                            {{ credito.estado }}
-                                        </span>
-                                    </td>
-                                    <td>{{ credito.cuotas_pagadas }} / {{ credito.cuotas_totales }}</td>
-                                    <td>
-                                        <div class="progress" style="height: 20px;">
-                                            <div class="progress-bar"
-                                                [style.width.%]="calcularProyeccionVsRecaudo(credito).porcentaje">
-                                                {{ calcularProyeccionVsRecaudo(credito).porcentaje }}%
-                                            </div>
-                                        </div>
-                                    </td>
-                                </tr>
-                                <tr *ngIf="creditosCliente.length === 0">
-                                    <td colspan="6" class="text-center text-muted">
-                                        No hay créditos registrados
-                                    </td>
-                                </tr>
-                            </tbody>
-                        </table>
+
+                    <!-- LOADING -->
+                    <div *ngIf="loadingCredito" class="text-center my-3">
+                        <div class="spinner-border spinner-border-sm text-primary" role="status"></div>
+                        <span class="ms-2">Cargando crédito del cliente...</span>
                     </div>
 
-                    <div class="row">
+                    <!-- SI TIENE CRÉDITOS -->
+                    <ng-container *ngIf="!loadingCredito && creditosCliente.length > 0">
+                        <div class="table-responsive mb-4">
+                            <table class="table table-bordered table-sm">
+                                <thead class="table-dark bg-light-subtle">
+                                    <tr>
+                                        <th>ID</th>
+                                        <th>Cliente</th>
+                                        <th>Zona</th>
+                                        <th>Línea de crédito</th>
+                                        <th>Periodo</th>
+                                        <th>Cuotas</th>
+                                        <th>Valor cuota</th>
+                                        <th>Total crédito</th>
+                                        <th>Capital</th>
+                                        <th>Intereses</th>
+                                        <th class="text-center">Detalle</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr *ngFor="let credito of creditosCliente">
+                                        <td>{{ credito.id }}</td>
+                                        <td>{{ credito.fullname }}</td>
+                                        <td>{{ credito.zoneName }}</td>
+                                        <td>{{ credito.creditLineName }}</td>
+                                        <td>{{ credito.periodName }}</td>
+                                        <td>{{ credito.periodQuantity }}</td>
+                                        <td>{{ credito.quotaValue | currency:'COP':'symbol-narrow':'1.0-0' }}</td>
+                                        <td>{{ credito.totalIntentionValue | currency:'COP':'symbol-narrow':'1.0-0' }}
+                                        </td>
+                                        <td>{{ credito.totalCapitalValue | currency:'COP':'symbol-narrow':'1.0-0' }}
+                                        </td>
+                                        <td>{{ credito.totalInterestValue | currency:'COP':'symbol-narrow':'1.0-0' }}
+                                        </td>
+                                        <td class="text-center">
+                                            <button class="btn btn-danger btn-sm"
+                                                (click)="openCreditDetail(credito.id)">
+                                                <i class="ti ti-eye me-1"></i>Ver detalle
+                                            </button>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </ng-container>
+
+                    <!-- SI NO TIENE CRÉDITOS -->
+                    <div *ngIf="!loadingCredito && creditosCliente.length === 0"
+                        class="alert alert-warning d-flex align-items-center gap-2 mb-4">
+                        <i class="ti ti-info-circle fs-4"></i>
+                        <span>Este cliente <strong>no tiene créditos activos</strong> registrados en el sistema.</span>
+                    </div>
+
+                    <!-- Observaciones siempre visibles -->
+                    <div class="row mt-3">
                         <div class="col-lg-12 mb-3">
                             <label class="form-label">Observaciones <span class="required">*</span></label>
                             <textarea class="form-control text-uppercase" formControlName="observacion_actividad3"
@@ -416,8 +430,10 @@
                             </div>
                         </div>
                     </div>
+
                 </div>
             </form>
+
             <div class="d-flex wizard justify-content-between flex-wrap gap-2 mt-3">
                 <div class="first">
                     <button (click)="previousStep()" class="btn btn-primary mt-3 mt-md-0">

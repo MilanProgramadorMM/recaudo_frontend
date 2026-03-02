@@ -611,6 +611,50 @@
                                 </div>
                             </fieldset>
 
+                            <fieldset class="mt-4" *ngIf="creditsCausados.length > 0">
+                                <legend>Créditos Causados — Salidas de Dinero</legend>
+                                <div class="card border-warning mb-4">
+                                    <div class="card-header bg-warning bg-opacity-10">
+                                        <h5 class="mb-0 text-warning">
+                                            <i class="bi bi-arrow-up-right-circle me-2"></i>
+                                            Dinero entregado a clientes hoy
+                                        </h5>
+                                    </div>
+                                    <div class="card-body p-0">
+                                        <table class="table table-sm mb-0">
+                                            <thead class="table-light">
+                                                <tr>
+                                                    <th>#</th>
+                                                    <th>Cliente</th>
+                                                    <th class="text-end">Capital entregado</th>
+                                                    <th>Hora</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <tr *ngFor="let c of creditsCausados; let i = index">
+                                                    <td>{{ i + 1 }}</td>
+                                                    <td>{{ c.clientName || '-' }}</td>
+                                                    <td class="text-end text-warning">
+                                                        <strong>-${{ formatCurrency(c.totalCapitalValue) }}</strong>
+                                                    </td>
+                                                    <td>{{ formatDateTime(c.createdAt) }}</td>
+                                                </tr>
+                                            </tbody>
+                                            <tfoot class="table-light">
+                                                <tr>
+                                                    <th colspan="2">TOTAL SALIDAS:</th>
+                                                    <th class="text-end text-warning">
+                                                        <strong>-${{ formatCurrency(getTotalCreditsCausados())
+                                                            }}</strong>
+                                                    </th>
+                                                    <th></th>
+                                                </tr>
+                                            </tfoot>
+                                        </table>
+                                    </div>
+                                </div>
+                            </fieldset>
+
                             <fieldset class="mt-4">
                                 <legend>Intenciones de Crédito registradas el dia de hoy por el Asesor</legend>
 
@@ -741,6 +785,17 @@
                                                     </h4>
                                                     <small class="text-muted">{{ spendsList.length }}
                                                         registro(s)</small>
+                                                </div>
+                                            </div>
+
+                                            <div class="col-md-3 mb-3">
+                                                <div class="border-start border-warning border-4 ps-3">
+                                                    <small class="text-muted d-block">Créditos Causados</small>
+                                                    <h4 class="mb-0 text-warning">
+                                                        -${{ formatCurrency(getTotalCreditsCausados()) }}
+                                                    </h4>
+                                                    <small class="text-muted">{{ creditsCausados.length }}
+                                                        crédito(s)</small>
                                                 </div>
                                             </div>
 
@@ -883,6 +938,50 @@
                                     </div>
                                 </div>
 
+                                <fieldset class="mt-4" *ngIf="creditsCausados.length > 0">
+                                    <legend>Créditos Causados — Salidas de Dinero</legend>
+                                    <div class="card border-warning mb-4">
+                                        <div class="card-header bg-warning bg-opacity-10">
+                                            <h5 class="mb-0 text-warning">
+                                                <i class="bi bi-arrow-up-right-circle me-2"></i>
+                                                Dinero entregado a clientes hoy
+                                            </h5>
+                                        </div>
+                                        <div class="card-body p-0">
+                                            <table class="table table-sm mb-0">
+                                                <thead class="table-light">
+                                                    <tr>
+                                                        <th>#</th>
+                                                        <th>Cliente</th>
+                                                        <th class="text-end">Capital entregado</th>
+                                                        <th>Hora</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    <tr *ngFor="let c of creditsCausados; let i = index">
+                                                        <td>{{ i + 1 }}</td>
+                                                        <td>{{ c.clientName || '-' }}</td>
+                                                        <td class="text-end text-warning">
+                                                            <strong>-${{ formatCurrency(c.totalCapitalValue) }}</strong>
+                                                        </td>
+                                                        <td>{{ formatDateTime(c.createdAt) }}</td>
+                                                    </tr>
+                                                </tbody>
+                                                <tfoot class="table-light">
+                                                    <tr>
+                                                        <th colspan="2">TOTAL SALIDAS:</th>
+                                                        <th class="text-end text-warning">
+                                                            <strong>-${{ formatCurrency(getTotalCreditsCausados())
+                                                                }}</strong>
+                                                        </th>
+                                                        <th></th>
+                                                    </tr>
+                                                </tfoot>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </fieldset>
+
                                 <!-- Sección de intenciones de crédito -->
                                 <fieldset class="mt-4">
                                     <legend>Intenciones de Crédito Registradas Hoy</legend>
@@ -949,6 +1048,8 @@
                                         </div>
                                     </div>
                                 </fieldset>
+
+
 
                                 <!-- BACKOFFICE/ADMIN en STUDY (Revisión Inicial) -->
                                 <div *ngIf="currentStatus === 'STUDY' && (isAsistente || isAdmin) && canApprove"
