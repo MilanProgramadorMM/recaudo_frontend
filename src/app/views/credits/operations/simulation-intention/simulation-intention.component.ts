@@ -220,6 +220,23 @@ export class SimulationIntentionComponent implements OnInit {
       this.resetPersonForm();
     });
 
+    // Escuchar cambios en Valor del Producto para controlar la Cuota Inicial
+    this.form.get('item_value')?.valueChanges.subscribe(value => {
+      const initialQuotaCtrl = this.form.get('initial_quota');
+
+      // Convertimos a número para validar si es mayor a 0 o tiene contenido
+      const numericValue = this.toNumber(value);
+
+      if (numericValue > 0) {
+        // Si hay valor, habilitamos la cuota inicial
+        initialQuotaCtrl?.enable({ emitEvent: false });
+      } else {
+        // Si no hay valor, limpiamos y deshabilitamos
+        initialQuotaCtrl?.setValue(null, { emitEvent: false });
+        initialQuotaCtrl?.disable({ emitEvent: false });
+      }
+    });
+
     //ESCUCHAR CAMBIOS EN CAMPOS TASA O CUOTA PARA AJUSTAR DEMAS CAMPOS
     this.setupFormChangeDetection();
     this.interactionCamposParaCalculo();
@@ -500,7 +517,7 @@ export class SimulationIntentionComponent implements OnInit {
 
   // Métodos wrapper para cada campo (opcional pero recomendado para legibilidad)
   limitarCuotas(event: Event) {
-    this.validarRangoNumerico('period_quantity', 2, 100, 'numeroCoutasInForm', 'número de cuotas');
+    this.validarRangoNumerico('period_quantity', 2, 700, 'numeroCoutasInForm', 'número de cuotas');
   }
 
   limitarDiaInicioQuincena(event: Event) {
@@ -1419,32 +1436,32 @@ export class SimulationIntentionComponent implements OnInit {
       taxCtrl?.enable({ emitEvent: false });
 
       financiateCtrl?.setValidators([Validators.required]);
-      financiateCtrl?.updateValueAndValidity({ emitEvent: false });
+      financiateCtrl?.updateValueAndValidity({ emitEvent: true });
 
       initialQuotaCtrl?.setValidators([Validators.required]);
-      initialQuotaCtrl?.updateValueAndValidity({ emitEvent: false });
+      initialQuotaCtrl?.updateValueAndValidity({ emitEvent: true });
 
       // Deshabilitar campos del GRUPO 1
-      itemCtrl?.disable({ emitEvent: false });
-      financiateCtrl?.disable({ emitEvent: false });
-      initialQuotaCtrl?.disable({ emitEvent: false });
+      itemCtrl?.disable({ emitEvent: true });
+      financiateCtrl?.disable({ emitEvent: true });
+      initialQuotaCtrl?.disable({ emitEvent: true });
 
     } else {
       // Habilitar campos del GRUPO 1
-      itemCtrl?.enable({ emitEvent: false });
-      financiateCtrl?.enable({ emitEvent: false });
-      initialQuotaCtrl?.disable({ emitEvent: false });
-      quotaCtrl?.enable({ emitEvent: false });
-      taxCtrl?.enable({ emitEvent: false });
+      itemCtrl?.enable({ emitEvent: true });
+      financiateCtrl?.enable({ emitEvent: true });
+      initialQuotaCtrl?.disable({ emitEvent: true });
+      quotaCtrl?.enable({ emitEvent: true });
+      taxCtrl?.enable({ emitEvent: true });
 
       financiateCtrl?.clearValidators();
-      financiateCtrl?.updateValueAndValidity({ emitEvent: false });
+      financiateCtrl?.updateValueAndValidity({ emitEvent: true });
 
       initialQuotaCtrl?.clearValidators();
-      initialQuotaCtrl?.updateValueAndValidity({ emitEvent: false });
+      initialQuotaCtrl?.updateValueAndValidity({ emitEvent: true });
 
       // Deshabilitar campos del GRUPO 2
-      desembolsoCtrl?.disable({ emitEvent: false });
+      desembolsoCtrl?.disable({ emitEvent: true });
     }
 
     // Actualizar validaciones
@@ -1466,7 +1483,6 @@ export class SimulationIntentionComponent implements OnInit {
   requiresDocumentation(): boolean {
     return this.selectedCreditLine?.requireDocumentation ?? false;
   }
-
 
 
   getOnlyCedulaDocuments(): any[] {

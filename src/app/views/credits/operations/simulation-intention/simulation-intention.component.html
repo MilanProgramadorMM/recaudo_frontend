@@ -379,7 +379,7 @@
                                             </label>
 
                                             <input type="number" class="form-control" formControlName="period_quantity"
-                                                min="2" max="100" (keypress)="soloNumeros($event)"
+                                                 (keypress)="soloNumeros($event)"
                                                 [placeholder]="'Ingrese el numero de coutas'"
                                                 (blur)="limitarCuotas($event)" [ngClass]="{
                                                     'is-invalid':
