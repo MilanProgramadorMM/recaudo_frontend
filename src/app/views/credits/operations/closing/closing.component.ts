@@ -1363,8 +1363,7 @@ export class ClosingComponent implements OnInit {
     const recaudos = this.getTotalRecaudos();
     const gastos = this.getTotalSpends();
     const creditos = this.getTotalCreditsCausados();
-
-    return (base + recaudos) - (gastos + creditos);
+    return (base + recaudos) - gastos - creditos;
   }
 
   addSpendInPreApproval(): void {

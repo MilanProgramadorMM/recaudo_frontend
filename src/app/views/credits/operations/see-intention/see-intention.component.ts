@@ -120,6 +120,19 @@ export class SeeIntentionComponent {
         return 'PERFECCIONAMIENTO';
       case 'DISBURSEMENT':
         return 'DESEMBOLSO';
+      case 'PENDING':
+        return 'PENDIENTE';
+      default:
+        return 'SIN ESTADO';
+    }
+  }
+
+    getStatusLabelCustomer(status?: string): string {
+    switch (status) {
+      case 'APPROVED':
+        return 'APROBADO';
+      case 'PENDING':
+        return 'PENDIENTE';
       default:
         return 'SIN ESTADO';
     }

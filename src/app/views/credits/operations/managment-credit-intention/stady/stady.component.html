@@ -178,6 +178,13 @@
                                     {{ d.label }}
                                 </option>
                             </select>
+                            <!--<ng-select 
+                                [items]="departamentos" 
+                                bindLabel="label"
+                                bindValue="id"
+                                formControlName="department_id"
+                                [ngClass]="{ 'is-invalid': submitted && form.get('department_id')?.invalid }">
+                            </ng-select>-->
                             <div class="invalid-feedback"
                                 *ngIf="submitted && form1.get('department_id')?.errors?.['required']">
                                 Campo obligatorio
@@ -186,6 +193,13 @@
 
                         <div class="col-lg-3 mb-3">
                             <label class="form-label">Municipio <span class="required">*</span></label>
+                            <!--<ng-select 
+                                [items]="municipios" 
+                                bindLabel="label"
+                                bindValue="id"
+                                formControlName="municipality_id"
+                                [ngClass]="{ 'is-invalid': submitted && form.get('municipality_id')?.invalid }">
+                            </ng-select>-->
                             <select class="form-control form-select" formControlName="municipality_id"
                                 [ngClass]="{ 'is-invalid': submitted && form1.get('municipality_id')?.invalid }">
                                 <option value="">Seleccione</option>
@@ -208,6 +222,13 @@
                                     {{ b.label }}
                                 </option>
                             </select>
+                            <!--<ng-select 
+                                [items]="barrios" 
+                                bindLabel="label"
+                                bindValue="id"
+                                formControlName="neighborhood_id"
+                                [ngClass]="{ 'is-invalid': submitted && form.get('neighborhood_id')?.invalid }">
+                            </ng-select>-->
                             <div class="invalid-feedback"
                                 *ngIf="submitted && form1.get('neighborhood_id')?.errors?.['required']">
                                 Campo obligatorio

@@ -779,7 +779,7 @@ export class ApproveComponent implements OnInit {
   }
   // Métodos wrapper para cada campo (opcional pero recomendado para legibilidad)
   limitarCuotas(event: Event) {
-    this.validarRangoNumerico('period_quantity', 2, 100, 'numeroCoutasInForm', 'número de cuotas');
+    this.validarRangoNumerico('period_quantity', 1, 700, 'numeroCoutasInForm', 'número de cuotas');
   }
 
   limitarDiaInicioQuincena(event: Event) {

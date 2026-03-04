@@ -21,6 +21,7 @@ import { PersonRegisterDto, PersonService } from '@core/services/person.service'
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { RecaudoModalComponent } from '@views/credits/recaudo-modal/recaudo-modal.component';
 import { CreditResponseDto, CreditService } from '@core/services/credit.service';
+import {NgSelectModule, NgOption} from '@ng-select/ng-select';
 
 
 @Component({
@@ -34,7 +35,8 @@ import { CreditResponseDto, CreditService } from '@core/services/credit.service'
     MatInputModule,
     MatButtonModule,
     MatCheckboxModule,
-    MatRadioModule
+    MatRadioModule,
+    NgSelectModule
   ],
   templateUrl: './stady.component.html',
   styleUrl: './stady.component.scss'

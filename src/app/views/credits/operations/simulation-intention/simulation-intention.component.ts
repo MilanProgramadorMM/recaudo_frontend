@@ -20,6 +20,7 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 import { UserService } from '@core/services/user.service';
 import { AuthenticationService } from '@core/services/auth.service';
 import { PersonZonaService } from '@core/services/person-zona.service';
+import {NgSelectModule, NgOption} from '@ng-select/ng-select';
 
 
 @Component({
@@ -31,7 +32,8 @@ import { PersonZonaService } from '@core/services/person-zona.service';
     PageTitleComponent,
     NgStepperModule,
     CdkStepperModule,
-    FileUploaderComponent
+    FileUploaderComponent,
+    NgSelectModule
   ],
   templateUrl: './simulation-intention.component.html',
   styleUrl: './simulation-intention.component.scss'
@@ -286,6 +288,27 @@ export class SimulationIntentionComponent implements OnInit {
         }
       }, 5000);
     });
+
+    this.form.get('start_date')?.valueChanges.subscribe(() => {
+      debugger;
+      /*if (this.updatingFromBackend) return;
+      if (!this.simulationCompleted) return;
+      this.simulationCompleted = false;
+      this.simulationResult = null;
+      this.errorMessage = 'Los datos han cambiado. Debe simular nuevamente antes de guardar.';*/
+      
+      if (this.isQuincenal) {
+        const initialDayQuincena = this.form.get('start_date')?.value.split('-')[2];
+        this.form.get('inicio_quincena')?.setValue(initialDayQuincena);
+      }
+
+      this.interactionCamposParaCalculo();
+      setTimeout(() => {
+        if (this.errorMessage === 'Los datos han cambiado. Debe simular nuevamente antes de guardar.') {
+          this.errorMessage = '';
+        }
+      }, 5000);
+    });
   }
 
   updateFullName() {
@@ -491,7 +514,7 @@ export class SimulationIntentionComponent implements OnInit {
     }
 
     // Validación especial para cuotas (no permite 1)
-    if (controlName === 'period_quantity' && numValue === 1) {
+    if (controlName === 'period_quantity' && numValue < 1) {
       control.setValue(null);
       (this as any)[errorProperty] = `El número mínimo de ${nombreCampo} es ${min}`;
       return;
@@ -517,7 +540,7 @@ export class SimulationIntentionComponent implements OnInit {
 
   // Métodos wrapper para cada campo (opcional pero recomendado para legibilidad)
   limitarCuotas(event: Event) {
-    this.validarRangoNumerico('period_quantity', 2, 700, 'numeroCoutasInForm', 'número de cuotas');
+    this.validarRangoNumerico('period_quantity', 1, 700, 'numeroCoutasInForm', 'número de cuotas');
   }
 
   limitarDiaInicioQuincena(event: Event) {
