@@ -40,7 +40,7 @@
                 <!-- Filtro por estado -->
                 <div class="col-md-4">
                     <label for="filterStatus" class="form-label mb-1 small">Filtrar por estado:</label>
-                    <select id="filterStatus" class="form-select form-select-sm" [(ngModel)]="filterStatus"
+                    <select id="filterStatus" class="form-select" [(ngModel)]="filterStatus"
                         (change)="applyFilter()">
                         <option value="all">Todos</option>
                         <option value="pending">Pendientes</option>
@@ -48,6 +48,12 @@
                         <option value="promise">Con promesa</option>
                         <option value="nopago">No pagó</option>
                     </select>
+                </div>
+                <div class="col-md-4">
+                    <label for="filterStatus" class="form-label mb-1 small">Cliente:</label>
+                    <input id="intention-search" class="form-control text-uppercase" type="text"
+                        placeholder="Cliente..." [(ngModel)]="searchTerm"
+                        (ngModelChange)="applyCustomerFilter()" />
                 </div>
             </div>
         </div>

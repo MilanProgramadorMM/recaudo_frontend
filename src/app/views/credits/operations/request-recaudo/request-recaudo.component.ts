@@ -25,6 +25,7 @@ export class RequestRecaudoComponent implements OnInit {
   zonas: string[] = [];
   selectedZona: string = 'all';
   asesorName: string | null = null;
+  searchTerm: string = '';
 
   clientesnew: DailyCollectionItem[] = [];
   clientesFiltered: DailyCollectionItem[] = [];
@@ -366,7 +367,18 @@ export class RequestRecaudoComponent implements OnInit {
     modalRef.componentInstance.cliente = cliente;
     modalRef.componentInstance.viewMode = true;  // MODO SOLO LECTURA
   }
+
   reloadData(): void {
     this.loadRecaudoData();
+  }
+
+  applyCustomerFilter(): void {
+    const term = this.searchTerm.toLowerCase().trim();
+    let filtered = this.clientesnew;
+    if (!term) {
+      this.clientesFiltered = [...this.clientesnew];
+    } else {
+      this.clientesFiltered = filtered.filter(item => item.clientName?.toLowerCase().includes(term));
+    }
   }
 }

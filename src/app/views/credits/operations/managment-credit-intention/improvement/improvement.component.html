@@ -157,28 +157,19 @@
                             </div>
 
                             <!-- Botones de acción -->
-                            <div class="d-grid gap-2">
+                            <div class="button-parent d-grid gap-2">
                                 <!-- Botón enviar (primera vez) -->
-                                <button *ngIf="!linkSent" type="button" class="btn btn-copy-red btn-lg"
+                                <button *ngIf="linkSent" type="button" class="btn btn-whatsapp btn-lg"
                                     (click)="sendWhatsAppLink()" [disabled]="!getClientWhatsApp() || sendingLink">
                                     <i class="bi bi-send-fill me-2"></i>
-                                    {{ sendingLink ? 'Enviando...' : 'Enviar Link de Aprobación a WhatsApp' }}
+                                    {{ sendingLink ? 'Enviando...' : 'Enviar link de aprobación a WhatsApp' }}
                                 </button>
 
-                                <!-- Botones cuando ya se envió -->
-                                <div *ngIf="linkSent" class="d-grid gap-2">
-                                    <!-- <button type="button" class="btn btn-outline-success btn-lg"
-                                        (click)="resendWhatsAppLink()" [disabled]="sendingLink">
-                                        <i class="bi bi-arrow-repeat me-2"></i>
-                                        {{ sendingLink ? 'Reenviando...' : 'Reenviar Link' }}
-                                    </button> -->
-
-                                    <button type="button" class="btn btn-copy-red btn-lg"
-                                        (click)="checkApprovalStatus()" [disabled]="checkingStatus">
-                                        <i class="bi bi-arrow-clockwise me-2"></i>
-                                        {{ checkingStatus ? 'Consultando...' : 'Consultar Estado de Aprobación' }}
-                                    </button>
-                                </div>
+                                <button type="button" class="btn btn-consulta btn-lg"
+                                    (click)="checkApprovalStatus()" [disabled]="checkingStatus">
+                                    <i class="bi bi-arrow-clockwise me-2"></i>
+                                    {{ checkingStatus ? 'Consultando...' : 'Consultar estado de aprobación' }}
+                                </button>
                             </div>
 
                             <!-- Mensaje de éxito -->

@@ -158,6 +158,8 @@ export class StadyComponent implements OnInit {
 
     });
 
+    this.form1.valueChanges.subscribe(() => this.updateFullName());
+
     const fechaFormateada = this.formatDateForInput(this.credit.fechaInicio);
     this.fechaTentativaOriginal = fechaFormateada;
     this.form2 = this.fb.group({
@@ -357,14 +359,17 @@ export class StadyComponent implements OnInit {
     });
   }
 
-  updateFullName(): void {
-    const { firstname, middlename, lastname, maternal_lastname } = this.form1.value;
-    const fullname = [firstname, middlename, lastname, maternal_lastname]
-      .filter(Boolean)
-      .join(' ')
-      .toUpperCase();
+  updateFullName() {
+    const firstname = this.form1.get('firstname')?.value;
+    const middlename = this.form1.get('middlename')?.value;
+    const lastname = this.form1.get('lastname')?.value;
+    const maternal = this.form1.get('maternal_lastname')?.value;
 
-    this.form1.patchValue({ fullname }, { emitEvent: false });
+    const full = [firstname, middlename, lastname, maternal]
+      .filter(v => v && v.trim())
+      .join(' ');
+
+    this.form1.get('fullname')?.setValue(full.toUpperCase(), { emitEvent: false });
   }
 
   onSubmitActividad1(): void {
@@ -394,18 +399,8 @@ export class StadyComponent implements OnInit {
     const dialogRef = this.dialog.open(LoadingComponent, {
       disableClose: true,
     });
-
-    // Verificar si el cliente es nuevo
-    const isNewClient = this.credit.clientExists === 0;
-
-    if (isNewClient) {
-      // Cliente nuevo: crear persona primero -- actualizar datos solo en intencion de credito
-      //this.createPersonAndUpdateCredit(dialogRef);
-      this.updateCreditIntention(dialogRef)
-    } else {
-      // Cliente existente: actualizar directamente
-      this.updateCreditIntention(dialogRef);
-    }
+    
+    this.updateCreditIntention(dialogRef)
   }
 
   // private createPersonAndUpdateCredit(dialogRef: any): void {
@@ -489,6 +484,10 @@ export class StadyComponent implements OnInit {
   private updateCreditIntention(dialogRef: any): void {
     const payload = {
       ...this.form1.value,
+      firstname: this.form1.get('firstname')?.value.toUpperCase(),
+      middlename: this.form1.get('middlename')?.value.toUpperCase() ?? null,
+      lastname: this.form1.get('lastname')?.value?.toUpperCase(),
+      maternal_lastname: this.form1.get('maternal_lastname')?.value?.toUpperCase() ?? null,
       fullname: this.form1.get('fullname')?.value,
       referido: this.form1.get('referido')?.value ? 1 : 0,
       call_success: this.form1.get('call_success')?.value ? 1 : 0

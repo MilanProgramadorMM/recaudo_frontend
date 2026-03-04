@@ -68,7 +68,8 @@ export class CreditsComponent {
     } else {
       this.filteredIntentions = this.intentions.filter(intention =>
         intention.fullname?.toLowerCase().includes(term) ||
-        intention.document?.toLowerCase().includes(term)
+        intention.document?.toLowerCase().includes(term) ||
+        intention.zoneName?.toLowerCase().includes(term)
       );
     }
 
