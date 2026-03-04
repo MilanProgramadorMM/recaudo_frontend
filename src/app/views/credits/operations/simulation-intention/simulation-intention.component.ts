@@ -20,7 +20,7 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 import { UserService } from '@core/services/user.service';
 import { AuthenticationService } from '@core/services/auth.service';
 import { PersonZonaService } from '@core/services/person-zona.service';
-import {NgSelectModule, NgOption} from '@ng-select/ng-select';
+import { NgSelectModule, NgOption } from '@ng-select/ng-select';
 
 
 @Component({
@@ -296,7 +296,7 @@ export class SimulationIntentionComponent implements OnInit {
       this.simulationCompleted = false;
       this.simulationResult = null;
       this.errorMessage = 'Los datos han cambiado. Debe simular nuevamente antes de guardar.';*/
-      
+
       if (this.isQuincenal) {
         const initialDayQuincena = this.form.get('start_date')?.value.split('-')[2];
         this.form.get('inicio_quincena')?.setValue(initialDayQuincena);
@@ -1300,9 +1300,9 @@ export class SimulationIntentionComponent implements OnInit {
       document_type: this.ensureNumber(raw.document_type),
       document: raw.document,
       firstname: raw.firstname.toUpperCase(),
-      middlename: raw.middlename.toUpperCase() || null,
+      middlename: raw.middlename?.toUpperCase() ?? null,
       lastname: raw.lastname.toUpperCase(),
-      maternal_lastname: raw.maternal_lastname.toUpperCase() || null,
+      maternal_lastname: raw.maternal_lastname?.toUpperCase() ?? null,
       fullname: raw.fullname,
       gender: this.ensureNumber(raw.gender),
       occupation: raw.occupation || null,

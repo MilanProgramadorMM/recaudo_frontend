@@ -175,18 +175,18 @@ export class ClosingComponent implements OnInit {
   }
 
   loadRecaudosByUser() {
-    if (!this.currentZone) return; // Sin mensaje, simplemente no ejecuta
+    if (!this.currentZone) return;
 
-    const today = new Date().toLocaleDateString('en-CA');
+    const date = this.closingData?.closingDate ?? new Date().toLocaleDateString('en-CA');
     this.recaudoService
-      .getRecaudosByUserAndDate(this.closingId!, today, this.currentZone)
+      .getRecaudosByUserAndDate(this.closingId!, date, this.currentZone)
       .subscribe({
         next: data => this.recaudos = data,
         error: () => this.recaudos = []
       });
 
     this.recaudoService
-      .getIntentionsByUserAndDate(this.closingId!, today, this.currentZone)
+      .getIntentionsByUserAndDate(this.closingId!, date, this.currentZone)
       .subscribe({
         next: data => this.intentions = data,
         error: () => this.intentions = []
@@ -195,26 +195,20 @@ export class ClosingComponent implements OnInit {
 
   loadSpendTypes(): void {
     if (this.spendGlotypes.length > 0) {
-      console.log('Tipos de gasto ya cargados');
       this.loadingBase = false;
       return;
     }
 
-    console.log('🔄 Cargando tipos de gasto...');
-
     this.glotypesService.getGlotypesByKey('TIPGAS').subscribe({
       next: (data) => {
-        console.log('✅ Tipos de gasto cargados:', data);
         this.spendGlotypes = data;
         const baseType = this.spendGlotypes.find(g => g.name === 'BASE');
         if (baseType) {
           this.baseSpendTypeId = baseType.id;
-          console.log('✅ BASE ID encontrado:', this.baseSpendTypeId);
         }
         this.loadingBase = false;
       },
       error: (err) => {
-        console.error('❌ Error cargando tipos de gasto:', err);
         this.loadingBase = false;
       }
     });
@@ -396,7 +390,6 @@ export class ClosingComponent implements OnInit {
         // Admin/Asistente puede editar la base si aún no existe
         this.canEditBase = (this.isAsistente || this.isAdmin) && !this.hasBase();
 
-        // ✅ ASESOR: puede agregar gastos si existe la base
         if (this.isAsesor) {
           if (this.hasBase()) {
             this.canAddSpends = true;
@@ -407,13 +400,10 @@ export class ClosingComponent implements OnInit {
               this.loadSpendTypes();
             }
 
-            // ✅✅✅ HABILITAR EXPLÍCITAMENTE EL FORMULARIO
             this.spendsForm.enable();
-            console.log('🟢 Formulario de gastos HABILITADO para asesor');
           } else {
             this.canAddSpends = false;
             this.spendsForm.disable();
-            console.log('🔴 Formulario de gastos DESHABILITADO - esperando BASE');
           }
         }
 
@@ -521,11 +511,10 @@ export class ClosingComponent implements OnInit {
         const statusChanged = newStatus !== this.currentStatus;
         this.currentStatus = newStatus;
 
-        // ✅ Recargar gastos
         this.closingSpendService.getSpendsByClosingId(this.closingId!).subscribe({
           next: (gastos) => {
-            this.processSpendsList(gastos.data); // ✅ Esto activará canAddSpends si hay BASE
-            this.updatePermissions(); // ✅ Esto asegura que todo esté sincronizado
+            this.processSpendsList(gastos.data);
+            this.updatePermissions();
             this.updateStepperPosition();
             this.isRefreshing = false;
 
@@ -533,7 +522,6 @@ export class ClosingComponent implements OnInit {
             if (statusChanged) {
               this.showStatusChangeNotification(newStatus);
             } else {
-              // ✅ Si no cambió el estado pero ahora hay BASE, notificar
               if (this.isAsesor && this.hasBase() && this.canAddSpends) {
                 Swal.fire({
                   toast: true,
@@ -655,11 +643,11 @@ export class ClosingComponent implements OnInit {
 
   canFinishSpends(): boolean {
     const nonBaseSpends = this.spendsList.filter(s =>
-      s.spendTypeId !== this.baseSpendTypeId && s.status !== false
+      s.spendTypeId !== this.baseSpendTypeId &&
+      s.status !== false  // ← verifica que esto llegue bien del backend
     );
     return nonBaseSpends.length >= 1;
   }
-
   // ================ PASO 1: BASE ================
   saveBase(): void {
     this.submitted = true;
@@ -864,16 +852,16 @@ export class ClosingComponent implements OnInit {
       s.spendTypeId !== this.baseSpendTypeId && s.status !== false
     );
 
-    if (nonBaseSpends.length < 1) {
-      Swal.fire({
-        icon: 'warning',
-        title: 'Gastos insuficientes',
-        text: 'Debe registrar al menos 1 gasto antes de finalizar el cierre',
-        confirmButtonText: 'Entendido',
-        customClass: { confirmButton: 'btn btn-warning' }
-      });
-      return;
-    }
+    // if (nonBaseSpends.length < 1) {
+    //   Swal.fire({
+    //     icon: 'warning',
+    //     title: 'Gastos insuficientes',
+    //     text: 'Debe registrar al menos 1 gasto antes de finalizar el cierre',
+    //     confirmButtonText: 'Entendido',
+    //     customClass: { confirmButton: 'btn btn-warning' }
+    //   });
+    //   return;
+    // }
 
     Swal.fire({
       title: '¿Finalizar registro de gastos?',
