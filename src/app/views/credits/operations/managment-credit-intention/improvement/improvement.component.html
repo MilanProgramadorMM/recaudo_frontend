@@ -159,7 +159,7 @@
                             <!-- Botones de acción -->
                             <div class="button-parent d-grid gap-2">
                                 <!-- Botón enviar (primera vez) -->
-                                <button *ngIf="linkSent" type="button" class="btn btn-whatsapp btn-lg"
+                                <button type="button" class="btn btn-whatsapp btn-lg"
                                     (click)="sendWhatsAppLink()" [disabled]="!getClientWhatsApp() || sendingLink">
                                     <i class="bi bi-send-fill me-2"></i>
                                     {{ sendingLink ? 'Enviando...' : 'Enviar link de aprobación a WhatsApp' }}
