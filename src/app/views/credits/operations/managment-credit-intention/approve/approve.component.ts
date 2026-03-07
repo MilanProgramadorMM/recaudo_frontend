@@ -1228,6 +1228,52 @@ export class ApproveComponent implements OnInit {
     }
   }
 
+  onSave(): void {
+    const raw = this.form1.getRawValue();
+    const capitalValue = this.selectedCreditLine?.loanDisbursement
+        ? this.toNumber(raw.desembolso_value)
+        : this.toNumber(raw.item_value);
+    const numeroCuotas = raw.period_quantity;
+    const cuotaValue = raw.quota_value;
+    const tasa = raw.tax_value;
+
+    Swal.fire({
+      title: '¿Finalizar registro de intención?',
+      html: `
+        <table style="margin:auto; text-align:left;">
+          <tr>
+            <td><b>Valor:</b></td>
+            <td style="padding-left:20px;"><strong>$${this.formatValueCurrency(capitalValue.toString())}</strong></td>
+          </tr>
+          <tr>
+            <td><b>N. Cuotas:</b></td>
+            <td style="padding-left:20px;"><strong>${numeroCuotas}</strong></td>
+          </tr>
+          <tr>
+            <td><b>Tasa:</b></td>
+            <td style="padding-left:20px;"><strong>${tasa}%</strong></td>
+          </tr>
+          <tr>
+            <td><b>Cuota:</b></td>
+            <td style="padding-left:20px;"><strong>$${cuotaValue}</strong></td>
+          </tr>
+        </table>
+      `,
+      icon: 'question',
+      showCancelButton: true,
+      confirmButtonText: 'Finalizar',
+      cancelButtonText: 'Cancelar',
+      customClass: {
+        confirmButton: 'btn btn-success',
+        cancelButton: 'btn btn-secondary'
+      }
+    }).then((result) => {
+      if (result.isConfirmed) {
+        this.saveIntention();
+      }
+    });
+  }
+
   saveIntention(): void {
     if (!this.simulationCompleted) {
       this.errorMessage = 'Debe realizar la simulación antes de guardar';
@@ -1359,6 +1405,35 @@ export class ApproveComponent implements OnInit {
     setTimeout(() => {
       this.updatingFromBackend = false;
     }, 100);
+  }
+
+  formatValueCurrency(rawValue: string) {
+    if (rawValue === null || rawValue === '') return;
+    const numericValue = rawValue.toString().replace(/\D/g, '');
+    if (numericValue === '') {
+      return '';;
+    }
+    return Number(numericValue).toLocaleString('es-CO');
+  }
+
+  get getPapeleria() {
+    const creditLine = this.selectedCreditLine;
+    let value;
+    if (creditLine?.loanDisbursement) {
+      value = this.form1.get('desembolso_value')?.value;
+    } else {
+      value = this.form1.get('value_to_financiate')?.value;
+    }
+    if (value) {
+      const formattedValue = Number(value.replaceAll('.', '')) * 0.01;
+      return this.formatValueCurrency(formattedValue.toString())
+    }
+    return '0';
+  }
+
+  get isFinanceCreditLine() {
+    const creditLine = this.selectedCreditLine;    
+    return !creditLine?.loanDisbursement;
   }
 
 }

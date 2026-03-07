@@ -10,6 +10,7 @@ export interface Glotypes {
     type: number;
     key: string;
     name: string;
+    code: string;
 }
 
 

@@ -1502,60 +1502,6 @@ export class SimulationIntentionComponent implements OnInit {
     itemCtrl?.setValue(null);
     financiateCtrl?.setValue(null);
     initialQuotaCtrl?.setValue(null);
-    /*const hasDisbursement = selected.loanDisbursement;
-    this.updateValidatorsByLoanDisbursement(hasDisbursement);
-
-
-
-
-    if (hasDisbursement) {
-      // Habilitar campos del GRUPO 2
-      desembolsoCtrl?.enable({ emitEvent: false });
-      quotaCtrl?.enable({ emitEvent: false });
-      taxCtrl?.enable({ emitEvent: false });
-
-      financiateCtrl?.setValidators([Validators.required]);
-      financiateCtrl?.updateValueAndValidity({ emitEvent: true });
-
-      initialQuotaCtrl?.setValidators([Validators.required]);
-      initialQuotaCtrl?.updateValueAndValidity({ emitEvent: true });
-
-      // Deshabilitar campos del GRUPO 1
-      itemCtrl?.disable({ emitEvent: true });
-      financiateCtrl?.disable({ emitEvent: true });
-      initialQuotaCtrl?.disable({ emitEvent: true });
-
-    } else {
-      // Habilitar campos del GRUPO 1
-      itemCtrl?.enable({ emitEvent: true });
-      financiateCtrl?.enable({ emitEvent: true });
-      initialQuotaCtrl?.disable({ emitEvent: true });
-      quotaCtrl?.enable({ emitEvent: true });
-      taxCtrl?.enable({ emitEvent: true });
-
-      financiateCtrl?.clearValidators();
-      financiateCtrl?.updateValueAndValidity({ emitEvent: true });
-
-      initialQuotaCtrl?.clearValidators();
-      initialQuotaCtrl?.updateValueAndValidity({ emitEvent: true });
-
-      // Deshabilitar campos del GRUPO 2
-      desembolsoCtrl?.disable({ emitEvent: true });
-    }
-
-    // Actualizar validaciones
-    desembolsoCtrl?.updateValueAndValidity();
-    itemCtrl?.updateValueAndValidity();
-    financiateCtrl?.updateValueAndValidity();
-    initialQuotaCtrl?.updateValueAndValidity();
-    quotaCtrl?.updateValueAndValidity();
-    taxCtrl?.updateValueAndValidity();
-
-    // Limpiar documentos y resetear simulación
-    this.documentFiles.clear();
-    this.simulationCompleted = false;
-    this.simulationResult = null;
-    this.errorMessage = '';*/
   }
 
 
@@ -1923,12 +1869,12 @@ export class SimulationIntentionComponent implements OnInit {
   }
   
   get getPapeleria() {
-    const creditLine = this.selectedCreditLine?.name;
+    const creditLine = this.selectedCreditLine;
     let value;
-    if (creditLine == 'LÍNEA DE FINANCIAMIENTO') {
-      value = this.form.get('value_to_financiate')?.value;
-    } else {
+    if (creditLine?.loanDisbursement) {
       value = this.form.get('desembolso_value')?.value;
+    } else {
+      value = this.form.get('value_to_financiate')?.value;
     }
     if (value) {
       const formattedValue = Number(value.replaceAll('.', '')) * 0.01;
@@ -1938,8 +1884,8 @@ export class SimulationIntentionComponent implements OnInit {
   }
 
   get isFinanceCreditLine() {
-    const creditLine = this.selectedCreditLine?.name;    
-    return creditLine == 'LÍNEA DE FINANCIAMIENTO';
+    const creditLine = this.selectedCreditLine;    
+    return !creditLine?.loanDisbursement;
   }
 
 }

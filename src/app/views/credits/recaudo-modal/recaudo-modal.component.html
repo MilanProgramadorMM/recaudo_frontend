@@ -35,44 +35,54 @@
             <div class="card-body">
                 <div class="row g-3">
                     <!-- Valor Cuota -->
-                    <div class="col-md-3 col-6">
+                    <div class="col-md-2 col-6">
                         <small class="text-muted d-block">Valor Cuota</small>
                         <strong>{{ currency }} {{ formatCurrency(paymentStatus.quotaValue) }}</strong>
                     </div>
                     <!-- Total Cuotas -->
-                    <div class="col-md-3 col-6">
+                    <div class="col-md-2 col-6">
                         <small class="text-muted d-block">Total Cuotas</small>
                         <strong>{{ paymentStatus.totalCuotas }}</strong>
                     </div>
-                    <!-- Periodo - SOLO ADMIN / BACKOFFICE -->
-                    <div class="col-md-3 col-6" *ngIf="isAdmin || isAsistente">
-                        <small class="text-muted d-block">Periodo</small>
-                        <strong>{{ paymentStatus.periodName }}</strong>
-                    </div>
                     <!-- Cuotas Pendientes -->
-                    <div [class]="(isAdmin || isAsistente) ? 'col-md-3 col-6' : 'col-6'">
+                    <div [class]="(isAdmin || isAsistente) ? 'col-md-2 col-6' : 'col-6'">
                         <small class="text-muted d-block">Cuotas Pendientes</small>
                         <strong class="text-danger">{{ paymentStatus.cuotasPendientes }}</strong>
                     </div>
-
                     <!-- Cuotas Pagadas: en móvil (asesor) al lado de pendientes, en desktop en esta misma fila -->
-                    <div [class]="(isAdmin || isAsistente) ? 'col-md-3 col-6' : 'col-6'">
+                    <div [class]="(isAdmin || isAsistente) ? 'col-md-2 col-6' : 'col-6'">
                         <small class="text-muted d-block">Cuotas Pagadas</small>
                         <strong class="text-success">{{ paymentStatus.cuotasPagadas }}</strong>
+                    </div>
+                    
+                    <!-- Tasa -->
+                    <div class="col-md-2 col-6">
+                        <small class="text-muted d-block">Tasa</small>
+                        <strong>{{ paymentStatus.taxValue }}%</strong>
+                    </div>
+                    <!-- Papeleria -->
+                    <div class="col-md-2 col-6">
+                        <small class="text-muted d-block">Papelería</small>
+                        <strong>{{ currency }} {{ formatCurrency(paymentStatus.stationery) }}</strong>
+                    </div>
+                    <!-- Periodo - SOLO ADMIN / BACKOFFICE -->
+                    <div class="col-md-2 col-6" *ngIf="isAdmin || isAsistente">
+                        <small class="text-muted d-block">Periodo</small>
+                        <strong>{{ paymentStatus.periodName }}</strong>
                     </div>
 
                     <!-- SOLO ADMIN / BACKOFFICE -->
                     <ng-container *ngIf="isAdmin || isAsistente">
-                        <div class="col-md-3 col-6">
+                        <div class="col-md-2 col-6">
                             <small class="text-muted d-block">Total Crédito</small>
                             <strong>{{ currency }} {{ formatCurrency(paymentStatus.totalIntentionValue) }}</strong>
                         </div>
-                        <div class="col-md-3 col-6">
+                        <div class="col-md-2 col-6">
                             <small class="text-muted d-block">Total Pagado</small>
                             <strong class="text-success">{{ currency }} {{ formatCurrency(paymentStatus.totalPagado)
                                 }}</strong>
                         </div>
-                        <div class="col-md-3 col-6">
+                        <div class="col-md-2 col-6">
                             <small class="text-muted d-block">Total Pendiente</small>
                             <strong class="text-danger">{{ currency }} {{ formatCurrency(paymentStatus.totalPendiente)
                                 }}</strong>

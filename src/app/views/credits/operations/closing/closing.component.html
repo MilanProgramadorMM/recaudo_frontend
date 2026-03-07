@@ -158,6 +158,14 @@
                                 <div class="row">
                                     <div class="col-md-3 mb-3">
                                         <div class="border-start border-success border-4 ps-3">
+                                            <small class="text-muted d-block">Saldo Anterior</small>
+                                            <h4 class="mb-0 text-success">
+                                                ${{ formatCurrency(toNumber(previousBaseValue)) }}
+                                            </h4>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-3 mb-3">
+                                        <div class="border-start border-success border-4 ps-3">
                                             <small class="text-muted d-block">Base Inicial</small>
                                             <h4 class="mb-0 text-success">
                                                 ${{ formatCurrency(toNumber(baseForm.get('base')?.value)) }}
@@ -865,6 +873,15 @@
                                     </div>
                                     <div class="card-body">
                                         <div class="row">
+                                            <div class="col-md-3 mb-3">
+                                                <div class="border-start border-success border-4 ps-3">
+                                                    <small class="text-muted d-block">Saldo Anterior</small>
+                                                    <h4 class="mb-0 text-success">
+                                                        ${{ formatCurrency(toNumber(previousBaseValue)) }}
+                                                    </h4>
+                                                </div>
+                                            </div>
+
                                             <div class="col-md-3 mb-3">
                                                 <div class="border-start border-success border-4 ps-3">
                                                     <small class="text-muted d-block">Base Inicial</small>

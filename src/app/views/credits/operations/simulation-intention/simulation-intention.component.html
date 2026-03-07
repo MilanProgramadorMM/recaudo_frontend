@@ -588,8 +588,8 @@
 
                                     </div>
 
-                                    <div class="row" *ngIf="isFinanceCreditLine">
-                                        <div class="col-lg-6 mb-3">
+                                    <div class="row">
+                                        <div class="col-lg-4 mb-3" *ngIf="isFinanceCreditLine">
                                             <label class="form-label">
                                                 Valor a financiar
                                             </label>
@@ -613,7 +613,7 @@
                                                 producto - Cuota inicial
                                             </small>
                                         </div>
-                                        <div class="col-lg-6 mb-3">
+                                        <div class="col-lg-4 mb-3" *ngIf="isFinanceCreditLine">
                                             <label class="form-label">
                                                 Cuota inicial
                                             </label>
@@ -623,9 +623,7 @@
 
                                                 <input type="text" class="form-control" formControlName="initial_quota"
                                                     (input)="formatCurrency('initial_quota')"
-                                                    [placeholder]="'Ingrese el valor de la cuota inicial'" [ngClass]="{
-                    'is-invalid': submitted && form.get('initial_quota')?.invalid || errorValueToFinanciate
-                }">
+                                                    [placeholder]="'Ingrese el valor de la cuota inicial'" [ngClass]="{ 'is-invalid': submitted && form.get('initial_quota')?.invalid || errorValueToFinanciate }">
                                             </div>
 
                                             <div class="invalid-feedback"
@@ -640,11 +638,7 @@
                                             </small>
                                         </div>
 
-
-                                    </div>
-
-                                    <div class="row">
-                                        <div class="col-lg-6 mb-3">
+                                        <div class="col-lg-4 mb-3">
                                             <label class="form-label">Valor de solicitud</label>
                                             <div class="input-group">
                                                 <span class="input-group-text">$</span>
@@ -656,6 +650,8 @@
                                                 Este valor se calcula automáticamente
                                             </small>
                                         </div>
+
+
                                     </div>
 
                                     <div class="row">

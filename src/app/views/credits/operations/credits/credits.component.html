@@ -93,6 +93,7 @@
                     <table class="table table-nowrap table-hover mb-0">
                         <thead class="table-dark bg-light-subtle" style="position: sticky; top: 0; z-index: 2;">
                             <tr>
+                                <th class="text-center" style="width: 150px;">Acciones</th>
                                 <th style="width: 80px;">ID</th>
                                 <th style="width: 120px;">Documento</th>
                                 <th>Cliente</th>
@@ -103,11 +104,17 @@
                                 <th>Valor desembolsado</th>
                                 <th class="text-end" style="width: 150px;">Valor financiado</th>
                                 <th>Fecha</th>
-                                <th class="text-center" style="width: 150px;">Acciones</th>
                             </tr>
                         </thead>
                         <tbody>
                             <tr *ngFor="let intention of pagedIntentions">
+                                <td class="pe-3">
+                                    <div class="hstack gap-1 justify-content-center">
+                                        <button (click)="manageIntention(intention)" class="btn btn-danger btn-sm">
+                                            <i class="ti ti-eye me-1"></i>Ver detalles
+                                        </button>
+                                    </div>
+                                </td>
                                 <td>{{ intention.id }}</td>
                                 <td>{{ intention.document }}</td>
                                 <td>{{ intention.fullname }}</td>
@@ -130,13 +137,6 @@
                                     <ng-template #noFinanciado><strong>---</strong></ng-template>
                                 </td>
                                 <td>{{ intention.createdAt }}</td>
-                                <td class="pe-3">
-                                    <div class="hstack gap-1 justify-content-center">
-                                        <button (click)="manageIntention(intention)" class="btn btn-danger btn-sm">
-                                            <i class="ti ti-eye me-1"></i>Ver detalles
-                                        </button>
-                                    </div>
-                                </td>
                             </tr>
                             <tr *ngIf="filteredIntentions.length === 0">
                                 <td colspan="10" class="text-center py-6">

@@ -75,6 +75,8 @@ export class ClosingComponent implements OnInit {
   intentions: CreditIntentionDetail[] = [];
 
   baseSpendTypeId: number | null = null;
+  previousBaseSpendTypeId: number | null = null;
+  previousBaseValue: number = 0;
   currentZone?: number;
   hasBaseRegistered: boolean = false;
 
@@ -105,7 +107,7 @@ export class ClosingComponent implements OnInit {
     }
 
     // Siempre filtrar BASE de las opciones disponibles
-    return this.spendGlotypes.filter(type => type.id !== this.baseSpendTypeId);
+    return this.spendGlotypes.filter(type => type.id !== this.baseSpendTypeId && type.id !== this.previousBaseSpendTypeId);
   }
 
   constructor(
@@ -206,6 +208,10 @@ export class ClosingComponent implements OnInit {
         if (baseType) {
           this.baseSpendTypeId = baseType.id;
         }
+        const previousBaseSpendType = this.spendGlotypes.find(g => g.code === 'BASE ANTERIOR');
+        if(previousBaseSpendType) {
+          this.previousBaseSpendTypeId = previousBaseSpendType.id;
+        }
         this.loadingBase = false;
       },
       error: (err) => {
@@ -234,6 +240,10 @@ export class ClosingComponent implements OnInit {
               const baseType = this.spendGlotypes.find(g => g.name === 'BASE');
               if (baseType) {
                 this.baseSpendTypeId = baseType.id;
+              }
+              const previousBaseSpendType = this.spendGlotypes.find(g => g.code === 'BASE ANTERIOR');
+              if(previousBaseSpendType) {
+                this.previousBaseSpendTypeId = previousBaseSpendType.id;
               }
 
               this.loadCurrentStatus();
@@ -302,9 +312,13 @@ export class ClosingComponent implements OnInit {
     this.glotypesService.getGlotypesByKey('TIPGAS').subscribe({
       next: (data) => {
         this.spendGlotypes = data;
-        const baseType = this.spendGlotypes.find(g => g.name === 'BASE');
+        const baseType = this.spendGlotypes.find(g => g.code === 'BASE');
+        const previousBaseSpendType = this.spendGlotypes.find(g => g.code === 'BASE ANTERIOR');
         if (baseType) {
           this.baseSpendTypeId = baseType.id;
+        }
+        if(previousBaseSpendType) {
+          this.previousBaseSpendTypeId = previousBaseSpendType.id;
         }
         if (callback) callback();
       },
@@ -331,7 +345,9 @@ export class ClosingComponent implements OnInit {
         fileName: spend.fileName,
         status: spend.status
       }))
-      .filter(spend => spend.spendTypeId !== this.baseSpendTypeId);
+      .filter(spend => spend.spendTypeId !== this.baseSpendTypeId && spend.spendTypeId !== this.previousBaseSpendTypeId);
+
+    this.previousBaseValue = data.find(spend => spend.spendTypeId == this.previousBaseSpendTypeId)?.amount || 0;
 
     if (baseSpend) {
       this.canEditBase = false;
@@ -1336,11 +1352,11 @@ export class ClosingComponent implements OnInit {
   }
 
   getSubtotal(): number {
-    const base = this.toNumber(this.baseForm.get('base')?.value);
+    const base = this.toNumber(this.baseForm.get('base')?.value) + this.previousBaseValue;
     const recaudos = this.getTotalRecaudos();
     const gastos = this.getTotalSpends();
     const creditos = this.getTotalCreditsCausados();
-    return (base + recaudos) - gastos - creditos;
+    return (base + recaudos) + gastos - creditos;
   }
 
   addSpendInPreApproval(): void {
