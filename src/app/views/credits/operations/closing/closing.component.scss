@@ -60,3 +60,16 @@ span.active {
   letter-spacing: 0.3px;
   box-shadow: 0 0 0 1px rgba(227, 16, 16, 0.35);
 }
+
+.alert-admin-panel {
+  background: #f8fafc;
+  border: 1px solid #cbd5e1;
+}
+
+.alert-admin-panel h6 {
+  font-weight: 600;
+}
+
+.alert-admin-panel strong {
+  color: #6ac75a;
+}

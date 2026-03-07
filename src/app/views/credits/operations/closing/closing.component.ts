@@ -919,7 +919,6 @@ export class ClosingComponent implements OnInit {
 
       const deliveryType = this.approvalForm.get('deliveryType')?.value;
 
-      // 👇 Convertir los valores formateados a números
       const adminAmount = this.toNumber(this.approvalForm.get('adminAmount')?.value);
       const asesorAmount = this.toNumber(this.approvalForm.get('asesorAmount')?.value);
 
@@ -1032,37 +1031,19 @@ export class ClosingComponent implements OnInit {
       return false;
     }
 
-    const subtotal = this.getSubtotal();
-    const adminAmount = this.toNumber(this.approvalForm.get('adminAmount')?.value);
-    const asesorAmount = this.toNumber(this.approvalForm.get('asesorAmount')?.value);
+    // Para admin y asesor el valor ya se asignó automáticamente, solo validar parcial
+    if (deliveryType === 'parcial') {
+      const subtotal = this.getSubtotal();
+      const adminAmount = this.toNumber(this.approvalForm.get('adminAmount')?.value);
+      const asesorAmount = this.toNumber(this.approvalForm.get('asesorAmount')?.value);
 
-    if (deliveryType === 'admin') {
-      if (adminAmount !== subtotal) {
-        Swal.fire({
-          icon: 'error',
-          title: 'Cantidad incorrecta',
-          text: `La cantidad para Admin debe ser exactamente $${this.formatCurrency(subtotal)}`
-        });
-        return false;
-      }
-    } else if (deliveryType === 'asesor') {
-      if (asesorAmount !== subtotal) {
-        Swal.fire({
-          icon: 'error',
-          title: 'Cantidad incorrecta',
-          text: `La cantidad para Asesor debe ser exactamente $${this.formatCurrency(subtotal)}`
-        });
-        return false;
-      }
-    } else if (deliveryType === 'parcial') {
       if ((adminAmount + asesorAmount) !== subtotal) {
         Swal.fire({
           icon: 'error',
           title: 'Suma incorrecta',
           html: `
           <p>La suma de Admin + Asesor debe ser igual al subtotal</p>
-          <p><strong>Suma actual:</strong> $${this.formatCurrency(adminAmount + asesorAmount)}</p>
-          <p><strong>Subtotal requerido:</strong> $${this.formatCurrency(subtotal)}</p>
+          <p><strong>Total a entregar:</strong> $${this.formatCurrency(subtotal)}</p>
         `
         });
         return false;
@@ -1076,6 +1057,14 @@ export class ClosingComponent implements OnInit {
     const admin = this.toNumber(this.approvalForm.get('adminAmount')?.value);
     const asesor = this.toNumber(this.approvalForm.get('asesorAmount')?.value);
     return admin + asesor;
+  }
+
+  get faltante(): number {
+    return this.getSubtotal() - this.getSumaParcial();
+  }
+
+  get faltanteCorrecto(): boolean {
+    return this.getSubtotal() === this.getSumaParcial();
   }
 
   confirmAndChangeStatus(newStatus: ClosingStatus, title: string, message: string): void {
@@ -1559,5 +1548,28 @@ export class ClosingComponent implements OnInit {
       hour: '2-digit',
       minute: '2-digit'
     });
+  }
+
+  deliveryTotal(): void {
+    const deliveryType = this.approvalForm.get('deliveryType')?.value;
+    const subtotal = this.getSubtotal();
+
+    if (deliveryType === 'admin') {
+      this.approvalForm.patchValue({
+        adminAmount: subtotal,
+        asesorAmount: 0
+      }, { emitEvent: false });
+    } else if (deliveryType === 'asesor') {
+      this.approvalForm.patchValue({
+        adminAmount: 0,
+        asesorAmount: subtotal
+      }, { emitEvent: false });
+    } else if (deliveryType === 'parcial') {
+      // Limpiar para que el usuario ingrese manualmente
+      this.approvalForm.patchValue({
+        adminAmount: '',
+        asesorAmount: ''
+      }, { emitEvent: false });
+    }
   }
 }

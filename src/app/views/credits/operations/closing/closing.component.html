@@ -349,8 +349,6 @@
                             </div>
                         </fieldset>
 
-                        <fieldset class="mt-4">
-                            <legend>Intenciones de crédito registradas</legend>
 
                             <div *ngIf="intentions.length === 0" class="alert alert-info">
                                 <i class="bi bi-info-circle me-2"></i>
@@ -411,10 +409,6 @@
                                     </div>
                                 </div>
                             </div>
-                        </fieldset>
-
-                        <fieldset class="mt-4">
-                            <legend>Créditos Causados — Salidas de Dinero</legend>
 
                             <div *ngIf="creditsCausados.length === 0" class="alert alert-info">
                                 <i class="bi bi-info-circle me-2"></i>
@@ -463,7 +457,6 @@
                                     </div>
                                 </div>
                             </div>
-                        </fieldset>
 
                         <!-- Alertas según estado -->
                         <!-- <div *ngIf="currentStatus === 'PRE_CIERRE'" class="alert alert-info mt-3">
@@ -732,8 +725,6 @@
                                 </div>
                             </fieldset>
 
-                            <fieldset class="mt-4" *ngIf="creditsCausados.length > 0">
-                                <legend>Créditos Causados — Salidas de Dinero</legend>
                                 <div class="card border-warning mb-4">
                                     <div class="card-header bg-warning bg-opacity-10">
                                         <h5 class="mb-0 text-warning">
@@ -774,10 +765,6 @@
                                         </table>
                                     </div>
                                 </div>
-                            </fieldset>
-
-                            <fieldset class="mt-4">
-                                <legend>Intenciones de Crédito registradas el dia de hoy por el Asesor</legend>
 
                                 <div *ngIf="intentions.length === 0" class="alert alert-info">
                                     <i class="bi bi-info-circle me-2"></i>
@@ -839,7 +826,6 @@
                                         </div>
                                     </div>
                                 </div>
-                            </fieldset>
 
                             <div class="d-flex wizard justify-content-between flex-wrap gap-2 mt-3">
                                 <button cdkStepperPrevious class="btn btn-primary">
@@ -867,7 +853,7 @@
 
                         <div class="tab-pane" id="step3">
                             <fieldset>
-                                <legend>Resumen del Cierre</legend>
+                                <!-- <legend>Resumen del Cierre</legend> -->
 
                                 <!-- Resumen mejorado -->
                                 <div class="card border-primary mb-4">
@@ -1059,22 +1045,27 @@
                                     </div>
                                 </div>
 
-                                <fieldset class="mt-4" *ngIf="creditsCausados.length > 0">
-                                    <legend>Créditos Causados — Salidas de Dinero</legend>
-                                    <div class="card border-warning mb-4">
-                                        <div class="card-header bg-warning bg-opacity-10">
-                                            <h5 class="mb-0 text-warning">
-                                                <i class="bi bi-arrow-up-right-circle me-2"></i>
-                                                Dinero entregado a clientes hoy
-                                            </h5>
-                                        </div>
-                                        <div class="card-body p-0">
-                                            <table class="table table-sm mb-0">
+                                <!-- Créditos Causados -->
+                                <div *ngIf="creditsCausados.length === 0" class="alert alert-info">
+                                    <i class="bi bi-info-circle me-2"></i>
+                                    No hay créditos causados registrados hoy
+                                </div>
+
+                                <div *ngIf="creditsCausados.length > 0" class="card border-secondary mb-4">
+                                    <div class="card-header bg-light">
+                                        <h5 class="mb-0">
+                                            <i class="bi bi-arrow-up-right-circle me-2"></i>
+                                            Creditos causados — salidas de dinero
+                                        </h5>
+                                    </div>
+                                    <div class="card-body">
+                                        <div class="table-responsive">
+                                            <table class="table table-hover table-sm mb-0">
                                                 <thead class="table-light">
                                                     <tr>
                                                         <th>#</th>
                                                         <th>Cliente</th>
-                                                        <th class="text-end">Capital entregado</th>
+                                                        <th>Capital entregado</th>
                                                         <th>Hora</th>
                                                     </tr>
                                                 </thead>
@@ -1082,7 +1073,7 @@
                                                     <tr *ngFor="let c of creditsCausados; let i = index">
                                                         <td>{{ i + 1 }}</td>
                                                         <td>{{ c.clientName || '-' }}</td>
-                                                        <td class="text-end text-warning">
+                                                        <td>
                                                             <strong>-${{ formatCurrency(c.totalCapitalValue) }}</strong>
                                                         </td>
                                                         <td>{{ formatDateTime(c.createdAt) }}</td>
@@ -1091,9 +1082,10 @@
                                                 <tfoot class="table-light">
                                                     <tr>
                                                         <th colspan="2">TOTAL SALIDAS:</th>
-                                                        <th class="text-end text-warning">
-                                                            <strong>-${{ formatCurrency(getTotalCreditsCausados())
-                                                                }}</strong>
+                                                        <th>
+                                                            <span class="fs-5 text-primary">
+                                                                -${{ formatCurrency(getTotalCreditsCausados()) }}
+                                                            </span>
                                                         </th>
                                                         <th></th>
                                                     </tr>
@@ -1101,74 +1093,69 @@
                                             </table>
                                         </div>
                                     </div>
-                                </fieldset>
+                                </div>
 
-                                <!-- Sección de intenciones de crédito -->
-                                <fieldset class="mt-4">
-                                    <legend>Intenciones de Crédito Registradas Hoy</legend>
 
-                                    <div *ngIf="intentions.length === 0" class="alert alert-info">
-                                        <i class="bi bi-info-circle me-2"></i>
-                                        No hay intenciones de crédito registradas hoy
+                                <!-- Intenciones -->
+                                <div *ngIf="intentions.length === 0" class="alert alert-info">
+                                    <i class="bi bi-info-circle me-2"></i>
+                                    No hay intenciones de crédito registradas hoy
+                                </div>
+                                <div *ngIf="intentions.length > 0" class="card border-secondary mb-4">
+                                    <div class="card-header bg-light">
+                                        <h5 class="mb-0">
+                                            <i class="bi bi-file-earmark-text me-2"></i>
+                                            Intenciones del día
+                                        </h5>
                                     </div>
+                                    <div class="card-body">
+                                        <div class="table-responsive">
+                                            <table class="table table-hover table-sm mb-0">
+                                                <thead class="table-light">
+                                                    <tr>
+                                                        <th>#</th>
+                                                        <th>Cliente</th>
+                                                        <th>Documento</th>
+                                                        <th>Capital</th>
+                                                        <th>Cuota</th>
+                                                        <th>Plazo</th>
+                                                        <th>Valor Total</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    <tr *ngFor="let intention of intentions; let i = index">
+                                                        <td>{{ i + 1 }}</td>
+                                                        <td>{{ intention.clientName || '-' }}</td>
+                                                        <td>{{ intention.document || '-' }}</td>
+                                                        <td>
+                                                            <strong>${{ formatCurrency(intention.totalCapitalValue)
+                                                                }}</strong>
+                                                        </td>
 
-                                    <div *ngIf="intentions.length > 0" class="card border-secondary mb-4">
-                                        <div class="card-header bg-light">
-                                            <h5 class="mb-0">
-                                                <i class="bi bi-file-earmark-text me-2"></i>
-                                                Intenciones del día
-                                            </h5>
-                                        </div>
-                                        <div class="card-body">
-                                            <div class="table-responsive">
-                                                <table class="table table-hover table-sm mb-0">
-                                                    <thead class="table-light">
-                                                        <tr>
-                                                            <th>#</th>
-                                                            <th>Cliente</th>
-                                                            <th>Documento</th>
-                                                            <th class="text-end">Capital</th>
-                                                            <th class="text-end">Valor Total</th>
-                                                            <th>Cuota</th>
-                                                            <th>Plazo</th>
-                                                        </tr>
-                                                    </thead>
-                                                    <tbody>
-                                                        <tr *ngFor="let intention of intentions; let i = index">
-                                                            <td>{{ i + 1 }}</td>
-                                                            <td>{{ intention.clientName || '-' }}</td>
-                                                            <td>{{ intention.document || '-' }}</td>
-                                                            <td class="text-end">
-                                                                <strong>${{ formatCurrency(intention.totalCapitalValue)
-                                                                    }}</strong>
-                                                            </td>
-                                                            <td class="text-end">
-                                                                <strong class="text-primary">${{
-                                                                    formatCurrency(intention.totalIntentionValue)
-                                                                    }}</strong>
-                                                            </td>
-                                                            <td class="text-end">${{
-                                                                formatCurrency(intention.quotaValue) }}
-                                                            </td>
-                                                            <td>{{ intention.periodQuantity }} cuotas</td>
-                                                        </tr>
-                                                    </tbody>
-                                                    <tfoot class="table-light">
-                                                        <tr>
-                                                            <th colspan="4">TOTAL:</th>
-                                                            <th class="text-end">
-                                                                <span class="fs-5 text-primary">
-                                                                    ${{ formatCurrency(getTotalIntentions()) }}
-                                                                </span>
-                                                            </th>
-                                                            <th colspan="2"></th>
-                                                        </tr>
-                                                    </tfoot>
-                                                </table>
-                                            </div>
+                                                        <td>${{ formatCurrency(intention.quotaValue) }}</td>
+                                                        <td>{{ intention.periodQuantity }} cuotas</td>
+                                                        <td>
+                                                            <strong class="text-primary">${{
+                                                                formatCurrency(intention.totalIntentionValue)
+                                                                }}</strong>
+                                                        </td>
+                                                    </tr>
+                                                </tbody>
+                                                <tfoot class="table-light">
+                                                    <tr>
+                                                        <th colspan="6">TOTAL:</th>
+                                                        <th>
+                                                            <span class="fs-5 text-primary">
+                                                                ${{ formatCurrency(getTotalIntentions()) }}
+                                                            </span>
+                                                        </th>
+                                                        <th colspan="2"></th>
+                                                    </tr>
+                                                </tfoot>
+                                            </table>
                                         </div>
                                     </div>
-                                </fieldset>
+                                </div>
 
 
 
@@ -1319,7 +1306,7 @@
 
                                         <!-- Lista de gastos con opción de eliminar Y EDITAR -->
                                         <fieldset class="mt-4">
-                                            <legend>Gastos Actuales</legend>
+                                            <legend>Gastos actuales</legend>
 
                                             <div class="table-responsive">
                                                 <table class="table table-striped table-hover">
@@ -1381,7 +1368,7 @@
 
                                 <!-- ADMIN en PRE_APPROVED (Aprobación Final) -->
                                 <div *ngIf="currentStatus === 'PRE_APPROVED' && isAdmin && canApprove"
-                                    class="alert alert-danger border-danger">
+                                    class="alert alert-admin-panel">
                                     <h6 class="alert-heading">
                                         <i class="bi bi-shield-check me-2"></i>
                                         Aprobación Final Requerida
@@ -1389,7 +1376,7 @@
 
                                     <div class="row mb-3">
                                         <div class="col-md-12">
-                                            <div class="bg-light p-3 rounded border border-danger">
+                                            <div class="bg-light p-3 rounded border">
                                                 <h5 class="mb-0">
                                                     <i class="bi bi-calculator me-2"></i>
                                                     Subtotal a entregar:
@@ -1408,13 +1395,11 @@
 
                                     <!-- Formulario de entrega -->
                                     <form [formGroup]="approvalForm" class="mt-3">
-                                        <fieldset>
-                                            <legend>Seleccione tipo de entrega</legend>
-
                                             <div class="mb-3">
-                                                <label class="form-label">Tipo de Entrega <span
+                                                <label class="form-label">Seleccione el tipo de entrega <span
                                                         class="text-danger">*</span></label>
-                                                <select class="form-select" formControlName="deliveryType">
+                                                <select class="form-select" formControlName="deliveryType"
+                                                    (change)="deliveryTotal()">
                                                     <option value="">Seleccione una opción</option>
                                                     <option value="admin">Entregar todo al Admin</option>
                                                     <option value="asesor">Entregar todo al Asesor</option>
@@ -1425,46 +1410,22 @@
                                             <!-- Opción: Todo al Admin -->
                                             <div *ngIf="approvalForm.get('deliveryType')?.value === 'admin'"
                                                 class="mb-3">
-                                                <label class="form-label">
-                                                    Cantidad para Admininistrador<span class="text-danger">*</span>
-                                                </label>
-                                                <div class="input-group">
-                                                    <span class="input-group-text">$</span>
-                                                    <input type="text" class="form-control"
-                                                        formControlName="adminAmount"
-                                                        (input)="formatCurrencyString(approvalForm,'adminAmount')"
-                                                        [ngClass]="{'is-invalid': toNumber(approvalForm.get('adminAmount')?.value) !== getSubtotal()}"
-                                                        placeholder="Debe ser igual al subtotal">
-                                                </div>
-                                                <div class="text-danger mt-1"
-                                                    *ngIf="toNumber(approvalForm.get('adminAmount')?.value) !== getSubtotal()">
-                                                    <small>
-                                                        <i class="bi bi-exclamation-triangle me-1"></i>
-                                                        Debe ingresar exactamente ${{ formatCurrency(getSubtotal()) }}
-                                                    </small>
+                                                <div class="alert alert-info">
+                                                    <i class="bi bi-info-circle me-2"></i>
+                                                    El valor total de <strong>${{ formatCurrency(getSubtotal())
+                                                        }}</strong>
+                                                    será entregado al <strong>Administrador</strong>
                                                 </div>
                                             </div>
 
                                             <!-- Opción: Todo al Asesor -->
                                             <div *ngIf="approvalForm.get('deliveryType')?.value === 'asesor'"
                                                 class="mb-3">
-                                                <label class="form-label">
-                                                    Cantidad para Asesor <span class="text-danger">*</span>
-                                                </label>
-                                                <div class="input-group">
-                                                    <span class="input-group-text">$</span>
-                                                    <input type="text" class="form-control"
-                                                        formControlName="asesorAmount"
-                                                        (input)="formatCurrencyString(approvalForm,'asesorAmount')"
-                                                        [ngClass]="{'is-invalid': toNumber(approvalForm.get('asesorAmount')?.value) !== getSubtotal()}"
-                                                        placeholder="Debe ser igual al subtotal">
-                                                </div>
-                                                <div class="text-danger mt-1"
-                                                    *ngIf="toNumber(approvalForm.get('asesorAmount')?.value) !== getSubtotal()">
-                                                    <small>
-                                                        <i class="bi bi-exclamation-triangle me-1"></i>
-                                                        Debe ingresar exactamente ${{ formatCurrency(getSubtotal()) }}
-                                                    </small>
+                                                <div class="alert alert-info">
+                                                    <i class="bi bi-info-circle me-2"></i>
+                                                    El valor total de <strong>${{ formatCurrency(getSubtotal())
+                                                        }}</strong>
+                                                    será entregado al <strong>Asesor</strong>
                                                 </div>
                                             </div>
 
@@ -1498,13 +1459,11 @@
                                                 </div>
 
                                                 <div class="alert"
-                                                    [ngClass]="getSumaParcial() === getSubtotal() ? 'alert-success' : 'alert-danger'">
-                                                    <strong>Suma actual:</strong> ${{ formatCurrency(getSumaParcial())
-                                                    }}
-                                                    <br>
-                                                    <strong>Subtotal requerido:</strong> ${{
-                                                    formatCurrency(getSubtotal()) }}
-                                                    <br>
+                                                    [ngClass]="faltanteCorrecto ? 'alert-success' : 'alert-danger'">
+                                                    <strong>Faltante:</strong> ${{ formatCurrency(faltante)
+                                                    }}<br>
+                                                    <strong>Total a entregar:</strong> ${{
+                                                    formatCurrency(getSubtotal()) }}<br>
                                                     <span *ngIf="getSumaParcial() !== getSubtotal()"
                                                         class="text-danger">
                                                         <i class="bi bi-exclamation-triangle me-1"></i>
@@ -1517,7 +1476,6 @@
                                                     </span>
                                                 </div>
                                             </div>
-                                        </fieldset>
                                     </form>
                                 </div>
 
