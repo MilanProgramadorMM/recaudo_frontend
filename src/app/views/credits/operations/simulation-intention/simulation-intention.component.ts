@@ -173,8 +173,7 @@ export class SimulationIntentionComponent implements OnInit {
 
     });
 
-    this.form.valueChanges.subscribe(() =>
-      this.updateFullName());
+    this.form.valueChanges.subscribe(() => this.updateFullName());
     this.loadDocumentTypes();
     this.loadGender();
     this.fetchLines();
@@ -460,6 +459,16 @@ export class SimulationIntentionComponent implements OnInit {
 
     control.setValue(formatted, { emitEvent: false });
   }
+
+  formatValueCurrency(rawValue: string) {
+    if (rawValue === null || rawValue === '') return;
+    const numericValue = rawValue.toString().replace(/\D/g, '');
+    if (numericValue === '') {
+      return '';;
+    }
+    return Number(numericValue).toLocaleString('es-CO');
+  }
+
 
   soloNumeros(event: KeyboardEvent) {
     const char = event.key;
@@ -825,7 +834,7 @@ export class SimulationIntentionComponent implements OnInit {
     const hasDesembolsoValue = desembolsoValue > 0;
 
     // Determinar el grupo
-    const isDesembolsoEnabled = this.form.get('desembolso_value')?.enabled ?? false;
+    const isDesembolsoEnabled = !this.isFinanceCreditLine;
 
     let isValidCombination = false;
 
@@ -913,7 +922,7 @@ export class SimulationIntentionComponent implements OnInit {
     const hasItemValue = itemValue > 0;
     const hasDesembolsoValue = desembolsoValue > 0;
 
-    const isDesembolsoEnabled = this.form.get('desembolso_value')?.enabled ?? false;
+    const isDesembolsoEnabled = !this.isFinanceCreditLine;
 
     if (isDesembolsoEnabled) {
       // ======== GRUPO 2: cuota, tasa, desembolsoValue ========
@@ -1271,6 +1280,52 @@ export class SimulationIntentionComponent implements OnInit {
     });
   }
 
+  onSave(): void {
+    const raw = this.form.getRawValue();
+    const capitalValue = this.selectedCreditLine?.loanDisbursement
+        ? this.toNumber(raw.desembolso_value)
+        : this.toNumber(raw.item_value);
+    const numeroCuotas = raw.period_quantity;
+    const cuotaValue = raw.quota_value;
+    const tasa = raw.tax_value;
+
+    Swal.fire({
+      title: '¿Finalizar registro de intención?',
+      html: `
+        <table style="margin:auto; text-align:left;">
+          <tr>
+            <td><b>Valor:</b></td>
+            <td style="padding-left:20px;"><strong>$${this.formatValueCurrency(capitalValue.toString())}</strong></td>
+          </tr>
+          <tr>
+            <td><b>N. Cuotas:</b></td>
+            <td style="padding-left:20px;"><strong>${numeroCuotas}</strong></td>
+          </tr>
+          <tr>
+            <td><b>Tasa:</b></td>
+            <td style="padding-left:20px;"><strong>${tasa}%</strong></td>
+          </tr>
+          <tr>
+            <td><b>Cuota:</b></td>
+            <td style="padding-left:20px;"><strong>$${cuotaValue}</strong></td>
+          </tr>
+        </table>
+      `,
+      icon: 'question',
+      showCancelButton: true,
+      confirmButtonText: 'Finalizar',
+      cancelButtonText: 'Cancelar',
+      customClass: {
+        confirmButton: 'btn btn-success',
+        cancelButton: 'btn btn-secondary'
+      }
+    }).then((result) => {
+      if (result.isConfirmed) {
+        this.saveIntention();
+      }
+    });
+  }
+
   async saveIntention(): Promise<void> {
     if (!this.simulationCompleted) {
       this.errorMessage = 'Debe realizar la simulación antes de guardar';
@@ -1424,17 +1479,13 @@ export class SimulationIntentionComponent implements OnInit {
   onCreditLineChange(): void {
     const id = this.form.get('credit_line_id')?.value;
     const selected = this.creditLines.find(c => c.id === Number(id));
-
+    
     if (!selected) {
       this.selectedCreditLine = null;
       return;
     }
-
-    this.selectedCreditLine = selected;
-    const hasDisbursement = selected.loanDisbursement;
-    this.updateValidatorsByLoanDisbursement(hasDisbursement);
-
-
+    this.selectedCreditLine = selected;    
+    
     const desembolsoCtrl = this.form.get('desembolso_value');
     const itemCtrl = this.form.get('item_value');
     const financiateCtrl = this.form.get('value_to_financiate');
@@ -1451,6 +1502,11 @@ export class SimulationIntentionComponent implements OnInit {
     itemCtrl?.setValue(null);
     financiateCtrl?.setValue(null);
     initialQuotaCtrl?.setValue(null);
+    /*const hasDisbursement = selected.loanDisbursement;
+    this.updateValidatorsByLoanDisbursement(hasDisbursement);
+
+
+
 
     if (hasDisbursement) {
       // Habilitar campos del GRUPO 2
@@ -1499,7 +1555,7 @@ export class SimulationIntentionComponent implements OnInit {
     this.documentFiles.clear();
     this.simulationCompleted = false;
     this.simulationResult = null;
-    this.errorMessage = '';
+    this.errorMessage = '';*/
   }
 
 
@@ -1863,7 +1919,27 @@ export class SimulationIntentionComponent implements OnInit {
     setTimeout(() => {
       this.updatingFromBackend = false;
     }, 100);
+
+  }
+  
+  get getPapeleria() {
+    const creditLine = this.selectedCreditLine?.name;
+    let value;
+    if (creditLine == 'LÍNEA DE FINANCIAMIENTO') {
+      value = this.form.get('value_to_financiate')?.value;
+    } else {
+      value = this.form.get('desembolso_value')?.value;
+    }
+    if (value) {
+      const formattedValue = Number(value.replaceAll('.', '')) * 0.01;
+      return this.formatValueCurrency(formattedValue.toString())
+    }
+    return '0';
   }
 
+  get isFinanceCreditLine() {
+    const creditLine = this.selectedCreditLine?.name;    
+    return creditLine == 'LÍNEA DE FINANCIAMIENTO';
+  }
 
 }

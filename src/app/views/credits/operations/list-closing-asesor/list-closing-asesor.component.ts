@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, ElementRef, ViewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 import { Subscription } from 'rxjs';
@@ -6,6 +6,10 @@ import { PageTitleComponent } from '@components/page-title.component';
 import { AuthenticationService } from '@core/services/auth.service';
 import { ClosingService, ClosingResponseDto } from '@core/services/closing.service';
 import { ClosingStatusService } from '@core/services/closingStatus.service';
+import { UserRole } from '../closing/closing.component';
+import { FlatpickrDirective } from '@core/directive/flatpickr.directive';
+import { ZonaResponseDto, ZonaService } from '@core/services/zona.service';
+import { FormBuilder, FormGroup, ReactiveFormsModule } from '@angular/forms';
 
 interface ClosingWithStatus extends ClosingResponseDto {
   closingStatus?: string;
@@ -13,26 +17,58 @@ interface ClosingWithStatus extends ClosingResponseDto {
 }
 @Component({
   selector: 'app-list-closing-asesor',
-  imports: [CommonModule, PageTitleComponent],
+  imports: [CommonModule, PageTitleComponent, FlatpickrDirective, ReactiveFormsModule],
   templateUrl: './list-closing-asesor.component.html',
   styleUrl: './list-closing-asesor.component.scss'
 })
 export class ListClosingAsesorComponent {
 
   closings: ClosingWithStatus[] = [];
+  filteredClosings: ClosingWithStatus[] = [];
+  zonas: ZonaResponseDto[] = [];
   loading = false;
   personId: number | null = null;
   lastUpdate: Date | null = null;
 
+  isAsistente = false;
+  isAsesor = false;
+  isAdmin = false;
+  currentRole: string = '';
 
-  private pollingSubscription?: Subscription;
+  
+  @ViewChild('date', { static: false }) dateInput!: any;
+
+  filterForm!: FormGroup;
+  flatpickrOptions = {
+    dateFormat: 'Y-m-d',
+    defaultDate: [],
+    locale: {
+      firstDayOfWeek: 1,
+      weekdays: {
+        shorthand: ['Dom', 'Lun', 'Mar', 'Mié', 'Jue', 'Vie', 'Sáb'],
+        longhand: ['Domingo', 'Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado'],
+      },
+      months: {
+        shorthand: ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun', 'Jul', 'Ago', 'Sep', 'Oct', 'Nov', 'Dic'],
+        longhand: ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'],
+      },
+    },
+    onChange: (selectedDates: Date[]) => {
+      if (selectedDates.length > 0) {
+        //this.filterForm.patchValue({date: this.formatDate(selectedDates[0])});
+      }
+    }
+  }
 
   constructor(
+    private fb: FormBuilder,
     private authService: AuthenticationService,
     private closingService: ClosingService,
     private closingStatusService: ClosingStatusService,
-    private router: Router
-  ) { }
+    private router: Router,
+    private zonaService: ZonaService
+  ) {
+  }
 
   ngOnInit(): void {
     this.personId = this.authService.getUserId();
@@ -40,9 +76,99 @@ export class ListClosingAsesorComponent {
     if (!this.personId) {
       console.error('No se pudo obtener el ID del usuario');
       return;
-    }
+    }    
 
     this.loadClosings();
+    this.loadUserRole();
+    this.loadAllActiveZonas();
+    this.filterForm = this.fb.group({
+      zona: [''],
+      date: ['']
+    });
+
+    this.filterForm.valueChanges.subscribe(filters => {
+      const zona = filters.zona;
+      const date = filters.date;
+      this.filteredClosings = this.closings.filter(closing => {
+        const zonaMatch = !zona || closing.zonaId == zona;
+        const dateMatch = !date || closing.closingDate == date;
+        return zonaMatch && dateMatch;
+      });
+
+    });
+  }
+
+  testZona(e: any){
+    // this.filterForm.patchValue({
+    //     zona: e.target.value
+    // });
+  }
+
+  applyFilters() {
+    const dataFilter = this.filterForm.value;
+    this.filteredClosings = this.closings.filter(closing => (closing.zonaId == dataFilter.zona) && (closing.closingDate == dataFilter.date));
+  }
+
+  clearFilters() {
+    this.filterForm.patchValue({
+      zona: '',
+      date: null
+    });
+    this.filteredClosings = [...this.closings];
+  }
+
+  private initializeFilters(): void {
+    if (this.zonas.length > 0) {
+      const primeraZona = this.zonas[0];
+      this.filterForm.patchValue({
+        zona: primeraZona.id
+      });
+    }
+  }
+
+  private loadAllActiveZonas(): void {
+    this.zonaService.getByStatus().subscribe({
+      next: (response) => {
+        this.zonas = response.data;
+         //this.initializeFilters();
+        this.loading = false;
+        console.log('Zonas activas cargadas:', this.zonas);
+      },
+      error: (err) => {
+        console.error('Error al cargar zonas:', err);
+        this.zonas = [];
+        this.loading = false;
+      }
+    });
+  }
+
+  onDateRangeChange(selectedDates: Date[]): void {
+    if (selectedDates && selectedDates.length === 2) {
+      const fechaInicio = this.formatDate(selectedDates[0]);
+      const fechaFin = this.formatDate(selectedDates[1]);
+
+      /*const filters = this.sharedFilterService.getFilters();
+      this.sharedFilterService.setFilters({
+        ...filters,
+        fechaInicio,
+        fechaFin
+      });*/
+      console.log('Filtro fecha aplicado:', { fechaInicio, fechaFin });
+    }
+  }
+
+  private formatDate(date: Date | string): string {
+    if (typeof date === 'string') return date;
+    return date.getFullYear() + '-' +
+      String(date.getMonth() + 1).padStart(2, '0') + '-' +
+      String(date.getDate()).padStart(2, '0');
+  }
+
+  loadUserRole(): void {
+    this.currentRole = this.authService.getUserRole() || '';
+    this.isAsistente = this.currentRole === UserRole.ASISTENTE;
+    this.isAsesor = this.currentRole === UserRole.ASESOR;
+    this.isAdmin = this.currentRole === UserRole.ADMIN;
   }
 
   loadClosings(): void {
@@ -52,6 +178,7 @@ export class ListClosingAsesorComponent {
     this.closingService.getClosingsByPerson(this.personId).subscribe({
       next: (response) => {
         this.closings = response.data || [];
+        this.filteredClosings = [...this.closings];
         this.lastUpdate = new Date();
         this.loading = false;
 

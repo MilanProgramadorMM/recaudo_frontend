@@ -495,7 +495,7 @@
                                     </div>
 
                                     <div class="row">
-                                        <div class="col-lg-4 mb-3">
+                                        <div class="col-lg-4 mb-3" *ngIf="!isFinanceCreditLine">
                                             <label class="form-label">Valor desembolso</label>
                                             <div class="input-group">
                                                 <span class="input-group-text">$</span>
@@ -505,8 +505,33 @@
                                                     'is-invalid': submitted && form.get('desembolso_value')?.invalid
                                                       }">
                                             </div>
+                                            <small class="form-text text-muted">
+                                                Papelería: $ {{ getPapeleria }}
+                                            </small>
                                             <div class="invalid-feedback"
                                                 *ngIf="submitted && form.get('desembolso_value')?.errors?.['required']">
+                                                Campo obligatorio
+                                            </div>
+                                        </div>
+
+                                        <div class="col-lg-4 mb-3" *ngIf="isFinanceCreditLine">
+                                            <label class="form-label">
+                                                Valor producto
+                                            </label>
+
+                                            <div class="input-group">
+                                                <span class="input-group-text">$</span>
+
+                                                <input type="text" class="form-control" formControlName="item_value"
+                                                    (input)="formatCurrency('item_value')"
+                                                    placeholder="Ingrese el valor" [ngClass]="{ 'is-invalid': submitted && form.get('item_value')?.invalid }">
+                                            </div>
+                                            <small class="form-text text-muted">
+                                                Papelería: $ {{ getPapeleria }}
+                                            </small>
+
+                                            <div class="invalid-feedback"
+                                                *ngIf="submitted && form.get('item_value')?.errors?.['required']">
                                                 Campo obligatorio
                                             </div>
                                         </div>
@@ -563,28 +588,8 @@
 
                                     </div>
 
-                                    <div class="row">
-                                        <div class="col-lg-4 mb-3">
-                                            <label class="form-label">
-                                                Valor producto
-                                            </label>
-
-                                            <div class="input-group">
-                                                <span class="input-group-text">$</span>
-
-                                                <input type="text" class="form-control" formControlName="item_value"
-                                                    (input)="formatCurrency('item_value')"
-                                                    placeholder="Ingrese el valor" [ngClass]="{
-                    'is-invalid': submitted && form.get('item_value')?.invalid
-                }">
-                                            </div>
-
-                                            <div class="invalid-feedback"
-                                                *ngIf="submitted && form.get('item_value')?.errors?.['required']">
-                                                Campo obligatorio
-                                            </div>
-                                        </div>
-                                        <div class="col-lg-4 mb-3">
+                                    <div class="row" *ngIf="isFinanceCreditLine">
+                                        <div class="col-lg-6 mb-3">
                                             <label class="form-label">
                                                 Valor a financiar
                                             </label>
@@ -595,9 +600,7 @@
                                                 <input type="text" class="form-control"
                                                     formControlName="value_to_financiate"
                                                     (input)="formatCurrency('value_to_financiate')"
-                                                    placeholder="Se calcula automáticamente" readonly [ngClass]="{
-                    'is-invalid': submitted && form.get('value_to_financiate')?.invalid
-                }">
+                                                    placeholder="Se calcula automáticamente" readonly [ngClass]="{ 'is-invalid': submitted && form.get('value_to_financiate')?.invalid }">
                                             </div>
 
                                             <div class="invalid-feedback"
@@ -610,7 +613,7 @@
                                                 producto - Cuota inicial
                                             </small>
                                         </div>
-                                        <div class="col-lg-4 mb-3">
+                                        <div class="col-lg-6 mb-3">
                                             <label class="form-label">
                                                 Cuota inicial
                                             </label>
@@ -754,7 +757,7 @@
                                     </button>
 
                                     <!-- Botón de Guardar -->
-                                    <button class="btn btn-success mt-3 mt-md-0" (click)="saveIntention()"
+                                    <button class="btn btn-success mt-3 mt-md-0" (click)="onSave()"
                                         [disabled]="!simulationCompleted"
                                         [title]="!simulationCompleted ? 'Debe simular el crédito primero' : 'Guardar intención de crédito'">
                                         <i class="bi bi-check-circle me-2"></i>

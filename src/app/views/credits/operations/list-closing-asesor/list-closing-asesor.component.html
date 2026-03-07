@@ -1,10 +1,10 @@
-<page-title title="Mis Cierres" subtitle="Gestión de Cierres" />
+<page-title *ngIf="isAsesor" title="Mis Cierres" subtitle="Gestión de Cierres" />
+<page-title *ngIf="isAdmin" title="Cierres" subtitle="Gestión de Cierres" />
 
 <div class="col-lg-12">
     <div class="card">
         <div class="card-body">
-            <div
-                class="d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center mb-3 gap-2">
+            <div *ngIf="isAsesor" class="d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center mb-3 gap-2">
                 <h5 class="mb-0">
                     <i class="bi bi-clock-history me-2 text-danger"></i>
                     Mis Cierres de Caja
@@ -15,23 +15,64 @@
                     <span class="ms-2 d-none d-md-inline">Actualizar</span>
                 </button>
             </div>
+            <div *ngIf="!isAsesor" class="d-flex flex-column flex-md-row align-items-start align-items-md-center mb-3 gap-2">
+                <form [formGroup]="filterForm">
+                    <div class="row g-2 align-items-center justify-content-center justify-content-sm-end">
+                        <div class="col-12 col-sm-auto" style="min-width: 180px;">
+                            <select class="form-select w-100" aria-label="Filtrar por zona" formControlName="zona">
+                                <option value="">Seleccione una zona</option>
+                                <option *ngFor="let zona of zonas" [value]="zona.id">
+                                    {{ zona.value }}
+                                </option>
+                            </select>
+                        </div>
+                        <div class="col-12 col-sm-auto">
+                            <div class="input-group">
+                            <input #date mwlFlatpickr 
+                                [flatpickrOptions]="flatpickrOptions"
+                                placeholder="Seleccione fecha"
+                                type="text"
+                                class="form-control border-0 shadow"
+                                formControlName="date" />
+                            <span class="input-group-text text-white" style="background-color: #DC3545; border-color: #DC3545;">
+                                <i class="ti ti-calendar fs-15"></i>
+                            </span>
+                            </div>
+                        </div>
+                        <!-- <div class="col-12 col-sm-auto">
+                            <button (click)="applyFilters()" type="button" class="btn btn-danger"
+                                title="Buscar">
+                                <i class="bi bi-search"></i>
+                                <span class="ms-2 d-none d-md-inline">Buscar</span>
+                            </button>
+                        </div> -->
+                        <div class="col-12 col-sm-auto">
+                            <button (click)="clearFilters()" type="button" class="btn btn-info"
+                                title="Limpiar">
+                                <i class="ti ti-filter-off"></i>
+                                <span class="ms-2 d-none d-md-inline">Limpiar</span>
+                            </button>
+                        </div>
+                    </div>
+                </form>
+            </div>
 
             <!-- Loading inicial -->
-            <div *ngIf="loading && closings.length === 0" class="text-center my-5">
+            <div *ngIf="loading && filteredClosings.length === 0" class="text-center my-5">
                 <div class="spinner-border text-danger" role="status"></div>
                 <p class="mt-3">Cargando cierres...</p>
             </div>
 
             <!-- Sin cierres -->
-            <div *ngIf="!loading && closings.length === 0" class="alert alert-danger">
+            <div *ngIf="!loading && filteredClosings.length === 0" class="alert alert-danger">
                 <i class="bi bi-info-circle me-2"></i>
                 No tienes cierres registrados aún.
             </div>
 
-            <div *ngIf="closings.length > 0">
+            <div *ngIf="filteredClosings.length > 0">
 
                 <!-- Resumen -->
-                <div class="row mb-4">
+                <div class="row mb-4" *ngIf="isAsesor">
                     <div class="col-6 col-md-2">
                         <div class="card border-danger-custom">
                             <div class="card-body text-center">
@@ -76,7 +117,7 @@
                         </thead>
 
                         <tbody>
-                            <tr *ngFor="let closing of closings">
+                            <tr *ngFor="let closing of filteredClosings">
 
                                 <td><strong>#{{ closing.id }}</strong></td>
 
@@ -135,7 +176,7 @@
                 </div>
 
                 <!-- Alerta -->
-                <div *ngIf="hasPendingClosings()" class="alert alert-danger mt-3">
+                <div *ngIf="hasPendingClosings() && isAsesor" class="alert alert-danger mt-3">
                     <i class="bi bi-exclamation-triangle me-2"></i>
                     <strong>Tienes cierres pendientes por completar.</strong>
                 </div>

@@ -17,7 +17,7 @@ import { Glotypes, GlotypesService } from '@core/services/glotypes.service';
 import { CreditIntentionDetail, RecaudoDetail, RecaudoService } from '@core/services/recaudo.service';
 import { CreditCausadoDetail, CreditService } from '@core/services/credit.service';
 
-enum UserRole {
+export enum UserRole {
   ASISTENTE = 'BACKOFFICE',
   ASESOR = 'Asesor',
   ADMIN = 'Administrador'

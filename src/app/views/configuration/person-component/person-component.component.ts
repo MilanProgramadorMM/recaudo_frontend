@@ -6,7 +6,7 @@ import { PersonDataType } from './data';
 import { PersonCreateComponent } from '../person-create/person-create.component';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import Swal from 'sweetalert2';
-import { FormsModule } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { PersonRegisterDto, PersonResponseDto, PersonService } from '@core/services/person.service';
 import { PersonDatilsComponent } from '../person-datils/person-datils.component';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -24,7 +24,8 @@ import { ZonaResponseDto, ZonaService } from '@core/services/zona.service'; // I
     NgbModalModule,
     CommonModule,
     FormsModule,
-    NgbDropdownModule
+    NgbDropdownModule,
+    ReactiveFormsModule
   ],
   templateUrl: './person-component.component.html',
   styleUrl: './person-component.component.scss'

@@ -31,6 +31,11 @@ export class RequestRecaudoComponent implements OnInit {
   clientesFiltered: DailyCollectionItem[] = [];
   filterStatus: string = 'all';
 
+  isAsistente = false;
+  isAsesor = false;
+  isAdmin = false;
+  currentRole: string = '';
+
   constructor(
     private personService: PersonService,
     private authService: AuthenticationService,

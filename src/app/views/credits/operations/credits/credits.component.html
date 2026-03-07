@@ -5,16 +5,49 @@
         <div class="card">
             <div class="card-header d-flex align-items-center justify-content-between border-bottom border-light">
                 <h4 class="header-title">Créditos</h4>
-            </div>
-
-            <div class="mb-3 row align-items-center ms-3 mt-3">
-                <label for="intention-search" class="col-sm-auto col-form-label">Buscar:</label>
-                <div class="col-6">
-                    <input id="intention-search" class="form-control text-uppercase" type="text"
-                        placeholder="cliente o zona..." [(ngModel)]="searchTerm"
-                        (ngModelChange)="applyFilter()" />
+                <div class="d-flex flex-column flex-md-row align-items-start align-items-md-center mb-3 gap-2">
+                    <form [formGroup]="filterForm">
+                        <div class="row g-2 align-items-center justify-content-center justify-content-sm-end">
+                            <div class="col-12 col-sm-auto" style="min-width: 180px;" *ngIf="!isAsesor">
+                                <select class="form-select w-100" aria-label="Filtrar por zona" formControlName="zona">
+                                    <option value="">Seleccione una zona</option>
+                                    <option *ngFor="let zona of zonas" [value]="zona.id">
+                                        {{ zona.value }}
+                                    </option>
+                                </select>
+                            </div>
+                            <div class="col-12 col-sm-auto">
+                                <div class="input-group">
+                                <input #date mwlFlatpickr 
+                                    [flatpickrOptions]="flatpickrOptions"
+                                    placeholder="Seleccione fecha"
+                                    type="text"
+                                    class="form-control border-0 shadow"
+                                    formControlName="date" />
+                                <span class="input-group-text text-white" style="background-color: #DC3545; border-color: #DC3545;">
+                                    <i class="ti ti-calendar fs-15"></i>
+                                </span>
+                                </div>
+                            </div>
+                            <!-- <div class="col-12 col-sm-auto">
+                                <button (click)="applyFilters()" type="button" class="btn btn-danger"
+                                    title="Buscar">
+                                    <i class="bi bi-search"></i>
+                                    <span class="ms-2 d-none d-md-inline">Buscar</span>
+                                </button>
+                            </div> -->
+                            <div class="col-12 col-sm-auto">
+                                <button (click)="clearFilters()" type="button" class="btn btn-info"
+                                    title="Limpiar">
+                                    <i class="ti ti-filter-off"></i>
+                                    <span class="ms-2 d-none d-md-inline">Limpiar</span>
+                                </button>
+                            </div>
+                        </div>
+                    </form>
                 </div>
             </div>
+
 
             <div *ngIf="loading" class="text-center my-3">
                 <div class="spinner-border spinner-border-sm text-primary" role="status"></div>
@@ -69,6 +102,7 @@
                                 <th>Línea de crédito</th>
                                 <th>Valor desembolsado</th>
                                 <th class="text-end" style="width: 150px;">Valor financiado</th>
+                                <th>Fecha</th>
                                 <th class="text-center" style="width: 150px;">Acciones</th>
                             </tr>
                         </thead>
@@ -95,6 +129,7 @@
                                     </ng-container>
                                     <ng-template #noFinanciado><strong>---</strong></ng-template>
                                 </td>
+                                <td>{{ intention.createdAt }}</td>
                                 <td class="pe-3">
                                     <div class="hstack gap-1 justify-content-center">
                                         <button (click)="manageIntention(intention)" class="btn btn-danger btn-sm">
