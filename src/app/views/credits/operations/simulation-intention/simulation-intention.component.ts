@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
-import { FileUploaderComponent } from '@components/file-uploader.component';
+import { FileUploaderComponent, UploadedFile } from '@components/file-uploader.component';
 import { PageTitleComponent } from '@components/page-title.component';
 import { CalculateCreditIntentionDto, CreditIntentionService, CreditProjectionDto, DocumentMetadata } from '@core/services/creditIntention.service';
 import { CreditLineDto, CreditLineService } from '@core/services/creditLine.service';
@@ -288,8 +288,7 @@ export class SimulationIntentionComponent implements OnInit {
       }, 5000);
     });
 
-    this.form.get('start_date')?.valueChanges.subscribe(() => {
-      debugger;
+    this.form.get('start_date')?.valueChanges.subscribe(() => {      
       /*if (this.updatingFromBackend) return;
       if (!this.simulationCompleted) return;
       this.simulationCompleted = false;
@@ -1399,7 +1398,7 @@ export class SimulationIntentionComponent implements OnInit {
       //cargos: this.toNumber(raw.cargos)
     };
 
-    let files: File[] | undefined;
+    let files: UploadedFile[] | undefined;
     let metadata: DocumentMetadata[] | undefined;
 
     if (this.requiresDocumentation()) {

@@ -64,6 +64,92 @@
                             </div>
                         </div>
 
+                        
+                        <!-- Resumen mejorado -->
+                        <div class="card border-primary mb-4">
+                            <div class="card-header bg-primary bg-opacity-10">
+                                <h5 class="mb-0 text-primary">
+                                    <i class="bi bi-calculator me-2"></i>
+                                    Resumen Financiero
+                                </h5>
+                            </div>
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col-md-3 mb-3">
+                                        <div class="border-start border-black border-4 ps-3">
+                                            <small class="text-muted d-block">Saldo Anterior</small>
+                                            <h4 class="mb-0 text-black">
+                                                ${{ formatCurrency(toNumber(previousBaseValue)) }}
+                                            </h4>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-3 mb-3">
+                                        <div class="border-start border-success border-4 ps-3">
+                                            <small class="text-muted d-block">Base Inicial</small>
+                                            <h4 class="mb-0 text-success">
+                                                ${{ formatCurrency(toNumber(baseForm.get('base')?.value)) }}
+                                            </h4>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-3 mb-3">
+                                        <div class="border-start border-success border-4 ps-3">
+                                            <small class="text-muted d-block">Total Ajustes</small>
+                                            <h4 class="mb-0 text-success">
+                                                ${{ formatCurrency(toNumber(getTotalAjustes())) }}
+                                            </h4>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-3 mb-3">
+                                        <div class="border-start border-info border-4 ps-3">
+                                            <small class="text-muted d-block">Total Recaudos</small>
+                                            <h4 class="mb-0 text-info">
+                                                ${{ formatCurrency(getTotalRecaudos()) }}
+                                            </h4>
+                                            <small class="text-muted">{{ recaudos.length }} registro(s)</small>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-3 mb-3">
+                                        <div class="border-start border-danger border-4 ps-3">
+                                            <small class="text-muted d-block">Total Gastos</small>
+                                            <h4 class="mb-0 text-danger">
+                                                ${{ formatCurrency(getTotalSpends()) }}
+                                            </h4>
+                                            <small class="text-muted">{{ spendsList.length }}
+                                                registro(s)</small>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-3 mb-3">
+                                        <div class="border-start border-warning border-4 ps-3">
+                                            <small class="text-muted d-block">Créditos Causados</small>
+                                            <h4 class="mb-0 text-warning">
+                                                -${{ formatCurrency(getTotalCreditsCausados()) }}
+                                            </h4>
+                                            <small class="text-muted">{{ creditsCausados.length }}
+                                                crédito(s)</small>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-3 mb-3">
+                                        <div class="border-start border-4 ps-3"
+                                            [ngClass]="isSubtotalNegative() ? 'border-danger' : 'border-primary'">
+                                            <small class="text-muted d-block">Subtotal a Entregar</small>
+                                            <h4 class="mb-0"
+                                                [ngClass]="isSubtotalNegative() ? 'text-danger' : 'text-primary'">
+                                                ${{ formatCurrency(getSubtotal()) }}
+                                            </h4>
+                                            <small *ngIf="isSubtotalNegative()" class="text-danger">
+                                                <i class="bi bi-exclamation-triangle me-1"></i>
+                                                Saldo negativo
+                                            </small>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
                         <!-- Formulario para agregar gastos -->
                         <form [formGroup]="spendsForm" *ngIf="canAddSpends">
                             <fieldset>
@@ -146,83 +232,6 @@
                             </fieldset>
                         </form>
 
-                        <!-- Resumen mejorado -->
-                        <div class="card border-primary mb-4">
-                            <div class="card-header bg-primary bg-opacity-10">
-                                <h5 class="mb-0 text-primary">
-                                    <i class="bi bi-calculator me-2"></i>
-                                    Resumen Financiero
-                                </h5>
-                            </div>
-                            <div class="card-body">
-                                <div class="row">
-                                    <div class="col-md-3 mb-3">
-                                        <div class="border-start border-success border-4 ps-3">
-                                            <small class="text-muted d-block">Saldo Anterior</small>
-                                            <h4 class="mb-0 text-success">
-                                                ${{ formatCurrency(toNumber(previousBaseValue)) }}
-                                            </h4>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-3 mb-3">
-                                        <div class="border-start border-success border-4 ps-3">
-                                            <small class="text-muted d-block">Base Inicial</small>
-                                            <h4 class="mb-0 text-success">
-                                                ${{ formatCurrency(toNumber(baseForm.get('base')?.value)) }}
-                                            </h4>
-                                        </div>
-                                    </div>
-
-                                    <div class="col-md-3 mb-3">
-                                        <div class="border-start border-info border-4 ps-3">
-                                            <small class="text-muted d-block">Total Recaudos</small>
-                                            <h4 class="mb-0 text-info">
-                                                ${{ formatCurrency(getTotalRecaudos()) }}
-                                            </h4>
-                                            <small class="text-muted">{{ recaudos.length }} registro(s)</small>
-                                        </div>
-                                    </div>
-
-                                    <div class="col-md-3 mb-3">
-                                        <div class="border-start border-danger border-4 ps-3">
-                                            <small class="text-muted d-block">Total Gastos</small>
-                                            <h4 class="mb-0 text-danger">
-                                                ${{ formatCurrency(getTotalSpends()) }}
-                                            </h4>
-                                            <small class="text-muted">{{ spendsList.length }}
-                                                registro(s)</small>
-                                        </div>
-                                    </div>
-
-                                    <div class="col-md-3 mb-3">
-                                        <div class="border-start border-warning border-4 ps-3">
-                                            <small class="text-muted d-block">Créditos Causados</small>
-                                            <h4 class="mb-0 text-warning">
-                                                -${{ formatCurrency(getTotalCreditsCausados()) }}
-                                            </h4>
-                                            <small class="text-muted">{{ creditsCausados.length }}
-                                                crédito(s)</small>
-                                        </div>
-                                    </div>
-
-                                    <div class="col-md-3 mb-3">
-                                        <div class="border-start border-4 ps-3"
-                                            [ngClass]="isSubtotalNegative() ? 'border-danger' : 'border-primary'">
-                                            <small class="text-muted d-block">Subtotal a Entregar</small>
-                                            <h4 class="mb-0"
-                                                [ngClass]="isSubtotalNegative() ? 'text-danger' : 'text-primary'">
-                                                ${{ formatCurrency(getSubtotal()) }}
-                                            </h4>
-                                            <small *ngIf="isSubtotalNegative()" class="text-danger">
-                                                <i class="bi bi-exclamation-triangle me-1"></i>
-                                                Saldo negativo
-                                            </small>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
                         <fieldset class="mt-4">
                             <legend>Gastos registrados</legend>
 
@@ -294,6 +303,89 @@
                                                     <th class="text-end">
                                                         <span class="fs-5 text-primary">
                                                             ${{ formatCurrency(getTotalSpends()) }}
+                                                        </span>
+                                                    </th>
+                                                    <th class="d-none d-md-table-cell"></th> <!-- oculta en mobile -->
+                                                    <th *ngIf="canAddSpends"></th>
+                                                </tr>
+                                            </tfoot>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                        </fieldset>
+
+                        <fieldset class="mt-4">
+                            <legend>Ajustes registrados</legend>
+
+                            <div *ngIf="spendsList.length === 0" class="alert alert-info">
+                                <i class="bi bi-info-circle me-2"></i>
+                                No hay ajustes registrados aún
+                            </div>
+
+                            <div *ngIf="spendsList.length > 0" class="card border-secondary mb-4">
+                                <div class="card-header bg-light">
+                                    <h5 class="mb-0">
+                                        <i class="bi bi-receipt me-2"></i>
+                                        Detalle de ajustes
+                                    </h5>
+                                </div>
+                                <div class="card-body">
+                                    <div class="table-responsive">
+                                        <table class="table table-hover table-sm mb-0">
+                                            <thead class="table-light">
+                                                <tr>
+                                                    <th>Tipo</th>
+                                                    <th class="d-none d-md-table-cell">Descripción</th>
+                                                    <!-- oculta en mobile -->
+                                                    <th class="text-end">Valor</th>
+                                                    <th class="d-none d-md-table-cell">Evidencia</th>
+                                                    <!-- oculta en mobile -->
+                                                    <th *ngIf="canAddSpends" class="text-center">Acciones</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <tr *ngFor="let spend of visibleAjustesList">
+                                                    <td>
+                                                        <span class="badge"
+                                                            [ngClass]="spend.spendTypeId === baseSpendTypeId ? 'bg-primary' : 'bg-secondary'">
+                                                            {{ spend.spendTypeName }}
+                                                        </span>
+                                                    </td>
+                                                    <td class="d-none d-md-table-cell">{{ spend.description || '-' }}
+                                                    </td> <!-- oculta en mobile -->
+                                                    <td class="text-end">
+                                                        <strong>${{ formatCurrency(spend.amount) }}</strong>
+                                                    </td>
+                                                    <td class="d-none d-md-table-cell"> <!-- oculta en mobile -->
+                                                        <span *ngIf="spend.fileName" class="text-success">
+                                                            <i class="bi bi-file-earmark-check me-1"></i>
+                                                            {{ spend.fileName }}
+                                                        </span>
+                                                        <span *ngIf="!spend.fileName" class="text-muted">
+                                                            Sin evidencia
+                                                        </span>
+                                                    </td>
+                                                    <td *ngIf="canAddSpends" class="text-center">
+                                                        <button *ngIf="spend.spendTypeId !== baseSpendTypeId"
+                                                            type="button" (click)="removeSpend(spend)"
+                                                            class="btn btn-sm btn-danger" title="Eliminar gasto">
+                                                            <i class="bi bi-trash"></i>
+                                                        </button>
+                                                        <span *ngIf="spend.spendTypeId === baseSpendTypeId"
+                                                            class="text-muted small">
+                                                            No eliminable
+                                                        </span>
+                                                    </td>
+                                                </tr>
+                                            </tbody>
+                                            <tfoot class="table-light">
+                                                <tr>
+                                                    <th>TOTAL:</th>
+                                                    <th class="d-none d-md-table-cell"></th> <!-- oculta en mobile -->
+                                                    <th class="text-end">
+                                                        <span class="fs-5 text-primary">
+                                                            ${{ formatCurrency(getTotalAjustes()) }}
                                                         </span>
                                                     </th>
                                                     <th class="d-none d-md-table-cell"></th> <!-- oculta en mobile -->
@@ -512,8 +604,7 @@
                                 </button>
 
                                 <!-- Botón Finalizar (solo si puede agregar gastos) -->
-                                <button *ngIf="canAddSpends" (click)="finishSpends()" class="btn btn-success"
-                                    [disabled]="canFinishSpends()" [attr.disabled]="canFinishSpends() ? true : null">
+                                <button *ngIf="canAddSpends" (click)="finishSpends()" class="btn btn-success">
                                     <!-- ← doble protección -->
                                     <i class="bi bi-check-circle me-2"></i>
                                     Finalizar y Enviar a Estudio
@@ -619,6 +710,228 @@
                         </ng-template>
 
                         <div class="tab-pane" id="step2">
+                            <!-- Resumen mejorado -->
+                            <div class="card border-primary mb-4">
+                                <div class="card-header bg-primary bg-opacity-10">
+                                    <h5 class="mb-0 text-primary">
+                                        <i class="bi bi-calculator me-2"></i>
+                                        Resumen Financiero
+                                    </h5>
+                                </div>
+                                <div class="card-body">
+                                    <div class="row">
+                                        <div class="col-md-3 mb-3">
+                                            <div class="border-start border-black border-4 ps-3">
+                                                <small class="text-muted d-block">Saldo Anterior</small>
+                                                <h4 class="mb-0 text-black">
+                                                    ${{ formatCurrency(toNumber(previousBaseValue)) }}
+                                                </h4>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-3 mb-3">
+                                            <div class="border-start border-success border-4 ps-3">
+                                                <small class="text-muted d-block">Base Inicial</small>
+                                                <h4 class="mb-0 text-success">
+                                                    ${{ formatCurrency(toNumber(baseForm.get('base')?.value)) }}
+                                                </h4>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-3 mb-3">
+                                            <div class="border-start border-success border-4 ps-3">
+                                                <small class="text-muted d-block">Total Ajustes</small>
+                                                <h4 class="mb-0 text-success">
+                                                    ${{ formatCurrency(toNumber(getTotalAjustes())) }}
+                                                </h4>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-3 mb-3">
+                                            <div class="border-start border-info border-4 ps-3">
+                                                <small class="text-muted d-block">Total Recaudos</small>
+                                                <h4 class="mb-0 text-info">
+                                                    ${{ formatCurrency(getTotalRecaudos()) }}
+                                                </h4>
+                                                <small class="text-muted">{{ recaudos.length }} registro(s)</small>
+                                            </div>
+                                        </div>
+
+                                        <div class="col-md-3 mb-3">
+                                            <div class="border-start border-danger border-4 ps-3">
+                                                <small class="text-muted d-block">Total Gastos</small>
+                                                <h4 class="mb-0 text-danger">
+                                                    ${{ formatCurrency(getTotalSpends()) }}
+                                                </h4>
+                                                <small class="text-muted">{{ spendsList.length }}
+                                                    registro(s)</small>
+                                            </div>
+                                        </div>
+
+                                        <div class="col-md-3 mb-3">
+                                            <div class="border-start border-warning border-4 ps-3">
+                                                <small class="text-muted d-block">Créditos Causados</small>
+                                                <h4 class="mb-0 text-warning">
+                                                    -${{ formatCurrency(getTotalCreditsCausados()) }}
+                                                </h4>
+                                                <small class="text-muted">{{ creditsCausados.length }}
+                                                    crédito(s)</small>
+                                            </div>
+                                        </div>
+
+                                        <div class="col-md-3 mb-3">
+                                            <div class="border-start border-4 ps-3"
+                                                [ngClass]="isSubtotalNegative() ? 'border-danger' : 'border-primary'">
+                                                <small class="text-muted d-block">Subtotal a Entregar</small>
+                                                <h4 class="mb-0"
+                                                    [ngClass]="isSubtotalNegative() ? 'text-danger' : 'text-primary'">
+                                                    ${{ formatCurrency(getSubtotal()) }}
+                                                </h4>
+                                                <small *ngIf="isSubtotalNegative()" class="text-danger">
+                                                    <i class="bi bi-exclamation-triangle me-1"></i>
+                                                    Saldo negativo
+                                                </small>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Formulario para ajustar base -->
+                            <form [formGroup]="ajustesForm">
+                                <fieldset>
+                                    <legend>Ajustes a base</legend>
+
+                                    <div class="row">
+                                        <div class="col-lg-4 mb-3">
+                                            <label class="form-label">
+                                                Tipo de ajuste <span class="text-danger">*</span>
+                                            </label>
+                                            <select class="form-control form-select" formControlName="spendTypeId"
+                                                [ngClass]="{ 'is-invalid': submitted && spendsForm.get('spendTypeId')?.invalid }">
+                                                <option value="">Seleccione</option>
+                                                <option *ngFor="let type of availableIncrementTypes" [value]="type.id">
+                                                    {{ type.name }}
+                                                </option>
+                                            </select>
+                                            <div class="invalid-feedback"
+                                                *ngIf="submitted && spendsForm.get('spendTypeId')?.errors?.['required']">
+                                                Campo obligatorio
+                                            </div>
+                                        </div>
+
+                                        <div class="col-lg-4 mb-3">
+                                            <label class="form-label">
+                                                Valor <span class="text-danger">*</span>
+                                            </label>
+                                            <div class="input-group">
+                                                <span class="input-group-text">$</span>
+                                                <input type="text" class="form-control" formControlName="amount"
+                                                    placeholder="Ingrese el valor del gasto"
+                                                    (input)="formatCurrencyString(spendsForm,'amount')"
+                                                    [ngClass]="{ 'is-invalid': submitted && spendsForm.get('amount')?.invalid }">
+                                            </div>
+                                            <div class="invalid-feedback d-block"
+                                                *ngIf="submitted && spendsForm.get('amount')?.errors?.['required']">
+                                                Campo obligatorio
+                                            </div>
+                                        </div>
+
+                                        <div class="col-lg-4 mb-3">
+                                            <label class="form-label">Descripción</label>
+                                            <input type="text" class="form-control" formControlName="description"
+                                                placeholder="Descripción del gasto">
+                                        </div>
+                                    </div>
+
+                                    <div class="d-flex justify-content-end">
+                                        <button type="button" (click)="addAjuste()" class="btn btn-success">
+                                            <i class="bi bi-plus-circle me-2"></i>
+                                            Agregar ajuste
+                                        </button>
+                                    </div>
+                                </fieldset>
+                            </form>
+
+                            <fieldset class="mt-4">
+                                <legend>Ajustes registrados</legend>
+
+                                <div *ngIf="spendsList.length === 0" class="alert alert-info">
+                                    <i class="bi bi-info-circle me-2"></i>
+                                    No hay ajustes registrados aún
+                                </div>
+
+                                <div *ngIf="spendsList.length > 0" class="card border-secondary mb-4">
+                                    <div class="card-header bg-light">
+                                        <h5 class="mb-0">
+                                            <i class="bi bi-receipt me-2"></i>
+                                            Detalle de ajustes
+                                        </h5>
+                                    </div>
+                                    <div class="card-body">
+                                        <div class="table-responsive">
+                                            <table class="table table-hover table-sm mb-0">
+                                                <thead class="table-light">
+                                                    <tr>
+                                                        <th>Tipo</th>
+                                                        <th class="d-none d-md-table-cell">Descripción</th>
+                                                        <!-- oculta en mobile -->
+                                                        <th class="text-end">Valor</th>
+                                                        <th class="d-none d-md-table-cell">Evidencia</th>
+                                                        <!-- oculta en mobile -->
+                                                        <th *ngIf="canAddSpends" class="text-center">Acciones</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    <tr *ngFor="let spend of visibleAjustesList">
+                                                        <td>
+                                                            <span class="badge"
+                                                                [ngClass]="spend.spendTypeId === baseSpendTypeId ? 'bg-primary' : 'bg-secondary'">
+                                                                {{ spend.spendTypeName }}
+                                                            </span>
+                                                        </td>
+                                                        <td class="d-none d-md-table-cell">{{ spend.description || '-' }}
+                                                        </td> <!-- oculta en mobile -->
+                                                        <td class="text-end">
+                                                            <strong>${{ formatCurrency(spend.amount) }}</strong>
+                                                        </td>
+                                                        <td class="d-none d-md-table-cell"> <!-- oculta en mobile -->
+                                                            <span *ngIf="spend.fileName" class="text-success">
+                                                                <i class="bi bi-file-earmark-check me-1"></i>
+                                                                {{ spend.fileName }}
+                                                            </span>
+                                                            <span *ngIf="!spend.fileName" class="text-muted">
+                                                                Sin evidencia
+                                                            </span>
+                                                        </td>
+                                                        <td *ngIf="canAddSpends" class="text-center">
+                                                            <button *ngIf="spend.spendTypeId !== baseSpendTypeId"
+                                                                type="button" (click)="removeSpend(spend)"
+                                                                class="btn btn-sm btn-danger" title="Eliminar gasto">
+                                                                <i class="bi bi-trash"></i>
+                                                            </button>
+                                                            <span *ngIf="spend.spendTypeId === baseSpendTypeId"
+                                                                class="text-muted small">
+                                                                No eliminable
+                                                            </span>
+                                                        </td>
+                                                    </tr>
+                                                </tbody>
+                                                <tfoot class="table-light">
+                                                    <tr>
+                                                        <th>TOTAL:</th>
+                                                        <th class="d-none d-md-table-cell"></th> <!-- oculta en mobile -->
+                                                        <th class="text-end">
+                                                            <span class="fs-5 text-primary">
+                                                                ${{ formatCurrency(getTotalAjustes()) }}
+                                                            </span>
+                                                        </th>
+                                                        <th class="d-none d-md-table-cell"></th> <!-- oculta en mobile -->
+                                                        <th *ngIf="canAddSpends"></th>
+                                                    </tr>
+                                                </tfoot>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </div>
+                            </fieldset>
                             <fieldset>
                                 <legend>Estudio - Gastos registrados por el Asesor</legend>
 
@@ -638,7 +951,7 @@
                                             </tr>
                                         </thead>
                                         <tbody>
-                                            <tr *ngFor="let spend of spendsList">
+                                            <tr *ngFor="let spend of visibleSpendsList">
                                                 <td>
                                                     <span class="badge"
                                                         [ngClass]="spend.spendTypeId === baseSpendTypeId ? 'bg-primary' : 'bg-secondary'">
@@ -843,7 +1156,7 @@
                                     Siguiente <i class="bx bx-right-arrow-alt ms-2"></i>
                                 </button>
                             </div>
-                        </div>
+                        </div>                        
                     </cdk-step>
 
                     <!-- PASO 3: REVISIÓN-->
@@ -874,9 +1187,9 @@
                                     <div class="card-body">
                                         <div class="row">
                                             <div class="col-md-3 mb-3">
-                                                <div class="border-start border-success border-4 ps-3">
+                                                <div class="border-start border-black border-4 ps-3">
                                                     <small class="text-muted d-block">Saldo Anterior</small>
-                                                    <h4 class="mb-0 text-success">
+                                                    <h4 class="mb-0 text-black">
                                                         ${{ formatCurrency(toNumber(previousBaseValue)) }}
                                                     </h4>
                                                 </div>
@@ -887,6 +1200,14 @@
                                                     <small class="text-muted d-block">Base Inicial</small>
                                                     <h4 class="mb-0 text-success">
                                                         ${{ formatCurrency(toNumber(baseForm.get('base')?.value)) }}
+                                                    </h4>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-3 mb-3">
+                                                <div class="border-start border-success border-4 ps-3">
+                                                    <small class="text-muted d-block">Total Ajustes</small>
+                                                    <h4 class="mb-0 text-success">
+                                                        ${{ formatCurrency(toNumber(getTotalAjustes())) }}
                                                     </h4>
                                                 </div>
                                             </div>

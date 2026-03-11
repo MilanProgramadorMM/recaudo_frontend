@@ -3,6 +3,7 @@ import { Injectable } from "@angular/core";
 import baseUrl from "./api";
 import { CookieService } from 'ngx-cookie-service';
 import { Observable } from "rxjs";
+import { UploadedFile } from "@components/file-uploader.component";
 
 
 export interface CreditProjectionDto {
@@ -327,7 +328,7 @@ export class CreditIntentionService {
      */
     createCreditIntentionWithDocuments(
         intentionData: any,
-        files?: File[],
+        files?: UploadedFile[],
         metadata?: DocumentMetadata[]
     ) {
         const formData = new FormData();
@@ -338,7 +339,7 @@ export class CreditIntentionService {
         // 2. Agregar archivos si existen
         if (files && files.length > 0) {
             files.forEach((file) => {
-                formData.append('documents', file, file.name);
+                formData.append('documents', file.blob!, file.name);
             });
 
             // 3. Agregar metadata si existen archivos

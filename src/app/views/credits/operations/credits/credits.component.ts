@@ -84,6 +84,7 @@ export class CreditsComponent {
     this.loadAllActiveZonas();
     
     this.filterForm = this.fb.group({
+      line: [''],
       zona: [''],
       date: ['']
     });
@@ -91,7 +92,8 @@ export class CreditsComponent {
     this.filterForm.valueChanges.subscribe(filters => {
       const zona = filters.zona;
       const date = filters.date;
-      if (zona == '' && date == null) {
+      const line = filters.line;
+      if (zona == '' && (date == '' || date == null) && line == '') {
         this.filteredIntentions = [...this.intentions];
       } else {
         this.filteredIntentions = this.intentions.filter(intention => {
@@ -103,7 +105,8 @@ export class CreditsComponent {
             createdAt &&
             this.formatDate(createdAt) === this.formatDate(date)
           );
-          return sameZone && sameDate;
+          const sameLine = !line || intention.creditLineName == line;
+          return sameZone && sameDate && sameLine;
         });
       }
       this.page = 1;
@@ -137,6 +140,7 @@ export class CreditsComponent {
   clearFilters() {
     this.filterForm.patchValue({
       zona: '',
+      line: '',
       date: null
     });
     this.filteredIntentions = [...this.intentions];

@@ -54,6 +54,7 @@ export class ClosingComponent implements OnInit {
   // Forms
   baseForm!: FormGroup;
   spendsForm!: FormGroup;
+  ajustesForm!: FormGroup;
   approvalForm!: FormGroup;
 
   // State
@@ -107,7 +108,16 @@ export class ClosingComponent implements OnInit {
     }
 
     // Siempre filtrar BASE de las opciones disponibles
-    return this.spendGlotypes.filter(type => type.id !== this.baseSpendTypeId && type.id !== this.previousBaseSpendTypeId);
+    return this.spendGlotypes.filter(type => type.description == 'DECREMENT');
+  }
+
+  get availableIncrementTypes(): Glotypes[] {
+    if (!this.spendGlotypes || this.spendGlotypes.length === 0) {
+      return [];
+    }
+
+    // Siempre filtrar BASE de las opciones disponibles
+    return this.spendGlotypes.filter(type => type.description == 'INCREMENT' && type.code == 'AJUSTE BASE');
   }
 
   constructor(
@@ -143,6 +153,12 @@ export class ClosingComponent implements OnInit {
     });
 
     this.spendsForm = this.fb.group({
+      spendTypeId: ['', Validators.required],
+      amount: ['', [Validators.required, Validators.min(0.01)]],
+      description: ['']
+    });
+
+    this.ajustesForm = this.fb.group({
       spendTypeId: ['', Validators.required],
       amount: ['', [Validators.required, Validators.min(0.01)]],
       description: ['']
@@ -333,7 +349,7 @@ export class ClosingComponent implements OnInit {
       s => s.spendTypeId === this.baseSpendTypeId && s.status !== false
     );
 
-    this.hasBaseRegistered = !!baseSpend;
+    this.hasBaseRegistered = !!baseSpend;    
 
     this.spendsList = data
       .map(spend => ({
@@ -378,13 +394,16 @@ export class ClosingComponent implements OnInit {
     this.updatePermissions();
   }
 
-  get visibleSpendsList() {
-    if (this.isAsesor) {
-      return this.spendsList.filter(
-        s => s.spendTypeId !== this.baseSpendTypeId
-      );
-    }
-    return this.spendsList;
+  get visibleSpendsList() {    
+    return this.spendsList.filter(
+      s => s.amount < 0
+    );
+  }
+
+  get visibleAjustesList() {
+    return this.spendsList.filter(
+      s => s.amount >= 0
+    );
   }
 
   getSpendTypeName(spendTypeId: number): string {
@@ -483,7 +502,7 @@ export class ClosingComponent implements OnInit {
 
       // Para ASESOR en PRE_CIERRE con BASE: ir directamente al paso de gastos 
       // El paso 0 es la BASE (solo para admin/asistente)
-      if (this.isAsesor && this.currentStatus === ClosingStatus.PRE_CIERRE && this.hasBase()) {
+      if (this.currentStatus === ClosingStatus.PRE_CIERRE && this.hasBase()) {
         this.stepper.selectedIndex = 1;
         return;
       }
@@ -511,7 +530,7 @@ export class ClosingComponent implements OnInit {
           console.log(`Estado ${this.currentStatus} → Revisión (índice 2)`);
           break;
       }
-    }, 100);
+    }, 1400);
   }
 
   // ================ CONSULTA MANUAL DE ESTADO (MEJORADA) ================
@@ -733,6 +752,62 @@ export class ClosingComponent implements OnInit {
       },
       error: (err) => {
         this.errorMessage = err.error?.message || 'Error al guardar la base';
+        dialogRef.close();
+
+        Swal.fire({
+          icon: 'error',
+          title: 'Error',
+          text: this.errorMessage
+        });
+      }
+    });
+  }
+
+  addAjuste(): void {
+    this.submitted = true;
+    this.errorMessage = '';
+
+    if (this.ajustesForm.invalid) {
+      this.errorMessage = 'Complete todos los campos obligatorios';
+      return;
+    }
+
+    const spendTypeId = +this.ajustesForm.get('spendTypeId')?.value;
+    const amount = this.toNumber(this.ajustesForm.get('amount')?.value);
+    const description = this.ajustesForm.get('description')?.value || '';
+
+    if (!this.closingId) {
+      this.errorMessage = 'No se ha iniciado el cierre';
+      return;
+    }
+
+    const dialogRef = this.dialog.open(LoadingComponent, {
+      disableClose: true
+    });
+
+    this.closingSpendService.registerSpend(
+      this.closingId,
+      spendTypeId,
+      this.closingData?.zonaId!,
+      amount,
+      this.currentSpendFile,
+      description,
+      true
+    ).subscribe({
+      next: () => {
+        this.loadSpendsList();
+        this.resetSpendsForm();
+        dialogRef.close();
+
+        Swal.fire({
+          icon: 'success',
+          title: 'Gasto agregado',
+          timer: 2000,
+          showConfirmButton: false
+        });
+      },
+      error: (err) => {
+        this.errorMessage = err.error?.message || 'Error al guardar el gasto';
         dialogRef.close();
 
         Swal.fire({
@@ -1288,8 +1363,13 @@ export class ClosingComponent implements OnInit {
 
   getTotalSpends(): number {
     return this.spendsList
-      .filter(s => s.status !== false)
-      .filter(s => s.spendTypeName !== 'BASE')
+      .filter(s => s.amount < 0)
+      .reduce((sum, spend) => sum + spend.amount, 0);
+  }
+
+  getTotalAjustes(): number {
+    return this.spendsList
+      .filter(s => s.amount >= 0)
       .reduce((sum, spend) => sum + spend.amount, 0);
   }
 
@@ -1355,8 +1435,9 @@ export class ClosingComponent implements OnInit {
     const base = this.toNumber(this.baseForm.get('base')?.value) + this.previousBaseValue;
     const recaudos = this.getTotalRecaudos();
     const gastos = this.getTotalSpends();
+    const ajustes = this.getTotalAjustes();
     const creditos = this.getTotalCreditsCausados();
-    return (base + recaudos) + gastos - creditos;
+    return (base + recaudos + ajustes) + gastos - creditos;
   }
 
   addSpendInPreApproval(): void {

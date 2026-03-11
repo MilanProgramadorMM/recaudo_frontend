@@ -9,6 +9,13 @@
                     <form [formGroup]="filterForm">
                         <div class="row g-2 align-items-center justify-content-center justify-content-sm-end">
                             <div class="col-12 col-sm-auto" style="min-width: 180px;" *ngIf="!isAsesor">
+                                <select class="form-select w-100" aria-label="Filtrar por línea" formControlName="line">
+                                    <option value="">Seleccione una línea</option>
+                                    <option value="LÍNEA LIBRE INVERSIÓN">LÍNEA LIBRE INVERSIÓN</option>
+                                    <option value="LÍNEA DE FINANCIAMIENTO">LÍNEA DE FINANCIAMIENTO</option>
+                                </select>
+                            </div>
+                            <div class="col-12 col-sm-auto" style="min-width: 180px;" *ngIf="!isAsesor">
                                 <select class="form-select w-100" aria-label="Filtrar por zona" formControlName="zona">
                                     <option value="">Seleccione una zona</option>
                                     <option *ngFor="let zona of zonas" [value]="zona.id">
@@ -115,7 +122,7 @@
                                         </button>
                                     </div>
                                 </td>
-                                <td>{{ intention.id }}</td>
+                                <td>{{ intention.id }} ({{intention.creditIntentionId}})</td>
                                 <td>{{ intention.document }}</td>
                                 <td>{{ intention.fullname }}</td>
                                 <td>{{ intention.zoneName }}</td>

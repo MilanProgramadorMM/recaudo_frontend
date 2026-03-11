@@ -11,6 +11,7 @@ export interface Glotypes {
     key: string;
     name: string;
     code: string;
+    description: string;
 }
 
 

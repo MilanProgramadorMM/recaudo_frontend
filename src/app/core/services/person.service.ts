@@ -185,7 +185,6 @@ export class PersonService {
         });
         return this.http.put<DefaultResponseDto<PersonResponseDto>>(`${baseUrl}person/update`, data, { headers }).pipe(
             catchError((error) => {
-                debugger
                 const backendError = error?.error?.data || error?.error || { message: 'Error desconocido' };
 
                 return throwError(() => backendError);

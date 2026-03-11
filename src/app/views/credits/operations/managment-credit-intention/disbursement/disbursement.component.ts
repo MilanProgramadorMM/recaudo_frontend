@@ -1077,7 +1077,6 @@ export class DisbursementComponent {
         }
       },
       error: (error) => {
-        debugger;
       }
     });
   }
