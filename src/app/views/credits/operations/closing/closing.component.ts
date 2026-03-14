@@ -115,7 +115,6 @@ export class ClosingComponent implements OnInit {
     if (!this.spendGlotypes || this.spendGlotypes.length === 0) {
       return [];
     }
-
     // Siempre filtrar BASE de las opciones disponibles
     return this.spendGlotypes.filter(type => type.description == 'INCREMENT' && type.code == 'AJUSTE BASE');
   }
@@ -515,13 +514,13 @@ export class ClosingComponent implements OnInit {
           } else if (this.isAsesor && this.hasBase()) {
             // Asesor con base: ir a gastos
             this.stepper.selectedIndex = 1;
-          } else {
-            // Asistente/Admin: mostrar formulario de base
-            this.stepper.selectedIndex = 0;
           }
           break;
-
         case ClosingStatus.STUDY:
+          if (!this.isAsesor) {
+            this.stepper.selectedIndex = 1;
+          }
+          break;
         case ClosingStatus.PRE_APPROVED:
         case ClosingStatus.APPROVED:
         case ClosingStatus.REJECTED:
@@ -897,7 +896,7 @@ export class ClosingComponent implements OnInit {
     }
 
     Swal.fire({
-      title: '¿Eliminar gasto?',
+      title: '¿Eliminar registro?',
       text: 'Esta acción no se puede deshacer',
       icon: 'warning',
       showCancelButton: true,
@@ -920,7 +919,7 @@ export class ClosingComponent implements OnInit {
 
             Swal.fire({
               icon: 'success',
-              title: 'Gasto eliminado',
+              title: 'Registro eliminado',
               timer: 2000,
               showConfirmButton: false
             });
@@ -930,7 +929,7 @@ export class ClosingComponent implements OnInit {
             Swal.fire({
               icon: 'error',
               title: 'Error',
-              text: 'No se pudo eliminar el gasto'
+              text: 'No se pudo eliminar el registro'
             });
           }
         });
@@ -1489,14 +1488,14 @@ export class ClosingComponent implements OnInit {
 
           Swal.fire({
             icon: 'success',
-            title: 'Gasto actualizado',
-            text: 'El gasto se ha actualizado correctamente',
+            title: 'Registro actualizado',
+            text: 'El registro se ha actualizado correctamente',
             timer: 2000,
             showConfirmButton: false
           });
         },
         error: (err) => {
-          this.errorMessage = err.error?.message || 'Error al actualizar el gasto';
+          this.errorMessage = err.error?.message || 'Error al actualizar el registro';
           dialogRef.close();
 
           Swal.fire({
@@ -1523,14 +1522,14 @@ export class ClosingComponent implements OnInit {
 
           Swal.fire({
             icon: 'success',
-            title: 'Gasto agregado',
+            title: 'Registro agregado',
             text: 'El subtotal se actualizará automáticamente',
             timer: 2000,
             showConfirmButton: false
           });
         },
         error: (err) => {
-          this.errorMessage = err.error?.message || 'Error al guardar el gasto';
+          this.errorMessage = err.error?.message || 'Error al guardar';
           dialogRef.close();
 
           Swal.fire({

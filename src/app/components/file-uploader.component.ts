@@ -18,18 +18,18 @@ export type UploadedFile = {
   standalone: true,
   imports: [CommonModule, DropzoneModule],
   template: `
-    <div *ngIf="uploadedFiles.length === 0" class="text-center">
+    <div *ngIf="uploadedFiles.length === 0" class="text-center" style="border: 1px solid #ced4da; border-radius: 5px;">
 
       <div class="dz-message needsclick" style="font-size:0.7rem; cursor:pointer;" (click)="selectFileInputMode($event)">
 
-        <i class="ti ti-cloud-upload mb-2" style="font-size:2rem;"></i>
+        <i class="ti ti-cloud-upload mb-2" style="font-size:2rem; color: #ced4da;"></i>
 
-        <h6 class="mb-1">
+        <h6 class="mb-1 text-muted">
           Suelta la imagen aquí o selecciona.
         </h6>
 
         <span class="text-muted fs-12" style="font-size:0.8rem;">
-          haz clic para seleccionar
+          Haz clic para seleccionar
         </span>
 
       </div>

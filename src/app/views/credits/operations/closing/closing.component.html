@@ -805,14 +805,14 @@
                                                 Tipo de ajuste <span class="text-danger">*</span>
                                             </label>
                                             <select class="form-control form-select" formControlName="spendTypeId"
-                                                [ngClass]="{ 'is-invalid': submitted && spendsForm.get('spendTypeId')?.invalid }">
+                                                [ngClass]="{ 'is-invalid': submitted && ajustesForm.get('spendTypeId')?.invalid }">
                                                 <option value="">Seleccione</option>
                                                 <option *ngFor="let type of availableIncrementTypes" [value]="type.id">
                                                     {{ type.name }}
                                                 </option>
                                             </select>
                                             <div class="invalid-feedback"
-                                                *ngIf="submitted && spendsForm.get('spendTypeId')?.errors?.['required']">
+                                                *ngIf="submitted && ajustesForm.get('spendTypeId')?.errors?.['required']">
                                                 Campo obligatorio
                                             </div>
                                         </div>
@@ -1283,7 +1283,7 @@
                                                     </tr>
                                                 </thead>
                                                 <tbody>
-                                                    <tr *ngFor="let spend of spendsList; let i = index">
+                                                    <tr *ngFor="let spend of visibleSpendsList; let i = index">
                                                         <td>{{ i + 1 }}</td>
                                                         <td>
                                                             <span class="badge"
@@ -1324,6 +1324,55 @@
                                                             </span>
                                                         </th>
                                                         <th></th>
+                                                    </tr>
+                                                </tfoot>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Tabla detallada de ajustes -->
+                                <div class="card border-secondary mb-4">
+                                    <div class="card-header bg-light">
+                                        <h5 class="mb-0">
+                                            <i class="bi bi-list-check me-2"></i>
+                                            Detalle de Ajustes
+                                        </h5>
+                                    </div>
+                                    <div class="card-body">
+                                        <div class="table-responsive">
+                                            <table class="table table-hover table-sm mb-0">
+                                                <thead class="table-light">
+                                                    <tr>
+                                                        <th>#</th>
+                                                        <th>Tipo</th>
+                                                        <th>Descripción</th>
+                                                        <th>Monto</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    <tr *ngFor="let spend of visibleAjustesList; let i = index">
+                                                        <td>{{ i + 1 }}</td>
+                                                        <td>
+                                                            <span class="badge"
+                                                                [ngClass]="spend.spendTypeId === baseSpendTypeId ? 'bg-primary' : 'bg-secondary'">
+                                                                {{ spend.spendTypeName }}
+                                                            </span>
+                                                        </td>
+                                                        <td>{{ spend.description || '-' }}</td>
+                                                        <td>
+                                                            <strong>${{ formatCurrency(spend.amount) }}</strong>
+                                                        </td>                                                        
+                                                    </tr>
+                                                </tbody>
+                                                <tfoot class="table-light">
+                                                    <tr>
+                                                        <th colspan="3">TOTAL:</th>
+                                                        <th>
+                                                            <span class="fs-5 text-primary">
+                                                                ${{ formatCurrency(getTotalAjustes()) }}
+                                                            </span>
+                                                        </th>
                                                     </tr>
                                                 </tfoot>
                                             </table>
@@ -1533,22 +1582,17 @@
                                     <div class="card-header bg-warning bg-opacity-10">
                                         <h5 class="mb-0 text-warning">
                                             <i class="bi bi-pencil-square me-2"></i>
-                                            Edición de Gastos
+                                            Ajustes de movimientos
                                         </h5>
                                     </div>
                                     <!-- Inside the card-body where the form is -->
                                     <div class="card-body">
-                                        <!-- Formulario para agregar/editar gastos -->
-                                        <form [formGroup]="spendsForm">
-                                            <fieldset>
-                                                <legend>
-                                                    <span *ngIf="!isEditMode">Agregar nuevo gasto</span>
-                                                    <span *ngIf="isEditMode" class="text-warning">
-                                                        <i class="bi bi-pencil-square me-2"></i>
-                                                        Editando gasto
-                                                    </span>
-                                                </legend>
-
+                                        
+                                        <!-- Lista de gastos con opción de eliminar Y EDITAR -->
+                                        <fieldset class="mt-4">
+                                            <legend>Gastos</legend>
+                                            <!-- Formulario para agregar/editar gastos -->
+                                            <form [formGroup]="spendsForm">                                            
                                                 <!-- Alert cuando está editando -->
                                                 <div *ngIf="isEditMode"
                                                     class="alert alert-warning alert-dismissible fade show"
@@ -1626,7 +1670,7 @@
                                                     </div>
                                                 </div>
 
-                                                <div class="d-flex justify-content-end gap-2">
+                                                <div class="d-flex justify-content-end gap-2" style="margin: 0 0 10px 0;">
                                                     <button *ngIf="isEditMode" type="button" (click)="cancelEdit()"
                                                         class="btn btn-secondary">
                                                         <i class="bi bi-x-circle me-2"></i>
@@ -1639,12 +1683,7 @@
                                                         {{ isEditMode ? 'Actualizar Gasto' : 'Agregar Gasto' }}
                                                     </button>
                                                 </div>
-                                            </fieldset>
-                                        </form>
-
-                                        <!-- Lista de gastos con opción de eliminar Y EDITAR -->
-                                        <fieldset class="mt-4">
-                                            <legend>Gastos actuales</legend>
+                                            </form>
 
                                             <div class="table-responsive">
                                                 <table class="table table-striped table-hover">
@@ -1658,7 +1697,7 @@
                                                         </tr>
                                                     </thead>
                                                     <tbody>
-                                                        <tr *ngFor="let spend of spendsList"
+                                                        <tr *ngFor="let spend of visibleSpendsList"
                                                             [class.table-warning]="isEditMode && editingSpend?.id === spend.id">
                                                             <td>
                                                                 <span class="badge"
@@ -1679,12 +1718,122 @@
                                                             <td class="text-center">
                                                                 <div *ngIf="spend.spendTypeId !== baseSpendTypeId"
                                                                     class="d-inline-flex gap-2">
-                                                                    <button type="button" (click)="editSpend(spend)"
+                                                                    <!-- <button type="button" (click)="editSpend(spend)"
                                                                         class="btn btn-sm btn-warning"
                                                                         [disabled]="isEditMode && editingSpend?.id !== spend.id"
                                                                         title="Editar gasto">
                                                                         <i class="bi bi-pencil"></i>
+                                                                    </button> -->
+                                                                    <button type="button" (click)="removeSpend(spend)"
+                                                                        class="btn btn-sm btn-danger"
+                                                                        [disabled]="isEditMode" title="Eliminar gasto">
+                                                                        <i class="bi bi-trash"></i>
                                                                     </button>
+                                                                </div>
+                                                                <span *ngIf="spend.spendTypeId === baseSpendTypeId"
+                                                                    class="text-muted small">
+                                                                    No editable
+                                                                </span>
+                                                            </td>
+                                                        </tr>
+                                                    </tbody>
+                                                </table>
+                                            </div>
+                                        </fieldset>
+
+                                        
+                                        <fieldset class="mt-4">
+                                            <legend>Ajustes</legend>
+                                            <form [formGroup]="ajustesForm">
+                                                <div class="row">
+                                                    <div class="col-lg-4 mb-3">
+                                                        <label class="form-label">
+                                                            Tipo de ajuste <span class="text-danger">*</span>
+                                                        </label>
+                                                        <select class="form-control form-select" formControlName="spendTypeId"
+                                                            [ngClass]="{ 'is-invalid': submitted && ajustesForm.get('spendTypeId')?.invalid }">
+                                                            <option value="">Seleccione</option>
+                                                            <option *ngFor="let type of availableIncrementTypes" [value]="type.id">
+                                                                {{ type.name }}
+                                                            </option>
+                                                        </select>
+                                                        <div class="invalid-feedback"
+                                                            *ngIf="submitted && ajustesForm.get('spendTypeId')?.errors?.['required']">
+                                                            Campo obligatorio
+                                                        </div>
+                                                    </div>
+    
+                                                    <div class="col-lg-4 mb-3">
+                                                        <label class="form-label">
+                                                            Valor <span class="text-danger">*</span>
+                                                        </label>
+                                                        <div class="input-group">
+                                                            <span class="input-group-text">$</span>
+                                                            <input type="text" class="form-control" formControlName="amount"
+                                                                placeholder="Ingrese el valor del gasto"
+                                                                (input)="formatCurrencyString(spendsForm,'amount')"
+                                                                [ngClass]="{ 'is-invalid': submitted && spendsForm.get('amount')?.invalid }">
+                                                        </div>
+                                                        <div class="invalid-feedback d-block"
+                                                            *ngIf="submitted && spendsForm.get('amount')?.errors?.['required']">
+                                                            Campo obligatorio
+                                                        </div>
+                                                    </div>
+    
+                                                    <div class="col-lg-4 mb-3">
+                                                        <label class="form-label">Descripción</label>
+                                                        <input type="text" class="form-control" formControlName="description"
+                                                            placeholder="Descripción del gasto">
+                                                    </div>
+                                                </div>
+    
+                                                <div class="d-flex justify-content-end" style="margin: 0 0 10px 0;">
+                                                    <button type="button" (click)="addAjuste()" class="btn btn-success">
+                                                        <i class="bi bi-plus-circle me-2"></i>
+                                                        Agregar ajuste
+                                                    </button>
+                                                </div>
+                                            </form>
+
+                                            <div class="table-responsive">
+                                                <table class="table table-striped table-hover">
+                                                    <thead class="table-dark">
+                                                        <tr>
+                                                            <th>Tipo</th>
+                                                            <th>Descripción</th>
+                                                            <th class="text-end">Valor</th>
+                                                            <th>Evidencia</th>
+                                                            <th class="text-center">Acciones</th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                        <tr *ngFor="let spend of visibleAjustesList"
+                                                            [class.table-warning]="isEditMode && editingSpend?.id === spend.id">
+                                                            <td>
+                                                                <span class="badge"
+                                                                    [ngClass]="spend.spendTypeId === baseSpendTypeId ? 'bg-primary' : 'bg-secondary'">
+                                                                    {{ spend.spendTypeName }}
+                                                                </span>
+                                                            </td>
+                                                            <td>{{ spend.description || '-' }}</td>
+                                                            <td class="text-end fw-bold">
+                                                                ${{ formatCurrency(spend.amount) }}
+                                                            </td>
+                                                            <td>
+                                                                <span *ngIf="spend.fileName" class="text-success">
+                                                                    <i class="bi bi-file-earmark-check me-1"></i>
+                                                                    {{ spend.fileName }}
+                                                                </span>
+                                                            </td>
+                                                            <td class="text-center">
+                                                                <div *ngIf="spend.spendTypeId !== baseSpendTypeId"
+                                                                    class="d-inline-flex gap-2">
+                                                                    <!-- <button type="button" (click)="editSpend(spend)"
+                                                                        class="btn btn-sm btn-warning"
+                                                                        [disabled]="isEditMode && editingSpend?.id !== spend.id"
+                                                                        title="Editar gasto">
+                                                                        <i class="bi bi-pencil"></i>
+                                                                    </button> -->
                                                                     <button type="button" (click)="removeSpend(spend)"
                                                                         class="btn btn-sm btn-danger"
                                                                         [disabled]="isEditMode" title="Eliminar gasto">
