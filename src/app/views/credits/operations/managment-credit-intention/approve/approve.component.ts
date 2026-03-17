@@ -1072,7 +1072,7 @@ export class ApproveComponent implements OnInit {
 
           if (grupo === 'GRUPO2') {
             this.form1.patchValue({
-              tax_value: Number(tasaCalculada.toFixed(2)),
+              tax_value: Number(tasaCalculada.toFixed(9)),
               total_intention_value: valorSolicitud,
               item_value: null
             }, { emitEvent: false });
@@ -1089,7 +1089,7 @@ export class ApproveComponent implements OnInit {
 
           } else {
             this.form1.patchValue({
-              tax_value: Number(tasaCalculada.toFixed(2)),
+              tax_value: Number(tasaCalculada.toFixed(9)),
               total_intention_value: valorSolicitud,
               desembolso_value: null
             }, { emitEvent: false });

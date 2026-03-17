@@ -706,7 +706,7 @@ export class ClosingComponent implements OnInit {
             this.baseSpendTypeId = baseType.id;
             this.executeSaveBase();
           } else {
-            this.errorMessage = 'No se encontró el tipo de gasto BASE';
+            this.errorMessage = 'No se encontró el registro BASE';
           }
         },
         error: () => {
@@ -800,13 +800,13 @@ export class ClosingComponent implements OnInit {
 
         Swal.fire({
           icon: 'success',
-          title: 'Gasto agregado',
+          title: 'Registro agregado',
           timer: 2000,
           showConfirmButton: false
         });
       },
       error: (err) => {
-        this.errorMessage = err.error?.message || 'Error al guardar el gasto';
+        this.errorMessage = err.error?.message || 'Error al guardar';
         dialogRef.close();
 
         Swal.fire({
@@ -867,13 +867,13 @@ export class ClosingComponent implements OnInit {
 
         Swal.fire({
           icon: 'success',
-          title: 'Gasto agregado',
+          title: 'Registro agregado',
           timer: 2000,
           showConfirmButton: false
         });
       },
       error: (err) => {
-        this.errorMessage = err.error?.message || 'Error al guardar el gasto';
+        this.errorMessage = err.error?.message || 'Error al guardar';
         dialogRef.close();
 
         Swal.fire({
