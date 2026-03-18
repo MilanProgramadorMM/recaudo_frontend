@@ -1,7 +1,7 @@
 // -----------------PRODUCCION-----------------
 
 //APP
-//let baseUrl = 'http://159.203.163.185:8080/api/'
+//let baseUrl = 'https://businesssam.com/api/'
 //export default baseUrl;
 
 //DOCKER
@@ -10,7 +10,7 @@ export default baseUrl;
 
 
 //API PUBLICA PARA ENVIAR LINK A CLIENTE
-let baseUrlPublic = 'http://159.203.163.185:8080/api/';
+let baseUrlPublic = 'https://businesssam.com/api/';
 
 
 
