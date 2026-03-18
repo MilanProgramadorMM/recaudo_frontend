@@ -7,7 +7,7 @@ import { NgStepperModule, NgStepperComponent } from 'angular-ng-stepper';
 import { CdkStepperModule } from '@angular/cdk/stepper';
 import Swal from 'sweetalert2';
 import { PageTitleComponent } from '@components/page-title.component';
-import { FileUploaderComponent } from '@components/file-uploader.component';
+import { FileUploaderComponent, UploadedFile } from '@components/file-uploader.component';
 import { ChangeClosingStatusDto, ClosingStatus, ClosingStatusService } from '@core/services/closingStatus.service';
 import { AuthenticationService } from '@core/services/auth.service';
 import { ApproveClosingDto, ClosingResponseDto, ClosingService } from '@core/services/closing.service';
@@ -83,7 +83,7 @@ export class ClosingComponent implements OnInit {
 
 
   // Files
-  currentSpendFile: File | null = null;
+  currentSpendFile: UploadedFile | null = null;
 
   // Computed
   isAsistente = false;
@@ -1440,6 +1440,7 @@ export class ClosingComponent implements OnInit {
   }
 
   addSpendInPreApproval(): void {
+    debugger;
     this.submitted = true;
     this.errorMessage = '';
 

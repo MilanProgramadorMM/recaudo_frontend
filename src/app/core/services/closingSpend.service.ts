@@ -4,6 +4,7 @@ import { CookieService } from 'ngx-cookie-service';
 import { Observable } from 'rxjs';
 import baseUrl from './api';
 import { DefaultResponseDto } from './user.service';
+import { UploadedFile } from '@components/file-uploader.component';
 
 export interface ClosingSpendEntity {
   id?: number;
@@ -44,7 +45,7 @@ export class ClosingSpendService {
     spendTypeId: number,
     zonaId: number,
     amount: number,
-    file: File | null,
+    file: UploadedFile | null,
     description: string | null,
     isBase: boolean
   ): Observable<DefaultResponseDto<ClosingSpendEntity>> {
@@ -60,7 +61,7 @@ export class ClosingSpendService {
     }
 
     if (file) {
-      formData.append('file', file);
+      formData.append('file', file.blob!, file.name);
     }
 
     const headers = new HttpHeaders({
@@ -78,7 +79,7 @@ export class ClosingSpendService {
     spendId: number,
     spendTypeId: number,
     amount: number,
-    file: File | null,
+    file: UploadedFile | null,
     description: string
   ): Observable<any> {
     const formData = new FormData();
@@ -86,7 +87,7 @@ export class ClosingSpendService {
     formData.append('amount', amount.toString());
 
     if (file) {
-      formData.append('file', file);
+      formData.append('file', file.blob!, file.name);
     }
 
     if (description) {
