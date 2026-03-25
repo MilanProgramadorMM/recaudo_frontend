@@ -17,6 +17,18 @@ import Swal from 'sweetalert2';
 import { CreditIntentionStatusService } from '@core/services/creditIntentionStatus.service';
 import { finalize } from 'rxjs';
 
+const CREDIT_STATUS = {
+  IMPROVEMENT:'IMPROVEMENT',
+  DISBURSEMENT: 'DISBURSEMENT',
+  RECHAZED: 'RECHAZED'
+} as const;
+
+const IMPROVEMENT_ACTIVITIES = {
+  ACT_2_DECISION_FINAL: 'CLIENTE ACEPTO CREDITO',
+  ACT_2_DECISION_FINAL_RECHAZED: 'CLIENTE NO ACEPTO CREDITO'
+} as const;
+
+
 @Component({
   selector: 'app-improvement',
   standalone: true,
@@ -504,7 +516,10 @@ export class ImprovementComponent implements OnInit {
 
     this.creditIntencionStatusService.updateStatus({
       credit_id: this.credit.id,
-      new_status: 'DISBURSEMENT'
+      current_status: CREDIT_STATUS.IMPROVEMENT,
+      new_status: CREDIT_STATUS.DISBURSEMENT,
+      activity: IMPROVEMENT_ACTIVITIES.ACT_2_DECISION_FINAL,
+      observation: IMPROVEMENT_ACTIVITIES.ACT_2_DECISION_FINAL
     })
       .pipe(
         finalize(() => {
@@ -1016,7 +1031,10 @@ export class ImprovementComponent implements OnInit {
             }).then(() => {
               this.creditIntencionStatusService.updateStatus({
                 credit_id: this.credit.id,
-                new_status: 'RECHAZED'
+                current_status: CREDIT_STATUS.IMPROVEMENT,
+                new_status: CREDIT_STATUS.RECHAZED,
+                activity: IMPROVEMENT_ACTIVITIES.ACT_2_DECISION_FINAL_RECHAZED,
+                observation: ''
               }).subscribe({
                 next: () => {
                   this.router.navigate(

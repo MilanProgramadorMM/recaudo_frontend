@@ -1,11 +1,15 @@
-<page-title title="Intenciones de crédito" subtitle="Operaciones" />
+<page-title [title]="intentionType === 'DETALLE' ? 'Detalle Intenciones de crédito' : 'Intenciones de crédito'"
+    subtitle="Operaciones" />
 
 <div class="row">
     <div class="col-12">
         <div class="card">
+
             <div class="card-header d-flex align-items-center justify-content-between border-bottom border-light">
-                <h4 class="header-title">Intenciones de crédito</h4>
-                <div>
+                <h4 class="header-title">
+                    {{ intentionType === 'DETALLE' ? 'Detalle Intenciones de crédito' : 'Intenciones de crédito' }}
+                </h4>
+                <div *ngIf="intentionType === 'GESTION'">
                     <button (click)="openFormSimulateIntention()" class="btn btn-danger bg-gradient me-1">
                         <i class="ti ti-plus me-1"></i> Registrar Intención de crédito
                     </button>
@@ -28,7 +32,7 @@
                 </div>
 
                 <table *ngIf="!loading" class="table table-nowrap table-hover mb-0">
-                    <thead class="table-dark bg-light-subtle" style="position: sticky; top: 0; z-index: 2;">
+                    <thead class="sticky-header">
                         <tr>
                             <th style="width: 80px;">ID</th>
                             <th style="width: 120px;">Documento</th>
@@ -41,7 +45,7 @@
                             <th class="text-end" style="width: 150px;">Valor financiado</th>
                             <th style="width: 120px;">Estado</th>
                             <th style="width: 120px;">Aprobación Cliente</th>
-                            <th style="width: 120px;">Fecha de creacion</th>
+                            <th style="width: 120px;">Fecha de creación</th>
                             <th class="text-center" style="width: 150px;">Acciones</th>
                         </tr>
                     </thead>
@@ -50,63 +54,66 @@
                             <td>{{ intention.id }}</td>
                             <td>{{ intention.document }}</td>
                             <td>{{ intention.fullname }}</td>
-                            <td>{{intention.zoneName}}</td>
-                            <td>{{intention.periodQuantity}} cuotas</td>
+                            <td>{{ intention.zoneName }}</td>
+                            <td>{{ intention.periodQuantity }} cuotas</td>
+                            <td>{{ currency }} {{ formatCurrency(intention.quotaValue) }}</td>
 
-                            <td>{{ currency }} {{formatCurrency(intention.quotaValue)}}</td>
                             <td>
                                 <ng-container *ngIf="isLibreInversion(intention); else noAplica">
-                                    <strong> {{ currency }} {{ formatCurrency(intention.totalCapitalValue || 0)
+                                    <strong>{{ currency }} {{ formatCurrency(intention.totalCapitalValue || 0)
                                         }}</strong>
                                 </ng-container>
                                 <ng-template #noAplica>---</ng-template>
                             </td>
+
                             <td>{{ intention.creditLineName || 'N/A' }}</td>
+
                             <td class="text-end">
                                 <ng-container *ngIf="!isLibreInversion(intention); else noAplicaFin">
                                     <strong>{{ currency }} {{ formatCurrency(intention.totalCapitalValue || 0)
                                         }}</strong>
                                 </ng-container>
-                                <ng-template #noAplicaFin>
-                                    <strong>---</strong>
-                                </ng-template>
+                                <ng-template #noAplicaFin><strong>---</strong></ng-template>
                             </td>
 
                             <td>
-                                <span class="badge" [ngClass]="{
-                                'bg-warning': intention.estadoActual === 'STUDY',
-                                'bg-primary': intention.estadoActual === 'APPROVED',
-                                'bg-secondary': intention.estadoActual === 'IMPROVEMENT',
-                                'bg-success': intention.estadoActual === 'DISBURSEMENT'
-                                }">
+                                <span class="badge" [ngClass]="getStatusBadgeClass(intention.estadoActual)">
                                     {{ getStatusLabel(intention.estadoActual) }}
                                 </span>
-
                             </td>
+
                             <td>
                                 <span class="badge" [ngClass]="{
-                                'bg-warning': intention.approvalStatus === 'PENDING',
-                                'bg-success': intention.approvalStatus === 'APPROVED'
-                                }">
+                  'bg-warning': intention.approvalStatus === 'PENDING',
+                  'bg-success': intention.approvalStatus === 'APPROVED',
+                  'bg-danger':  intention.approvalStatus === 'REJECTED'
+                }">
                                     {{ getStatusLabelCustomer(intention.approvalStatus) }}
                                 </span>
+                            </td>
 
-                            </td>
-                            <td>
-                                {{ intention.createdAt | date: 'dd/MM/yyyy' }}
-                            </td>
+                            <td>{{ intention.createdAt | date: 'dd/MM/yyyy' }}</td>
+
                             <td class="pe-3">
                                 <div class="hstack gap-1 justify-content-center">
-                                    <button (click)="manageIntention(intention)" class="btn btn-danger btn-sm"
-                                        title="Gestionar intención">
+                                    <!-- Modo GESTION: botón Gestionar -->
+                                    <button *ngIf="intentionType === 'GESTION'" (click)="manageIntention(intention)"
+                                        class="btn btn-danger btn-sm" title="Gestionar intención">
                                         <i class="ti ti-settings me-1"></i>Gestionar
+                                    </button>
+
+                                    <!-- Modo DETALLE: botón Ver detalles -->
+                                    <button *ngIf="intentionType === 'DETALLE'"
+                                        (click)="openDetailModal(intention, detailModal)" class="btn btn-danger btn-sm"
+                                        title="Ver detalles de la intención">
+                                        <i class="ti ti-eye me-1"></i>Ver detalles
                                     </button>
                                 </div>
                             </td>
                         </tr>
 
                         <tr *ngIf="!loading && filteredIntentions.length === 0">
-                            <td colspan="11" class="text-center py-6">
+                            <td colspan="13" class="text-center py-6">
                                 <i class="ti ti-mood-puzzled fs-1 text-muted"></i>
                                 <p class="text-muted mt-2">No se encontraron intenciones de crédito</p>
                             </td>
@@ -131,3 +138,139 @@
         </div>
     </div>
 </div>
+
+<!-- ─── Modal de detalles (solo se usa en modo DETALLE) ─── -->
+<ng-template #detailModal let-modal>
+    <div class="modal-header">
+        <h5 class="modal-title">
+            <i class="ti ti-file-description me-2"></i>
+            Detalle de Intención #{{ selectedIntention?.id }}
+        </h5>
+        <button type="button" class="btn-close" (click)="modal.dismiss()"></button>
+    </div>
+
+    <div class="modal-body" *ngIf="selectedIntention as i">
+
+        <!-- Estado general -->
+        <div class="d-flex gap-2 mb-3">
+            <span class="badge fs-6" [ngClass]="getStatusBadgeClass(i.estadoActual)">
+                {{ getStatusLabel(i.estadoActual) }}
+            </span>
+            <span class="badge fs-6" [ngClass]="{
+        'bg-warning': i.approvalStatus === 'PENDING',
+        'bg-success': i.approvalStatus === 'APPROVED',
+        'bg-danger':  i.approvalStatus === 'REJECTED'
+      }">
+                Cliente: {{ getStatusLabelCustomer(i.approvalStatus) }}
+            </span>
+        </div>
+
+        <div class="row g-3">
+
+            <!-- Datos personales -->
+            <div class="col-12">
+                <h6 class="text-muted text-uppercase fw-semibold border-bottom pb-1">
+                    <i class="ti ti-user me-1"></i>Datos del cliente
+                </h6>
+            </div>
+            <div class="col-md-4"><small class="text-muted">Documento</small>
+                <p class="mb-0 fw-semibold">{{ i.documentType }} {{ i.document }}</p>
+            </div>
+            <div class="col-md-4"><small class="text-muted">Nombre completo</small>
+                <p class="mb-0 fw-semibold">{{ i.fullname }}</p>
+            </div>
+            <div class="col-md-4"><small class="text-muted">Ocupación</small>
+                <p class="mb-0">{{ i.occupation }}</p>
+            </div>
+            <div class="col-md-4"><small class="text-muted">Correo</small>
+                <p class="mb-0">{{ i.email }}</p>
+            </div>
+            <div class="col-md-4"><small class="text-muted">Teléfono</small>
+                <p class="mb-0">{{ i.phoneNumber }}</p>
+            </div>
+            <div class="col-md-4"><small class="text-muted">WhatsApp</small>
+                <p class="mb-0">{{ i.whatsappNumber }}</p>
+            </div>
+
+            <!-- Ubicación -->
+            <div class="col-12 mt-2">
+                <h6 class="text-muted text-uppercase fw-semibold border-bottom pb-1">
+                    <i class="ti ti-map-pin me-1"></i>Ubicación
+                </h6>
+            </div>
+            <div class="col-md-3"><small class="text-muted">País</small>
+                <p class="mb-0">{{ i.countryName }}</p>
+            </div>
+            <div class="col-md-3"><small class="text-muted">Departamento</small>
+                <p class="mb-0">{{ i.departmentName }}</p>
+            </div>
+            <div class="col-md-3"><small class="text-muted">Municipio</small>
+                <p class="mb-0">{{ i.municipalityName }}</p>
+            </div>
+            <div class="col-md-3"><small class="text-muted">Barrio</small>
+                <p class="mb-0">{{ i.neighborhoodName }}</p>
+            </div>
+            <div class="col-md-6"><small class="text-muted">Dirección</small>
+                <p class="mb-0">{{ i.homeAddress }}</p>
+            </div>
+
+            <!-- Datos del crédito -->
+            <div class="col-12 mt-2">
+                <h6 class="text-muted text-uppercase fw-semibold border-bottom pb-1">
+                    <i class="ti ti-cash me-1"></i>Datos del crédito
+                </h6>
+            </div>
+            <div class="col-md-4"><small class="text-muted">Zona</small>
+                <p class="mb-0 fw-semibold">{{ i.zoneName }}</p>
+            </div>
+            <div class="col-md-4"><small class="text-muted">Línea de crédito</small>
+                <p class="mb-0">{{ i.creditLineName }}</p>
+            </div>
+            <div class="col-md-4"><small class="text-muted">Plazo</small>
+                <p class="mb-0">{{ i.periodQuantity }} cuotas ({{ i.periodName }})</p>
+            </div>
+            <div class="col-md-3"><small class="text-muted">Valor cuota</small>
+                <p class="mb-0 fw-semibold">{{ currency }} {{ formatCurrency(i.quotaValue) }}</p>
+            </div>
+            <div class="col-md-3"><small class="text-muted">Capital</small>
+                <p class="mb-0 fw-semibold">{{ currency }} {{ formatCurrency(i.totalCapitalValue || 0) }}</p>
+            </div>
+            <div class="col-md-3"><small class="text-muted">Intereses</small>
+                <p class="mb-0">{{ currency }} {{ formatCurrency(i.totalInterestValue || 0) }}</p>
+            </div>
+            <div class="col-md-3"><small class="text-muted">Total intención</small>
+                <p class="mb-0">{{ currency }} {{ formatCurrency(i.totalIntentionValue || 0) }}</p>
+            </div>
+            <div class="col-md-3"><small class="text-muted">Tasa</small>
+                <p class="mb-0">{{ i.taxValue }}% ({{ i.taxTypeName }})</p>
+            </div>
+            <div class="col-md-3"><small class="text-muted">Valor papelería</small>
+                <p class="mb-0">{{ currency }} {{ formatCurrency(i.stationery || 0) }}</p>
+            </div>
+            <div class="col-md-3"><small class="text-muted">Pago inicial</small>
+                <p class="mb-0">{{ currency }} {{ formatCurrency(i.initialValuePayment || 0) }}</p>
+            </div>
+
+            <!-- Fechas -->
+            <div class="col-12 mt-2">
+                <h6 class="text-muted text-uppercase fw-semibold border-bottom pb-1">
+                    <i class="ti ti-calendar me-1"></i>Fechas
+                </h6>
+            </div>
+            <div class="col-md-4"><small class="text-muted">Creación</small>
+                <p class="mb-0">{{ i.createdAt | date: 'dd/MM/yyyy HH:mm' }}</p>
+            </div>
+            <div class="col-md-4"><small class="text-muted">Fecha tentativa inicio</small>
+                <p class="mb-0">{{ i.fechaInicio | date: 'dd/MM/yyyy' }}</p>
+            </div>
+            <div class="col-md-4" *ngIf="i.approvedAt"><small class="text-muted">Aprobado por cliente el</small>
+                <p class="mb-0">{{ i.approvedAt | date: 'dd/MM/yyyy HH:mm' }}</p>
+            </div>
+
+        </div>
+    </div>
+
+    <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" (click)="modal.dismiss()">Cerrar</button>
+    </div>
+</ng-template>

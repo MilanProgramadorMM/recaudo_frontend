@@ -176,5 +176,17 @@ body {
   font-family: Roboto, "Helvetica Neue", sans-serif;
 }
 
+
+thead.sticky-header {
+  position: sticky;
+  top: 0;
+  z-index: 2;
+
+  th {
+    background-color: var(--osen-menu-bg) !important;
+    color: var(--osen-menu-item-hover-color) !important;
+  }
+}
+
 /* Importing Bootstrap SCSS file. */
 @import 'bootstrap/scss/bootstrap';

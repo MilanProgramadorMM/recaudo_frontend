@@ -20,8 +20,8 @@ export interface CreditProjectionDto {
 
     dcreFvence: string | null;
     dcreFvenceRaw: string | null;
-    dcreVlrBase: number;       
-    dcreVlrPapeleia: number;   
+    dcreVlrBase: number;
+    dcreVlrPapeleia: number;
     dcreVlrBasePapeleria: number;
 }
 
@@ -270,6 +270,13 @@ export class CreditIntentionService {
             DefaultResponseDto<CreditIntentionResponseDto[]>
         >(
             `${baseUrl}credit-intention/get-intention`,
+            { headers: this.getHeaders() }
+        );
+    }
+
+    getAllIntentionsIncludingClosed() {
+        return this.http.get<DefaultResponseDto<CreditIntentionResponseDto[]>>(
+            `${baseUrl}credit-intention/get-intention/all`,
             { headers: this.getHeaders() }
         );
     }

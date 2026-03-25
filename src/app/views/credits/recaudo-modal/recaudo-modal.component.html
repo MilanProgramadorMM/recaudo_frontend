@@ -54,7 +54,7 @@
                         <small class="text-muted d-block">Cuotas Pagadas</small>
                         <strong class="text-success">{{ paymentStatus.cuotasPagadas }}</strong>
                     </div>
-                    
+
                     <!-- Tasa -->
                     <div class="col-md-2 col-6">
                         <small class="text-muted d-block">Tasa</small>
@@ -345,7 +345,123 @@
                         </div>
                     </div>
                 </div>
+
+                <!-- OBSERVACIONES - SOLO ADMIN / BACKOFFICE -->
+                <div class="col-12 mb-4">
+                    <div class="card border">
+                        <div class="card-header header-rojo d-flex align-items-center justify-content-between">
+                            <h4 class="mb-0">
+                                <i class="ti ti-message-dots me-2"></i>Historial de observaciones
+                            </h4>
+                        </div>
+                        <div class="card-body">
+
+                            <!-- Loading -->
+                            <div *ngIf="loadingObservations" class="text-center py-3">
+                                <div class="spinner-border spinner-border-sm text-danger" role="status"></div>
+                                <span class="ms-2 text-muted">Cargando observaciones...</span>
+                            </div>
+
+                            <!-- Sin observaciones -->
+                            <div *ngIf="!loadingObservations && observations.length === 0" class="text-center py-3">
+                                <i class="ti ti-mood-empty fs-2 text-muted"></i>
+                                <p class="text-muted mt-2 mb-0">No hay observaciones registradas para este crédito.</p>
+                            </div>
+
+                            <!-- Timeline agrupada por fase -->
+                            <div *ngIf="!loadingObservations && groupedObservations.length > 0"
+                                class="observations-timeline"
+                                style="max-height: 450px; overflow-y: auto; padding-right: 4px;">
+
+                                <ng-container *ngFor="let group of groupedObservations; let gi = index">
+
+                                    <!-- Indicador de cambio de fase -->
+                                    <div class="phase-header d-flex align-items-center gap-2 my-3">
+                                        <div class="phase-line flex-grow-1" style="height: 1px; background: #dee2e6;">
+                                        </div>
+
+                                        <!-- Si hay transición de fase, muestra origen → destino -->
+                                        <ng-container *ngIf="group.isTransition && group.transitionFrom; else soloFase">
+                                            <span class="badge bg-secondary" style="font-size: 0.72rem;">
+                                                {{ group.transitionFrom }}
+                                            </span>
+                                            <i class="ti ti-arrow-right text-muted" style="font-size: 0.85rem;"></i>
+                                            <span class="badge bg-danger-custom" style="font-size: 0.72rem;">
+                                                {{ group.phase }}
+                                            </span>
+                                        </ng-container>
+                                        <ng-template #soloFase>
+                                            <span class="badge bg-danger-custom" style="font-size: 0.72rem;">
+                                                {{ group.phase }}
+                                            </span>
+                                        </ng-template>
+
+                                        <div class="phase-line flex-grow-1" style="height: 1px; background: #dee2e6;">
+                                        </div>
+                                    </div>
+
+                                    <!-- Observaciones de esta fase -->
+                                    <div *ngFor="let obs of group.items; let oi = index"
+                                        class="observation-item d-flex gap-3 mb-3">
+
+                                        <!-- Icono lateral -->
+                                        <div class="flex-shrink-0 d-flex flex-column align-items-center">
+                                            <div class="observation-dot rounded-circle bg-danger d-flex align-items-center justify-content-center"
+                                                style="width: 32px; height: 32px; min-width: 32px;">
+                                                <i class="ti ti-message text-white" style="font-size: 0.8rem;"></i>
+                                            </div>
+                                            <!-- Línea vertical conectora (excepto último elemento del último grupo) -->
+                                            <div *ngIf="!(gi === groupedObservations.length - 1 && oi === group.items.length - 1)"
+                                                style="width: 2px; flex-grow: 1; background: #f0d0d0; min-height: 16px; margin-top: 4px;">
+                                            </div>
+                                        </div>
+
+                                        <!-- Contenido -->
+                                        <div class="flex-grow-1 pb-1">
+                                            <div class="card border-0 bg-light rounded-3 p-3"
+                                                [class.border-start]="obs.credit_intention_status_start !== obs.credit_intention_status_end"
+                                                [style.border-left-color]="obs.credit_intention_status_start !== obs.credit_intention_status_end ? '#dc3545' : ''"
+                                                [style.border-left-width]="obs.credit_intention_status_start !== obs.credit_intention_status_end ? '3px' : ''">
+
+                                                <!-- Header de la observación -->
+                                                <div
+                                                    class="d-flex justify-content-between align-items-start flex-wrap gap-1 mb-2">
+                                                    <div class="d-flex align-items-center gap-2">
+                                                        <i class="ti ti-user-circle text-muted"></i>
+                                                        <strong class="text-dark" style="font-size: 0.85rem;">{{
+                                                            obs.user_create }}</strong>
+                                                        <span *ngIf="obs.activity"
+                                                            class="badge bg-info-subtle text-info-emphasis"
+                                                            style="font-size: 0.7rem;">
+                                                            {{ obs.activity }}
+                                                        </span>
+                                                    </div>
+                                                    <small class="text-muted d-flex align-items-center gap-1">
+                                                        <i class="ti ti-clock"></i>
+                                                        {{ formatCreatedAt(obs.created_at) }}
+                                                    </small>
+                                                </div>
+
+                                                <!-- Texto de la observación -->
+                                                <p class="mb-0 text-secondary"
+                                                    style="font-size: 0.88rem; line-height: 1.5;">
+                                                    {{ obs.observation }}
+                                                </p>
+
+                                            </div>
+                                        </div>
+
+                                    </div>
+                                    <!-- fin observaciones del grupo -->
+
+                                </ng-container>
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
+
         </ng-container>
 
 

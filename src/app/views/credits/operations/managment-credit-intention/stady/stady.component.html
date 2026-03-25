@@ -389,7 +389,7 @@
                     <ng-container *ngIf="!loadingCredito && creditosCliente.length > 0">
                         <div class="table-responsive mb-4">
                             <table class="table table-bordered table-sm">
-                                <thead class="table-dark bg-light-subtle">
+                                <thead class="sticky-header">
                                     <tr>
                                         <th>ID</th>
                                         <th>Cliente</th>
@@ -462,7 +462,7 @@
                     </button>
                 </div>
                 <div class="next">
-                    <button (click)="nextStep(3)" class="btn btn-danger mt-3 mt-md-0">
+                    <button (click)="onSubmitActividad3()" class="btn btn-danger mt-3 mt-md-0">
                         Siguiente <i class="bx bx-right-arrow-alt ms-2"></i>
                     </button>
                 </div>

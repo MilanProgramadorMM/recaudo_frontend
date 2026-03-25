@@ -6,7 +6,10 @@ import { CookieService } from 'ngx-cookie-service';
 
 export interface ChangeCreditStatusDto {
   credit_id: number;
-  new_status: string; // APPROVED, REJECTED, etc
+  current_status: string;
+  new_status: string; 
+  observation: string;
+  activity: string;
 }
 
 export interface CreditIntentionStatusResponseDto {

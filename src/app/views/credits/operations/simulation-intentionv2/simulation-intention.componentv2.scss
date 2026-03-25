@@ -1,0 +1,29 @@
+.text-uppercase {
+  text-transform: uppercase;
+}
+
+.btn-outline-danger {
+  border-color: #dc3545 !important;
+  color: #dc3545 !important;
+}
+
+.btn-outline-danger:hover {
+  background-color: #dc3545 !important;
+  color: #fff !important;
+}
+
+span.active {
+  color: #dc3545 !important
+}
+
+.snackbar-error {
+  background-color: #dc3545;
+  color: #fff;
+}
+
+::ng-deep #credit-wizard {
+  ng-stepper.nav {
+    display: none !important;
+  }
+}
+

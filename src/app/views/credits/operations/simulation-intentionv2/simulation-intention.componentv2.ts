@@ -3,24 +3,18 @@ import { CommonModule } from '@angular/common';
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
-import { FileUploaderComponent, UploadedFile } from '@components/file-uploader.component';
 import { PageTitleComponent } from '@components/page-title.component';
-import { CalculateCreditIntentionDto, CreditIntentionService, CreditProjectionDto, DocumentMetadata } from '@core/services/creditIntention.service';
+import { CalculateCreditIntentionDto, CreditIntentionService, CreditProjectionDto } from '@core/services/creditIntention.service';
 import { CreditLineDto, CreditLineService } from '@core/services/creditLine.service';
-import { Glotypes, GlotypesService } from '@core/services/glotypes.service';
+import { Glotypes} from '@core/services/glotypes.service';
 import { PeriodDto, PeriodService } from '@core/services/perdiod.service';
-import { PersonService } from '@core/services/person.service';
-import { OptionDTO, UbicacionService } from '@core/services/ubicacion.service';
-import { ZonaResponseDto, ZonaService } from '@core/services/zona.service';
+import { OptionDTO} from '@core/services/ubicacion.service';
+import { ZonaResponseDto} from '@core/services/zona.service';
 import { LoadingComponent } from '@views/ui/loading/loading.component';
 import { NgStepperComponent, NgStepperModule } from 'angular-ng-stepper';
-import { debounceTime, firstValueFrom, merge, Subscription, switchMap } from 'rxjs';
-import Swal from 'sweetalert2';
-import { MatSnackBar } from '@angular/material/snack-bar';
-import { UserService } from '@core/services/user.service';
+import { debounceTime, merge, Subscription} from 'rxjs';
 import { AuthenticationService } from '@core/services/auth.service';
-import { PersonZonaService } from '@core/services/person-zona.service';
-import { NgSelectModule, NgOption } from '@ng-select/ng-select';
+import { NgSelectModule } from '@ng-select/ng-select';
 
 
 @Component({
@@ -32,16 +26,12 @@ import { NgSelectModule, NgOption } from '@ng-select/ng-select';
     PageTitleComponent,
     NgStepperModule,
     CdkStepperModule,
-    FileUploaderComponent,
     NgSelectModule
   ],
-  templateUrl: './simulation-intention.component.html',
-  styleUrl: './simulation-intention.component.scss'
+  templateUrl: './simulation-intention.componentv2.html',
+  styleUrl: './simulation-intention.componentv2.scss'
 })
-export class SimulationIntentionComponent implements OnInit {
-
-  @ViewChild('stepper') stepper!: NgStepperComponent
-  @ViewChild('cdkSteppers') cdkSteppers!: CdkStepper
+export class SimulationIntentionComponentv2 implements OnInit {
 
   form!: FormGroup;
   submitted = false;
@@ -73,7 +63,6 @@ export class SimulationIntentionComponent implements OnInit {
 
 
   selectedCreditLine: CreditLineDto | null = null;
-  documentFiles: Map<string, { front?: any[], back?: any[], single?: any[] }> = new Map();
 
 
   creditLines: CreditLineDto[] = [];
@@ -81,45 +70,15 @@ export class SimulationIntentionComponent implements OnInit {
   taxTypes: any[] = [];
   today: string = '';
 
-  private fieldMapping: Record<string, string> = {
-    documentType: 'document_type',
-    document: 'document',
-    firstName: 'firstname',
-    middleName: 'middlename',
-    lastName: 'lastname',
-    maternalLastname: 'maternal_lastname',
-    fullName: 'fullname',
-    gender: 'gender',
-    occupation: 'occupation',
-    descriptionD: 'description',
-    correo: 'email',
-    celular: 'phone_number',
-    telefono: 'whatsapp_number',
-    adress: 'home_address',
-    countryId: 'country_id',
-    departentId: 'department_id',
-    cityId: 'municipality_id',
-    neighborhoodId: 'neighborhood_id',
-    zonaId: 'zone_id'
-  };
 
 
   constructor(
     private fb: FormBuilder,
-    private glotypesService: GlotypesService,
-    private ubicacionService: UbicacionService,
-    private zonaService: ZonaService,
     private creditLineService: CreditLineService,
     private periodService: PeriodService,
-    private personService: PersonService,
     private dialog: MatDialog,
     private creditIntentionService: CreditIntentionService,
-    private snackBar: MatSnackBar,
-    private userService: UserService,
     private authService: AuthenticationService,
-    private personZonaService: PersonZonaService
-
-
   ) { }
 
   ngOnInit(): void {
@@ -169,57 +128,53 @@ export class SimulationIntentionComponent implements OnInit {
       neighborhood_id: ['', Validators.required],
       tipo_calculo: [''],
       generar_amortizacion: [''],
-
-
     });
 
-    this.form.valueChanges.subscribe(() => this.updateFullName());
-    this.loadDocumentTypes();
-    this.loadGender();
+    //this.loadDocumentTypes();
+    //this.loadGender();
     this.fetchLines();
     this.fetchPeriods();
     this.getUserDataFromToken();
 
-    this.loadZonasByRole();
 
 
-    this.ubicacionService.getPaises().subscribe(data => this.paises = data);
-    // Escuchar cambios
-    this.form.get('country_id')?.valueChanges.subscribe(paisId => {
-      if (paisId) {
-        this.ubicacionService.getDepartamentos(paisId).subscribe(data => {
-          this.departamentos = data;
-          this.municipios = [];
-          this.barrios = [];
-          this.form.patchValue({ departamento: '', ciudad: '', barrio: '' });
-        });
-      }
-    });
+    // this.ubicacionService.getPaises().subscribe(data => this.paises = data);
+    // // Escuchar cambios
+    // this.form.get('country_id')?.valueChanges.subscribe(paisId => {
+    //   if (paisId) {
+    //     this.ubicacionService.getDepartamentos(paisId).subscribe(data => {
+    //       this.departamentos = data;
+    //       this.municipios = [];
+    //       this.barrios = [];
+    //       this.form.patchValue({ departamento: '', ciudad: '', barrio: '' });
+    //     });
+    //   }
+    // });
 
-    this.form.get('department_id')?.valueChanges.subscribe(depId => {
-      if (depId) {
-        this.ubicacionService.getMunicipios(depId).subscribe(data => {
-          this.municipios = data;
-          this.barrios = [];
-          this.form.patchValue({ ciudad: '', barrio: '' });
-        });
-      }
-    });
+    // this.form.get('department_id')?.valueChanges.subscribe(depId => {
+    //   if (depId) {
+    //     this.ubicacionService.getMunicipios(depId).subscribe(data => {
+    //       this.municipios = data;
+    //       this.barrios = [];
+    //       this.form.patchValue({ ciudad: '', barrio: '' });
+    //     });
+    //   }
+    // });
 
-    this.form.get('municipality_id')?.valueChanges.subscribe(munId => {
-      if (munId) {
-        this.ubicacionService.getBarrios(munId).subscribe(data => {
-          this.barrios = data;
-          this.form.patchValue({ barrio: '' });
-        });
-      }
-    });
+    // this.form.get('municipality_id')?.valueChanges.subscribe(munId => {
+    //   if (munId) {
+    //     this.ubicacionService.getBarrios(munId).subscribe(data => {
+    //       this.barrios = data;
+    //       this.form.patchValue({ barrio: '' });
+    //     });
+    //   }
+    // });
 
-    this.form.get('document')?.valueChanges.subscribe(() => {
-      if (this.updatingFromBackend) return;
+    // this.form.get('document')?.valueChanges.subscribe(() => {
+    //   if (this.updatingFromBackend) return;
 
-      this.resetPersonForm();
-    });
+    //   this.resetPersonForm();
+    // });
 
     // Escuchar cambios en Valor del Producto para controlar la Cuota Inicial
     this.form.get('item_value')?.valueChanges.subscribe(value => {
@@ -309,41 +264,6 @@ export class SimulationIntentionComponent implements OnInit {
     });
   }
 
-  updateFullName() {
-    if (this.updatingFromBackend) return;
-
-    const firstname = this.form.get('firstname')?.value;
-    const middlename = this.form.get('middlename')?.value;
-    const lastname = this.form.get('lastname')?.value;
-    const maternal = this.form.get('maternal_lastname')?.value;
-
-    const full = [firstname, middlename, lastname, maternal]
-      .filter(v => v && v.trim())
-      .join(' ');
-
-    this.form.get('fullname')?.setValue(full.toUpperCase(), { emitEvent: false });
-  }
-
-  loadGender() {
-    this.glotypesService.getGlotypesByKey('TIPGEN').subscribe({
-      next: (data) => {
-        this.genderGlotypes = data;
-      },
-      error: (err) => {
-        console.error('Error cargando opciones:', err);
-      }
-    });
-  }
-
-  loadZonas() {
-    this.zonaService.getByStatus().subscribe({
-      next: (res) => {
-        this.zonas = res.data;
-      }, error: (err) => {
-        console.error('Error cargando zonas:', err);
-      }
-    });
-  }
 
   getUserDataFromToken(): void {
     this.currentUserRole = this.authService.getUserRole();
@@ -355,63 +275,6 @@ export class SimulationIntentionComponent implements OnInit {
     });
   }
 
-  loadZonasByRole(): void {
-    // Verificar si el rol es 'asesor'
-    if (this.currentUserRole?.toLowerCase() === 'asesor') {
-      this.loadZonasForAsesor();
-    } else {
-      // Para 'admin', 'backoffice' o cualquier otro rol
-      this.loadZonas();
-    }
-  }
-
-  private loadZonasForAsesor(): void {
-    if (!this.currentUserId) {
-      console.error('No se pudo obtener el ID del asesor');
-      return;
-    }
-
-    this.userService.getUserById(this.currentUserId).pipe(
-      switchMap(response => {
-        const user = response.data;
-
-        if (!user?.person_id) {
-          throw new Error('El usuario no tiene person_id');
-        }
-
-        console.log('User obtenido:', user);
-
-        return this.personZonaService.getZonasByAsesor(user.person_id);
-      })
-    ).subscribe({
-      next: (response) => {
-        this.zonas = response.data.map(az => ({
-          id: az.zonaId,
-          value: az.zonaName,
-          description: '',
-          status: true
-        }));
-
-        console.log('Zonas del asesor cargadas:', this.zonas);
-      },
-      error: (err) => {
-        console.error('Error al cargar zonas del asesor:', err);
-        this.zonas = [];
-      }
-    });
-  }
-
-
-  loadDocumentTypes() {
-    this.glotypesService.getGlotypesByKey('TIPDOC').subscribe({
-      next: (data) => {
-        this.documentTypes = data;
-      },
-      error: (err) => {
-        console.error('Error cargando tipos de documento:', err);
-      }
-    });
-  }
 
   fetchLines(): void {
     this.creditLineService.getAll().subscribe({
@@ -559,248 +422,6 @@ export class SimulationIntentionComponent implements OnInit {
     this.validarRangoNumerico('fin_quincena', 1, 31, 'errorFinQuincena', 'día');
   }
 
-  getClient() {
-    const documentNumber = this.form.get('document')?.value;
-
-    if (!documentNumber) {
-      this.errorMessage = 'Debes ingresar un número de documento antes de buscar.';
-      return;
-    }
-
-    this.errorMessage = '';
-
-    this.form.get('document_type')?.enable({ emitEvent: false });
-    this.form.get('document')?.enable({ emitEvent: false });
-
-    const dialogRef = this.dialog.open(LoadingComponent, {
-      disableClose: true,
-    });
-
-    this.personService.getPersonByDocument(documentNumber).subscribe({
-      next: (response) => {
-        this.updatingFromBackend = true;
-
-        const person = response.data;
-
-        if (!person) {
-          this.resetPersonForm();
-          this.errorMessage = 'No se encontró ninguna persona con el documento ingresado.';
-          this.updatingFromBackend = false;
-          return;
-        }
-
-        this.errorMessage = '';
-
-        this.form.patchValue({
-          document_type: person.documentType,
-          document: person.document,
-          firstname: person.firstName,
-          middlename: person.middleName,
-          lastname: person.lastName,
-          maternal_lastname: person.maternalLastname,
-          fullname: person.fullName,
-          gender: person.gender,
-          occupation: person.occupation,
-          description: person.description,
-          email: person.correo,
-          phone_number: person.celular,
-          whatsapp_number: person.celular,
-          home_address: person.adress,
-          zone_id: person.zid ? parseInt(person.zid) : null,
-          country_id: person.countryId
-        });
-
-        setTimeout(() => {
-          this.form.patchValue({
-            department_id: person.departentId
-          });
-
-          setTimeout(() => {
-            this.form.patchValue({
-              municipality_id: person.cityId,
-              neighborhood_id: person.neighborhoodId
-            });
-
-            this.updatingFromBackend = false;
-            this.disableFieldsByBackend(person);
-          }, 300);
-        }, 300);
-      },
-      error: () => {
-        this.errorMessage = 'Error consultando el documento.';
-        this.updatingFromBackend = false;
-      },
-      complete: () => dialogRef.close()
-    });
-  }
-
-  private resetPersonForm(): void {
-    this.selectedCreditLine = null;
-    this.isQuincenal = false;
-
-    this.form.patchValue({
-      firstname: '',
-      middlename: '',
-      lastname: '',
-      maternal_lastname: '',
-      fullname: '',
-      gender: '',
-      occupation: '',
-      description: '',
-      email: '',
-      phone_number: '',
-      whatsapp_number: '',
-      home_address: '',
-      zone_id: '',
-      country_id: '',
-      department_id: '',
-      municipality_id: '',
-      neighborhood_id: ''
-    });
-
-    [
-      'firstname',
-      'middlename',
-      'lastname',
-      'maternal_lastname',
-      'gender',
-      'occupation',
-      'description',
-      'email',
-      'phone_number',
-      'whatsapp_number',
-      'home_address',
-      'zone_id',
-      'country_id',
-      'department_id',
-      'municipality_id',
-      'neighborhood_id'
-    ].forEach(field => {
-      this.form.get(field)?.enable({ emitEvent: false });
-    });
-
-    this.form.markAsPristine();
-    this.form.markAsUntouched();
-  }
-
-  disableFieldsByBackend(person: any) {
-    Object.entries(this.fieldMapping).forEach(([backendField, formField]) => {
-      // Excluir document_type y document de la deshabilitación automática
-      if (formField === 'document_type' || formField === 'document') {
-        return; // Saltar estos campos, mantenerlos siempre habilitados
-      }
-
-      const value = person[backendField];
-      if (value !== null && value !== undefined && value !== '' && value !== 0) {
-        this.form.get(formField)?.disable({ emitEvent: false });
-      } else {
-        this.form.get(formField)?.enable({ emitEvent: false });
-      }
-    });
-
-    if (person.zid) {
-      this.form.get('zone_id')?.disable({ emitEvent: false });
-    }
-  }
-
-  nextStep(step: number): void {
-    this.submitted = true;
-
-    let isValid = false;
-
-    switch (step) {
-      case 1:
-        // Validar campos del paso 1 (Datos Personales)
-        isValid = this.validateStep1();
-        break;
-      case 2:
-        // Validar campos del paso 2 (Datos de Contacto)
-        isValid = this.validateStep2();
-        break;
-      case 3:
-        // Validar campos del paso 3 (Datos del Crédito)
-        isValid = this.validateStep3();
-        break;
-    }
-
-    if (isValid) {
-      this.submitted = false;
-      this.stepper.next();
-      window.scrollTo({ top: 0, behavior: 'smooth' });
-    } else {
-      // Scroll al primer campo con error
-      setTimeout(() => {
-        const firstInvalid = document.querySelector('.is-invalid');
-        if (firstInvalid) {
-          firstInvalid.scrollIntoView({ behavior: 'smooth', block: 'center' });
-        }
-      }, 100);
-    }
-  }
-
-  private validateStep1(): boolean {
-    const step1Fields = [
-      'document_type',
-      'document',
-      'firstname',
-      'lastname',
-      'gender',
-      'occupation'
-    ];
-
-    let isValid = true;
-
-    step1Fields.forEach(field => {
-      const control = this.form.get(field);
-      if (control) {
-        control.markAsTouched();
-        if (control.invalid) {
-          isValid = false;
-        }
-      }
-    });
-
-    if (!isValid) {
-      this.errorMessage = 'Por favor complete todos los campos obligatorios del paso 1';
-    } else {
-      this.errorMessage = '';
-    }
-
-    return isValid;
-  }
-
-  private validateStep2(): boolean {
-    const step2Fields = [
-      'email',
-      'phone_number',
-      'zone_id',
-      'country_id',
-      'department_id',
-      'municipality_id',
-      'neighborhood_id',
-      'home_address'
-    ];
-
-    let isValid = true;
-
-    step2Fields.forEach(field => {
-      const control = this.form.get(field);
-      if (control) {
-        control.markAsTouched();
-        if (control.invalid) {
-          isValid = false;
-        }
-      }
-    });
-
-    if (!isValid) {
-      this.errorMessage = 'Por favor complete todos los campos obligatorios del paso 2';
-    } else {
-      this.errorMessage = '';
-    }
-
-    return isValid;
-  }
 
   private validateStep3(): boolean {
     const raw = this.form.getRawValue();
@@ -966,16 +587,10 @@ export class SimulationIntentionComponent implements OnInit {
     this.simulationCompleted = false;
     this.simulationResult = null;
 
-    const step1Valid = this.validateStep1();
-    const step2Valid = this.validateStep2();
     const step3Valid = this.validateStep3();
 
-    if (!step1Valid || !step2Valid || !step3Valid) {
+    if (!step3Valid) {
       this.errorMessage = 'Por favor complete todos los campos obligatorios';
-
-      if (!step1Valid) this.stepper.selectedIndex = 0;
-      else if (!step2Valid) this.stepper.selectedIndex = 1;
-      else this.stepper.selectedIndex = 2;
 
       setTimeout(() => {
         document.querySelector('.is-invalid')
@@ -993,25 +608,13 @@ export class SimulationIntentionComponent implements OnInit {
     // Validar que la cuota inicial sea menor al valor del producto
     if (initialQuota > 0 && initialQuota >= itemVa0lue) {
       this.errorMessage = 'La cuota inicial debe ser menor al valor del producto';
-      this.stepper.selectedIndex = 2;
+      //this.stepper.selectedIndex = 2;
 
       setTimeout(() => {
         document.querySelector('input[formControlName="initial_quota"]')
           ?.scrollIntoView({ behavior: 'smooth', block: 'center' });
       }, 100);
 
-      return;
-    }
-
-    if (
-      this.isFinalSubmit &&
-      this.requiresDocumentation() &&
-      !this.validateCedulaOnly()
-    ) {
-      setTimeout(() => {
-        document.querySelector('fieldset legend')
-          ?.scrollIntoView({ behavior: 'smooth', block: 'center' });
-      }, 100);
       return;
     }
 
@@ -1069,7 +672,7 @@ export class SimulationIntentionComponent implements OnInit {
 
     if (creditLineId === null || periodoId === null || periodQty === null) {
       this.errorMessage = 'Datos del crédito incompletos o inválidos';
-      this.stepper.selectedIndex = 2;
+      //this.stepper.selectedIndex = 2;
       return;
     }
 
@@ -1170,7 +773,7 @@ export class SimulationIntentionComponent implements OnInit {
 
           if (grupo === 'GRUPO2') {
             this.form.patchValue({
-              tax_value: Number(tasaCalculada.toFixed(9)),
+              tax_value: Number(tasaCalculada.toFixed(2)),
               total_intention_value: valorSolicitud,
               item_value: null
             }, { emitEvent: false });
@@ -1187,7 +790,7 @@ export class SimulationIntentionComponent implements OnInit {
 
           } else {
             this.form.patchValue({
-              tax_value: Number(tasaCalculada.toFixed(9)),
+              tax_value: Number(tasaCalculada.toFixed(2)),
               total_intention_value: valorSolicitud,
               desembolso_value: null
             }, { emitEvent: false });
@@ -1279,201 +882,6 @@ export class SimulationIntentionComponent implements OnInit {
     });
   }
 
-  onSave(): void {
-    const raw = this.form.getRawValue();
-    const capitalValue = this.selectedCreditLine?.loanDisbursement
-      ? this.toNumber(raw.desembolso_value)
-      : this.toNumber(raw.item_value);
-    const numeroCuotas = raw.period_quantity;
-    const cuotaValue = raw.quota_value;
-    const tasa = raw.tax_value;
-
-    Swal.fire({
-      title: '¿Finalizar registro de intención?',
-      html: `
-        <table style="margin:auto; text-align:left;">
-          <tr>
-            <td><b>Valor:</b></td>
-            <td style="padding-left:20px;"><strong>$${this.formatValueCurrency(capitalValue.toString())}</strong></td>
-          </tr>
-          <tr>
-            <td><b>N. Cuotas:</b></td>
-            <td style="padding-left:20px;"><strong>${numeroCuotas}</strong></td>
-          </tr>
-          <tr>
-            <td><b>Tasa:</b></td>
-            <td style="padding-left:20px;"><strong>${tasa}%</strong></td>
-          </tr>
-          <tr>
-            <td><b>Cuota:</b></td>
-            <td style="padding-left:20px;"><strong>$${cuotaValue}</strong></td>
-          </tr>
-        </table>
-      `,
-      icon: 'question',
-      showCancelButton: true,
-      confirmButtonText: 'Finalizar',
-      cancelButtonText: 'Cancelar',
-      customClass: {
-        confirmButton: 'btn btn-success',
-        cancelButton: 'btn btn-secondary'
-      }
-    }).then((result) => {
-      if (result.isConfirmed) {
-        this.saveIntention();
-      }
-    });
-  }
-
-  async saveIntention(): Promise<void> {
-    if (!this.simulationCompleted) {
-      this.errorMessage = 'Debe realizar la simulación antes de guardar';
-      return;
-    }
-
-    if (this.requiresDocumentation() && !this.validateCedulaOnly()) {
-      setTimeout(() => {
-        document.querySelector('fieldset legend')
-          ?.scrollIntoView({ behavior: 'smooth', block: 'center' });
-      }, 100);
-      return;
-    }
-
-    const raw = this.form.getRawValue();
-    const tasa = this.toDecimal(raw.tax_value);
-
-    const capitalValue = this.selectedCreditLine?.loanDisbursement
-      ? this.toNumber(raw.desembolso_value)
-      : this.toNumber(raw.item_value);
-
-
-    // PAYLOAD 1 – Registrar intención de crédito
-    const payloadIntencion = {
-      // Datos personales
-      zone_id: this.ensureNumber(raw.zone_id),
-      document_type: this.ensureNumber(raw.document_type),
-      document: raw.document,
-      firstname: raw.firstname.toUpperCase(),
-      middlename: raw.middlename?.toUpperCase() ?? null,
-      lastname: raw.lastname.toUpperCase(),
-      maternal_lastname: raw.maternal_lastname?.toUpperCase() ?? null,
-      fullname: raw.fullname,
-      gender: this.ensureNumber(raw.gender),
-      occupation: raw.occupation || null,
-      description: raw.description || null,
-
-      // Contacto
-      email: raw.email || null,
-      phone_number: raw.phone_number || null,
-      whatsapp_number: raw.whatsapp_number || null,
-
-      // Ubicación
-      home_address: raw.home_address || null,
-      country_id: this.ensureNumber(raw.country_id),
-      department_id: this.ensureNumber(raw.department_id),
-      municipality_id: this.ensureNumber(raw.municipality_id),
-      neighborhood_id: this.ensureNumber(raw.neighborhood_id),
-
-      // Crédito
-      credit_line_id: this.ensureNumber(raw.credit_line_id),
-      quota_value: this.toNumber(raw.quota_value),
-      period_id: this.ensureNumber(raw.period_id),
-      period_quantity: this.ensureNumber(raw.period_quantity),
-      tax_type_id: this.ensureNumber(this.selectedCreditLine?.taxType),
-      tax_value: tasa,
-      total_intention_value: this.toNumber(raw.total_intention_value),
-      item_value: capitalValue,
-      start_date: raw.start_date,
-      initial_value_payment: this.toNumber(raw.initial_quota),
-      total_financed_value: this.toNumber(raw.value_to_financiate),
-
-
-      inicio_quincena: this.form.get('inicio_quincena')?.value,
-      fin_quincena: this.form.get('fin_quincena')?.value,
-      tipo_calculo: this.selectedCreditLine?.taxType === 3
-        ? 'CALCULAR_TASA'
-        : 'CALCULAR_CUOTA',
-
-      //desembolso_value: this.toNumber(raw.desembolso_value),
-      //cargos: this.toNumber(raw.cargos)
-    };
-
-    let files: UploadedFile[] | undefined;
-    let metadata: DocumentMetadata[] | undefined;
-
-    if (this.requiresDocumentation()) {
-      const cedulaData = this.getCedulaFilesForUpload();
-      files = cedulaData.files;
-      metadata = cedulaData.metadata;
-    }
-    const dialogRef = this.dialog.open(LoadingComponent, {
-      disableClose: true,
-    });
-
-
-    try {
-      const response = await firstValueFrom(
-        this.creditIntentionService.createCreditIntentionWithDocuments(
-          payloadIntencion,
-          files,
-          metadata
-        )
-      );
-
-      dialogRef.close();
-
-      console.log('Intención creada:', response);
-
-      Swal.fire({
-        title: '¡Éxito!',
-        text: this.requiresDocumentation()
-          ? 'La intención de crédito y los documentos se han guardado correctamente.'
-          : 'La intención de crédito se ha guardado correctamente.',
-        icon: 'success',
-        buttonsStyling: false,
-        confirmButtonText: 'Aceptar',
-        customClass: {
-          confirmButton: 'btn btn-success'
-        }
-      }).then(() => {
-        this.resetForm();
-      });
-
-    } catch (err: any) {
-      dialogRef.close();
-      Swal.fire({
-        title: 'Error',
-        text: err.error?.details || err.error?.message || 'No se pudo guardar la intención de crédito.',
-        icon: 'error',
-        buttonsStyling: false,
-        confirmButtonText: 'Entendido',
-        customClass: {
-          confirmButton: 'btn btn-danger'
-        }
-      });
-    }
-  }
-
-  private resetForm(): void {
-    this.simulationCompleted = false;
-    this.simulationResult = null;
-    this.errorMessage = '';
-    this.submitted = false;
-    this.documentFiles.clear();
-
-    this.form.reset();
-    this.stepper.reset();
-
-    this.departamentos = [];
-    this.municipios = [];
-    this.barrios = [];
-
-    this.selectedCreditLine = null;
-
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-  }
-
-
   onCreditLineChange(): void {
     const id = this.form.get('credit_line_id')?.value;
     const selected = this.creditLines.find(c => c.id === Number(id));
@@ -1507,14 +915,6 @@ export class SimulationIntentionComponent implements OnInit {
     return this.selectedCreditLine?.requireDocumentation ?? false;
   }
 
-
-  getOnlyCedulaDocuments(): any[] {
-    const docs = this.selectedCreditLine?.requiredDocuments ?? [];
-
-    return docs.filter(doc => this.requiresTwoSides(doc.name));
-  }
-
-
   private ensureNumber(value: any): number | null {
     const n = Number(value);
     return isNaN(n) ? null : n;
@@ -1533,154 +933,6 @@ export class SimulationIntentionComponent implements OnInit {
 
     return isNaN(num) ? 0 : num;
   }
-
-
-  /**
-  * Verificar si un documento requiere dos lados (frontal y trasero)
-  */
-  requiresTwoSides(documentName: string): boolean {
-    const twoSidedDocuments = [
-      'CÉDULA',
-      'CEDULA',
-      'CÉDULA DE CIUDADANÍA',
-      'CEDULA DE CIUDADANIA',
-      'DNI',
-      'IDENTIFICACIÓN',
-      'IDENTIFICACION'
-    ];
-
-    return twoSidedDocuments.some(doc =>
-      documentName.toUpperCase().includes(doc)
-    );
-  }
-
-  /**
-   * Manejar cambios en los archivos de documentos
-   */
-  onDocumentFileChange(files: any[], documentId: number, side: string | null) {
-    const key = `doc_${documentId}`;
-
-    if (!this.documentFiles.has(key)) {
-      this.documentFiles.set(key, {});
-    }
-
-    const docFiles = this.documentFiles.get(key)!;
-
-    if (side === 'front') {
-      docFiles.front = files;
-    } else if (side === 'back') {
-      docFiles.back = files;
-    } else {
-      docFiles.single = files;
-    }
-
-    console.log('Archivos de documentos actualizados:', this.documentFiles);
-  }
-
-
-  /**
-   * Obtener todos los archivos para enviar al backend
-   */
-  // Método mejorado para preparar archivos
-  // getDocumentFilesForUpload(): { files: File[], metadata: any[] } {
-  //   const files: File[] = [];
-  //   const metadata: any[] = [];
-  //   let fileIndex = 0;
-
-  //   this.documentFiles.forEach((docFiles, key) => {
-  //     const documentId = parseInt(key.replace('doc_', ''));
-
-  //     // Procesar lado frontal
-  //     if (docFiles.front?.length) {
-  //       files.push(docFiles.front[0]);
-  //       metadata.push({
-  //         documentationTypeId: documentId,
-  //         documentSide: 'FRONT',
-  //         fileIndex: fileIndex++
-  //       });
-  //     }
-
-  //     // Procesar lado trasero
-  //     if (docFiles.back?.length) {
-  //       files.push(docFiles.back[0]);
-  //       metadata.push({
-  //         documentationTypeId: documentId,
-  //         documentSide: 'BACK',
-  //         fileIndex: fileIndex++
-  //       });
-  //     }
-
-  //     // Procesar archivo único
-  //     if (docFiles.single?.length) {
-  //       files.push(docFiles.single[0]);
-  //       metadata.push({
-  //         documentationTypeId: documentId,
-  //         documentSide: 'SINGLE',
-  //         fileIndex: fileIndex++
-  //       });
-  //     }
-  //   });
-
-  //   return { files, metadata };
-  // }
-
-  validateCedulaOnly(): boolean {
-    const cedulaDocs = this.getOnlyCedulaDocuments();
-
-    for (const doc of cedulaDocs) {
-      const key = `doc_${doc.id}`;
-      const files = this.documentFiles.get(key);
-
-      if (!files?.front?.length || !files?.back?.length) {
-        this.errorMessage = `Debe cargar ambos lados de la ${doc.name}`;
-
-        this.snackBar.open(
-          `Debe cargar ambos lados de la ${doc.name}`,
-          'Cerrar',
-          {
-            duration: 4000,
-            panelClass: ['snackbar-error'],
-          }
-        );
-        return false;
-      }
-    }
-
-    return true;
-  }
-
-
-  getCedulaFilesForUpload(): { files: File[], metadata: DocumentMetadata[] } {
-    const files: File[] = [];
-    const metadata: DocumentMetadata[] = [];
-    let fileIndex = 0;
-
-    this.getOnlyCedulaDocuments().forEach(doc => {
-      const key = `doc_${doc.id}`;
-      const docFiles = this.documentFiles.get(key);
-
-      if (docFiles?.front?.length) {
-        files.push(docFiles.front[0]);
-        metadata.push({
-          documentationTypeId: doc.id,
-          documentSide: 'FRONT',
-          fileIndex: fileIndex++
-        });
-      }
-
-      if (docFiles?.back?.length) {
-        files.push(docFiles.back[0]);
-        metadata.push({
-          documentationTypeId: doc.id,
-          documentSide: 'BACK',
-          fileIndex: fileIndex++
-        });
-      }
-    });
-
-    return { files, metadata };
-  }
-
 
 
   //VALIDAR SI EL PERIODO ES QUINCENAL HABILIATR LOS CAMPOS DE DIA INICIAL Y FINAL DE LA QUINCENA

@@ -8,6 +8,7 @@ import { NgbDropdownModule } from '@ng-bootstrap/ng-bootstrap';
 import { ReversePaymentModalComponent } from './reverse-payment-modal/reverse-payment-modal.component';
 import Swal from 'sweetalert2';
 import { AuthenticationService } from '@core/services/auth.service';
+import { CreditIntentionObservationResponseDto, CreditIntentionObservationService } from '@core/services/creditIntentionObservation.service';
 
 
 interface CreditPaymentStatus {
@@ -74,6 +75,8 @@ enum UserRole {
 export class RecaudoModalComponent {
 
   @Input() creditId!: number;
+  @Input() creditIntentionId!: number;
+
 
   loading = true;
   error = false;
@@ -87,12 +90,22 @@ export class RecaudoModalComponent {
   isAdmin = false;
   isAsistente = false;
 
+  observations: CreditIntentionObservationResponseDto[] = [];
+  groupedObservations: {
+    phase: string;
+    transitionFrom: string | null;
+    isTransition: boolean;
+    items: CreditIntentionObservationResponseDto[];
+  }[] = [];
+  loadingObservations = false;
+
 
   constructor(
     public activeModal: NgbActiveModal,
     private modalService: NgbModal,
     private recaudoService: RecaudoService,
-    private authService: AuthenticationService
+    private authService: AuthenticationService,
+    private observationService: CreditIntentionObservationService
 
   ) { }
 
@@ -105,6 +118,59 @@ export class RecaudoModalComponent {
     console.log('isAsesor:', this.isAsesor, '| isAdmin:', this.isAdmin, '| isAsistente:', this.isAsistente);
 
     this.loadRecaudoStatus();
+    if (this.isAdmin || this.isAsistente) {
+      this.loadObservations();
+    }
+  }
+
+  loadObservations(): void {
+    this.loadingObservations = true;
+    this.observationService.getObservationsByCreditId(this.creditIntentionId).subscribe({
+      next: (response) => {
+        this.observations = response.data;
+        this.groupedObservations = this.groupByPhase(this.observations);
+        this.loadingObservations = false;
+      },
+      error: (err) => {
+        console.error('Error al cargar observaciones:', err);
+        this.loadingObservations = false;
+      }
+    });
+  }
+
+  groupByPhase(observations: CreditIntentionObservationResponseDto[]): typeof this.groupedObservations {
+    const groups: typeof this.groupedObservations = [];
+    let currentPhase = '';
+
+    for (const obs of observations) {
+      const phase = obs.credit_intention_status_end;
+      const isTransition = obs.credit_intention_status_start !== obs.credit_intention_status_end;
+
+      if (phase !== currentPhase) {
+        groups.push({
+          phase,
+          transitionFrom: isTransition ? obs.credit_intention_status_start : null,
+          isTransition,
+          items: []
+        });
+        currentPhase = phase;
+      }
+
+      groups[groups.length - 1].items.push(obs);
+    }
+    return groups;
+  }
+
+  formatCreatedAt(createdAt: number[] | string): string {
+    if (Array.isArray(createdAt)) {
+      const [year, month, day, hour = 0, minute = 0] = createdAt;
+      const date = new Date(year, month - 1, day, hour, minute);
+      return date.toLocaleString('es-CO', {
+        year: 'numeric', month: '2-digit', day: '2-digit',
+        hour: '2-digit', minute: '2-digit'
+      });
+    }
+    return this.formatDateTime(createdAt as string);
   }
 
   loadRecaudoStatus(): void {

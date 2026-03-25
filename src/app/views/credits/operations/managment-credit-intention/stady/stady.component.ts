@@ -16,13 +16,27 @@ import { LoadingComponent } from '@views/ui/loading/loading.component';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import Swal from 'sweetalert2';
 import { CreditIntentionStatusService } from '@core/services/creditIntentionStatus.service';
-import { finalize, switchMap } from 'rxjs';
+import { finalize, switchMap, of } from 'rxjs';
 import { PersonRegisterDto, PersonService } from '@core/services/person.service';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { RecaudoModalComponent } from '@views/credits/recaudo-modal/recaudo-modal.component';
 import { CreditResponseDto, CreditService } from '@core/services/credit.service';
-import {NgSelectModule, NgOption} from '@ng-select/ng-select';
+import { NgSelectModule, NgOption } from '@ng-select/ng-select';
+import { CreditIntentionObservationService } from '@core/services/creditIntentionObservation.service';
 
+const CREDIT_STATUS = {
+  STUDY: 'STUDY',
+  APPROVED: 'APPROVED',
+  RECHAZED: 'RECHAZED'
+} as const;
+
+const STUDY_ACTIVITIES = {
+  ACT_1_DATOS_CLIENTE: 'ACTIVIDAD 1: DATOS CLIENTE',
+  ACT_2_FECHA_TENTATIVA: 'ACTIVIDAD 2: FECHA TENTATIVA',
+  ACT_3_REVISION_CREDITOS: 'ACTIVIDAD 3: REVISION CREDITOS',
+  ACT_4_SEGUIMIENTO_CARTERA: 'ACTIVIDAD 4: SEGUIMIENTO CARTERA',
+  ACT_5_DECISION_FINAL: 'ACTIVIDAD 5: DECISION FINAL'
+} as const;
 
 @Component({
   selector: 'app-stady',
@@ -109,7 +123,8 @@ export class StadyComponent implements OnInit {
     private creditIntencionStatusService: CreditIntentionStatusService,
     private personService: PersonService,
     private modalService: NgbModal,
-    private creditService: CreditService
+    private creditService: CreditService,
+    private observationService: CreditIntentionObservationService
 
   ) { }
 
@@ -380,106 +395,28 @@ export class StadyComponent implements OnInit {
     if (this.form1.invalid) return;
 
     const callSuccess = this.form1.get('call_success')?.value;
-  if (!callSuccess) {
-    Swal.fire({
-      title: 'Datos no confirmados',
-      text: 'Debe confirmar los datos por llamada antes de continuar.',
-      icon: 'warning',
-      confirmButtonText: 'Entendido',
-      buttonsStyling: false,
-      customClass: {
-        confirmButton: 'btn btn-warning'
-      }
-    });
-    return;
-  }
+    if (!callSuccess) {
+      Swal.fire({
+        title: 'Datos no confirmados',
+        text: 'Debe confirmar los datos por llamada antes de continuar.',
+        icon: 'warning',
+        confirmButtonText: 'Entendido',
+        buttonsStyling: false,
+        customClass: {
+          confirmButton: 'btn btn-warning'
+        }
+      });
+      return;
+    }
 
     this.isSaving = true;
 
     const dialogRef = this.dialog.open(LoadingComponent, {
       disableClose: true,
     });
-    
+
     this.updateCreditIntention(dialogRef)
   }
-
-  // private createPersonAndUpdateCredit(dialogRef: any): void {
-  //   const formData = this.form1.value;
-
-  //   // Preparar datos para crear la persona
-  //   const personPayload: PersonRegisterDto = {
-  //     document_type: Number(formData.document_type),
-  //     document: formData.document,
-  //     first_name: formData.firstname,
-  //     middlename: formData.middlename || '',
-  //     last_name: formData.lastname,
-  //     maternal_lastname: formData.maternal_lastname || '',
-  //     full_name: formData.fullname,
-  //     gender: Number(formData.gender),
-  //     occupation: formData.occupation || '',
-  //     type_person: 'CLIENTE',
-  //     zona: formData.zone_id ? Number(formData.zone_id) : undefined,
-  //     countryId: formData.country_id ? Number(formData.country_id) : undefined,
-  //     departentId: formData.department_id ? Number(formData.department_id) : undefined,
-  //     cityId: formData.municipality_id ? Number(formData.municipality_id) : undefined,
-  //     neighborhoodId: formData.neighborhood_id ? Number(formData.neighborhood_id) : undefined,
-  //     adress: formData.home_address || '',
-  //     correo: formData.email || '',
-  //     celular: formData.whatsapp_number || '',
-  //     telefono: formData.phone_number || ''
-  //   };
-
-  //   this.personService.registerPerson(personPayload).pipe(
-  //     finalize(() => {
-  //       this.isSaving = false;
-  //       dialogRef.close();
-  //     })
-  //   ).subscribe({
-  //     next: (personResponse) => {
-  //       console.log('Persona creada:', personResponse);
-
-  //       Swal.fire({
-  //         title: '¡Éxito!',
-  //         text: 'Cliente registrado correctamente en el sistema.',
-  //         icon: 'success',
-  //         buttonsStyling: false,
-  //         confirmButtonText: 'Aceptar',
-  //         customClass: {
-  //           confirmButton: 'btn btn-success'
-  //         }
-  //       }).then(() => {
-  //         this.stepper.next();
-  //         window.scrollTo({ top: 0, behavior: 'smooth' });
-  //       });
-  //     },
-  //     error: (error) => {
-  //       console.error('Error al crear persona:', error);
-
-  //       let errorMessage = 'Ocurrió un error al registrar el cliente.';
-
-  //       if (error?.message) {
-  //         errorMessage = error.message;
-  //       } else if (error?.details) {
-  //         errorMessage = error.details;
-  //       } else if (typeof error === 'string') {
-  //         errorMessage = error;
-  //       }
-
-  //       Swal.fire({
-  //         title: 'Error',
-  //         text: errorMessage,
-  //         icon: 'error',
-  //         buttonsStyling: false,
-  //         confirmButtonText: 'Aceptar',
-  //         customClass: {
-  //           confirmButton: 'btn btn-danger'
-  //         }
-  //       });
-
-  //       this.isSaving = false;
-  //     }
-  //   });
-  // }
 
   private updateCreditIntention(dialogRef: any): void {
     const payload = {
@@ -538,55 +475,83 @@ export class StadyComponent implements OnInit {
 
   onSubmitActividad2(): void {
     this.submitted = true;
-
     if (this.form2.invalid) return;
 
     const fechaActual = this.form2.getRawValue().fecha_inicio_tentativa;
+    const observacion: string = this.form2.value.observacion_actividad2?.trim() ?? '';
 
-    // Validación de fecha igual que el ejemplo
+    // Validación de fecha
     const [year, month, day] = fechaActual.split('-').map(Number);
     const selectedDate = new Date(year, month - 1, day);
     const today = new Date();
     today.setHours(0, 0, 0, 0);
 
-    if (selectedDate < today) {
-      this.errorMessage = 'La fecha de inicio no puede ser anterior a hoy';
-      return;
-    }
-
-    if (fechaActual === this.fechaTentativaOriginal) {
-      this.stepper.next();
-      window.scrollTo({ top: 0, behavior: 'smooth' });
-      return;
-    }
+    // if (selectedDate < today) {
+    //   this.errorMessage = 'La fecha de inicio no puede ser anterior a hoy';
+    //   return;
+    // }
 
     const dialogRef = this.dialog.open(LoadingComponent, { disableClose: true });
 
-    const payload: UpdateFechaTentativaCreditIntentionUpdateDto = {
-      start_date: fechaActual
-    };
+    this.observationService.saveActivity({
+      credit_id: this.credit.id,
+      current_status: CREDIT_STATUS.STUDY,
+      new_status: CREDIT_STATUS.STUDY,
+      observation: observacion,
+      activity: STUDY_ACTIVITIES.ACT_2_FECHA_TENTATIVA
+    }).pipe(
+      switchMap(() => {
+        if (fechaActual !== this.fechaTentativaOriginal) {
+          const payload: UpdateFechaTentativaCreditIntentionUpdateDto = {
+            start_date: fechaActual
+          };
+          return this.creditIntencionService.updateFechaTentativaData(this.credit.id, payload);
+        }
+        return of(null);
+      }),
+      finalize(() => {
+        this.isSaving = false;
+        dialogRef.close();
+      })
+    ).subscribe({
+      next: () => {
+        this.stepper.next();
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      },
+      error: (err) => {
+        Swal.fire({
+          title: 'Error',
+          text: err?.error?.message || 'No se pudo guardar la información de la actividad',
+          icon: 'error',
+          confirmButtonText: 'Cerrar',
+          customClass: { confirmButton: 'btn btn-danger' }
+        });
+      }
+    });
+  }
 
-    this.creditIntencionService
-      .updateFechaTentativaData(this.credit.id, payload)
-      .pipe(finalize(() => { this.isSaving = false; dialogRef.close(); }))
+  onSubmitActividad3(): void {
+    this.submitted = true;
+    if (this.form3.invalid) return;
+
+    const dialogRef = this.dialog.open(LoadingComponent, { disableClose: true });
+
+    this.observationService.saveActivity({
+      credit_id: this.credit.id,
+      current_status: CREDIT_STATUS.STUDY,
+      new_status: CREDIT_STATUS.STUDY,
+      observation: this.form3.value.observacion_actividad3,
+      activity: STUDY_ACTIVITIES.ACT_3_REVISION_CREDITOS
+    }).pipe(finalize(() => dialogRef.close()))
       .subscribe({
         next: () => {
-          Swal.fire({
-            title: '¡Éxito!',
-            text: 'Fecha tentativa actualizada correctamente.',
-            icon: 'success',
-            buttonsStyling: false,
-            confirmButtonText: 'Aceptar',
-            customClass: { confirmButton: 'btn btn-success' }
-          }).then(() => {
-            this.stepper.next();
-            window.scrollTo({ top: 0, behavior: 'smooth' });
-          });
+          this.stepper.next();
+          window.scrollTo({ top: 0, behavior: 'smooth' });
         },
         error: (err) => {
           Swal.fire({
             title: 'Error',
-            text: err?.error?.message || 'No se pudo actualizar la fecha tentativa',
+            text: err?.error?.message || 'No se pudo guardar la observación',
             icon: 'error',
             confirmButtonText: 'Cerrar',
             customClass: { confirmButton: 'btn btn-danger' }
@@ -595,24 +560,34 @@ export class StadyComponent implements OnInit {
       });
   }
 
-  onSubmitActividad3(): void {
-    this.submitted = true;
-
-    if (this.form3.invalid) return;
-    console.log('Actividad 3 enviada', this.form3.value);
-    //Guardar avances de la fase de credito en BD
-
-    this.stepper.next();
-  }
-
   onSubmitActividad4(): void {
     this.submitted = true;
-
     if (this.form4.invalid) return;
-    console.log('Actividad 4 enviada', this.form4.value);
-    //Guardar avances de la fase de credito en BD
 
-    this.stepper.next();
+    const dialogRef = this.dialog.open(LoadingComponent, { disableClose: true });
+
+    this.observationService.saveActivity({
+      credit_id: this.credit.id,
+      current_status: CREDIT_STATUS.STUDY,
+      new_status: CREDIT_STATUS.STUDY,
+      observation: this.form4.value.observacion_actividad4,
+      activity: STUDY_ACTIVITIES.ACT_4_SEGUIMIENTO_CARTERA
+    }).pipe(finalize(() => dialogRef.close()))
+      .subscribe({
+        next: () => {
+          this.stepper.next();
+          window.scrollTo({ top: 0, behavior: 'smooth' });
+        },
+        error: (err) => {
+          Swal.fire({
+            title: 'Error',
+            text: err?.error?.message || 'No se pudo guardar la observación',
+            icon: 'error',
+            confirmButtonText: 'Cerrar',
+            customClass: { confirmButton: 'btn btn-danger' }
+          });
+        }
+      });
   }
 
   onSubmitActividad5(): void {
@@ -627,41 +602,44 @@ export class StadyComponent implements OnInit {
       disableClose: true,
     });
     if (decision === 'rechazar') {
-      dialogRef.close();
-
       this.creditIntencionStatusService.updateStatus({
         credit_id: this.credit.id,
-        new_status: 'RECHAZED'
-      }).subscribe({
-        next: () => {
-          Swal.fire({
-            title: 'Solicitud rechazada',
-            text: 'La solicitud fue rechazada en la fase de estudio.',
-            icon: 'error',
-            buttonsStyling: false,
-            confirmButtonText: 'Entendido',
-            customClass: {
-              confirmButton: 'btn btn-danger'
-            }
-          }).then(() => {
-            this.router.navigate(
-              ['/operaciones/intencion'],
-              { replaceUrl: true }
-            );
-          });
-        },
-        error: (err) => {
-          Swal.fire({
-            title: 'Error',
-            text: err?.error?.message || 'No se pudo actualizar el estado del crédito',
-            icon: 'error',
-            confirmButtonText: 'Cerrar',
-            customClass: {
-              confirmButton: 'btn btn-danger'
-            }
-          });
-        }
-      });
+        current_status: CREDIT_STATUS.STUDY,
+        new_status: CREDIT_STATUS.RECHAZED,
+        observation: this.form5.value.observacion_actividad5,
+        activity: STUDY_ACTIVITIES.ACT_5_DECISION_FINAL
+      })
+        .pipe(finalize(() => { this.isSaving = false; dialogRef.close(); }))
+        .subscribe({
+          next: () => {
+            Swal.fire({
+              title: 'Solicitud rechazada',
+              text: 'La solicitud fue rechazada en la fase de estudio.',
+              icon: 'error',
+              buttonsStyling: false,
+              confirmButtonText: 'Entendido',
+              customClass: {
+                confirmButton: 'btn btn-danger'
+              }
+            }).then(() => {
+              this.router.navigate(
+                ['/operaciones/intencion'],
+                { replaceUrl: true }
+              );
+            });
+          },
+          error: (err) => {
+            Swal.fire({
+              title: 'Error',
+              text: err?.error?.message || 'No se pudo actualizar el estado del crédito',
+              icon: 'error',
+              confirmButtonText: 'Cerrar',
+              customClass: {
+                confirmButton: 'btn btn-danger'
+              }
+            });
+          }
+        });
 
       return;
     }
@@ -669,7 +647,10 @@ export class StadyComponent implements OnInit {
 
     this.creditIntencionStatusService.updateStatus({
       credit_id: this.credit.id,
-      new_status: 'APPROVED'
+      current_status: CREDIT_STATUS.APPROVED,
+      new_status: CREDIT_STATUS.APPROVED,
+      observation: this.form5.value.observacion_actividad5,
+      activity: STUDY_ACTIVITIES.ACT_5_DECISION_FINAL
     })
       .pipe(
         finalize(() => {
@@ -853,10 +834,10 @@ export class StadyComponent implements OnInit {
     const today = new Date();
     today.setHours(0, 0, 0, 0);
 
-    if (selectedDate < today) {
-      this.errorMessage = 'La fecha de inicio no puede ser anterior a hoy';
-      return false;
-    }
+    // if (selectedDate < today) {
+    //   this.errorMessage = 'La fecha de inicio no puede ser anterior a hoy';
+    //   return false;
+    // }
 
     this.errorMessage = '';
     return true;
@@ -919,31 +900,22 @@ export class StadyComponent implements OnInit {
   }
 
   private validateActividad5(): boolean {
-    const camposActividad5 = [
-      'decision',
-      'observacion_actividad5',
-    ];
-
+    const camposActividad5 = ['decision', 'observacion_actividad5'];
     let isValid = true;
 
     camposActividad5.forEach(field => {
       const control = this.form5.get(field);
       if (control) {
         control.markAsTouched();
-        if (control.invalid) {
-          isValid = false;
-          console.log(`Campo ${field} inválido:`, control.errors);
-
-        }
+        if (control.invalid) isValid = false;
       }
     });
 
     if (!isValid) {
-      this.errorMessage = 'Por favor complete todos los campos obligatorios del paso 2';
+      this.errorMessage = 'Por favor complete la decisión y la observación del paso 5';
     } else {
       this.errorMessage = '';
     }
-
     return isValid;
   }
 

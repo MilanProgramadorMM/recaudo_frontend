@@ -9,6 +9,8 @@ import { UserConfigPermisionsComponent } from '../user-config-permisions/user-co
 import { UserAssignRolComponent } from '../user-assign-rol/user-assign-rol.component';
 import { UserCreateComponent } from '../user-create/user-create.component';
 import Swal from 'sweetalert2';
+import { LoadingComponent } from '@views/ui/loading/loading.component';
+
 
 
 @Component({
@@ -30,6 +32,7 @@ export class UsersComponentComponent {
   searchTerm: string = '';
   page = 1;
   loadingUpdateRoles = false;
+  loading: boolean = false;
 
   successDetails = '';
   lastErrorMessage = '';
@@ -71,18 +74,23 @@ export class UsersComponentComponent {
     }
 
     modalRef.result.then(() => {
-      this.fetchUsers(); 
+      this.fetchUsers();
     }).catch(() => { });
   }
 
   fetchUsers() {
+    this.loading = true;
+
     this.userService.getAllUsers().subscribe({
       next: (response) => {
         this.users = response.data;
         this.filteredUsers = [...this.users];
+        this.loading = false;
+
       },
       error: (error) => {
         console.error('Error al obtener users', error);
+        this.loading = false;
       }
     });
   }
@@ -215,5 +223,35 @@ export class UsersComponentComponent {
     });
   }
 
-
+  resetPassword(user: UserDto): void {
+    Swal.fire({
+      title: '¿Restablecer contraseña?',
+      html: `La contraseña de <strong>${user.person_fullname}</strong> se restablecerá al número de documento.`,
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonText: 'Sí, restablecer',
+      cancelButtonText: 'Cancelar',
+      confirmButtonColor: '#f0ad4e',
+      cancelButtonColor: '#6c757d'
+    }).then((result) => {
+      if (result.isConfirmed) {
+        this.userService.resetUserPassword(user.id!).subscribe({
+          next: () => {
+            Swal.fire(
+              '¡Restablecida!',
+              'La contraseña fue restablecida al documento del usuario.',
+              'success'
+            );
+          },
+          error: (err) => {
+            Swal.fire(
+              'Error',
+              err.error?.details || 'No se pudo restablecer la contraseña',
+              'error'
+            );
+          }
+        });
+      }
+    });
+  }
 }

@@ -39,8 +39,14 @@
 
 
       <div class="table-responsive">
-        <table class="table table-hover table-nowrap mb-0">
-          <thead class="table-dark bg-light-subtle">
+        <div *ngIf="loading" class="text-center my-3">
+          <div class="spinner-border spinner-border-sm text-primary" role="status"></div>
+          <span class="ms-2">
+            Cargando usuarios...
+          </span>
+        </div>
+        <table *ngIf="!loading" class="table table-hover table-nowrap mb-0">
+          <thead class="sticky-header">
             <tr>
               <!--<th class="ps-3" style="width: 50px;">
                 <input type="checkbox" class="form-check-input" id="customCheck1">
@@ -76,15 +82,18 @@
               <td class="pe-3">
                 <div class="hstack gap-1 justify-content-center">
 
-                  <!-- <a (click)="user.status && openUserModal(user)" title="Actualizar usuario">
-                    <i class="ti ti-edit fs-4"></i>
-                  </a> -->
+
 
                   <a (click)="user.status && openPermissionsModal(user)"
                     class="btn btn-soft-warning btn-icon btn-sm rounded-circle" title="Actualizar permisos de usuario">
                     <i class="ti ti-lock-access fs-4"></i>
                   </a>
 
+                  <a (click)="user.status && resetPassword(user)"
+                    class="btn btn-soft-warning btn-icon btn-sm rounded-circle"
+                    title="Restablecer contraseña de usuario">
+                    <i class="ti ti-lock fs-4"></i>
+                  </a>
 
                   <!-- <a (click)="user.status && onDelete(user)" [class.disabled]="!user.status"
                     class="btn btn-soft-danger btn-icon btn-sm rounded-circle" title="Eliminar usuario">

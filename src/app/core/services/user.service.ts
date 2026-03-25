@@ -162,5 +162,19 @@ export class UserService {
         return this.http.put(`${baseUrl}user/${userId}/status?status=${status}`, {}, { headers });
     }
 
+    resetUserPassword(userId: number): Observable<any> {
+        const token = this.cookieService.get('_OSEN_AUTH_SESSION_KEY_');
+        const headers = new HttpHeaders({
+            Authorization: `Bearer ${token}`,
+            'Content-Type': 'application/json'
+        });
+
+        return this.http.post(`${baseUrl}user/update-password`, {
+            userId: userId,
+            currentPassword: '',
+            newPassword: ''
+        }, { headers });
+    }
+
 
 }

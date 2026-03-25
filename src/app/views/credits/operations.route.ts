@@ -7,18 +7,29 @@ import { RequestRecaudoComponent } from "./operations/request-recaudo/request-re
 import { ClosingComponent } from "./operations/closing/closing.component";
 import { AuthGuard } from "@/store/authentication/guards/guard.guard";
 import { ListClosingAsesorComponent } from "./operations/list-closing-asesor/list-closing-asesor.component";
+import { SimulationIntentionComponentv2 } from "./operations/simulation-intentionv2/simulation-intention.componentv2";
 
 export const OPERATIONS_ROUTES: Route[] = [
 
   {
-    path: 'simulacion',
+    path: 'creacion',
     component: SimulationIntentionComponent,
+    data: { title: 'Creacion de intencion de credito' }
+  },
+  {
+    path: 'simulacion',
+    component: SimulationIntentionComponentv2,
     data: { title: 'Simulacion de intencion de credito' }
   },
   {
     path: 'intencion',
     component: SeeIntentionComponent,
-    data: { title: 'Ver solicitudes de credito' }
+    data: { title: 'Ver solicitudes de credito', type: 'GESTION' }
+  },
+  {
+    path: 'detalle-intencion',         
+    component: SeeIntentionComponent,
+    data: { title: 'Detalle intenciones de crédito', type: 'DETALLE' }
   },
   {
     path: 'creditos',

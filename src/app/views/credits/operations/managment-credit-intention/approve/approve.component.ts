@@ -16,6 +16,18 @@ import { debounceTime, finalize, forkJoin, merge, Subscription } from 'rxjs';
 import { LoadingComponent } from '@views/ui/loading/loading.component';
 import Swal from 'sweetalert2';
 import { CreditIntentionStatusService } from '@core/services/creditIntentionStatus.service';
+
+const CREDIT_STATUS = {
+  APPROVED: 'APPROVED',
+  IMPROVEMENT: 'IMPROVEMENT',
+  RECHAZED: 'RECHAZED'
+} as const;
+
+const IMPROVEMENT_ACTIVITIES = {
+  ACT_2_DECISION_FINAL: 'ACTIVIDAD 2: DECISION FINAL'
+} as const;
+
+
 @Component({
   selector: 'app-approve',
   standalone: true,
@@ -534,7 +546,10 @@ export class ApproveComponent implements OnInit {
 
       this.creditIntencionStatusService.updateStatus({
         credit_id: this.credit.id,
-        new_status: 'RECHAZED'
+        current_status: CREDIT_STATUS.APPROVED,
+        new_status: CREDIT_STATUS.RECHAZED,
+        activity: IMPROVEMENT_ACTIVITIES.ACT_2_DECISION_FINAL,
+        observation: this.form2.value.observacion_actividad2
       }).subscribe({
         next: () => {
           Swal.fire({
@@ -571,7 +586,11 @@ export class ApproveComponent implements OnInit {
 
     this.creditIntencionStatusService.updateStatus({
       credit_id: this.credit.id,
-      new_status: 'IMPROVEMENT'
+      current_status: CREDIT_STATUS.APPROVED,
+      new_status: CREDIT_STATUS.IMPROVEMENT,
+      activity: IMPROVEMENT_ACTIVITIES.ACT_2_DECISION_FINAL,
+      observation: this.form2.value.observacion_actividad2
+
     })
       .pipe(
         finalize(() => {
@@ -1231,8 +1250,8 @@ export class ApproveComponent implements OnInit {
   onSave(): void {
     const raw = this.form1.getRawValue();
     const capitalValue = this.selectedCreditLine?.loanDisbursement
-        ? this.toNumber(raw.desembolso_value)
-        : this.toNumber(raw.item_value);
+      ? this.toNumber(raw.desembolso_value)
+      : this.toNumber(raw.item_value);
     const numeroCuotas = raw.period_quantity;
     const cuotaValue = raw.quota_value;
     const tasa = raw.tax_value;
@@ -1432,7 +1451,7 @@ export class ApproveComponent implements OnInit {
   }
 
   get isFinanceCreditLine() {
-    const creditLine = this.selectedCreditLine;    
+    const creditLine = this.selectedCreditLine;
     return !creditLine?.loanDisbursement;
   }
 

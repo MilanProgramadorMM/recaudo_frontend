@@ -82,7 +82,7 @@ export class CreditsComponent {
     this.loadCredit();
     this.loadUserRole();
     this.loadAllActiveZonas();
-    
+
     this.filterForm = this.fb.group({
       line: [''],
       zona: [''],
@@ -118,7 +118,7 @@ export class CreditsComponent {
     this.zonaService.getByStatus().subscribe({
       next: (response) => {
         this.zonas = response.data;
-         //this.initializeFilters();
+        //this.initializeFilters();
         this.loading = false;
         console.log('Zonas activas cargadas:', this.zonas);
       },
@@ -177,12 +177,12 @@ export class CreditsComponent {
   }
 
   applyFilter(): void {
-    const dataFilter = this.filterForm.value;    
+    const dataFilter = this.filterForm.value;
     this.filteredIntentions = this.intentions.filter(intention =>
       // intention.fullname?.toLowerCase().includes(term) ||
       // intention.document?.toLowerCase().includes(term) ||
       intention.zoneId == dataFilter.zona
-    );    
+    );
 
     this.page = 1;
     this.updatePagedData();
@@ -241,6 +241,7 @@ export class CreditsComponent {
     });
 
     modalRef.componentInstance.creditId = intention.id;
+    modalRef.componentInstance.creditIntentionId = intention.creditIntentionId;
   }
 
 
