@@ -19,7 +19,7 @@ export interface DailyCollectionItem {
     clientOrden: number;
     clientCuota: number;
     zona?: string;
-
+    periodo: string;
 }
 
 @Injectable({

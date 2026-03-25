@@ -108,6 +108,7 @@ export class RequestRecaudoComponent implements OnInit {
 
     this.dailyCollectionService.getDailyCollection(today).subscribe({
       next: (response) => {
+        debugger;
         this.clientesnew = response;
         this.applyFilter();
         this.loading = false;
@@ -160,6 +161,7 @@ export class RequestRecaudoComponent implements OnInit {
         this.clientesFiltered = filtered;
         break;
     }
+    debugger;
   }
 
   onZonaChange(): void {

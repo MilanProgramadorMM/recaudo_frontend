@@ -85,7 +85,7 @@
                                 <div class="flex-grow-1">
                                     <h6 class="mb-1 fw-bold">{{ cliente.clientName }}</h6>
                                     <small class="text-muted d-block">
-                                        Cuota #{{ cliente.quotaNumber }} · Vence {{ cliente.expirationDate | date }}
+                                        Cuota #{{ cliente.quotaNumber }} · Vence {{ cliente.expirationDate | date }} · {{ cliente.periodo }}
                                     </small>
                                 </div>
                                 <span class="badge bg-danger ms-2 flex-shrink-0">{{ cliente.clientOrden }}</span>
@@ -167,7 +167,7 @@
                                     <div class="d-flex flex-column">
                                         <strong class="mb-1">{{ cliente.clientName }}</strong>
                                         <small class="text-muted">
-                                            Cuota #{{ cliente.quotaNumber }} · Vence {{ cliente.expirationDate | date }}
+                                            Cuota #{{ cliente.quotaNumber }} · Vence {{ cliente.expirationDate | date }} · {{ cliente.periodo }}
                                         </small>
                                         <!-- Reemplazar el badge de estado en ambas vistas -->
                                         <span class="badge d-inline-block mt-1" style="width: fit-content;" [ngClass]="{
