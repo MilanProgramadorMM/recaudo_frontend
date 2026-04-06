@@ -1,0 +1,253 @@
+<div class="container-fluid"> <!-- Encabezado -->
+    <div class="row">
+        <div class="col-12">
+            <div
+                class="page-title-head d-flex flex-column flex-sm-row align-items-start align-items-sm-center justify-content-between gap-3">
+                <div class="flex-grow-1 text-sm-start text-center">
+                    <h4 class="fs-18 fw-semibold m-0">Consultas</h4>
+                </div>
+                <div class="w-100 w-sm-auto">
+                    <form [formGroup]="filterForm">
+                        <div class="row g-2 align-items-center justify-content-center justify-content-sm-end">
+                            <!-- SELECT DE ZONAS -->
+                            <!-- <div class="col-12 col-sm-auto" style="min-width: 180px;">
+                <select class="form-select w-100" aria-label="Filtrar por zona" formControlName="zona">
+                  <option value="" disabled>Seleccione una zona</option>
+                  <option *ngFor="let zona of zonas" [value]="zona.value">
+                    {{ zona.value }}
+                  </option>
+                </select>
+              </div> -->
+                            <div class="col-12 col-sm-auto">
+                                <div class="input-group">
+                                    <input mwlFlatpickr [flatpickrOptions]="flatpickrOptions"
+                                        placeholder="Seleccione rango de fechas" type="text"
+                                        class="form-control border-0 shadow" formControlName="dateRange" />
+                                    <span class="input-group-text text-white"
+                                        style="background-color: #DC3545; border-color: #DC3545;">
+                                        <i class="ti ti-calendar fs-15"></i>
+                                    </span>
+                                </div>
+                            </div>
+
+                            <div class="col-12 col-sm-auto">
+
+                                <button class="btn btn-danger" (click)="consultar()" [disabled]="loading">
+                                    <i class="ti ti-search"></i> Consultar
+                                </button>
+
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- LOADING -->
+    <!-- <div *ngIf="loading" class="row mt-3">
+        <div class="col-12 text-center py-5">
+            <div class="spinner-border text-danger" role="status">
+                <span class="visually-hidden">Cargando zonas...</span>
+            </div>
+        </div>
+    </div> -->
+    <!-- MENSAJE SI NO HAY ZONAS -->
+    <!-- <div *ngIf="!loading && zonas.length === 0" class="row mt-3">
+    <div class="col-12">
+      <div class="alert alert-warning">
+        <i class="ti ti-alert-circle me-2"></i>
+        No hay zonas disponibles para mostrar información.
+      </div>
+    </div>
+  </div> -->
+
+    <div *ngIf="!loading" class="row mt-3 g-3 row-cols-1 row-cols-xl-2 consultas-grid">
+
+        <!-- TABLA 1─── -->
+        <div class="col">
+            <div class="card h-100 shadow-sm consultas-card">
+                <div class="card-header border-bottom border-dashed d-flex align-items-center gap-2">
+                    <!-- <span class="consultas-table-icon consultas-icon-primary">
+                        <i class="ti ti-file-invoice"></i>
+                    </span> -->
+                    <h5 class="header-title mb-0">Movimientos por zonas</h5>
+                    <!-- <span class="badge bg-danger ms-auto">{{ tableData1.length }}</span> -->
+                </div>
+                <div class="card-body p-0">
+                    <div class="table-responsive">
+                        <table class="table table-sm table-hover consultas-table mb-0">
+                            <thead class="sticky-header">
+                                <tr>
+                                    <th>Zona</th>
+                                    <th class="text-end">Cuota</th>
+                                    <th class="text-end">Inversión</th>
+                                    <th class="text-end">Capital</th>
+                                    <th class="text-end">Interés</th>
+                                    <th class="text-center">Seg. Cart.</th>
+                                    <th class="text-center">Seg. Vida</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr *ngFor="let row of tableData1" class="consultas-row" (click)="onRowClick(row)">
+                                    <td class="fw-medium zona-cell">{{ row.zona }}</td>
+                                    <td class="text-end">{{ currency }} {{ row.quota_value | number:'1.0-0' }}</td>
+                                    <td class="text-end">{{ currency }} {{ row.investment_value | number:'1.0-0' }}</td>
+                                    <td class="text-end">{{ currency }} {{ row.capital_balance | number:'1.0-0' }}</td>
+                                    <td class="text-end">{{ currency }} {{ row.interest_value | number:'1.0-0' }}</td>
+                                    <td class="text-end">{{ currency }} {{ row.portfolio_insurance | number:'1.0-0' }}
+                                    </td>
+                                    <td class="text-end">{{ currency }} {{ row.life_insurance | number:'1.0-0' }}</td>
+                                </tr>
+                                <tr *ngIf="tableData1.length === 0">
+                                    <td colspan="8" class="text-center text-muted py-4 empty-state">
+                                        <i class="ti ti-database-off fs-20 d-block mb-1"></i>Sin registros
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- TABLA 2 -->
+        <div class="col" *ngIf="currentUserRole?.toLowerCase() !== 'asesor'">
+            <div class="card h-100 shadow-sm consultas-card">
+                <div class="card-header border-bottom border-dashed d-flex align-items-center gap-2">
+                    <!-- <span class="consultas-table-icon consultas-icon-warning">
+                        <i class="ti ti-clock-pause"></i>
+                    </span> -->
+                    <h5 class="header-title mb-0">Reprote 2</h5>
+                    <!-- <span class="badge bg-danger ms-auto">{{ tableData2.length }}</span> -->
+                </div>
+                <div class="card-body p-0">
+                    <div class="table-responsive">
+                        <table class="table table-sm table-hover consultas-table mb-0">
+                            <thead class="sticky-header">
+                                <tr>
+                                    <th>Zona</th>
+                                    <th class="text-end">Cuota</th>
+                                    <th class="text-end">Inversión</th>
+                                    <th class="text-end">Capital</th>
+                                    <th class="text-end">Interés</th>
+                                    <th class="text-center">Seg. Cart.</th>
+                                    <th class="text-center">Seg. Vida</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr *ngFor="let row of tableData2" class="consultas-row" (click)="onRowClick(row)">
+                                    <td class="fw-medium zona-cell">{{ row.zona }}</td>
+                                    <td class="text-end">{{ row.quota_value | number:'1.0-0' }}</td>
+                                    <td class="text-end">{{ row.investment_value | number:'1.0-0' }}</td>
+                                    <td class="text-end">{{ row.capital_balance | number:'1.0-0' }}</td>
+                                    <td class="text-end">{{ row.interest_value | number:'1.0-0' }}</td>
+                                    <td class="text-end">{{ row.portfolio_insurance | number:'1.0-0' }}</td>
+                                    <td class="text-end">{{ row.life_insurance | number:'1.0-0' }}</td>
+                                </tr>
+                                <tr *ngIf="tableData2.length === 0">
+                                    <td colspan="8" class="text-center text-muted py-4 empty-state">
+                                        <i class="ti ti-database-off fs-20 d-block mb-1"></i>Sin registros
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- TABLA 3-->
+        <div class="col">
+            <div class="card h-100 shadow-sm consultas-card">
+                <div class="card-header border-bottom border-dashed d-flex align-items-center gap-2">
+                    <!-- <span class="consultas-table-icon consultas-icon-danger">
+                        <i class="ti ti-alert-triangle"></i>
+                    </span> -->
+                    <h5 class="header-title mb-0">Reporte 3</h5>
+                    <!-- <span class="badge bg-danger ms-auto">{{ tableData3.length }}</span> -->
+                </div>
+                <div class="card-body p-0">
+                    <div class="table-responsive">
+                        <table class="table table-sm table-hover consultas-table mb-0">
+                            <thead class="sticky-header">
+                                <tr>
+                                    <th>Zona</th>
+                                    <th class="text-end">Cuota</th>
+                                    <th class="text-end">Inversión</th>
+                                    <th class="text-end">Capital</th>
+                                    <th class="text-end">Interés</th>
+                                    <th class="text-center">Seg. Cart.</th>
+                                    <th class="text-center">Seg. Vida</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr *ngFor="let row of tableData3" class="consultas-row" (click)="onRowClick(row)">
+                                    <td class="fw-medium zona-cell">{{ row.zona }}</td>
+                                    <td class="text-end">{{ row.quota_value | number:'1.0-0' }}</td>
+                                    <td class="text-end">{{ row.investment_value | number:'1.0-0' }}</td>
+                                    <td class="text-end">{{ row.capital_balance | number:'1.0-0' }}</td>
+                                    <td class="text-end">{{ row.interest_value | number:'1.0-0' }}</td>
+                                    <td class="text-end">{{ row.portfolio_insurance | number:'1.0-0' }}</td>
+                                    <td class="text-end">{{ row.life_insurance | number:'1.0-0' }}</td>
+                                </tr>
+                                <tr *ngIf="tableData3.length === 0">
+                                    <td colspan="8" class="text-center text-muted py-4 empty-state">
+                                        <i class="ti ti-database-off fs-20 d-block mb-1"></i>Sin registros
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- TABLA 4 -->
+        <div class="col">
+            <div class="card h-100 shadow-sm consultas-card">
+                <div class="card-header border-bottom border-dashed d-flex align-items-center gap-2">
+                    <!-- <span class="consultas-table-icon consultas-icon-info">
+                        <i class="ti ti-chart-bar"></i>
+                    </span> -->
+                    <h5 class="header-title mb-0">Reporte 4</h5>
+                    <!-- <span class="badge bg-danger ms-auto">{{ tableData4.length }}</span> -->
+                </div>
+                <div class="card-body p-0">
+                    <div class="table-responsive">
+                        <table class="table table-sm table-hover consultas-table mb-0">
+                            <thead class="sticky-header">
+                                <tr>
+                                    <th>Zona</th>
+                                    <th class="text-end">Cuota</th>
+                                    <th class="text-end">Inversión</th>
+                                    <th class="text-end">Capital</th>
+                                    <th class="text-end">Interés</th>
+                                    <th class="text-center">Seg. Cart.</th>
+                                    <th class="text-center">Seg. Vida</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr *ngFor="let row of tableData4" class="consultas-row" (click)="onRowClick(row)">
+                                    <td class="fw-medium zona-cell">{{ row.zona }}</td>
+                                    <td class="text-end">{{ row.quota_value | number:'1.0-0' }}</td>
+                                    <td class="text-end">{{ row.investment_value | number:'1.0-0' }}</td>
+                                    <td class="text-end">{{ row.capital_balance | number:'1.0-0' }}</td>
+                                    <td class="text-end">{{ row.interest_value | number:'1.0-0' }}</td>
+                                    <td class="text-end">{{ row.portfolio_insurance | number:'1.0-0' }}</td>
+                                    <td class="text-end">{{ row.life_insurance | number:'1.0-0' }}</td>
+                                </tr>
+                                <tr *ngIf="tableData4.length === 0">
+                                    <td colspan="8" class="text-center text-muted py-4 empty-state">
+                                        <i class="ti ti-database-off fs-20 d-block mb-1"></i>Sin registros
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>

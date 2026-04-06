@@ -1,0 +1,131 @@
+// ─── Botón calendario del datepicker ────────────────────────────────
+.consultas-calendar-btn {
+  background-color: #dc3545;
+  border-color: #dc3545;
+}
+
+.consultas-grid {
+  align-items: stretch;
+}
+
+// ─── Card base ──────────────────────────────────────────────────────
+.consultas-card {
+  border: 1px solid rgba(0, 0, 0, 0.06);
+  border-radius: 0.5rem;
+  overflow: hidden;
+  transition: box-shadow 0.2s ease;
+
+  &:hover {
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1) !important;
+  }
+
+  .card-header {
+    background-color: transparent;
+    padding: 0.75rem 1rem;
+  }
+
+  .card-body {
+    padding: 0;
+    // Scroll vertical si la tabla crece mucho
+    max-height: 360px;
+    overflow-y: auto;
+
+    // Scrollbar delgado en navegadores modernos
+    &::-webkit-scrollbar {
+      width: 4px;
+    }
+    &::-webkit-scrollbar-track {
+      background: transparent;
+    }
+    &::-webkit-scrollbar-thumb {
+      background-color: rgba(0, 0, 0, 0.15);
+      border-radius: 4px;
+    }
+  }
+}
+
+// ─── Ícono de encabezado de tabla ───────────────────────────────────
+.consultas-table-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  border-radius: 6px;
+  font-size: 14px;
+  flex-shrink: 0;
+}
+
+.consultas-icon-primary {
+  background-color: rgba(13, 110, 253, 0.12);
+  color: #0d6efd;
+}
+.consultas-icon-warning {
+  background-color: rgba(255, 193, 7, 0.15);
+  color: #d39e00;
+}
+.consultas-icon-danger {
+  background-color: rgba(220, 53, 69, 0.12);
+  color: #dc3545;
+}
+.consultas-icon-info {
+  background-color: rgba(13, 202, 240, 0.12);
+  color: #0d9fb5;
+}
+
+// Tabla
+.consultas-table {
+  font-size: 0.8125rem; 
+
+  thead tr th {
+    background-color: #f8f9fa;
+    color: #6c757d;
+    font-weight: 600;
+    font-size: 0.75rem;      
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    padding: 0.5rem 0.75rem;
+    white-space: nowrap;
+    position: sticky;
+    top: 0;
+    z-index: 1;
+    border-bottom: 1px solid #dee2e6;
+  }
+
+  tbody tr td {
+    padding: 0.45rem 0.75rem;
+    vertical-align: middle;
+    white-space: nowrap;
+  }
+
+  // Fila clickeable: cursor pointer 
+  .consultas-row {
+    cursor: pointer;
+    transition: background-color 0.12s ease;
+
+    &:hover {
+      background-color: rgba(220, 53, 69, 0.04);
+    }
+
+    &:active {
+      background-color: rgba(220, 53, 69, 0.08);
+    }
+  }
+
+  // Nombre de zona con acento de color
+  .zona-cell {
+    color: #212529;
+  }
+
+  // Estado vacío
+  .empty-state {
+    font-size: 0.8125rem;
+    color: #adb5bd !important;
+  }
+}
+
+@media (max-width: 1199.98px) {
+  .consultas-card .card-body {
+    max-height: 300px;
+  }
+}
