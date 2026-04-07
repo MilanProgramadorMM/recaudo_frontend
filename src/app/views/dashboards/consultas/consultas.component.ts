@@ -9,12 +9,15 @@ import { AuthenticationService } from '@core/services/auth.service';
 import { UserService } from '@core/services/user.service';
 import { MatDialog } from '@angular/material/dialog';
 import { LoadingComponent } from '@views/ui/loading/loading.component';
-import { ConsultasService, MovimientoZonaDto } from '@core/services/consultas.service';
+import { ConsultasService, DebidoCobrarPorZonaDto, DefaultConsultasDto, MovimientoZonaDto } from '@core/services/consultas.service';
 import { ModalDetalleConsultaComponent } from './modal-detalle-consulta/modal-detalle-consulta.component';
+import { firstValueFrom } from 'rxjs';
 
 export interface ConsultaRow {
+  id: number;
   zone_id: number;             
   zona: string;
+  name: string;
   quota_value: number;
   investment_value: number;
   capital_balance: number;
@@ -48,9 +51,9 @@ export class ConsultasComponent implements OnInit, AfterViewInit {
   currentUserId: number | null = null;
 
   tableData1: ConsultaRow[] = [];
-  tableData2: ConsultaRow[] = [];
-  tableData3: ConsultaRow[] = [];
-  tableData4: ConsultaRow[] = [];
+  tableData2: DefaultConsultasDto[] = [];
+  tableData3: DefaultConsultasDto[] = [];
+  tableData4: DebidoCobrarPorZonaDto[] = [];
 
   constructor(
     private fb: FormBuilder,
@@ -75,7 +78,8 @@ export class ConsultasComponent implements OnInit, AfterViewInit {
     this.flatpickrOptions = {
       mode: 'range',
       dateFormat: 'Y-m-d',
-      defaultDate: todayStr,
+      defaultDate: todayStr,      
+      altFormat: 'd F Y',
       onChange: (selectedDates: Date[]) => this.onDateRangeChange(selectedDates)
     };
   }
@@ -83,6 +87,8 @@ export class ConsultasComponent implements OnInit, AfterViewInit {
   ngOnInit(): void {
     this.getUserDataFromToken();
     this.loadTable1();
+    this.loadTable2();
+    this.loadTable3();
   }
 
   ngAfterViewInit(): void { }
@@ -92,29 +98,84 @@ export class ConsultasComponent implements OnInit, AfterViewInit {
     this.currentUserId = this.authService.getUserId();
   }
 
-  loadTable1(fechaInicio?: string, fechaFin?: string): void {
+  async loadTable1(fechaInicio?: string, fechaFin?: string) {
     const hoy = this.formatDate(new Date());
     const desde = fechaInicio ?? hoy;
     const hasta = fechaFin ?? hoy;
-    this.loading = true;
 
-    this.consultasService.getMovimientosAll(desde, hasta).subscribe({
-      next: (data: MovimientoZonaDto[]) => {
-        this.tableData1 = this.mapMovimientosToRows(data);
-        this.loading = false;
-      },
-      error: (err) => {
-        console.error('Error cargando movimientos tabla 1:', err);
-        this.tableData1 = [];
-        this.loading = false;
-      }
-    });
+    try {
+      const data: MovimientoZonaDto[] = await firstValueFrom(
+        this.consultasService.getMovimientosAll(desde, hasta)
+      );
+
+      this.tableData1 = this.mapMovimientosToRows(data);
+
+    } catch (err) {
+      console.error('Error cargando movimientos tabla 1:', err);
+      this.tableData1 = [];
+    }
+  }
+
+  async loadTable2(fechaInicio?: string, fechaFin?: string) {
+    const hoy = this.formatDate(new Date());
+    const desde = fechaInicio ?? hoy;
+    const hasta = fechaFin ?? hoy;
+
+    try {
+      const data: DefaultConsultasDto[] = await firstValueFrom(
+        this.consultasService.getSaldosVencidos(desde, hasta)
+      );
+
+      this.tableData2 = data;
+
+    } catch (err) {
+      console.error('Error cargando movimientos tabla 1:', err);
+      this.tableData2 = [];
+    }
+  }
+
+  async loadTable3(fechaInicio?: string, fechaFin?: string) {
+    const hoy = this.formatDate(new Date());
+    const desde = fechaInicio ?? hoy;
+    const hasta = fechaFin ?? hoy;
+
+    try {
+      const data: DefaultConsultasDto[] = await firstValueFrom(
+        this.consultasService.getCreditosPorZona(desde, hasta)
+      );
+
+      this.tableData3 = data;
+
+    } catch (err) {
+      console.error('Error cargando movimientos tabla 1:', err);
+      this.tableData3 = [];
+    }
+  }
+
+  async loadTable4(fechaInicio?: string, fechaFin?: string) {
+    const hoy = this.formatDate(new Date());
+    const desde = fechaInicio ?? hoy;
+    const hasta = fechaFin ?? hoy;
+
+    try {
+      const data: DebidoCobrarPorZonaDto[] = await firstValueFrom(
+        this.consultasService.getDebidoCobrarPorZona(desde, hasta)
+      );
+
+      this.tableData4 = data;
+
+    } catch (err) {
+      console.error('Error cargando movimientos tabla 1:', err);
+      this.tableData4 = [];
+    }
   }
 
   private mapMovimientosToRows(data: MovimientoZonaDto[]): ConsultaRow[] {
     return data.map(item => ({
+      id: item.zone_id,
       zone_id: item.zone_id,
       zona: item.zone_name,
+      name: item.zone_name,
       quota_value: item.total_recaudado,
       investment_value: 0,
       capital_balance: item.total_capital,
@@ -133,7 +194,7 @@ export class ConsultasComponent implements OnInit, AfterViewInit {
     }
   }
 
-  consultar(): void {
+  async consultar() {
     const filters = this.sharedFilterService.getFilters();
     if (!filters.fechaInicio || !filters.fechaFin) {
       alert('Selecciona un rango de fechas válido');
@@ -143,8 +204,15 @@ export class ConsultasComponent implements OnInit, AfterViewInit {
 
     this.loading = true;
     const dialogRef = this.dialog.open(LoadingComponent, { disableClose: true });
+    
+    await this.loadTable1(filters.fechaInicio, filters.fechaFin);
+    await this.loadTable2(filters.fechaInicio, filters.fechaFin);
+    await this.loadTable3(filters.fechaInicio, filters.fechaFin);
+    await this.loadTable4(filters.fechaInicio, filters.fechaFin);
 
-    this.consultasService.getMovimientosAll(filters.fechaInicio, filters.fechaFin).subscribe({
+    this.loading = false;
+    dialogRef.close();
+    /*this.consultasService.getMovimientosAll(filters.fechaInicio, filters.fechaFin).subscribe({
       next: (data) => {
         this.tableData1 = this.mapMovimientosToRows(data);
         this.loading = false;
@@ -155,10 +223,10 @@ export class ConsultasComponent implements OnInit, AfterViewInit {
         this.loading = false;
         dialogRef.close();
       }
-    });
+    });*/
   }
 
-  onRowClick(row: ConsultaRow): void {
+  onRowClick(type: string, row: ConsultaRow): void {
     const filters = this.sharedFilterService.getFilters();
     const hoy = this.formatDate(new Date());
 
@@ -167,10 +235,11 @@ export class ConsultasComponent implements OnInit, AfterViewInit {
       maxWidth: '1500px',
       panelClass: 'modal-detalle-panel',
       data: {
-        zoneId: row.zone_id,
-        zoneName: row.zona,
+        zoneId: row.zone_id || row.id,
+        zoneName: row.zona || row.name,
         startDate: filters.fechaInicio ?? hoy,
         endDate: filters.fechaFin ?? hoy,
+        type: type
       }
     });
   }

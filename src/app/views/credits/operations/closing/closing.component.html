@@ -1010,13 +1010,13 @@
                                                     <tr *ngFor="let r of recaudos; let i = index">
                                                         <td>{{ i + 1 }}</td>
                                                         <td>
-                                                            <span class="badge badge-zone-red">
-                                                                {{ r.zona || 'Pago de cuota' }}
+                                                            <span class="badge bg-success">
+                                                                {{ r.zona }}
                                                             </span>
                                                         </td>
                                                         <td>
-                                                            <span class="badge badge-zone-red">
-                                                                {{ r.description || 'Pago de cuota' }}
+                                                            <span class="badge" [ngClass]="r.description === 'Pago de Cuota' ? 'badge-zone-red' : 'bg-secondary'">
+                                                                {{ r.description }}
                                                             </span>
                                                         </td>
 

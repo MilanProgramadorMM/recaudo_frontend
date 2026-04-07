@@ -236,10 +236,8 @@ export class CreditsComponent {
       keyboard: true,
       centered: true,
       scrollable: true,
-      windowClass: 'modal-extra-large'  // Agregar clase personalizada
-
+      windowClass: 'modal-extra-large'
     });
-
     modalRef.componentInstance.creditId = intention.id;
     modalRef.componentInstance.creditIntentionId = intention.creditIntentionId;
   }

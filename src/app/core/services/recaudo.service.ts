@@ -68,6 +68,7 @@ export interface RecaudoDetail {
     userCreate: string;
     createdAt: string;
     delayPenalty: number;
+    description: string;
 }
 
 export interface PaymentRequestt {
