@@ -27,12 +27,13 @@ import { BrowserModule } from '@angular/platform-browser'
 import { JwtInterceptor } from '@core/helper/jwt.interceptor'
 import { ErrorInterceptor } from '@core/helper/error.interceptor';
 import { provideAnimationsAsync } from '@angular/platform-browser/animations/async'
-
+import { LOCALE_ID } from '@angular/core';
 
 export const appConfig: ApplicationConfig = {
   providers: [
     { provide: HTTP_INTERCEPTORS, useClass: JwtInterceptor, multi: true },
     { provide: HTTP_INTERCEPTORS, useClass: ErrorInterceptor, multi: true },
+    { provide: LOCALE_ID, useValue: 'es' },
     DecimalPipe,
     CookieService,
     provideZoneChangeDetection({ eventCoalescing: true }),

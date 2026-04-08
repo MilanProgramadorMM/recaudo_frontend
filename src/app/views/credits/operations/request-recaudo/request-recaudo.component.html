@@ -107,8 +107,7 @@
                                 </div>
                                 <div class="rc-info-item">
                                     <span class="rc-info-label">Vence</span>
-                                    <span class="rc-info-value">{{ cliente.nombreDia }} {{ cliente.expirationDate |
-                                        date:'dd/MM/yy' }}</span>
+                                    <span class="rc-info-value">{{ cliente.nombreDia | uppercase }} {{ cliente.expirationDate | date:'dd \'de\' MMMM' | uppercase }}</span>
                                 </div>
                                 <div class="rc-info-item" *ngIf="cliente.direccion">
                                     <span class="rc-info-label">Dirección</span>
