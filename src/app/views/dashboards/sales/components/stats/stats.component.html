@@ -6,7 +6,7 @@
     </div>
   </div>
   
-  <div *ngFor="let item of statData" class="col">
+  <!-- <div *ngFor="let item of statData" class="col">
     <div class="card">
       <div class="card-body">
         <h5 class="text-muted fs-13 fs-md-13 text-uppercase fw-bold">
@@ -24,6 +24,31 @@
           <span class="text-{{item.variant}} me-2"></span>
         </p>
       </div>
+    </div>
+  </div> -->
+
+  <div *ngFor="let item of statData" class="col-md-4 col-6 item-dashboard">
+    <div class="balance-card" [ngStyle]="getCardStyle(item.variant)">
+
+      <!-- Header -->
+      <div class="d-flex justify-content-between align-items-center mb-2">
+        <span class="title">{{ item.title }}</span>
+
+        <div class="icon-circle">
+          <iconify-icon [icon]="item.icon"></iconify-icon>
+          <!-- <span class="badge">3</span> -->
+        </div>
+      </div>
+
+      <!-- Value -->
+      <div class="value-box">
+        {{ currency }} {{ item.count }}
+
+        <!-- <div class="info-circle">
+          i
+        </div> -->
+      </div>
+
     </div>
   </div>
 </div>

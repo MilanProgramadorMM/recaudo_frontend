@@ -108,11 +108,9 @@ export class RequestRecaudoComponent implements OnInit {
 
     this.dailyCollectionService.getDailyCollection(today).subscribe({
       next: (response) => {
-        //debugger;
         this.clientesnew = response.map((c: any) => ({
           ...c,
           nombreDia: this.diasMap[c.nombreDia] || c.nombreDia
-
         }));
         this.applyFilter();
         this.loading = false;

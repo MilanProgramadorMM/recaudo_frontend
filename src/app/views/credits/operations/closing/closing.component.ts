@@ -1440,7 +1440,6 @@ export class ClosingComponent implements OnInit {
   }
 
   addSpendInPreApproval(): void {
-    debugger;
     this.submitted = true;
     this.errorMessage = '';
 

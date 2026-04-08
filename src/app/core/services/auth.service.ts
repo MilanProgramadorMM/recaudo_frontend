@@ -33,7 +33,6 @@ export class AuthenticationService {
 
 
   login(username: string, password: string): Observable<User> {
-    //debugger;
     return this.http.post<any>(`${baseUrl}auth/login`, { username, password }).pipe(
       map((response) => {
         const token = response.data.token;
@@ -51,7 +50,6 @@ export class AuthenticationService {
 
 
   logout(): void {
-    //debugger;
     this.removeSession()
     this.user = null
   }

@@ -18,7 +18,7 @@ interface StatType {
   standalone: true,
   imports: [CommonModule],
   templateUrl: './stats.component.html',
-  styles: ``,
+  styleUrl: './stats.component.scss',
   schemas:[CUSTOM_ELEMENTS_SCHEMA]
 })
 export class StatsComponent implements OnInit, OnDestroy {
@@ -88,13 +88,15 @@ export class StatsComponent implements OnInit, OnDestroy {
         title: 'Debido a Cobrar',
         icon: 'solar:case-round-minimalistic-bold-duotone',
         count: this.formatCurrency(totals.debidoCobrar),
-        rawValue: totals.debidoCobrar
+        rawValue: totals.debidoCobrar,
+        variant: 'primary'
       },
       {
         title: 'Recaudo',
         icon: 'solar:bill-list-bold-duotone',
         count: this.formatCurrency(totals.recaudado),
-        rawValue: totals.recaudado
+        rawValue: totals.recaudado,
+        variant: 'success'
       },
       {
         title: 'No pago',
@@ -108,7 +110,7 @@ export class StatsComponent implements OnInit, OnDestroy {
         icon: 'solar:eye-bold-duotone',
         count: this.formatCurrency(totalCartera),
         rawValue: totalCartera,
-        variant: 'success'
+        variant: 'warning'
       },
     ];
   }
@@ -149,6 +151,31 @@ export class StatsComponent implements OnInit, OnDestroy {
       minimumFractionDigits: 0,  // ✅ Sin decimales
       maximumFractionDigits: 0   // ✅ Sin decimales
     });
+  }
+
+  getColor(variant: string): string {
+    switch (variant) {
+      case 'success': return '#198754';
+      case 'danger': return '#DC3545';
+      case 'warning': return '#FFC107';
+      case 'primary': return '#0D6EFD';
+      default: return '#6c757d';
+    }
+  }
+
+  getCardStyle(variant: string) {
+    switch (variant) {
+      case 'success':
+        return { background: 'linear-gradient(135deg, #22c55e, #4ade80)' };
+      case 'danger':
+        return { background: 'linear-gradient(135deg, #ef4444, #f87171)' };
+      case 'primary':
+        return { background: 'linear-gradient(135deg, #3b82f6, #60a5fa)' };
+      case 'warning':
+        return { background: 'linear-gradient(135deg, #f59e0b, #fbbf24)' };
+      default:
+        return { background: 'linear-gradient(135deg, #6b7280, #9ca3af)' };
+    }
   }
 
 }

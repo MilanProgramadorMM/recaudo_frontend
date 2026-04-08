@@ -2,7 +2,7 @@ import { Component, CUSTOM_ELEMENTS_SCHEMA, OnInit, ViewChild, ElementRef, After
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { StatsComponent } from "./components/stats/stats.component";
-import { OverviewChartComponent } from "./components/overview-chart/overview-chart.component";
+// import { OverviewChartComponent } from "./components/overview-chart/overview-chart.component";
 import { RecentOrdersComponent } from "./components/recent-orders/recent-orders.component";
 import { FlatpickrDirective } from '@core/directive/flatpickr.directive';
 import { ZonaService, ZonaResponseDto } from '@core/services/zona.service';
@@ -21,7 +21,7 @@ import { switchMap } from 'rxjs';
     CommonModule,
     ReactiveFormsModule,
     StatsComponent,
-    OverviewChartComponent,
+    // OverviewChartComponent,
     FlatpickrDirective,
     RecentOrdersComponent
   ],
