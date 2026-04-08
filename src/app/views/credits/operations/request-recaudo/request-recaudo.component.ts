@@ -29,7 +29,7 @@ export class RequestRecaudoComponent implements OnInit {
 
   clientesnew: DailyCollectionItem[] = [];
   clientesFiltered: DailyCollectionItem[] = [];
-  filterStatus: string = 'all';
+  filterStatus: string = 'pending';
 
   isAsistente = false;
   isAsesor = false;
@@ -108,8 +108,12 @@ export class RequestRecaudoComponent implements OnInit {
 
     this.dailyCollectionService.getDailyCollection(today).subscribe({
       next: (response) => {
-        debugger;
-        this.clientesnew = response;
+        //debugger;
+        this.clientesnew = response.map((c: any) => ({
+          ...c,
+          nombreDia: this.diasMap[c.nombreDia] || c.nombreDia
+
+        }));
         this.applyFilter();
         this.loading = false;
       },
@@ -122,46 +126,65 @@ export class RequestRecaudoComponent implements OnInit {
     });
   }
 
+  private diasMap: Record<string, string> = {
+    Monday: 'Lunes',
+    Tuesday: 'Martes',
+    Wednesday: 'Miércoles',
+    Thursday: 'Jueves',
+    Friday: 'Viernes',
+    Saturday: 'Sábado',
+    Sunday: 'Domingo'
+  };
+
 
   applyFilter(): void {
-    let filtered = this.clientesnew;
+    let filtered = [...this.clientesnew];
 
-    // 1. Filtrar por zona si no es "all"
     if (this.selectedZona !== 'all') {
       filtered = filtered.filter(c => c.zona === this.selectedZona);
     }
 
-    // 2. Filtrar por estado
+    const term = this.searchTerm.toLowerCase().trim();
+    if (term) {
+      filtered = filtered.filter(c =>
+        c.clientName?.toLowerCase().includes(term)
+      );
+    }
+
     switch (this.filterStatus) {
       case 'paid':
-        // Solo los que pagaron hoy
-        this.clientesFiltered = filtered.filter(c => c.paidToday === 1);
+        this.clientesFiltered = filtered.filter(c =>
+          c.paidToday === 1 || c.paidFull === 'S'
+        );
         break;
 
       case 'pending':
-        // Todos los que NO han pagado (incluye: sin estado, con promesa, no pago)
-        this.clientesFiltered = filtered.filter(c => c.paidToday !== 1);
+        // Pendientes puros (sin promesa, sin noPago, sin pago)
+        this.clientesFiltered = filtered.filter(c =>
+          c.paidToday !== 1 &&
+          c.paidFull !== 'S' &&
+          !c.paymentPromiseDate &&
+          c.noPago !== 1
+        );
         break;
 
       case 'promise':
-        // Solo los que tienen promesa registrada (y no han pagado)
         this.clientesFiltered = filtered.filter(c =>
           c.paymentPromiseDate && c.paidToday !== 1 && c.noPago !== 1
         );
         break;
 
       case 'nopago':
-        // Solo los marcados como "no pagó"
         this.clientesFiltered = filtered.filter(c => c.noPago === 1);
         break;
 
       case 'all':
       default:
-        // TODOS los registros (pagados + pendientes + promesa + no pago)
-        this.clientesFiltered = filtered;
+        this.clientesFiltered = filtered.filter(c =>
+          c.paidToday !== 1 && c.paidFull !== 'S'
+        );
         break;
     }
-    debugger;
   }
 
   onZonaChange(): void {
@@ -379,13 +402,17 @@ export class RequestRecaudoComponent implements OnInit {
     this.loadRecaudoData();
   }
 
+  // applyCustomerFilter(): void {
+  //   const term = this.searchTerm.toLowerCase().trim();
+  //   let filtered = this.clientesnew;
+  //   if (!term) {
+  //     this.clientesFiltered = [...this.clientesnew];
+  //   } else {
+  //     this.clientesFiltered = filtered.filter(item => item.clientName?.toLowerCase().includes(term));
+  //   }
+  // }
+
   applyCustomerFilter(): void {
-    const term = this.searchTerm.toLowerCase().trim();
-    let filtered = this.clientesnew;
-    if (!term) {
-      this.clientesFiltered = [...this.clientesnew];
-    } else {
-      this.clientesFiltered = filtered.filter(item => item.clientName?.toLowerCase().includes(term));
-    }
-  }
+  this.applyFilter();
+}
 }

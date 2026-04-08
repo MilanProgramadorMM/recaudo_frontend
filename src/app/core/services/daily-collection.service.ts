@@ -11,15 +11,26 @@ export interface DailyCollectionItem {
     expirationDate: string;
     clientName: string;
     paidToday: number;
-    paidFull: string;                      
+    paidFull: string;
     liquidated: string;
     paymentPromiseDate?: string | null;
-    noPago?: number; // 0 = no registrado, 1 = registrado como "no pagó"
+    noPago?: number;
     noPagoReason?: string | null;
     clientOrden: number;
     clientCuota: number;
     zona?: string;
     periodo: string;
+    plazoCredito: number;
+    valorCuota: number;
+    cuotasPagadas: number;
+    cuotasVencidas: number;
+    saldoPendiente: number;
+    totalCuotas: number;
+    direccion?: string | null;
+    telefono?: string | null;
+    barrio?: string | null;
+    municipio?: string | null;
+    nombreDia?: string | null;
 }
 
 @Injectable({
