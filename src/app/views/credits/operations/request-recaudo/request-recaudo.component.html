@@ -74,7 +74,7 @@
 
             <!-- TABLA DE CLIENTES -->
             <div *ngIf="!loading && !error">
-                <!-- Vista móvil (cards) -->                
+                <!-- Vista móvil (cards) -->
                 <div class="d-md-none recaudo-mobile-list">
 
                     <div *ngFor="let cliente of clientesFiltered" class="recaudo-card flip-container">
@@ -94,8 +94,16 @@
                                     <!-- Info grid -->
                                     <div class="rc-info-grid">
                                         <div class="rc-info-item">
+                                            <span class="rc-info-label">F. inicio</span>
+                                            <span class="rc-info-value">    {{
+                                                cliente.data.fechaCredito
+                                                | date:'dd \'de\' MMMM' | uppercase
+                                                }}</span>
+                                        </div>
+                                        <div class="rc-info-item">
                                             <span class="rc-info-label">Cuota</span>
-                                            <span class="rc-info-value">{{ cliente.data.quotaNumber }} de {{ cliente.data.totalCuotas
+                                            <span class="rc-info-value">{{ cliente.data.quotaNumber }} de {{
+                                                cliente.data.totalCuotas
                                                 }}</span>
                                         </div>
                                         <div class="rc-info-item">
@@ -108,7 +116,9 @@
                                         </div>
                                         <div class="rc-info-item">
                                             <span class="rc-info-label">Vence</span>
-                                            <span class="rc-info-value">{{ cliente.data.nombreDia | uppercase }} {{ cliente.data.expirationDate | date:'dd \'de\' MMMM' | uppercase }}</span>
+                                            <span class="rc-info-value">{{ cliente.nombreDia | uppercase }} {{
+                                                cliente.data.expirationDate | date:'dd \'de\' MMMM' | uppercase
+                                                }}</span>
                                         </div>
                                         <div class="rc-info-item" *ngIf="cliente.data.direccion">
                                             <span class="rc-info-label">Dirección</span>
@@ -149,7 +159,8 @@
                                     <div class="rc-counters-row">
                                         <div class="rc-counter-item">
                                             <span class="rc-counter-label">Pagadas</span>
-                                            <span class="rc-badge rc-badge-success">{{ cliente.data.cuotasPagadas }}</span>
+                                            <span class="rc-badge rc-badge-success">{{ cliente.data.cuotasPagadas
+                                                }}</span>
                                         </div>
                                         <div class="rc-counter-item">
                                             <span class="rc-counter-label">Vencidas</span>
@@ -180,7 +191,8 @@
                                             cliente.data.paidFull === 'S' ? 'Cuota Pagada Completamente'
                                             : cliente.data.paidToday === 1 ? 'Pagado hoy (Parcial)'
                                             : cliente.data.noPago === 1 ? 'No pagó - ' + cliente.data.noPagoReason
-                                            : cliente.data.paymentPromiseDate ? 'Promesa ' + (cliente.data.paymentPromiseDate | date)
+                                            : cliente.data.paymentPromiseDate ? 'Promesa ' +
+                                            (cliente.data.paymentPromiseDate | date)
                                             : 'Pendiente'
                                             }}
                                         </span>
@@ -190,17 +202,18 @@
 
                                     <!-- Acciones -->
                                     <div class="rc-actions-row">
-                                        <!-- <button type="button"
+                                        <button type="button"
                                             class="btn btn-llamada btn-sm flex-fill d-flex flex-column align-items-center py-2"
-                                            *ngIf="cliente.data.telefono" [href]="'tel:' + cliente.data.telefono"
-                                            (click)="openRecaudoModal(cliente)">
+                                            *ngIf="cliente.data.telefono"
+                                            (click)="callPhone(cliente.data.telefono); $event.stopPropagation()">
                                             <i class="ti ti-phone mb-1"></i>
-                                            <span style="font-size: 10px; line-height: 1;">Llamar</span>
-                                        </button> -->
+                                            <span style="font-size: 10px;">Llamar</span>
+                                        </button>
 
                                         <button type="button"
                                             class="btn btn-info btn-sm flex-fill d-flex flex-column align-items-center py-2"
-                                            *ngIf="cliente.data.paidFull === 'S'" (click)="openRecaudoDetailModal(cliente); $event.stopPropagation()">
+                                            *ngIf="cliente.data.paidFull === 'S'"
+                                            (click)="openRecaudoDetailModal(cliente); $event.stopPropagation()">
                                             <i class="ti ti-eye mb-1"></i>
                                             <span style="font-size: 10px; line-height: 1;">Ver</span>
                                         </button>
@@ -242,16 +255,28 @@
                                     <table class="table table-sm table-bordered">
                                         <thead>
                                             <tr>
-                                                <th>Fecha</th>                                                
+                                                <th>Fecha</th>
                                                 <th>Valor</th>
+                                                <th>Día</th>
                                             </tr>
                                         </thead>
                                         <tbody>
                                             <tr *ngFor="let r of cliente.recaudos">
                                                 <td>{{ r.fechaInicio | date:'dd/MM/yyyy' }}</td>
                                                 <td>{{ r.totalPagado | currency:'COP':'$':'1.0-0' }}</td>
+                                                <td>{{ getDiaEspanol(r.nombreDia) }}</td>
                                             </tr>
                                         </tbody>
+                                        <tfoot *ngIf="cliente.recaudos && cliente.recaudos.length > 0">
+                                            <tr class="table-secondary">
+                                                <td class="text-bold"><strong>TOTAL</strong></td>
+                                                <td class="text-bold">
+                                                    <strong>{{ calcularTotalPagado(cliente.recaudos) |
+                                                        currency:'COP':'$':'1.0-0' }}</strong>
+                                                </td>
+                                                <td></td>
+                                            </tr>
+                                        </tfoot>
                                     </table>
                                 </div>
                             </div>
@@ -264,7 +289,7 @@
                         <p class="text-muted mt-3 mb-0">No hay clientes para recaudo el día de hoy</p>
                     </div>
 
-                </div>                
+                </div>
 
                 <!-- Vista desktop (tabla) -->
                 <div class="table-responsive d-none d-md-block">
@@ -303,7 +328,8 @@
                                         <!-- Métricas de cuotas -->
                                         <div class="d-flex flex-wrap gap-2 mt-1">
                                             <span class="badge bg-light text-dark border" title="Cuota actual / total">
-                                                Cuota {{ cliente.data.quotaNumber }}/{{ cliente.data.totalCuotas }} · Plazo {{
+                                                Cuota {{ cliente.data.quotaNumber }}/{{ cliente.data.totalCuotas }} ·
+                                                Plazo {{
                                                 cliente.data.plazoCredito }}
                                             </span>
                                             <span class="badge bg-success" title="Cuotas pagadas">
@@ -349,13 +375,9 @@
                                 <!-- Vista desktop - Reemplazar la sección de botones en la columna de acciones -->
                                 <td class="text-center">
                                     <div class="d-flex gap-2 justify-content-center flex-wrap">
-                                        <a [href]="'tel:' + cliente.telefono" *ngIf="cliente.telefono"
-                                            class="btn btn-outline-success btn-sm" title="Llamar al cliente">
-                                            <i class="ti ti-phone me-1"></i>Llamar
-                                        </a>
-
                                         <button type="button" class="btn btn-info btn-sm"
-                                            *ngIf="cliente.paidFull === 'S'" (click)="openRecaudoDetailModal(cliente); $event.stopPropagation()">
+                                            *ngIf="cliente.paidFull === 'S'"
+                                            (click)="openRecaudoDetailModal(cliente); $event.stopPropagation()">
                                             <i class="ti ti-eye me-1"></i>Ver
                                         </button>
 

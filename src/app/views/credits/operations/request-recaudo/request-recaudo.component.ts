@@ -108,9 +108,10 @@ export class RequestRecaudoComponent implements OnInit {
 
     this.dailyCollectionService.getDailyCollection(today).subscribe({
       next: (response) => {
+        //debugger;
         this.clientesnew = response.map((c: any) => ({
           ...c,
-          nombreDia: this.diasMap[c.nombreDia] || c.nombreDia
+          nombreDia: this.diasMap[c.data?.nombreDia] || c.data?.nombreDia
         }));
         this.applyFilter();
         this.loading = false;
@@ -134,6 +135,17 @@ export class RequestRecaudoComponent implements OnInit {
     Sunday: 'Domingo'
   };
 
+  getDiaEspanol(dia: string): string {
+    return this.diasMap[dia] || dia;
+  }
+
+  calcularTotalPagado(recaudos: any[]): number {
+    if (!recaudos || recaudos.length === 0) return 0;
+
+    return recaudos.reduce((acumulado, actual) => {
+      return acumulado + (actual.totalPagado || 0);
+    }, 0);
+  }
 
   applyFilter(): void {
     let filtered = [...this.clientesnew];
@@ -400,6 +412,13 @@ export class RequestRecaudoComponent implements OnInit {
     this.loadRecaudoData();
   }
 
+  callPhone(number: string): void {
+    if (!number) return;
+
+    const cleanNumber = number.replace(/[^\d+]/g, '');
+    window.location.href = `tel:${cleanNumber}`;
+  }
+
   // applyCustomerFilter(): void {
   //   const term = this.searchTerm.toLowerCase().trim();
   //   let filtered = this.clientesnew;
@@ -411,6 +430,6 @@ export class RequestRecaudoComponent implements OnInit {
   // }
 
   applyCustomerFilter(): void {
-  this.applyFilter();
-}
+    this.applyFilter();
+  }
 }

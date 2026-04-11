@@ -31,6 +31,7 @@ export interface DailyCollectionItem {
     barrio?: string | null;
     municipio?: string | null;
     nombreDia?: string | null;
+    fechaCredito: string;
 }
 
 export interface DailyCollectionItemRespaldo {
@@ -39,6 +40,7 @@ export interface DailyCollectionItemRespaldo {
     fechaFin: string;
     grupoId: number;
     totalPagado: number;
+    nombreDia: string;
 }
 
 export interface DailyCollectionItemDTO {

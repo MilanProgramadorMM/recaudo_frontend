@@ -203,7 +203,7 @@
 
 
         <!-- VISTA ADMIN / BACKOFFICE - tablas completas -->
-        <ng-container *ngIf="isAdmin || isAsistente">
+        <ng-container >
             <div class="row">
                 <!-- TABLA DE CUOTAS - IZQUIERDA -->
                 <div class="col-lg-6 mb-4">
@@ -347,7 +347,7 @@
                 </div>
 
                 <!-- OBSERVACIONES - SOLO ADMIN / BACKOFFICE -->
-                <div class="col-12 mb-4">
+                <div class="col-12 mb-4" *ngIf="isAdmin || isAsistente">
                     <div class="card border">
                         <div class="card-header header-rojo d-flex align-items-center justify-content-between">
                             <h4 class="mb-0">

@@ -184,7 +184,7 @@ $recaudo-red-light: #f8d7da;
     box-shadow: 0 2px 4px rgba(220, 53, 69, 0.2);
 }
 
-.btn-llamada{
+.btn-llamada {
     background: linear-gradient(135deg, #14db6d 0%, #14db6d 100%);
     color: white;
     border: none;
@@ -193,12 +193,17 @@ $recaudo-red-light: #f8d7da;
     box-shadow: 0 2px 4px rgba(220, 53, 69, 0.2);
 }
 
-.btn-llamada:hover {
-    background: linear-gradient(135deg, #dc3545 0%, #a71d2a 100%);
-    color: white;
-    transform: translateY(-1px);
-    box-shadow: 0 4px 8px rgba(220, 53, 69, 0.35);
+.tabla-scroll {
+    max-height: 200px; 
+    overflow-y: auto;
 }
+
+// .btn-llamada:hover {
+//     background: linear-gradient(135deg, #dc3545 0%, #a71d2a 100%);
+//     color: white;
+//     transform: translateY(-1px);
+//     //box-shadow: 0 4px 8px rgba(220, 53, 69, 0.35);
+// }
 
 .btn-llamada:active {
     transform: translateY(0);
@@ -340,296 +345,354 @@ $recaudo-red-light: #f8d7da;
 
 /* ── Lista contenedora ── */
 .recaudo-mobile-list {
-  padding: 12px;
-  background: #f4f4f4;
-  min-height: 100%;
+    padding: 12px;
+    background: #f4f4f4;
+    min-height: 100%;
 }
 
 /* ── Card principal ── */
 .recaudo-card {
-  background: #ffffff;
-  border-radius: 12px;
-  border: 0.5px solid rgba(0, 0, 0, 0.08);
-  overflow: hidden;
-  margin-bottom: 14px;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06);
+    background: #ffffff;
+    border-radius: 12px;
+    border: 0.5px solid rgba(0, 0, 0, 0.08);
+    overflow: hidden;
+    margin-bottom: 14px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06);
 }
 
 /* ── Header rojo ── */
 .rc-header {
-  background: #dc3545;
-  padding: 10px 14px;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
+    background: #dc3545;
+    padding: 10px 14px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
 }
 
 .rc-header-info {
-  display: flex;
-  flex-direction: column;
-  gap: 2px;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
 }
 
 .rc-name {
-  color: #fff;
-  font-size: 13px;
-  font-weight: 600;
-  letter-spacing: 0.01em;
+    color: #fff;
+    font-size: 13px;
+    font-weight: 600;
+    letter-spacing: 0.01em;
 }
 
 .rc-credit {
-  color: rgba(255, 255, 255, 0.72);
-  font-size: 11px;
+    color: rgba(255, 255, 255, 0.72);
+    font-size: 11px;
 }
 
 .rc-orden {
-  color: #fff;
-  font-size: 12px;
-  font-weight: 500;
-  padding: 3px 10px;
-  border-radius: 20px;
-  white-space: nowrap;
+    color: #fff;
+    font-size: 12px;
+    font-weight: 500;
+    padding: 3px 10px;
+    border-radius: 20px;
+    white-space: nowrap;
 }
 
 /* ── Cuerpo del card ── */
 .rc-body {
-  padding: 12px 14px;
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
+    padding: 12px 14px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    min-height: 0;
 }
 
 /* ── Divisor ── */
 .rc-divider {
-  height: 0.5px;
-  background: rgba(0, 0, 0, 0.08);
-  margin: 0 -2px;
+    height: 0.5px;
+    background: rgba(0, 0, 0, 0.08);
+    margin: 0 -2px;
 }
 
 /* ── Grid de información ── */
 .rc-info-grid {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 6px 12px;
-  background: #f8f8f8;
-  border-radius: 8px;
-  padding: 10px 12px;
-  border: 0.5px solid rgba(0, 0, 0, 0.07);
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 6px 12px;
+    background: #f8f8f8;
+    border-radius: 8px;
+    padding: 10px 12px;
+    border: 0.5px solid rgba(0, 0, 0, 0.07);
 }
 
 .rc-info-item {
-  display: flex;
-  flex-direction: column;
-  gap: 1px;
+    display: flex;
+    flex-direction: column;
+    gap: 1px;
 }
 
 .rc-full {
-  grid-column: 1 / -1;
+    grid-column: 1 / -1;
 }
 
 .rc-info-label {
-  font-size: 10px;
-  color: #888;
-  text-transform: uppercase;
-  letter-spacing: 0.04em;
+    font-size: 10px;
+    color: #888;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
 }
 
 .rc-info-value {
-  font-size: 12px;
-  color: #222;
-  font-weight: 500;
+    font-size: 12px;
+    color: #222;
+    font-weight: 500;
 }
 
 /* ── Montos ── */
 .rc-money-row {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 8px;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
 }
 
 .rc-money-card {
-  background: #f8f8f8;
-  border-radius: 8px;
-  padding: 8px 10px;
-  text-align: center;
-  border: 0.5px solid rgba(0, 0, 0, 0.07);
+    background: #f8f8f8;
+    border-radius: 8px;
+    padding: 8px 10px;
+    text-align: center;
+    border: 0.5px solid rgba(0, 0, 0, 0.07);
 }
 
 .rc-money-label {
-  font-size: 9px;
-  color: #888;
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
-  display: block;
-  margin-bottom: 3px;
+    font-size: 9px;
+    color: #888;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    display: block;
+    margin-bottom: 3px;
 }
 
 .rc-money-value {
-  font-size: 15px;
-  font-weight: 600;
-  display: block;
+    font-size: 15px;
+    font-weight: 600;
+    display: block;
 }
 
-.rc-cuota { color: #1a7a45; }
-.rc-saldo { color: #c0392b; }
+.rc-cuota {
+    color: #1a7a45;
+}
+
+.rc-saldo {
+    color: #c0392b;
+}
 
 /* ── Contadores ── */
 .rc-counters-row {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 6px;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 6px;
 }
 
 .rc-counter-item {
-  text-align: center;
+    text-align: center;
 }
 
 .rc-counter-label {
-  font-size: 9px;
-  color: #888;
-  text-transform: uppercase;
-  letter-spacing: 0.04em;
-  display: block;
-  margin-bottom: 4px;
+    font-size: 9px;
+    color: #888;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    display: block;
+    margin-bottom: 4px;
 }
 
 .rc-badge {
-  display: inline-block;
-  font-size: 12px;
-  font-weight: 600;
-  padding: 3px 10px;
-  border-radius: 20px;
-  min-width: 32px;
+    display: inline-block;
+    font-size: 12px;
+    font-weight: 600;
+    padding: 3px 10px;
+    border-radius: 20px;
+    min-width: 32px;
 }
 
-.rc-badge-success { background: #e8f8f0; color: #1a7a45; }
-.rc-badge-danger  { background: #fdecea; color: #a32d2d; }
-.rc-badge-warning { background: #fef9ec; color: #7a5c00; border: 0.5px solid #f5d87e; }
-.rc-badge-neutral { background: #f0f0f0; color: #666; border: 0.5px solid #ddd; }
+.rc-badge-success {
+    background: #e8f8f0;
+    color: #1a7a45;
+}
+
+.rc-badge-danger {
+    background: #fdecea;
+    color: #a32d2d;
+}
+
+.rc-badge-warning {
+    background: #fef9ec;
+    color: #7a5c00;
+    border: 0.5px solid #f5d87e;
+}
+
+.rc-badge-neutral {
+    background: #f0f0f0;
+    color: #666;
+    border: 0.5px solid #ddd;
+}
 
 /* ── Pill de estado ── */
 .rc-status-row {
-  display: flex;
-  align-items: center;
+    display: flex;
+    align-items: center;
 }
 
 .rc-status-pill {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  font-size: 11px;
-  font-weight: 500;
-  padding: 5px 12px;
-  border-radius: 20px;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 11px;
+    font-weight: 500;
+    padding: 5px 12px;
+    border-radius: 20px;
 }
 
 .rc-status-dot {
-  width: 7px;
-  height: 7px;
-  border-radius: 50%;
-  background: currentColor;
-  flex-shrink: 0;
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: currentColor;
+    flex-shrink: 0;
 }
 
-.rc-status-pendiente { background: #fdecea; color: #a32d2d; }
-.rc-status-pagado    { background: #e8f8f0; color: #1a7a45; }
-.rc-status-parcial   { background: #e8f0fe; color: #2848b0; }
-.rc-status-promesa   { background: #fef9ec; color: #7a5c00; }
-.rc-status-nopago    { background: #f0f0f0; color: #555; }
+.rc-status-pendiente {
+    background: #fdecea;
+    color: #a32d2d;
+}
+
+.rc-status-pagado {
+    background: #e8f8f0;
+    color: #1a7a45;
+}
+
+.rc-status-parcial {
+    background: #e8f0fe;
+    color: #2848b0;
+}
+
+.rc-status-promesa {
+    background: #fef9ec;
+    color: #7a5c00;
+}
+
+.rc-status-nopago {
+    background: #f0f0f0;
+    color: #555;
+}
 
 /* ── Botones de acción ── */
 .rc-actions-row {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 6px;
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 6px;
 }
 
 /* Si en un card solo hay 2 o 3 botones, ajusta el grid dinámicamente con JS o fuerza flex */
-.rc-actions-row.two-cols   { grid-template-columns: repeat(2, 1fr); }
-.rc-actions-row.three-cols { grid-template-columns: repeat(3, 1fr); }
+.rc-actions-row.two-cols {
+    grid-template-columns: repeat(2, 1fr);
+}
+
+.rc-actions-row.three-cols {
+    grid-template-columns: repeat(3, 1fr);
+}
 
 .rc-action-btn {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  gap: 3px;
-  padding: 8px 4px;
-  border-radius: 8px;
-  border: 0.5px solid rgba(0, 0, 0, 0.15);
-  background: #ffffff;
-  cursor: pointer;
-  font-size: 9px;
-  font-weight: 600;
-  text-transform: uppercase;
-  letter-spacing: 0.04em;
-  color: #555;
-  text-decoration: none;
-  transition: background 0.15s, opacity 0.15s;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 3px;
+    padding: 8px 4px;
+    border-radius: 8px;
+    border: 0.5px solid rgba(0, 0, 0, 0.15);
+    background: #ffffff;
+    cursor: pointer;
+    font-size: 9px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    color: #555;
+    text-decoration: none;
+    transition: background 0.15s, opacity 0.15s;
 
-  &:hover { background: #f5f5f5; opacity: 0.9; }
-  &:active { transform: scale(0.97); }
+    &:hover {
+        background: #f5f5f5;
+        opacity: 0.9;
+    }
 
-  i { font-size: 16px; }
+    &:active {
+        transform: scale(0.97);
+    }
+
+    i {
+        font-size: 16px;
+    }
 }
 
 .rc-btn-call {
-  color: #1a7a45;
-  border-color: rgba(26, 122, 69, 0.4);
+    color: #1a7a45;
+    border-color: rgba(26, 122, 69, 0.4);
 }
 
 .rc-btn-cobrar {
-  color: #fff !important;
-  background: #c0392b !important;
-  border-color: #c0392b !important;
+    color: #fff !important;
+    background: #c0392b !important;
+    border-color: #c0392b !important;
 
-  &:hover { background: #a93226 !important; }
+    &:hover {
+        background: #a93226 !important;
+    }
 }
 
 .rc-btn-ver {
-  color: #0d6eac;
-  border-color: rgba(13, 110, 172, 0.4);
+    color: #0d6eac;
+    border-color: rgba(13, 110, 172, 0.4);
 }
 
 .rc-btn-promesa {
-  color: #7a5c00;
-  border-color: rgba(196, 160, 0, 0.4);
+    color: #7a5c00;
+    border-color: rgba(196, 160, 0, 0.4);
 }
 
 .rc-btn-nopago {
-  color: #555;
-  border-color: rgba(0, 0, 0, 0.12);
+    color: #555;
+    border-color: rgba(0, 0, 0, 0.12);
 }
 
 
 .flip-container {
-  perspective: 1000px;
+    perspective: 1000px;
 }
 
 .flip-card {
-  position: relative;
-  width: 100%;
-  //min-height: 545px;
-  transition: transform 0.6s;
-  transform-style: preserve-3d;
+    position: relative;
+    width: 100%;
+    //min-height: 545px;
+    transition: transform 0.6s;
+    transform-style: preserve-3d;
 }
 
 .flip-card.flipped {
-  transform: rotateY(180deg);
+    transform: rotateY(180deg);
 }
 
 .flip-front,
 .flip-back {
-  width: 100%;
-  backface-visibility: hidden;
+    width: 100%;
+    backface-visibility: hidden;
+    height: 80%;
 }
 
 .flip-back {
-  transform: rotateY(180deg);
-  position: absolute;
-  background: #fff;
-  top: 0;
-  left: 0;
-  bottom: 0;
-  overflow-y: auto;
+    transform: rotateY(180deg);
+    position: absolute;
+    background: #fff;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    overflow-y: auto;
 }
