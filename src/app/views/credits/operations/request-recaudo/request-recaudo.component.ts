@@ -4,7 +4,7 @@ import { AuthenticationService } from "@core/services/auth.service";
 import { PersonResponseDto, PersonService } from "@core/services/person.service";
 import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
 import { RecaudoFormComponent } from "./recaudo-form/recaudo-form.component";
-import { DailyCollectionItem, DailyCollectionService } from "@core/services/daily-collection.service";
+import { DailyCollectionItem, DailyCollectionItemDTO, DailyCollectionService } from "@core/services/daily-collection.service";
 import Swal from "sweetalert2";
 import { FormsModule } from "@angular/forms";
 
@@ -27,8 +27,8 @@ export class RequestRecaudoComponent implements OnInit {
   asesorName: string | null = null;
   searchTerm: string = '';
 
-  clientesnew: DailyCollectionItem[] = [];
-  clientesFiltered: DailyCollectionItem[] = [];
+  clientesnew: DailyCollectionItemDTO[] = [];
+  clientesFiltered: DailyCollectionItemDTO[] = [];
   filterStatus: string = 'pending';
 
   isAsistente = false;
@@ -139,47 +139,47 @@ export class RequestRecaudoComponent implements OnInit {
     let filtered = [...this.clientesnew];
 
     if (this.selectedZona !== 'all') {
-      filtered = filtered.filter(c => c.zona === this.selectedZona);
+      filtered = filtered.filter(c => c.data.zona === this.selectedZona);
     }
 
     const term = this.searchTerm.toLowerCase().trim();
     if (term) {
       filtered = filtered.filter(c =>
-        c.clientName?.toLowerCase().includes(term)
+        c.data.clientName?.toLowerCase().includes(term)
       );
     }
 
     switch (this.filterStatus) {
       case 'paid':
         this.clientesFiltered = filtered.filter(c =>
-          c.paidToday === 1 || c.paidFull === 'S'
+          c.data.paidToday === 1 || c.data.paidFull === 'S'
         );
         break;
 
       case 'pending':
         // Pendientes puros (sin promesa, sin noPago, sin pago)
         this.clientesFiltered = filtered.filter(c =>
-          c.paidToday !== 1 &&
-          c.paidFull !== 'S' &&
-          !c.paymentPromiseDate &&
-          c.noPago !== 1
+          c.data.paidToday !== 1 &&
+          c.data.paidFull !== 'S' &&
+          !c.data.paymentPromiseDate &&
+          c.data.noPago !== 1
         );
         break;
 
       case 'promise':
         this.clientesFiltered = filtered.filter(c =>
-          c.paymentPromiseDate && c.paidToday !== 1 && c.noPago !== 1
+          c.data.paymentPromiseDate && c.data.paidToday !== 1 && c.data.noPago !== 1
         );
         break;
 
       case 'nopago':
-        this.clientesFiltered = filtered.filter(c => c.noPago === 1);
+        this.clientesFiltered = filtered.filter(c => c.data.noPago === 1);
         break;
 
       case 'all':
       default:
         this.clientesFiltered = filtered.filter(c =>
-          c.paidToday !== 1 && c.paidFull !== 'S'
+          c.data.paidToday !== 1 && c.data.paidFull !== 'S'
         );
         break;
     }

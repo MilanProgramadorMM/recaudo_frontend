@@ -33,6 +33,20 @@ export interface DailyCollectionItem {
     nombreDia?: string | null;
 }
 
+export interface DailyCollectionItemRespaldo {
+    creditId: number;
+    fechaInicio: string;
+    fechaFin: string;
+    grupoId: number;
+    totalPagado: number;
+}
+
+export interface DailyCollectionItemDTO {
+    data: DailyCollectionItem,
+    recaudos: DailyCollectionItemRespaldo,
+    flipped: boolean
+}
+
 @Injectable({
     providedIn: 'root'
 })
@@ -50,8 +64,8 @@ export class DailyCollectionService {
         });
     }
 
-    getDailyCollection(date: string): Observable<DailyCollectionItem[]> {
-        return this.http.get<DailyCollectionItem[]>(
+    getDailyCollection(date: string): Observable<DailyCollectionItemDTO[]> {
+        return this.http.get<DailyCollectionItemDTO[]>(
             `${baseUrl}collection/daily?date=${date}`,
             { headers: this.getHeaders() }
         );
