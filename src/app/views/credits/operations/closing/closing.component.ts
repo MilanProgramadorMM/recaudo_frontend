@@ -1419,11 +1419,7 @@ export class ClosingComponent implements OnInit {
   }
 
   cancel(): void {
-    if (this.isAsesor) {
-      this.router.navigate(['/operaciones/cierre']);
-    } else {
-      this.router.navigate(['/master/asesores']);
-    }
+    this.router.navigate(['/operaciones/cierre']);
   }
 
   getAbsValue(value: number): number {

@@ -1,10 +1,8 @@
 import { HttpClient, HttpHeaders } from "@angular/common/http";
 import { Injectable } from "@angular/core";
-import baseUrlPublic from "./api";
+import baseUrl from "./api";
 import { CookieService } from 'ngx-cookie-service';
 import { Observable } from "rxjs";
-
-
 
 export interface SendApprovalLinkResponse {
     approvalLink: string;
@@ -36,13 +34,13 @@ export class SendLinkService {
     // Métodos públicos (sin autenticación)
     getPublicIntentionByToken(token: string): Observable<PublicCreditIntentionResponse> {
         return this.http.get<PublicCreditIntentionResponse>(
-            `${baseUrlPublic}public/credit-approval/${token}`
+            `${baseUrl}public/credit-approval/${token}`
         );
     }
 
     submitApprovalDecision(token: string, approved: boolean, comments?: string): Observable<any> {
         return this.http.post(
-            `${baseUrlPublic}public/credit-approval/decision`, {
+            `${baseUrl}public/credit-approval/decision`, {
             token,
             approved,
             comments

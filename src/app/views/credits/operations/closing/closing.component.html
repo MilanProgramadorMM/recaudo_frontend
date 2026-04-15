@@ -593,23 +593,21 @@
                                 Volver
                             </button>
 
-                            <div class="d-flex gap-2">
-                                <!-- Botón Consultar Estado (después de finalizar) -->
-                                <button
-                                    *ngIf="!canAddSpends && currentStatus !== 'APPROVED' && currentStatus !== 'REJECTED'"
-                                    (click)="consultarEstado()" class="btn btn-outline-primary"
-                                    [disabled]="isRefreshing">
-                                    <i class="bi" [ngClass]="isRefreshing ? 'bi-arrow-repeat spin' : 'bi-search'"></i>
-                                    <span class="ms-2">Consultar Estado</span>
-                                </button>
+                            <!-- Botón Consultar Estado (después de finalizar) -->
+                            <button
+                                *ngIf="!canAddSpends && currentStatus !== 'APPROVED' && currentStatus !== 'REJECTED'"
+                                (click)="consultarEstado()" class="btn btn-outline-primary"
+                                [disabled]="isRefreshing">
+                                <i class="bi" [ngClass]="isRefreshing ? 'bi-arrow-repeat spin' : 'bi-search'"></i>
+                                <span class="ms-2">Consultar Estado</span>
+                            </button>
 
-                                <!-- Botón Finalizar (solo si puede agregar gastos) -->
-                                <button *ngIf="canAddSpends" (click)="finishSpends()" class="btn btn-success">
-                                    <!-- ← doble protección -->
-                                    <i class="bi bi-check-circle me-2"></i>
-                                    Finalizar y Enviar a Estudio
-                                </button>
-                            </div>
+                            <!-- Botón Finalizar (solo si puede agregar gastos) -->
+                            <button *ngIf="canAddSpends" (click)="finishSpends()" class="btn btn-success">
+                                <!-- ← doble protección -->
+                                <i class="bi bi-check-circle me-2"></i>
+                                Finalizar y Enviar a Estudio
+                            </button>
                         </div>
                     </div>
                 </div>

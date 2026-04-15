@@ -10,8 +10,7 @@ export default baseUrl;
 
 
 //API PUBLICA PARA ENVIAR LINK A CLIENTE
-let baseUrlPublic = 'https://businesssam.com/api/';
-
+//let baseUrlPublic = 'https://businesssam.com/api/';
 
 
 // -----------------LOCAL-----------------

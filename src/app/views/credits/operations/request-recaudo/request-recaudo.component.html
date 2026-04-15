@@ -93,6 +93,10 @@
 
                                     <!-- Info grid -->
                                     <div class="rc-info-grid">
+                                        <div class="rc-info-item" *ngIf="cliente.data.direccion">
+                                            <span class="rc-info-label">Zona</span>
+                                            <span class="rc-info-value">{{ cliente.data.zona }}</span>
+                                        </div>
                                         <div class="rc-info-item">
                                             <span class="rc-info-label">F. inicio</span>
                                             <span class="rc-info-value">    {{
@@ -120,10 +124,6 @@
                                                 cliente.data.expirationDate | date:'dd \'de\' MMMM' | uppercase
                                                 }}</span>
                                         </div>
-                                        <div class="rc-info-item" *ngIf="cliente.data.direccion">
-                                            <span class="rc-info-label">Dirección</span>
-                                            <span class="rc-info-value">{{ cliente.data.direccion }}</span>
-                                        </div>
                                         <div class="rc-info-item" *ngIf="cliente.data.telefono">
                                             <span class="rc-info-label">Teléfono</span>
                                             <span class="rc-info-value">{{ cliente.data.telefono }}</span>
@@ -135,6 +135,10 @@
                                         <div class="rc-info-item" *ngIf="cliente.data.barrio">
                                             <span class="rc-info-label">Barrio</span>
                                             <span class="rc-info-value">{{ cliente.data.barrio }}</span>
+                                        </div>
+                                        <div class="rc-info-item" *ngIf="cliente.data.direccion">
+                                            <span class="rc-info-label">Dirección</span>
+                                            <span class="rc-info-value">{{ cliente.data.direccion }}</span>
                                         </div>
 
                                     </div>
@@ -213,14 +217,14 @@
                                         <button type="button"
                                             class="btn btn-info btn-sm flex-fill d-flex flex-column align-items-center py-2"
                                             *ngIf="cliente.data.paidFull === 'S'"
-                                            (click)="openRecaudoDetailModal(cliente); $event.stopPropagation()">
+                                            (click)="openRecaudoDetailModal(cliente.data); $event.stopPropagation()">
                                             <i class="ti ti-eye mb-1"></i>
                                             <span style="font-size: 10px; line-height: 1;">Ver</span>
                                         </button>
 
                                         <button type="button"
                                             class="btn btn-recaudo btn-sm flex-fill d-flex flex-column align-items-center py-2"
-                                            (click)="openRecaudoModal(cliente); $event.stopPropagation()">
+                                            (click)="openRecaudoModal(cliente.data); $event.stopPropagation()">
                                             <i class="ti ti-cash mb-1"></i>
                                             <span style="font-size: 10px; line-height: 1;">Recaudar</span>
                                         </button>
@@ -228,7 +232,7 @@
                                         <button type="button"
                                             class="btn btn-outline-warning btn-sm flex-fill d-flex flex-column align-items-center py-2"
                                             *ngIf="cliente.data.paidFull !== 'S' && cliente.data.liquidated !== 'S' && cliente.data.paidToday !== 1"
-                                            (click)="registrarPromesa(cliente); $event.stopPropagation()">
+                                            (click)="registrarPromesa(cliente.data); $event.stopPropagation()">
                                             <i class="ti ti-calendar-event mb-1"></i>
                                             <span style="font-size: 10px; line-height: 1;">Promesa</span>
                                         </button>
@@ -236,7 +240,7 @@
                                         <button type="button"
                                             class="btn btn-outline-secondary btn-sm flex-fill d-flex flex-column align-items-center py-2"
                                             *ngIf="cliente.data.paidFull !== 'S' && cliente.data.liquidated !== 'S' && cliente.data.paidToday !== 1"
-                                            (click)="registrarNoPago(cliente); $event.stopPropagation()">
+                                            (click)="registrarNoPago(cliente.data); $event.stopPropagation()">
                                             <i class="ti ti-x mb-1"></i>
                                             <span style="font-size: 10px; line-height: 1;">No pagó</span>
                                         </button>
@@ -377,24 +381,24 @@
                                     <div class="d-flex gap-2 justify-content-center flex-wrap">
                                         <button type="button" class="btn btn-info btn-sm"
                                             *ngIf="cliente.paidFull === 'S'"
-                                            (click)="openRecaudoDetailModal(cliente); $event.stopPropagation()">
+                                            (click)="openRecaudoDetailModal(cliente.data); $event.stopPropagation()">
                                             <i class="ti ti-eye me-1"></i>Ver
                                         </button>
 
                                         <button type="button" class="btn btn-recaudo btn-sm"
-                                            (click)="openRecaudoModal(cliente); $event.stopPropagation()">
+                                            (click)="openRecaudoModal(cliente.data); $event.stopPropagation()">
                                             <i class="ti ti-cash me-1"></i>Recaudar
                                         </button>
 
                                         <button type="button" class="btn btn-outline-warning btn-sm"
                                             *ngIf="cliente.paidFull !== 'S' && cliente.liquidated !== 'S' && cliente.paidToday !== 1"
-                                            (click)="registrarPromesa(cliente); $event.stopPropagation()">
+                                            (click)="registrarPromesa(cliente.data); $event.stopPropagation()">
                                             <i class="ti ti-calendar-event me-1"></i>Promesa
                                         </button>
 
                                         <button type="button" class="btn btn-outline-secondary btn-sm"
                                             *ngIf="cliente.paidFull !== 'S' && cliente.liquidated !== 'S' && cliente.paidToday !== 1"
-                                            (click)="registrarNoPago(cliente); $event.stopPropagation()">
+                                            (click)="registrarNoPago(cliente.data); $event.stopPropagation()">
                                             <i class="ti ti-x me-1"></i>No pagó
                                         </button>
                                     </div>
