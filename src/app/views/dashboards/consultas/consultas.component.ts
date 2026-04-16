@@ -12,6 +12,7 @@ import { LoadingComponent } from '@views/ui/loading/loading.component';
 import { ConsultasService, DebidoCobrarPorZonaDto, DefaultConsultasDto, MovimientoZonaDto } from '@core/services/consultas.service';
 import { ModalDetalleConsultaComponent } from './modal-detalle-consulta/modal-detalle-consulta.component';
 import { firstValueFrom } from 'rxjs';
+import { ActivatedRoute, Route } from '@angular/router';
 
 export interface ConsultaRow {
   id: number;
@@ -50,6 +51,8 @@ export class ConsultasComponent implements OnInit, AfterViewInit {
   currentUserRole: string | null = null;
   currentUserId: number | null = null;
 
+  type: string | null = null;
+
   tableData1: ConsultaRow[] = [];
   tableData2: DefaultConsultasDto[] = [];
   tableData3: DefaultConsultasDto[] = [];
@@ -63,8 +66,12 @@ export class ConsultasComponent implements OnInit, AfterViewInit {
     private sharedFilterService: SharedFilterService,
     private userService: UserService,
     private dialog: MatDialog,
-    private consultasService: ConsultasService
+    private consultasService: ConsultasService,
+    private route: ActivatedRoute
   ) {
+    this.route.data.subscribe(data => {
+      this.type = data['type'];
+    });
     const today = new Date();
     const todayStr = today.getFullYear() + '-' +
       String(today.getMonth() + 1).padStart(2, '0') + '-' +

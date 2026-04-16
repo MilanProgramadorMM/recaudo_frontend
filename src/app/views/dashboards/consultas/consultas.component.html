@@ -4,20 +4,20 @@
             <div
                 class="page-title-head d-flex flex-column flex-sm-row align-items-start align-items-sm-center justify-content-between gap-3">
                 <div class="flex-grow-1 text-sm-start text-center">
-                    <h4 class="fs-18 fw-semibold m-0">Consultas</h4>
+                    <h4 class="fs-18 fw-semibold m-0">Consultas {{ type | lowercase }}</h4>
                 </div>
-                <div class="w-100 w-sm-auto">
+                <div class="w-sm-auto">
                     <form [formGroup]="filterForm">
                         <div class="row g-2 align-items-center justify-content-center justify-content-sm-end">
                             <!-- SELECT DE ZONAS -->
                             <!-- <div class="col-12 col-sm-auto" style="min-width: 180px;">
-                <select class="form-select w-100" aria-label="Filtrar por zona" formControlName="zona">
-                  <option value="" disabled>Seleccione una zona</option>
-                  <option *ngFor="let zona of zonas" [value]="zona.value">
-                    {{ zona.value }}
-                  </option>
-                </select>
-              </div> -->
+                                <select class="form-select w-100" aria-label="Filtrar por zona" formControlName="zona">
+                                <option value="" disabled>Seleccione una zona</option>
+                                <option *ngFor="let zona of zonas" [value]="zona.value">
+                                    {{ zona.value }}
+                                </option>
+                                </select>
+                            </div> -->
                             <div class="col-12 col-sm-auto">
                                 <div class="input-group">
                                     <input mwlFlatpickr [flatpickrOptions]="flatpickrOptions"
@@ -65,7 +65,7 @@
     <div *ngIf="!loading" class="row mt-3 g-3 consultas-grid">
 
         <!-- TABLA 1─── -->
-        <div class="col-md-8">
+        <div class="col-md-8" *ngIf="type=='OPERATIVAS'">
             <div class="card h-100 shadow-sm consultas-card">
                 <div class="card-header border-bottom border-dashed d-flex align-items-center gap-2">
                     <!-- <span class="consultas-table-icon consultas-icon-primary">
@@ -110,7 +110,7 @@
         </div>
 
         <!-- TABLA 2 -->
-        <div class="col-md-4" *ngIf="currentUserRole?.toLowerCase() !== 'asesor'">
+        <div class="col-md-4" *ngIf="type=='TACTICAS'">
             <div class="card h-100 shadow-sm consultas-card">
                 <div class="card-header border-bottom border-dashed d-flex align-items-center gap-2">
                     <!-- <span class="consultas-table-icon consultas-icon-warning">
@@ -146,7 +146,7 @@
         </div>
 
         <!-- TABLA 3-->
-        <div class="col-md-4">
+        <div class="col-md-4" *ngIf="type=='OPERATIVAS'">
             <div class="card h-100 shadow-sm consultas-card">
                 <div class="card-header border-bottom border-dashed d-flex align-items-center gap-2">
                     <!-- <span class="consultas-table-icon consultas-icon-danger">
@@ -182,7 +182,7 @@
         </div>
 
         <!-- TABLA 4 -->
-        <div class="col-md-8">
+        <div class="col-md-8" *ngIf="type=='TACTICAS'">
             <div class="card h-100 shadow-sm consultas-card">
                 <div class="card-header border-bottom border-dashed d-flex align-items-center gap-2">
                     <!-- <span class="consultas-table-icon consultas-icon-info">

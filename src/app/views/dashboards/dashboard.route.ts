@@ -16,9 +16,14 @@ export const DASHBOARD_ROUTES: Route[] = [
     data: { title: 'Sales' }
   },
   {
-    path: 'consultas',
+    path: 'consultas/operativas',
     component: ConsultasComponent,
-    data: { title: 'Consultas' }
+    data: { title: 'Consultas', type: 'OPERATIVAS' }
+  },
+  {
+    path: 'consultas/tacticas',
+    component: ConsultasComponent,
+    data: { title: 'Consultas', type: 'TACTICAS' }
   },
   {
     path: 'clinic',
