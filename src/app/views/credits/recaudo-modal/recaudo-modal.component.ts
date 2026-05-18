@@ -34,14 +34,21 @@ interface QuotaDetail {
   quotaNumber: number;
   expirationDate: string;
   liquidated: string;
+  paidFull: string;
   quotaValue: number;
   portfolioInsurancePending: number;
   lifeInsurancePending: number;
   interestPending: number;
   investmentPending: number;
   totalPending: number;
+  totalPaid: number;
+  remainingBalance: number;
+  moraAcumulada: number;
+  moraSaldada: boolean;
+  diasMoraRegistrados: number;
   isPaid: boolean;
   isOverdue: boolean;
+  hasInterestPayment: boolean;
   delayPenalty: number;
   daysOverdue: number;
 }
@@ -55,10 +62,10 @@ interface RecaudoDetail {
   interestValue: number;
   lifeInsurance: number;
   portfolioInsurance: number;
+  delayPenalty: number;
   userCreate: string;
   createdAt: string;
 }
-
 enum UserRole {
   ASISTENTE = 'BACKOFFICE',
   ASESOR = 'Asesor',
@@ -365,16 +372,26 @@ export class RecaudoModalComponent {
   getRecaudoDeHoy(): RecaudoDetail[] {
     if (!this.paymentStatus) return [];
 
-    const hoy = new Date().toISOString().split('T')[0];
+    const hoy = new Date().toISOString().split('T')[0]; // 'yyyy-MM-dd'
 
     return this.paymentStatus.recaudos.filter(r => {
-      const fechaRecaudo = r.createdAt?.split('T')[0] ?? r.createdAt?.split(' ')[0];
+      if (!r.createdAt) return false;
+      // Cubre formatos: '2026-05-12T10:30:00' y '2026-05-12 10:30:00'
+      const fechaRecaudo = r.createdAt.substring(0, 10);
       return fechaRecaudo === hoy && r.conceptName === 'RECAUDO EN RUTA';
     });
   }
 
   getTotalAbonadoHoy(): number {
     return this.getRecaudoDeHoy().reduce((sum, r) => sum + Math.abs(r.valuePaid), 0);
+  }
+
+  // Suma cualquier columna numérica de recaudos
+  getTotalByConcepto(field: keyof RecaudoDetail): number {
+    if (!this.paymentStatus) return 0;
+    return this.paymentStatus.recaudos
+      .filter(r => r.conceptName === 'RECAUDO EN RUTA')
+      .reduce((sum, r) => sum + (Number(r[field]) || 0), 0);
   }
 
 }

@@ -1,12 +1,15 @@
 // -----------------PRODUCCION-----------------
 
 //APP
-//let baseUrl = 'https://businesssam.com/api/'
-//export default baseUrl;
+//  let baseUrl = 'https://businesssam.com/api/'
+//  export default baseUrl;
+
+let baseUrl = 'http://localhost:8081/api/'
+export default baseUrl;
 
 //DOCKER
-let baseUrl = '/api/';
-export default baseUrl;
+//let baseUrl = '/api/';
+//export default baseUrl;
 
 
 //API PUBLICA PARA ENVIAR LINK A CLIENTE

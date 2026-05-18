@@ -4,44 +4,64 @@ import baseUrl from "./api";
 import { CookieService } from 'ngx-cookie-service';
 import { Observable } from "rxjs";
 
-export interface CreditPaymentStatus {
-    creditId: number;
-    personId: number;
-    quotaValue: number;
-    periodQuantity: number;
-    periodName: string;
-    totalIntentionValue: number;
-    totalInterestValue: number;
-    totalCapitalValue: number;
-    totalCuotas: number;
-    cuotasPagadas: number;
-    cuotasPendientes: number;
-    totalPagado: number;
-    totalPendiente: number;
-    porcentajePagado: number;
-    cuotas: QuotaDetail[];
-    recaudos: RecaudoDetail[];
+// Exporta todas las interfaces desde el servicio
+export interface QuotaDetail {
+  quotaId: number;
+  quotaNumber: number;
+  expirationDate: string;
+  liquidated: string;
+  paidFull: string;
+  quotaValue: number;
+  portfolioInsurancePending: number;
+  lifeInsurancePending: number;
+  interestPending: number;
+  investmentPending: number;
+  totalPending: number;
+  totalPaid: number;
+  remainingBalance: number;
+  moraAcumulada: number;
+  moraSaldada: boolean;
+  diasMoraRegistrados: number;
+  isPaid: boolean;
+  isOverdue: boolean;
+  hasInterestPayment: boolean;
+  delayPenalty: number;
+  daysOverdue: number;
 }
 
-export interface QuotaDetail {
-    quotaId: number;
-    quotaNumber: number;
-    expirationDate: string;
-    liquidated: string;
-    paidFull: string;
-    quotaValue: number;
-    totalPaid: number;
-    remainingBalance: number;
-    portfolioInsurancePending: number;
-    lifeInsurancePending: number;
-    interestPending: number;
-    investmentPending: number;
-    totalPending: number;
-    isPaid: boolean;
-    hasInterestPayment: boolean;
-    isOverdue: boolean;
-    delayPenalty: number;
-    daysOverdue: number;
+export interface RecaudoDetail {
+  recaudoId: number;
+  quotaNumber: number;
+  conceptName: string;
+  valuePaid: number;
+  investmentValue: number;
+  interestValue: number;
+  lifeInsurance: number;
+  portfolioInsurance: number;
+  delayPenalty: number;
+  userCreate: string;
+  createdAt: string;
+}
+
+export interface CreditPaymentStatus {
+  creditId: number;
+  personId: number;
+  quotaValue: number;
+  periodQuantity: number;
+  periodName: string;
+  totalIntentionValue: number;
+  totalInterestValue: number;
+  totalCapitalValue: number;
+  taxValue: number;
+  stationery: number;
+  totalCuotas: number;
+  cuotasPagadas: number;
+  cuotasPendientes: number;
+  totalPagado: number;
+  totalPendiente: number;
+  porcentajePagado: number;
+  cuotas: QuotaDetail[];
+  recaudos: RecaudoDetail[];
 }
 
 export interface CreditIntentionDetail {
@@ -54,21 +74,6 @@ export interface CreditIntentionDetail {
     periodQuantity: number;
     zona: string;
     createdAt: string;
-}
-
-export interface RecaudoDetail {
-    recaudoId: number;
-    quotaNumber: number;
-    conceptName: string;
-    valuePaid: number;
-    investmentValue: number;
-    interestValue: number;
-    lifeInsurance: number;
-    portfolioInsurance: number;
-    userCreate: string;
-    createdAt: string;
-    delayPenalty: number;
-    description: string;
 }
 
 export interface PaymentRequestt {

@@ -203,7 +203,7 @@
 
 
         <!-- VISTA ADMIN / BACKOFFICE - tablas completas -->
-        <ng-container >
+        <ng-container>
             <div class="row">
                 <!-- TABLA DE CUOTAS - IZQUIERDA -->
                 <div class="col-lg-6 mb-4">
@@ -282,6 +282,7 @@
                         <div class="card-body p-0">
                             <div class="table-responsive" *ngIf="paymentStatus.recaudos.length > 0"
                                 style="max-height: 400px; overflow-y: auto;">
+                                <!-- TABLA DE RECAUDOS - corregir nombres de campos -->
                                 <table class="table table-bordered tabla-roja mb-0">
                                     <thead>
                                         <tr>
@@ -291,7 +292,7 @@
                                             <th>Valor Pagado</th>
                                             <th>Capital</th>
                                             <th>Intereses</th>
-                                            <th>S. de vida</th>
+                                            <th>S. de Vida</th>
                                             <th>S. de Cartera</th>
                                             <th>Interés Mora</th>
                                             <th>Registrado por</th>
@@ -312,13 +313,18 @@
                                             </td>
                                             <td>{{ currency }} {{ formatCurrencyValue(recaudo.investmentValue) }}</td>
                                             <td>{{ currency }} {{ formatCurrencyValue(recaudo.interestValue) }}</td>
-                                            <td>{{ currency }} {{ formatCurrencyValue(recaudo.lifeInsurancePending) }}
+
+                                            <!-- ✅ Corregido: lifeInsurance (no lifeInsurancePending) -->
+                                            <td>{{ currency }} {{ formatCurrencyValue(recaudo.lifeInsurance) }}</td>
+
+                                            <!-- ✅ Corregido: portfolioInsurance (no portfolioInsurancePending) -->
+                                            <td>{{ currency }} {{ formatCurrencyValue(recaudo.portfolioInsurance) }}
                                             </td>
-                                            <td>{{ currency }} {{ formatCurrencyValue(recaudo.portfolioInsurancePending)
-                                                }}
-                                            </td>
+
+                                            <!-- ✅ delayPenalty ahora existe en la interface -->
                                             <td>
-                                                <span *ngIf="recaudo.delayPenalty > 0; else sinMora">
+                                                <span *ngIf="recaudo.delayPenalty > 0; else sinMora"
+                                                    class="text-danger">
                                                     {{ currency }} {{ formatCurrencyValue(recaudo.delayPenalty) }}
                                                 </span>
                                                 <ng-template #sinMora>-</ng-template>
@@ -326,12 +332,26 @@
 
                                             <td>{{ recaudo.userCreate }}</td>
                                         </tr>
+
+                                        <!-- Fila de totales -->
                                         <tr class="table-active">
-                                            <td colspan="2" class="text-end"><strong>TOTAL RECAUDADO:</strong></td>
-                                            <td colspan="7">
-                                                <strong>{{ currency }} {{ formatCurrencyValue(getTotalRecaudoEnRuta())
-                                                    }}</strong>
+                                            <td colspan="3" class="text-end"><strong>TOTAL RECAUDADO:</strong></td>
+                                            <td>
+                                                <strong class="text-success">
+                                                    {{ currency }} {{ formatCurrencyValue(getTotalRecaudoEnRuta()) }}
+                                                </strong>
                                             </td>
+                                            <td>{{ currency }} {{
+                                                formatCurrencyValue(getTotalByConcepto('investmentValue')) }}</td>
+                                            <td>{{ currency }} {{
+                                                formatCurrencyValue(getTotalByConcepto('interestValue')) }}</td>
+                                            <td>{{ currency }} {{
+                                                formatCurrencyValue(getTotalByConcepto('lifeInsurance')) }}</td>
+                                            <td>{{ currency }} {{
+                                                formatCurrencyValue(getTotalByConcepto('portfolioInsurance')) }}</td>
+                                            <td>{{ currency }} {{
+                                                formatCurrencyValue(getTotalByConcepto('delayPenalty')) }}</td>
+                                            <td></td>
                                         </tr>
                                     </tbody>
                                 </table>
@@ -453,6 +473,9 @@
 
                                     </div>
                                     <!-- fin observaciones del grupo -->
+                                    <button>
+                                        Añadir observación
+                                    </button>
 
                                 </ng-container>
 

@@ -7,6 +7,9 @@ import { RecaudoFormComponent } from "./recaudo-form/recaudo-form.component";
 import { DailyCollectionItem, DailyCollectionItemDTO, DailyCollectionService } from "@core/services/daily-collection.service";
 import Swal from "sweetalert2";
 import { FormsModule } from "@angular/forms";
+import { RecaudoModalComponent } from "@views/credits/recaudo-modal/recaudo-modal.component";
+import { Capacitor } from "@capacitor/core";
+import { AppLauncher } from '@capacitor/app-launcher';
 
 
 @Component({
@@ -47,6 +50,18 @@ export class RequestRecaudoComponent implements OnInit {
     this.loadRecaudoData();
   }
 
+  getInitials(text: string): string {
+    if (!text) return '';
+
+    return text
+      .trim()
+      .split(/\s+/)
+      .filter(word => word.length > 0)
+      .slice(0, 2)
+      .map(word => word[0].toUpperCase())
+      .join('');
+  }
+
   loadRecaudoData(): void {
     this.loading = true;
     this.error = false;
@@ -82,9 +97,9 @@ export class RequestRecaudoComponent implements OnInit {
           return;
         }
 
-        // Si solo tiene una zona, seleccionarla automáticamente
+        // Si solo tiene una zona, seleccionarla automáticamente        
         if (this.zonas.length === 1) {
-          this.selectedZona = this.zonas[0];
+          this.selectedZona = this.getInitials(this.zonas[0]);
         }
         this.loadClientesByZona();
       },
@@ -108,7 +123,6 @@ export class RequestRecaudoComponent implements OnInit {
 
     this.dailyCollectionService.getDailyCollection(today).subscribe({
       next: (response) => {
-        //debugger;
         this.clientesnew = response.map((c: any) => ({
           ...c,
           nombreDia: this.diasMap[c.data?.nombreDia] || c.data?.nombreDia
@@ -370,6 +384,19 @@ export class RequestRecaudoComponent implements OnInit {
     });
   }
 
+  openCreditDetail(creditId: number): void {
+    const modalRef = this.modalService.open(RecaudoModalComponent, {
+      size: 'xl',
+      backdrop: 'static',
+      keyboard: true,
+      centered: true,
+      scrollable: true,
+      windowClass: 'modal-extra-large'
+    });
+
+    modalRef.componentInstance.creditId = creditId;
+  }
+
 
   openRecaudoModal(cliente: PersonResponseDto): void {
     const modalRef = this.modalService.open(RecaudoFormComponent, {
@@ -417,6 +444,36 @@ export class RequestRecaudoComponent implements OnInit {
 
     const cleanNumber = number.replace(/[^\d+]/g, '');
     window.location.href = `tel:${cleanNumber}`;
+  }
+
+  async openWhatsApp(phone: string): Promise<void> {
+    if (!phone) return;
+
+    const cleanedPhone = phone.replace(/\D/g, '');
+    const fullPhone = cleanedPhone.startsWith('57')
+      ? cleanedPhone
+      : `57${cleanedPhone}`;
+
+    if (Capacitor.isNativePlatform()) {
+      await this.openWhatsAppNative(fullPhone);
+    } else {
+      window.open(`https://wa.me/${fullPhone}`, '_blank');
+    }
+  }
+
+  private async openWhatsAppNative(fullPhone: string): Promise<void> {
+    const whatsappUrl = `whatsapp://send?phone=${fullPhone}`;
+
+    try {
+      // Abrir directo sin canOpenUrl() — ese método falla en Android
+      await AppLauncher.openUrl({ url: whatsappUrl });
+    } catch (error) {
+      console.error('WhatsApp no disponible:', error);
+      // Solo si falla de verdad, ir al Play Store
+      await AppLauncher.openUrl({
+        url: 'market://details?id=com.whatsapp'
+      });
+    }
   }
 
   // applyCustomerFilter(): void {

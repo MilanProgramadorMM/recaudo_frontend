@@ -7,6 +7,7 @@ import { Observable } from 'rxjs';
 export interface DailyCollectionItem {
     creditId: number;
     cuotaId: number;
+    totalCapitalValue: number;
     quotaNumber: number;
     expirationDate: string;
     clientName: string;
@@ -32,6 +33,11 @@ export interface DailyCollectionItem {
     municipio?: string | null;
     nombreDia?: string | null;
     fechaCredito: string;
+    interestMora: number;
+    fechaVence: string;
+    saldoPendienteCuota: number;
+    diasMora: number;
+    lineaname?: string;
 }
 
 export interface DailyCollectionItemRespaldo {

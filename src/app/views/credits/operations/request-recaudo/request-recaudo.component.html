@@ -1,62 +1,60 @@
 <!-- request-recaudo.component.html -->
-<div class="container-fluid py-3 py-md-4">
+<div class="py-3 py-md-4">
     <div class="card shadow-sm">
+
+        <!-- ══ HEADER PRINCIPAL ══ -->
         <div class="card-header bg-recaudo-red text-white">
-            <div
-                class="d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center gap-2">
-                <h5 class="mb-0 d-flex align-items-center flex-wrap gap-2">
+            <div class="d-flex justify-content-between align-items-center">
+                <h5 class="mb-0 d-flex align-items-center gap-2">
                     <i class="ti ti-cash"></i>
                     <span>Recaudo de Clientes</span>
-
-                    <!-- Select de zonas 
-                    <select *ngIf="zonas.length > 1"
-                        class="form-select form-select-sm d-inline-block w-auto bg-light text-danger border-0"
-                        [(ngModel)]="selectedZona" (change)="onZonaChange()" style="max-width: 200px;">
-                        <option value="all">Todas las zonas</option>
-                        <option *ngFor="let z of zonas" [value]="z">Zona: {{ z }}</option>
-                    </select>
-
-                    Badge si solo tiene una zona 
-                    <span *ngIf="zonas.length === 1" class="badge bg-light text-danger fs-6">
-                        Zona: {{ zonas[0] }}
-                    </span>
-                    -->
                 </h5>
+                <button class="btn btn-sm btn-outline-light" (click)="reloadData()" title="Recargar">
+                    <i class="ti ti-refresh"></i>
+                </button>
             </div>
         </div>
 
+        <!-- ══ BARRA DE FILTROS ══ -->
         <div class="card-body p-3 border-bottom bg-light">
-            <div class="row align-items-center g-2">
-                <!-- Filtro por zona (si tiene múltiples) -->
+            <div class="row align-items-end g-2">
                 <div class="col-md-4" *ngIf="zonas.length > 1">
-                    <label for="filterZona" class="form-label mb-1 small">Filtrar por zona:</label>
-                    <select id="filterZona" class="form-select form-select-sm" [(ngModel)]="selectedZona"
-                        (change)="onZonaChange()">
+                    <label class="form-label mb-1 small fw-semibold">
+                        <i class="ti ti-map-pin me-1"></i>Zona
+                    </label>
+                    <select class="form-select form-select-sm" [(ngModel)]="selectedZona" (change)="onZonaChange()">
                         <option value="all">Todas las zonas</option>
                         <option *ngFor="let z of zonas" [value]="z">{{ z }}</option>
                     </select>
                 </div>
 
-                <!-- Filtro por estado -->
                 <div class="col-md-4">
-                    <label for="filterStatus" class="form-label mb-1 small">Filtrar por estado:</label>
-                    <select id="filterStatus" class="form-select" [(ngModel)]="filterStatus" (change)="applyFilter()">
-                        <option value="all">Todos (sin pagados)</option> <!-- <-- texto actualizado -->
+                    <label class="form-label mb-1 small fw-semibold">
+                        <i class="ti ti-filter me-1"></i>Estado
+                    </label>
+                    <select class="form-select form-select-sm" [(ngModel)]="filterStatus" (change)="applyFilter()">
+                        <option value="all">Todos (sin pagados)</option>
                         <option value="pending">Pendientes</option>
                         <option value="paid">Pagados hoy</option>
                         <option value="promise">Con promesa</option>
                         <option value="nopago">No pagó</option>
                     </select>
                 </div>
+
                 <div class="col-md-4">
-                    <label for="filterStatus" class="form-label mb-1 small">Cliente:</label>
-                    <input id="intention-search" class="form-control text-uppercase" type="text"
-                        placeholder="Cliente..." [(ngModel)]="searchTerm" (ngModelChange)="applyCustomerFilter()" />
+                    <label class="form-label mb-1 small fw-semibold">
+                        <i class="ti ti-search me-1"></i>Cliente
+                    </label>
+                    <input class="form-control form-control-sm text-uppercase" type="text"
+                        placeholder="Buscar cliente..." [(ngModel)]="searchTerm"
+                        (ngModelChange)="applyCustomerFilter()" />
                 </div>
             </div>
         </div>
 
+        <!-- ══ CONTENIDO PRINCIPAL ══ -->
         <div class="card-body p-0">
+
             <!-- LOADING -->
             <div *ngIf="loading" class="text-center py-5">
                 <div class="spinner-border text-danger" role="status">
@@ -72,230 +70,272 @@
                 <button type="button" class="btn-close" (click)="error = false"></button>
             </div>
 
-            <!-- TABLA DE CLIENTES -->
+            <!-- LISTA DE CLIENTES -->
             <div *ngIf="!loading && !error">
-                <!-- Vista móvil (cards) -->
+
+                <!-- ─── VISTA MÓVIL ─── -->
                 <div class="d-md-none recaudo-mobile-list">
-
-                    <div *ngFor="let cliente of clientesFiltered" class="recaudo-card flip-container">
-                        <div class="flip-card" [class.flipped]="cliente.flipped">
-                            <div class="flip-front" (click)="cliente.flipped = true">
-                                <!-- ── HEADER ── -->
-                                <div class="rc-header">
-                                    <div class="rc-header-info">
-                                        <span class="rc-name">{{ cliente.data.clientName }}</span>
-                                        <span class="rc-credit">Crédito #{{ cliente.data.creditId }}</span>
-                                    </div>
-                                    <span class="rc-orden">#{{ cliente.data.clientOrden }}</span>
-                                </div>
-
-                                <div class="rc-body">
-
-                                    <!-- Info grid -->
-                                    <div class="rc-info-grid">
-                                        <div class="rc-info-item" *ngIf="cliente.data.direccion">
-                                            <span class="rc-info-label">Zona</span>
-                                            <span class="rc-info-value">{{ cliente.data.zona }}</span>
-                                        </div>
-                                        <div class="rc-info-item">
-                                            <span class="rc-info-label">F. inicio</span>
-                                            <span class="rc-info-value">    {{
-                                                cliente.data.fechaCredito
-                                                | date:'dd \'de\' MMMM' | uppercase
-                                                }}</span>
-                                        </div>
-                                        <div class="rc-info-item">
-                                            <span class="rc-info-label">Cuota</span>
-                                            <span class="rc-info-value">{{ cliente.data.quotaNumber }} de {{
-                                                cliente.data.totalCuotas
-                                                }}</span>
-                                        </div>
-                                        <div class="rc-info-item">
-                                            <span class="rc-info-label">Plazo</span>
-                                            <span class="rc-info-value">{{ cliente.data.plazoCredito }}</span>
-                                        </div>
-                                        <div class="rc-info-item">
-                                            <span class="rc-info-label">Período</span>
-                                            <span class="rc-info-value">{{ cliente.data.periodo }}</span>
-                                        </div>
-                                        <div class="rc-info-item">
-                                            <span class="rc-info-label">Vence</span>
-                                            <span class="rc-info-value">{{ cliente.nombreDia | uppercase }} {{
-                                                cliente.data.expirationDate | date:'dd \'de\' MMMM' | uppercase
-                                                }}</span>
-                                        </div>
-                                        <div class="rc-info-item" *ngIf="cliente.data.telefono">
-                                            <span class="rc-info-label">Teléfono</span>
-                                            <span class="rc-info-value">{{ cliente.data.telefono }}</span>
-                                        </div>
-                                        <div class="rc-info-item" *ngIf="cliente.data.municipio">
-                                            <span class="rc-info-label">Municipio</span>
-                                            <span class="rc-info-value">{{ cliente.data.municipio }}</span>
-                                        </div>
-                                        <div class="rc-info-item" *ngIf="cliente.data.barrio">
-                                            <span class="rc-info-label">Barrio</span>
-                                            <span class="rc-info-value">{{ cliente.data.barrio }}</span>
-                                        </div>
-                                        <div class="rc-info-item" *ngIf="cliente.data.direccion">
-                                            <span class="rc-info-label">Dirección</span>
-                                            <span class="rc-info-value">{{ cliente.data.direccion }}</span>
-                                        </div>
-
-                                    </div>
-
-                                    <div class="rc-divider"></div>
-
-                                    <!-- Montos -->
-                                    <div class="rc-money-row">
-                                        <div class="rc-money-card">
-                                            <span class="rc-money-label">Valor cuota</span>
-                                            <span class="rc-money-value rc-cuota">{{ cliente.data.valorCuota |
-                                                currency:'COP':'$':'1.0-0' }}</span>
-                                        </div>
-                                        <div class="rc-money-card">
-                                            <span class="rc-money-label">Saldo pendiente</span>
-                                            <span class="rc-money-value rc-saldo">{{ cliente.data.saldoPendiente |
-                                                currency:'COP':'$':'1.0-0' }}</span>
-                                        </div>
-                                    </div>
-
-                                    <!-- Contadores -->
-                                    <div class="rc-counters-row">
-                                        <div class="rc-counter-item">
-                                            <span class="rc-counter-label">Pagadas</span>
-                                            <span class="rc-badge rc-badge-success">{{ cliente.data.cuotasPagadas
-                                                }}</span>
-                                        </div>
-                                        <div class="rc-counter-item">
-                                            <span class="rc-counter-label">Vencidas</span>
-                                            <span class="rc-badge"
-                                                [ngClass]="cliente.data.cuotasVencidas > 0 ? 'rc-badge-danger' : 'rc-badge-neutral'">
-                                                {{ cliente.data.cuotasVencidas }}
-                                            </span>
-                                        </div>
-                                        <div class="rc-counter-item">
-                                            <span class="rc-counter-label">Pendientes</span>
-                                            <span class="rc-badge rc-badge-warning">{{ cliente.data.totalCuotas -
-                                                cliente.data.cuotasPagadas }}</span>
-                                        </div>
-                                    </div>
-
-                                    <div class="rc-divider"></div>
-
-                                    <!-- Estado -->
-                                    <div class="mb-3">
-                                        <span class="badge d-inline-block mt-1" style="width: fit-content;" [ngClass]="{
-                            'bg-success': cliente.data.paidFull === 'S',
-                            'bg-primary': cliente.data.paidToday === 1 && cliente.data.paidFull !== 'S',
-                            'bg-warning text-dark': cliente.data.paidToday === 0 && cliente.data.paymentPromiseDate && cliente.data.noPago !== 1,
-                            'bg-danger': cliente.data.paidToday === 0 && !cliente.data.paymentPromiseDate && cliente.data.noPago !== 1,
-                            'bg-secondary': cliente.data.noPago === 1
+ 
+    <div *ngFor="let cliente of clientesFiltered" class="recaudo-card flip-container">
+        <div class="flip-card" [class.flipped]="cliente.flipped">
+ 
+            <!-- ══ CARA FRONTAL ══ -->
+            <div class="flip-front" (click)="cliente.flipped = true">
+ 
+                <!-- HEADER DE TARJETA -->
+                <div class="rc-header">
+                    <div class="rc-header-info">
+                        <span class="rc-name">{{ cliente.data.clientName }}</span>
+                        <span class="rc-credit">
+                            CRE #{{ cliente.data.creditId }}
+                            <span *ngIf="cliente.data.zona"> · {{ cliente.data.zona }} - {{ cliente.data.lineaName }}</span>
+                        </span>
+                    </div>
+                    <div class="d-flex flex-column align-items-end gap-1">
+                        <span class="rc-orden">#{{ cliente.data.clientOrden }}</span>
+                        <span class="rc-status-badge" [ngClass]="{
+                            'rc-status-success':   cliente.data.paidFull === 'S',
+                            'rc-status-primary':   cliente.data.paidToday === 1 && cliente.data.paidFull !== 'S',
+                            'rc-status-warning':   cliente.data.paidToday !== 1 && cliente.data.paymentPromiseDate && cliente.data.noPago !== 1,
+                            'rc-status-danger':    cliente.data.paidToday !== 1 && !cliente.data.paymentPromiseDate && cliente.data.noPago !== 1,
+                            'rc-status-secondary': cliente.data.noPago === 1
                         }">
-                                            {{
-                                            cliente.data.paidFull === 'S' ? 'Cuota Pagada Completamente'
-                                            : cliente.data.paidToday === 1 ? 'Pagado hoy (Parcial)'
-                                            : cliente.data.noPago === 1 ? 'No pagó - ' + cliente.data.noPagoReason
-                                            : cliente.data.paymentPromiseDate ? 'Promesa ' +
-                                            (cliente.data.paymentPromiseDate | date)
-                                            : 'Pendiente'
-                                            }}
-                                        </span>
-                                    </div>
-
-                                    <div class="rc-divider"></div>
-
-                                    <!-- Acciones -->
-                                    <div class="rc-actions-row">
-                                        <button type="button"
-                                            class="btn btn-llamada btn-sm flex-fill d-flex flex-column align-items-center py-2"
-                                            *ngIf="cliente.data.telefono"
-                                            (click)="callPhone(cliente.data.telefono); $event.stopPropagation()">
-                                            <i class="ti ti-phone mb-1"></i>
-                                            <span style="font-size: 10px;">Llamar</span>
-                                        </button>
-
-                                        <button type="button"
-                                            class="btn btn-info btn-sm flex-fill d-flex flex-column align-items-center py-2"
-                                            *ngIf="cliente.data.paidFull === 'S'"
-                                            (click)="openRecaudoDetailModal(cliente.data); $event.stopPropagation()">
-                                            <i class="ti ti-eye mb-1"></i>
-                                            <span style="font-size: 10px; line-height: 1;">Ver</span>
-                                        </button>
-
-                                        <button type="button"
-                                            class="btn btn-recaudo btn-sm flex-fill d-flex flex-column align-items-center py-2"
-                                            (click)="openRecaudoModal(cliente.data); $event.stopPropagation()">
-                                            <i class="ti ti-cash mb-1"></i>
-                                            <span style="font-size: 10px; line-height: 1;">Recaudar</span>
-                                        </button>
-
-                                        <button type="button"
-                                            class="btn btn-outline-warning btn-sm flex-fill d-flex flex-column align-items-center py-2"
-                                            *ngIf="cliente.data.paidFull !== 'S' && cliente.data.liquidated !== 'S' && cliente.data.paidToday !== 1"
-                                            (click)="registrarPromesa(cliente.data); $event.stopPropagation()">
-                                            <i class="ti ti-calendar-event mb-1"></i>
-                                            <span style="font-size: 10px; line-height: 1;">Promesa</span>
-                                        </button>
-
-                                        <button type="button"
-                                            class="btn btn-outline-secondary btn-sm flex-fill d-flex flex-column align-items-center py-2"
-                                            *ngIf="cliente.data.paidFull !== 'S' && cliente.data.liquidated !== 'S' && cliente.data.paidToday !== 1"
-                                            (click)="registrarNoPago(cliente.data); $event.stopPropagation()">
-                                            <i class="ti ti-x mb-1"></i>
-                                            <span style="font-size: 10px; line-height: 1;">No pagó</span>
-                                        </button>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="flip-back" (click)="cliente.flipped = false; $event.stopPropagation()">
-                                <div class="rc-header">
-                                    <span class="rc-name">Recaudos</span>
-                                    <!-- <button class="btn btn-sm btn-light"
-                                            (click)="cliente.flipped = false; $event.stopPropagation()">
-                                        ← Volver
-                                    </button> -->
-                                </div>
-                                <div class="rc-body">
-                                    <table class="table table-sm table-bordered">
-                                        <thead>
-                                            <tr>
-                                                <th>Fecha</th>
-                                                <th>Valor</th>
-                                                <th>Día</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            <tr *ngFor="let r of cliente.recaudos">
-                                                <td>{{ r.fechaInicio | date:'dd/MM/yyyy' }}</td>
-                                                <td>{{ r.totalPagado | currency:'COP':'$':'1.0-0' }}</td>
-                                                <td>{{ getDiaEspanol(r.nombreDia) }}</td>
-                                            </tr>
-                                        </tbody>
-                                        <tfoot *ngIf="cliente.recaudos && cliente.recaudos.length > 0">
-                                            <tr class="table-secondary">
-                                                <td class="text-bold"><strong>TOTAL</strong></td>
-                                                <td class="text-bold">
-                                                    <strong>{{ calcularTotalPagado(cliente.recaudos) |
-                                                        currency:'COP':'$':'1.0-0' }}</strong>
-                                                </td>
-                                                <td></td>
-                                            </tr>
-                                        </tfoot>
-                                    </table>
-                                </div>
-                            </div>
+                            {{ cliente.data.paidFull === 'S'           ? 'Pagado'
+                             : cliente.data.paidToday === 1            ? 'Parcial'
+                             : cliente.data.noPago === 1               ? 'No pagó'
+                             : cliente.data.paymentPromiseDate         ? 'Promesa'
+                             : 'Pendiente' }}
+                        </span>
+                    </div>
+                </div>
+ 
+                <div class="rc-body">
+  <div class="rc-section-label">
+                        <i class="ti ti-credit-card me-1"></i> Datos del Crédito
+                    </div>
+                    <!-- ── INFO GRID ── -->
+                    <div class="rc-info-grid">
+                        <div class="rc-info-item">
+                            <span class="rc-info-label">Fecha Inicio</span>
+                            <span class="rc-info-value">{{ cliente.data.fechaCredito | date:"d 'de' MMM" | uppercase }}</span>
+                        </div>
+                        <div class="rc-info-item">
+                            <span class="rc-info-label">Período</span>
+                            <span class="rc-info-value">{{ cliente.data.periodo }} ({{ cliente.data.plazoCredito }})</span>
+                        </div>
+                        <div class="rc-info-item">
+                            <span class="rc-info-label">Crédito Vence</span>
+                            <span class="rc-info-value">{{ cliente.data.expirationDate | date:"d 'de' MMM" | uppercase }}</span>
+                        </div>
+                        <div class="rc-info-item" *ngIf="cliente.data.telefono">
+                            <span class="rc-info-label">Teléfono</span>
+                            <span class="rc-info-value">{{ cliente.data.telefono }}</span>
+                        </div>
+                        <div class="rc-info-item rc-full" *ngIf="cliente.data.direccion">
+                            <span class="rc-info-label">Dirección</span>
+                            <span class="rc-info-value">
+                                {{ cliente.data.direccion }}, {{ cliente.data.barrio }}, {{ cliente.data.municipio }}
+                            </span>
+                        </div>
+                    </div>
+ 
+                    <!-- <div class="rc-divider"></div> -->
+ 
+                    <!-- <div class="rc-divider"></div> -->
+                    <div class="rc-summary-row">
+                        <!-- Valor crédito (verde) -->
+                        <div class="rc-total-card-credit">
+                            <span class="rc-total-label">V crédito</span>
+                            <span class="rc-total-value">
+                                $ {{ (+cliente.data.totalCapitalValue || 0) | number:'1.0-0' }}
+                            </span>
+                        </div>
+ 
+                        <!-- Saldo total -->
+                        <div class="rc-total-card">
+                            <span class="rc-total-label">S total</span>
+                            <span class="rc-total-value">
+                                $ {{
+                                    ((+cliente.data.saldoPendiente || 0) + (+cliente.data.interestMora || 0))
+                                    | number:'1.0-0'
+                                }}
+                            </span>
                         </div>
                     </div>
 
-                    <!-- Sin clientes -->
-                    <div *ngIf="clientesFiltered.length === 0" class="text-center py-5">
-                        <i class="ti ti-users-off" style="font-size: 3rem; color: #dc3545;"></i>
-                        <p class="text-muted mt-3 mb-0">No hay clientes para recaudo el día de hoy</p>
+                    <!-- ── PROGRESO DE CUOTA ── -->
+                    <div class="rc-quota-progress">
+                        <div class="d-flex justify-content-between align-items-center mb-1">
+                            <span class="rc-info-label">
+                                Cuota {{ cliente.data.quotaNumber }} de {{ cliente.data.totalCuotas }}
+                            </span>
+                            <span class="rc-quota-pct fw-semibold">
+                                {{ ((cliente.data.quotaNumber / cliente.data.totalCuotas) * 100) | number:'1.0-0' }}%
+                            </span>
+                        </div>
+                        <div class="rc-prog-bar-wrap">
+                            <div class="rc-prog-bar-fill"
+                                [style.width.%]="(cliente.data.quotaNumber / cliente.data.totalCuotas) * 100">
+                            </div>
+                        </div>
                     </div>
-
+ 
+                    <div class="rc-divider"></div>
+ 
+                    <!-- ══════════════════════════════════════
+                         DATOS DE LA CUOTA
+                    ══════════════════════════════════════ -->
+                    <div class="rc-section-label">
+                        <i class="ti ti-receipt me-1"></i> Datos de la Cuota
+                    </div>
+ 
+                    <div class="rc-money-row">
+ 
+                        <!-- Valor cuota -->
+                        <div class="rc-money-card rc-money-cuota">
+                            <span class="rc-money-label">Valor cuota</span>
+                            <span class="rc-money-value">
+                                $ {{ (+cliente.data.valorCuota || 0) | number:'1.0-0' }}
+                            </span>
+                        </div>
+ 
+                        <!-- Saldo vencido -->
+                        <div class="rc-money-card rc-money-saldo">
+                            <span class="rc-money-label">Saldo vencido</span>
+                            <span class="rc-money-value">
+                                $ {{ (+cliente.data.saldoPendienteCuota || 0) | number:'1.0-0' }}
+                            </span>
+                        </div>
+ 
+                        <!-- Interés moratorio -->
+                        <div class="rc-money-card rc-money-mora">
+                            <span class="rc-money-label">Interés moratorio</span>
+                            <span class="rc-money-value">
+                                $ {{ (+cliente.data.interestMora || 0) | number:'1.0-0' }}
+                            </span>
+                            <span class="rc-money-value">
+                                {{ cliente.data.diasMora || 0 }} Días Mora
+                            </span>
+                        </div>
+ 
+                        <!-- Total cuota -->
+                        <div class="rc-money-card rc-money-total">
+                            <span class="rc-money-label">Total cuota</span>
+                            <span class="rc-money-value">
+                                $ {{
+                                    ((+cliente.data.interestMora || 0) + (+cliente.data.saldoPendienteCuota || 0))
+                                    | number:'1.0-0'
+                                }}
+                            </span>
+                        </div>
+ 
+                    </div>
+ 
+                    <div class="rc-divider"></div>
+ 
+                    <!-- ── BOTONERA ── -->
+                    <div class="rc-actions-row">
+ 
+                        <button type="button"
+                            class="btn btn-llamada btn-sm flex-fill d-flex flex-column align-items-center py-2"
+                            *ngIf="cliente.data.telefono"
+                            (click)="callPhone(cliente.data.telefono); $event.stopPropagation()">
+                            <i class="ti ti-phone mb-1"></i>
+                            <span style="font-size: 10px;">Llamar</span>
+                        </button>
+ 
+                        <button type="button"
+                            class="btn btn-whatsapp btn-sm flex-fill d-flex flex-column align-items-center py-2"
+                            *ngIf="cliente.data.telefono"
+                            (click)="openWhatsApp(cliente.data.telefono); $event.stopPropagation()">
+                            <i class="ti ti-brand-whatsapp mb-1"></i>
+                            <span style="font-size: 10px;">WhatsApp</span>
+                        </button>
+ 
+                        <button type="button"
+                            class="btn btn-info btn-sm flex-fill d-flex flex-column align-items-center py-2"
+                            *ngIf="cliente.data.paidFull === 'S'"
+                            (click)="openRecaudoDetailModal(cliente.data); $event.stopPropagation()">
+                            <i class="ti ti-eye mb-1"></i>
+                            <span style="font-size: 10px; line-height: 1;">Ver</span>
+                        </button>
+ 
+                        <button type="button"
+                            class="btn btn-recaudo btn-sm flex-fill d-flex flex-column align-items-center py-2"
+                            (click)="openRecaudoModal(cliente.data); $event.stopPropagation()">
+                            <i class="ti ti-cash mb-1"></i>
+                            <span style="font-size: 10px; line-height: 1;">Recaudar</span>
+                        </button>
+ 
+                        <button type="button"
+                            class="btn btn-see-details btn-sm flex-fill d-flex flex-column align-items-center py-2"
+                            (click)="openCreditDetail(cliente.data.creditId); $event.stopPropagation()">
+                            <i class="ti ti-eye mb-1"></i>
+                            <span style="font-size: 10px; line-height: 1;">Detalle Crédito</span>
+                        </button>
+ 
+                        <button type="button"
+                            class="btn btn-outline-warning btn-sm flex-fill d-flex flex-column align-items-center py-2"
+                            *ngIf="cliente.data.paidFull !== 'S' && cliente.data.liquidated !== 'S' && cliente.data.paidToday !== 1"
+                            (click)="registrarPromesa(cliente.data); $event.stopPropagation()">
+                            <i class="ti ti-calendar-event mb-1"></i>
+                            <span style="font-size: 10px; line-height: 1;">Promesa</span>
+                        </button>
+ 
+                    </div>
+ 
                 </div>
+            </div>
+            <!-- ══ FIN CARA FRONTAL ══ -->
+ 
+            <!-- ══ CARA TRASERA (historial de recaudos) ══ -->
+            <div class="flip-back" (click)="cliente.flipped = false; $event.stopPropagation()">
+                <div class="rc-header">
+                    <span class="rc-name">Historial de recaudos</span>
+                </div>
+                <div class="rc-body">
+                    <table class="table table-sm table-bordered mb-0">
+                        <thead>
+                            <tr>
+                                <th>Fecha</th>
+                                <th>Valor</th>
+                                <th>Día</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr *ngFor="let r of cliente.recaudos">
+                                <td>{{ r.fechaInicio | date:'dd/MM/yyyy' }}</td>
+                                <td>{{ r.totalPagado | currency:'COP':'$':'1.0-0' }}</td>
+                                <td>{{ getDiaEspanol(r.nombreDia) }}</td>
+                            </tr>
+                        </tbody>
+                        <tfoot *ngIf="cliente.recaudos && cliente.recaudos.length > 0">
+                            <tr class="table-secondary">
+                                <td><strong>TOTAL</strong></td>
+                                <td><strong>{{ calcularTotalPagado(cliente.recaudos) | currency:'COP':'$':'1.0-0' }}</strong></td>
+                                <td></td>
+                            </tr>
+                        </tfoot>
+                    </table>
+                    <p class="text-center text-muted small mt-3">
+                        <i class="ti ti-arrow-left me-1"></i>Toca para volver
+                    </p>
+                </div>
+            </div>
+            <!-- ══ FIN CARA TRASERA ══ -->
+ 
+        </div>
+    </div>
+ 
+    <!-- Sin clientes -->
+    <div *ngIf="clientesFiltered.length === 0" class="text-center py-5">
+        <i class="ti ti-users-off" style="font-size: 3rem; color: #dc3545;"></i>
+        <p class="text-muted mt-3 mb-0">No hay clientes para recaudo el día de hoy</p>
+    </div>
+ 
+</div>
 
-                <!-- Vista desktop (tabla) -->
+                <!-- ─── VISTA DESKTOP (tabla) ─── -->
                 <div class="table-responsive d-none d-md-block">
                     <table class="table table-hover align-middle mb-0">
                         <thead class="thead-recaudo">
@@ -312,29 +352,23 @@
                                 </td>
                                 <td>
                                     <div class="d-flex flex-column gap-1">
-                                        <!-- Nombre y crédito -->
                                         <strong>{{ cliente.data.clientName }}</strong>
                                         <small class="text-muted">
-                                            <i class="ti ti-hash me-1"></i>Crédito #{{ cliente.data.creditId }} ·
+                                            <i class="ti ti-hash me-1"></i>#{{ cliente.data.creditId }} ·
                                             <i class="ti ti-calendar ms-1 me-1"></i>{{ cliente.data.nombreDia }} {{
                                             cliente.data.expirationDate | date:'dd/MM/yyyy' }} ·
                                             {{ cliente.data.periodo }}
                                         </small>
-
-                                        <!-- Dirección y teléfono -->
                                         <small class="text-muted" *ngIf="cliente.data.direccion">
                                             <i class="ti ti-map-pin me-1"></i>{{ cliente.data.direccion }}
                                         </small>
                                         <small class="text-muted" *ngIf="cliente.data.telefono">
                                             <i class="ti ti-phone me-1"></i>{{ cliente.data.telefono }}
                                         </small>
-
-                                        <!-- Métricas de cuotas -->
                                         <div class="d-flex flex-wrap gap-2 mt-1">
                                             <span class="badge bg-light text-dark border" title="Cuota actual / total">
                                                 Cuota {{ cliente.data.quotaNumber }}/{{ cliente.data.totalCuotas }} ·
-                                                Plazo {{
-                                                cliente.data.plazoCredito }}
+                                                Plazo {{ cliente.data.plazoCredito }}
                                             </span>
                                             <span class="badge bg-success" title="Cuotas pagadas">
                                                 ✓ {{ cliente.data.cuotasPagadas }} pagadas
@@ -344,8 +378,6 @@
                                                 ⚠ {{ cliente.data.cuotasVencidas }} vencidas
                                             </span>
                                         </div>
-
-                                        <!-- Valor cuota y saldo -->
                                         <div class="d-flex gap-3 mt-1">
                                             <small>
                                                 <span class="text-muted">Cuota: </span>
@@ -358,15 +390,13 @@
                                                     currency:'COP':'$':'1.0-0' }}</strong>
                                             </small>
                                         </div>
-
-                                        <!-- Estado -->
                                         <span class="badge d-inline-block mt-1" style="width: fit-content;" [ngClass]="{
-            'bg-success': cliente.data.paidFull === 'S',
-            'bg-primary': cliente.data.paidToday === 1 && cliente.paidFull !== 'S',
-            'bg-warning text-dark': cliente.paidToday === 0 && cliente.paymentPromiseDate && cliente.noPago !== 1,
-            'bg-danger': cliente.paidToday === 0 && !cliente.paymentPromiseDate && cliente.noPago !== 1,
-            'bg-secondary': cliente.noPago === 1
-        }">
+                                            'bg-success': cliente.data.paidFull === 'S',
+                                            'bg-primary': cliente.data.paidToday === 1 && cliente.paidFull !== 'S',
+                                            'bg-warning text-dark': cliente.paidToday === 0 && cliente.paymentPromiseDate && cliente.noPago !== 1,
+                                            'bg-danger': cliente.paidToday === 0 && !cliente.paymentPromiseDate && cliente.noPago !== 1,
+                                            'bg-secondary': cliente.noPago === 1
+                                        }">
                                             {{ cliente.paidFull === 'S' ? 'Cuota Pagada'
                                             : cliente.paidToday === 1 ? 'Pagado hoy (Parcial)'
                                             : cliente.noPago === 1 ? 'No pagó - ' + cliente.noPagoReason
@@ -376,7 +406,6 @@
                                         </span>
                                     </div>
                                 </td>
-                                <!-- Vista desktop - Reemplazar la sección de botones en la columna de acciones -->
                                 <td class="text-center">
                                     <div class="d-flex gap-2 justify-content-center flex-wrap">
                                         <button type="button" class="btn btn-info btn-sm"
@@ -384,18 +413,15 @@
                                             (click)="openRecaudoDetailModal(cliente.data); $event.stopPropagation()">
                                             <i class="ti ti-eye me-1"></i>Ver
                                         </button>
-
                                         <button type="button" class="btn btn-recaudo btn-sm"
                                             (click)="openRecaudoModal(cliente.data); $event.stopPropagation()">
                                             <i class="ti ti-cash me-1"></i>Recaudar
                                         </button>
-
                                         <button type="button" class="btn btn-outline-warning btn-sm"
                                             *ngIf="cliente.paidFull !== 'S' && cliente.liquidated !== 'S' && cliente.paidToday !== 1"
                                             (click)="registrarPromesa(cliente.data); $event.stopPropagation()">
                                             <i class="ti ti-calendar-event me-1"></i>Promesa
                                         </button>
-
                                         <button type="button" class="btn btn-outline-secondary btn-sm"
                                             *ngIf="cliente.paidFull !== 'S' && cliente.liquidated !== 'S' && cliente.paidToday !== 1"
                                             (click)="registrarNoPago(cliente.data); $event.stopPropagation()">
@@ -408,8 +434,8 @@
                     </table>
                 </div>
 
-                <!-- SI NO HAY CLIENTES -->
-                <div *ngIf="clientesFiltered.length === 0" class="text-center py-5">
+                <!-- Sin clientes desktop -->
+                <div *ngIf="clientesFiltered.length === 0" class="text-center py-5 d-none d-md-block">
                     <i class="ti ti-users-off" style="font-size: 3rem; color: #dc3545;"></i>
                     <p class="text-muted mt-3 mb-0">No hay clientes para recaudo el dia de hoy</p>
                 </div>
@@ -421,13 +447,361 @@
                             <small class="text-muted d-block mb-1">Total de recaudos:</small>
                             <strong class="fs-5 text-danger">{{ clientesFiltered.length }}</strong>
                         </div>
-                        <!-- <div class="col-6 col-md-6 text-end text-md-start">
-                            <small class="text-muted d-block mb-1">Zona asignada:</small>
-                            <strong class="fs-5 text-danger">{{ zona }}</strong>
-                        </div> -->
                     </div>
                 </div>
+
             </div>
         </div>
     </div>
 </div>
+
+
+<!-- ══ ESTILOS DE LA TARJETA MÓVIL ══ -->
+<style>
+    /* ── Tarjeta base ── */
+    .recaudo-mobile-list {
+        padding: 12px;
+        display: flex;
+        flex-direction: column;
+        gap: 14px;
+    }
+
+    .recaudo-card {
+        perspective: 1000px;
+    }
+
+    .flip-card {
+        position: relative;
+        transform-style: preserve-3d;
+        transition: transform .45s ease;
+    }
+
+    .flip-card.flipped {
+        transform: rotateY(180deg);
+    }
+
+    .flip-front,
+    .flip-back {
+        backface-visibility: hidden;
+        border: 0.5px solid #e0e0e0;
+        border-radius: 12px;
+        overflow: hidden;
+        background: #fff;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, .07);
+    }
+
+    .flip-back {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        transform: rotateY(180deg);
+    }
+
+    /* ── Header ── */
+    .rc-header {
+        background: #c0392b;
+        padding: 12px 14px;
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+    }
+
+    .rc-header-info {
+        display: flex;
+        flex-direction: column;
+        gap: 2px;
+    }
+
+    .rc-name {
+        font-size: 14px;
+        font-weight: 600;
+        color: #fff;
+        line-height: 1.2;
+    }
+
+    .rc-credit {
+        font-size: 11px;
+        color: rgba(255, 255, 255, .75);
+    }
+
+    .rc-orden {
+        background: rgba(255, 255, 255, .2);
+        color: #fff;
+        font-size: 12px;
+        font-weight: 600;
+        padding: 2px 9px;
+        border-radius: 20px;
+    }
+
+    /* ── Badge de estado ── */
+    .rc-status-badge {
+        font-size: 10px;
+        font-weight: 600;
+        padding: 2px 8px;
+        border-radius: 20px;
+        white-space: nowrap;
+    }
+
+    .rc-status-success {
+        background: #d4edda;
+        color: #155724;
+    }
+
+    .rc-status-primary {
+        background: #cce5ff;
+        color: #004085;
+    }
+
+    .rc-status-warning {
+        background: #fff3cd;
+        color: #856404;
+    }
+
+    .rc-status-danger {
+        background: #f8d7da;
+        color: #721c24;
+    }
+
+    .rc-status-secondary {
+        background: #e2e3e5;
+        color: #383d41;
+    }
+
+    /* ── Cuerpo ── */
+    .rc-body {
+        padding: 12px 14px;
+    }
+
+    /* ── Info grid ── */
+    .rc-info-grid {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 6px;
+    }
+
+    .rc-info-item {
+        background: #f8f9fa;
+        border-radius: 8px;
+        padding: 7px 9px;
+    }
+
+    .rc-info-label {
+        display: block;
+        font-size: 9px;
+        color: #888;
+        text-transform: uppercase;
+        letter-spacing: .4px;
+        margin-bottom: 2px;
+    }
+
+    .rc-info-value {
+        font-size: 12px;
+        font-weight: 500;
+        color: #222;
+    }
+
+    /* ── Separador ── */
+    .rc-divider {
+        border: none;
+        border-top: 0.5px solid #e9ecef;
+        margin: 10px 0;
+    }
+
+    /* ── Progreso de cuota ── */
+    .rc-quota-progress {
+        margin-bottom: 2px;
+    }
+
+    .rc-quota-pct {
+        font-size: 12px;
+        color: #c0392b;
+    }
+
+    .rc-prog-bar-wrap {
+        width: 100%;
+        height: 5px;
+        background: #e9ecef;
+        border-radius: 3px;
+        overflow: hidden;
+    }
+
+    .rc-prog-bar-fill {
+        height: 100%;
+        background: #c0392b;
+        border-radius: 3px;
+        transition: width .4s ease;
+    }
+
+    /* ── Montos financieros ── */
+    .rc-money-row {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 6px;
+        margin-bottom: 6px;
+    }
+
+    .rc-money-card {
+        background: #f8f9fa;
+        border-radius: 8px;
+        padding: 8px 10px;
+    }
+
+    .rc-money-label {
+        display: block;
+        font-size: 9px;
+        color: #888;
+        text-transform: uppercase;
+        letter-spacing: .4px;
+        margin-bottom: 3px;
+    }
+
+    .rc-money-value {
+        font-size: 14px;
+        font-weight: 600;
+    }
+
+    .rc-money-cuota .rc-money-value {
+        color: #155724;
+    }
+
+    
+    .rc-money-total .rc-money-value {
+        color: #193dcd;
+    }
+
+    .rc-money-saldo .rc-money-value {
+        color: #b01625;
+    }
+
+    .rc-money-mora .rc-money-value {
+        color: #d66706;
+    }
+
+    /* ── Saldo total ── */
+    .rc-total-card {
+        background: #c0392b;
+        border-radius: 8px;
+        padding: 8px 12px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-top: 2px;
+    }
+
+    .rc-total-card-credit {
+        background: #13c551;
+        border-radius: 8px;
+        padding: 8px 12px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-top: 2px;
+    }
+
+    .rc-total-label {
+        font-size: 10px;
+        color: rgba(255, 255, 255, .8);
+        text-transform: uppercase;
+        letter-spacing: .4px;
+    }
+
+    .rc-total-value {
+        font-size: 15px;
+        font-weight: 700;
+        color: #fff;
+    }
+
+    /* ── Contadores ── */
+    .rc-counters-row {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 6px;
+    }
+
+    .rc-counter-item {
+        border-radius: 8px;
+        padding: 8px 6px;
+        text-align: center;
+        border: 0.5px solid transparent;
+    }
+
+    .rc-counter-num {
+        display: block;
+        font-size: 18px;
+        font-weight: 700;
+    }
+
+    .rc-counter-label {
+        display: block;
+        font-size: 9px;
+        text-transform: uppercase;
+        letter-spacing: .4px;
+        margin-top: 2px;
+    }
+
+    .rc-counter-pagadas {
+        background: #d4edda;
+        border-color: #c3e6cb;
+    }
+
+    .rc-counter-pagadas .rc-counter-num {
+        color: #155724;
+    }
+
+    .rc-counter-pagadas .rc-counter-label {
+        color: #1e7e34;
+    }
+
+    .rc-counter-vencidas {
+        background: #f8d7da;
+        border-color: #f5c6cb;
+    }
+
+    .rc-counter-vencidas .rc-counter-num {
+        color: #721c24;
+    }
+
+    .rc-counter-vencidas .rc-counter-label {
+        color: #a32d2d;
+    }
+
+    .rc-counter-neutral {
+        background: #e2e3e5;
+        border-color: #d6d8db;
+    }
+
+    .rc-counter-neutral .rc-counter-num {
+        color: #383d41;
+    }
+
+    .rc-counter-neutral .rc-counter-label {
+        color: #6c757d;
+    }
+
+    .rc-counter-pendientes {
+        background: #fff3cd;
+        border-color: #ffeeba;
+    }
+
+    .rc-counter-pendientes .rc-counter-num {
+        color: #533f03;
+    }
+
+    .rc-counter-pendientes .rc-counter-label {
+        color: #856404;
+    }
+
+    /* ── Botonera (sin cambios de comportamiento) ── */
+    .rc-actions-row {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 6px;
+    }
+
+    .rc-actions-row .btn {
+        min-width: 54px;
+        border-radius: 8px;
+        font-size: 11px;
+    }
+</style>
