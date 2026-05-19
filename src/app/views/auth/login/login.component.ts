@@ -6,7 +6,6 @@ import { loginSuccess, loginFailure } from '@/store/authentication/authenticatio
 import { CommonModule } from '@angular/common';
 import { AuthenticationService } from '@core/services/auth.service';
 import { login } from '@/store/authentication/authentication.actions';
-import { RouterLink } from '@angular/router';
 import { currentYear } from '@common/constants';
 import { NgClass, NgIf } from "@angular/common";
 import { take } from 'rxjs';

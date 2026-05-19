@@ -1,6 +1,6 @@
-<h3 class="fw-semibold text-dark mb-2">Inicio de Sesión</h3>
+<!-- <h3 class="fw-semibold text-dark mb-2">Inicio de Sesión</h3> -->
 
-<p class="text-white mb-4">Ingrese su usuario y contraseña para iniciar sesión.</p>
+<!-- <p class="text-white mb-4">Ingrese su usuario y contraseña para iniciar sesión.</p> -->
 
 <!--<third-party-login/>-->
 
@@ -16,13 +16,13 @@
 
 <form [formGroup]="signInForm" class="text-start mb-3">
   <div class="text-dark mb-3">
-    <label class="form-label" for="example-username">Usuario</label>
+    <label class="form-label text-white" for="example-username">Usuario</label>
     <input formControlName="username" type="text" id="example-username" class="form-control"
       placeholder="Ingresa tu usuario" [ngClass]="{ 'is-invalid': formValues?.['username'].errors }">
   </div>
 
   <div class="text-dark mb-3">
-    <label class="form-label" for="example-password">Contraseña</label>
+    <label class="form-label text-white" for="example-password">Contraseña</label>
 
     <div class="input-group">
       <input [type]="showPassword ? 'text' : 'password'" formControlName="password" id="example-password"
