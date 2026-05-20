@@ -4,7 +4,7 @@ import {
   isDevMode,
   provideZoneChangeDetection,
 } from '@angular/core'
-import { provideRouter } from '@angular/router'
+import { provideRouter, withRouterConfig } from '@angular/router'
 import { provideStoreDevtools } from '@ngrx/store-devtools'
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations'
 
@@ -37,7 +37,7 @@ export const appConfig: ApplicationConfig = {
     DecimalPipe,
     CookieService,
     provideZoneChangeDetection({ eventCoalescing: true }),
-    provideRouter(routes),
+    provideRouter(routes, withRouterConfig({ onSameUrlNavigation: 'reload' })),
     provideStore(rootReducer, { metaReducers: [localStorageSyncReducer] }),
     importProvidersFrom(BrowserAnimationsModule, BrowserModule),
     provideStoreDevtools({ maxAge: 25, logOnly: !isDevMode() }),

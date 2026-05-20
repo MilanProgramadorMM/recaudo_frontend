@@ -112,6 +112,66 @@ export class StadyComponent implements OnInit {
   creditosCliente: CreditResponseDto[] = [];
   observacionesSeguimiento: any[] = [];
 
+  validationMessages: any = {
+    document_type: {
+      required: 'Tipo de documento es obligatorio'
+    },
+    document: {
+      required: 'El documento es obligatorio'
+    },
+    gender: {
+      required: 'El género es obligatorio'
+    },
+    zone_id: {
+      required: 'La zona es obligatoria'
+    },
+    firstname: {
+      required: 'El primer nombre es obligatorio'
+    },
+    middlename: {},
+    lastname: {
+      required: 'El apellido es obligatorio'
+    },
+    maternal_lastname: {},
+    fullname: {},
+    occupation: {
+      required: 'La ocupación es obligatoria'
+    },
+    email: {
+      required: 'El correo electrónico es obligatorio',
+      email: 'El correo electrónico no es válido'
+    },
+    phone_number: {
+      required: 'El teléfono es obligatorio',
+      pattern: 'El teléfono solo debe contener números, verifique espacios al inicio, en el centro y al final del valor ingresado'
+    },
+    whatsapp_number: {
+      required: 'El número de WhatsApp es obligatorio',
+      pattern: 'El número de WhatsApp solo debe contener números, verifique espacios al inicio, en el centro y al final del valor ingresado'
+    },
+    country_id: {
+      required: 'El país es obligatorio'
+    },
+    department_id: {
+      required: 'El departamento es obligatorio'
+    },
+    municipality_id: {
+      required: 'El municipio es obligatorio'
+    },
+    neighborhood_id: {
+      required: 'El barrio es obligatorio'
+    },
+    home_address: {
+      required: 'La dirección es obligatoria'
+    },
+    description: {},
+    referido: {},
+    es_cliente_nuevo: {},
+    call_success: {
+      required: 'Debe indicar si el contacto fue exitoso'
+    }
+  };
+
   constructor(
     private fb: FormBuilder,
     private glotypesService: GlotypesService,
@@ -170,7 +230,6 @@ export class StadyComponent implements OnInit {
       referido: [false],
       es_cliente_nuevo: [{ value: false, disabled: true }],
       call_success: [false, Validators.required]
-
     });
 
     this.form1.valueChanges.subscribe(() => this.updateFullName());
@@ -387,12 +446,108 @@ export class StadyComponent implements OnInit {
     this.form1.get('fullname')?.setValue(full.toUpperCase(), { emitEvent: false });
   }
 
+  focusInvalidField() {
+    const invalidControls = document.querySelectorAll('form[name="form1"] .ng-invalid');
+
+    if (invalidControls.length > 0) {
+
+      // 👉 agregar clase a todos
+      invalidControls.forEach((control: Element) => {
+        control.classList.add('is-invalid');
+      });
+
+      // 👉 enfocar el primero
+      const firstInvalidControl = invalidControls[0] as HTMLElement;
+
+      firstInvalidControl.scrollIntoView({
+        behavior: 'smooth',
+        block: 'center'
+      });
+
+      firstInvalidControl.focus();
+    }
+  }
+
+  getFormErrors(): string[] {
+    const errors: string[] = [];
+
+    const fieldNames: any = {
+      document_type: 'Tipo de documento',
+      document: 'Documento',
+      gender: 'Género',
+      zone_id: 'Zona',
+      firstname: 'Primer nombre',
+      middlename: 'Segundo nombre',
+      lastname: 'Primer apellido',
+      maternal_lastname: 'Segundo apellido',
+      fullname: 'Nombre completo',
+      occupation: 'Ocupación',
+      email: 'Correo electrónico',
+      phone_number: 'Teléfono',
+      whatsapp_number: 'WhatsApp',
+      country_id: 'País',
+      department_id: 'Departamento',
+      municipality_id: 'Municipio',
+      neighborhood_id: 'Barrio',
+      home_address: 'Dirección',
+      description: 'Descripción',
+      referido: 'Referido',
+      es_cliente_nuevo: 'Cliente nuevo',
+      call_success: 'Contacto exitoso'
+    };
+
+    Object.keys(this.form1.controls).forEach(key => {
+      const control = this.form1.get(key);
+
+      if (control && control.invalid && control.enabled && control.errors) {
+
+        const fieldName = fieldNames[key] || 'Campo';
+
+        Object.keys(control.errors).forEach(errorKey => {
+
+          let message =
+            this.validationMessages[key]?.[errorKey];
+
+          // 👉 fallback bonito (NO usa key crudo)
+          if (!message) {
+            message = `${fieldName} es inválido`;
+          }
+
+          errors.push(message);
+        });
+      }
+    });
+
+    return [...new Set(errors)];
+  }
+
   onSubmitActividad1(): void {
+    document.querySelectorAll('form[name="form1"] .is-invalid').forEach((el: Element) => {
+      el.classList.remove('is-invalid');
+    });
     if (this.isSaving) return;
 
     this.submitted = true;
 
-    if (this.form1.invalid) return;
+    if (this.form1.invalid) {
+      this.form1.markAllAsTouched();
+      this.focusInvalidField();
+
+      const errors = this.getFormErrors();
+
+      Swal.fire({
+        icon: 'error',
+        title: 'Errores en el formulario',
+        html: `
+          <ul style="text-align:left;">
+            ${errors.map(e => `<li>${e}</li>`).join('')}
+          </ul>
+        `,
+        confirmButtonText: 'Aceptar'
+      });
+
+      return
+    };
 
     const callSuccess = this.form1.get('call_success')?.value;
     if (!callSuccess) {
