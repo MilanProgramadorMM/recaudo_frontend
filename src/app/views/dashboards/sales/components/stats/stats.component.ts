@@ -81,7 +81,7 @@ export class StatsComponent implements OnInit, OnDestroy {
       noPagado: acc.noPagado + (item.totalNoPagado || 0),
     }), { debidoCobrar: 0, recaudado: 0, noPagado: 0 });
 
-    const totalCartera = totals.debidoCobrar + totals.recaudado;
+    const totalCartera = totals.debidoCobrar + (totals.recaudado * -1);
 
     this.statData = [
       {

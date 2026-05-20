@@ -224,7 +224,7 @@ export class ClosingComponent implements OnInit {
           this.baseSpendTypeId = baseType.id;
         }
         const previousBaseSpendType = this.spendGlotypes.find(g => g.code === 'BASE ANTERIOR');
-        if(previousBaseSpendType) {
+        if (previousBaseSpendType) {
           this.previousBaseSpendTypeId = previousBaseSpendType.id;
         }
         this.loadingBase = false;
@@ -257,7 +257,7 @@ export class ClosingComponent implements OnInit {
                 this.baseSpendTypeId = baseType.id;
               }
               const previousBaseSpendType = this.spendGlotypes.find(g => g.code === 'BASE ANTERIOR');
-              if(previousBaseSpendType) {
+              if (previousBaseSpendType) {
                 this.previousBaseSpendTypeId = previousBaseSpendType.id;
               }
 
@@ -332,7 +332,7 @@ export class ClosingComponent implements OnInit {
         if (baseType) {
           this.baseSpendTypeId = baseType.id;
         }
-        if(previousBaseSpendType) {
+        if (previousBaseSpendType) {
           this.previousBaseSpendTypeId = previousBaseSpendType.id;
         }
         if (callback) callback();
@@ -348,7 +348,7 @@ export class ClosingComponent implements OnInit {
       s => s.spendTypeId === this.baseSpendTypeId && s.status !== false
     );
 
-    this.hasBaseRegistered = !!baseSpend;    
+    this.hasBaseRegistered = !!baseSpend;
 
     this.spendsList = data
       .map(spend => ({
@@ -393,7 +393,7 @@ export class ClosingComponent implements OnInit {
     this.updatePermissions();
   }
 
-  get visibleSpendsList() {    
+  get visibleSpendsList() {
     return this.spendsList.filter(
       s => s.amount < 0
     );
@@ -978,6 +978,8 @@ export class ClosingComponent implements OnInit {
   approveClosing(): void {
     if (!this.canApprove) return;
 
+    const subtotal = this.getSubtotal();
+
     if (this.isSubtotalNegative()) {
       Swal.fire({
         icon: 'error',
@@ -1012,16 +1014,30 @@ export class ClosingComponent implements OnInit {
       const adminAmount = this.toNumber(this.approvalForm.get('adminAmount')?.value);
       const asesorAmount = this.toNumber(this.approvalForm.get('asesorAmount')?.value);
 
+      // const approvalDto: ApproveClosingDto = {
+      //   closingId: this.closingId!,
+      //   deliveryType: deliveryType,
+      //   amountAdmin: deliveryType === 'admin' || deliveryType === 'parcial' ? adminAmount : 0,
+      //   amountAsesor: deliveryType === 'asesor' || deliveryType === 'parcial' ? asesorAmount : 0
+      // };
+
       const approvalDto: ApproveClosingDto = {
         closingId: this.closingId!,
         deliveryType: deliveryType,
-        amountAdmin: deliveryType === 'admin' || deliveryType === 'parcial' ? adminAmount : 0,
-        amountAsesor: deliveryType === 'asesor' || deliveryType === 'parcial' ? asesorAmount : 0
+        amountAdmin: deliveryType === 'admin' ? subtotal :
+          deliveryType === 'parcial' ? this.toNumber(this.approvalForm.get('adminAmount')?.value) : 0,
+        amountAsesor: deliveryType === 'asesor' ? subtotal :
+          deliveryType === 'parcial' ? this.toNumber(this.approvalForm.get('asesorAmount')?.value) : 0
       };
 
       title = '¿Aprobar Definitivamente?';
-      message = this.buildApprovalMessage(deliveryType, adminAmount, asesorAmount);
-
+      debugger;
+      message = this.buildApprovalMessage(
+        deliveryType,
+        approvalDto.amountAdmin,   // ← valor correcto del DTO
+        approvalDto.amountAsesor   // ← valor correcto del DTO
+      );
+         
       this.confirmAndApproveWithDelivery(approvalDto, title, message);
 
     } else {

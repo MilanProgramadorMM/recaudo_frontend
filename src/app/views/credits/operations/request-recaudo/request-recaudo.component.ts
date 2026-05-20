@@ -53,13 +53,19 @@ export class RequestRecaudoComponent implements OnInit {
   getInitials(text: string): string {
     if (!text) return '';
 
-    return text
+    const words = text
       .trim()
       .split(/\s+/)
-      .filter(word => word.length > 0)
+      .filter(word => word.length > 0);
+
+    if (words.length === 1) {
+      return words[0].substring(0, 2).toUpperCase(); 
+    }
+
+    return words
       .slice(0, 2)
       .map(word => word[0].toUpperCase())
-      .join('');
+      .join(''); 
   }
 
   loadRecaudoData(): void {
@@ -127,6 +133,7 @@ export class RequestRecaudoComponent implements OnInit {
           ...c,
           nombreDia: this.diasMap[c.data?.nombreDia] || c.data?.nombreDia
         }));
+        //debugger;
         this.applyFilter();
         this.loading = false;
       },
@@ -163,9 +170,17 @@ export class RequestRecaudoComponent implements OnInit {
 
   applyFilter(): void {
     let filtered = [...this.clientesnew];
+    console.log('selectedZona:', this.selectedZona);
+    console.log('zonas en data:', filtered.map(c => c.data.zona));
+    // if (this.selectedZona !== 'all') {
+    //   filtered = filtered.filter(c => c.data.zona === this.selectedZona);
+    // }
 
     if (this.selectedZona !== 'all') {
-      filtered = filtered.filter(c => c.data.zona === this.selectedZona);
+      filtered = filtered.filter(c =>
+        this.selectedZona.startsWith(c.data.zona ?? '') ||
+        c.data.zona === this.selectedZona
+      );
     }
 
     const term = this.searchTerm.toLowerCase().trim();
