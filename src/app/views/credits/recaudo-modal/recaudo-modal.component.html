@@ -309,7 +309,7 @@
                                                 </span>
                                             </td>
                                             <td [class]="getRecaudoClass(recaudo.conceptName)">
-                                                <strong>{{ currency }} {{ formatCurrency(recaudo.valuePaid) }}</strong>
+                                                <strong>{{ currency }} {{ formatCurrencyValue(recaudo.valuePaid) }}</strong>
                                             </td>
                                             <td>{{ currency }} {{ formatCurrencyValue(recaudo.investmentValue) }}</td>
                                             <td>{{ currency }} {{ formatCurrencyValue(recaudo.interestValue) }}</td>
@@ -473,9 +473,9 @@
 
                                     </div>
                                     <!-- fin observaciones del grupo -->
-                                    <button>
+                                    <!-- <button>
                                         Añadir observación
-                                    </button>
+                                    </button> -->
 
                                 </ng-container>
 

@@ -86,29 +86,34 @@ export class CreditsComponent {
     this.filterForm = this.fb.group({
       line: [''],
       zona: [''],
-      date: ['']
+      date: [''],
+      creditId: ['']
     });
 
     this.filterForm.valueChanges.subscribe(filters => {
       const zona = filters.zona;
       const date = filters.date;
       const line = filters.line;
-      if (zona == '' && (date == '' || date == null) && line == '') {
-        this.filteredIntentions = [...this.intentions];
-      } else {
-        this.filteredIntentions = this.intentions.filter(intention => {
-          const createdAt = intention.createdAt
-            ? new Date(intention.createdAt.replace(' ', 'T'))
-            : null;
-          const sameZone = !zona || intention.zoneId == zona;
-          const sameDate = !date || (
-            createdAt &&
-            this.formatDate(createdAt) === this.formatDate(date)
-          );
-          const sameLine = !line || intention.creditLineName == line;
-          return sameZone && sameDate && sameLine;
-        });
-      }
+      const creditId = filters.creditId;
+
+      this.filteredIntentions = this.intentions.filter(intention => {
+        const createdAt = intention.createdAt ? new Date(intention.createdAt.replace(' ', 'T')) : null;
+
+        const sameZone = !zona || intention.zoneId == zona;
+
+        const sameDate = !date || (
+          createdAt && this.formatDate(createdAt) === this.formatDate(date)
+        );
+
+        const sameLine = !line || intention.creditLineName == line;
+
+        // OPTIMIZACIÓN: Solo aplica el filtro si creditId no es nulo, indefinido o un string vacío.
+        const sameCreditId = (creditId === null || creditId === undefined || creditId === '')
+          || intention.id == Number(creditId);
+
+        return sameZone && sameDate && sameLine && sameCreditId;
+      });
+
       this.page = 1;
       this.updatePagedData();
     });
@@ -141,7 +146,9 @@ export class CreditsComponent {
     this.filterForm.patchValue({
       zona: '',
       line: '',
-      date: null
+      date: null,
+      creditId: ''
+
     });
     this.filteredIntentions = [...this.intentions];
   }

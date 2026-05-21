@@ -212,7 +212,7 @@ $recaudo-red-light: #f8d7da;
 }
 
 .btn-whatsapp {
-    background: linear-gradient(135deg, #14db6d 0%, #14db6d 100%);
+    background: linear-gradient(135deg, #13c551 0%, #13c551 100%);
     color: white;
     border: none;
     font-weight: 500;
@@ -742,26 +742,27 @@ $recaudo-red-light: #f8d7da;
     color: #6c757d;
     margin-bottom: 8px;
 }
- 
+
 // Dos totales lado a lado
 .rc-summary-row {
-    display: flex;
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
     gap: 8px;
     margin-bottom: 4px;
- 
-    .rc-total-card {
-        flex: 1;
+
+    .rc-total-card-credit:nth-child(3) {
+        background: #d66706;
     }
 
-    .rc-total-card-credit{
-        flex: 1;
+    .rc-total-card:nth-child(4) {
+        background: #193dcd;
     }
 }
- 
+
 // Variante verde para "Valor crédito"
 .rc-total-card--green {
     background: linear-gradient(135deg, #198754, #20c997);
- 
+
     .rc-total-label,
     .rc-total-value {
         color: #fff;

@@ -7,6 +7,14 @@
                 <div class="d-flex flex-column flex-md-row align-items-start align-items-md-center mb-3 gap-2">
                     <form [formGroup]="filterForm">
                         <div class="row g-2 align-items-center justify-content-center justify-content-sm-end">
+                            <!-- Copia este bloque dentro de la fila de filtros en tu archivo HTML -->
+                            <div class="col-12 col-sm-auto" style="min-width: 180px;">
+                                <div class="input-group">
+                                    <input id="creditIdFilter" type="number" class="form-control border-start-0"
+                                        placeholder="Buscar por ID" formControlName="creditId" />
+                                </div>
+                            </div>
+
                             <div class="col-12 col-sm-auto" style="min-width: 180px;" *ngIf="!isAsesor">
                                 <select class="form-select w-100" aria-label="Filtrar por línea" formControlName="line">
                                     <option value="">Seleccione una línea</option>
@@ -24,15 +32,13 @@
                             </div>
                             <div class="col-12 col-sm-auto">
                                 <div class="input-group">
-                                <input #date mwlFlatpickr 
-                                    [flatpickrOptions]="flatpickrOptions"
-                                    placeholder="Seleccione fecha"
-                                    type="text"
-                                    class="form-control border-0 shadow"
-                                    formControlName="date" />
-                                <span class="input-group-text text-white" style="background-color: #DC3545; border-color: #DC3545;">
-                                    <i class="ti ti-calendar fs-15"></i>
-                                </span>
+                                    <input #date mwlFlatpickr [flatpickrOptions]="flatpickrOptions"
+                                        placeholder="Seleccione fecha" type="text" class="form-control border-0 shadow"
+                                        formControlName="date" />
+                                    <span class="input-group-text text-white"
+                                        style="background-color: #DC3545; border-color: #DC3545;">
+                                        <i class="ti ti-calendar fs-15"></i>
+                                    </span>
                                 </div>
                             </div>
                             <!-- <div class="col-12 col-sm-auto">
@@ -43,8 +49,7 @@
                                 </button>
                             </div> -->
                             <div class="col-12 col-sm-auto">
-                                <button (click)="clearFilters()" type="button" class="btn btn-info"
-                                    title="Limpiar">
+                                <button (click)="clearFilters()" type="button" class="btn btn-info" title="Limpiar">
                                     <i class="ti ti-filter-off"></i>
                                     <span class="ms-2 d-none d-md-inline">Limpiar</span>
                                 </button>

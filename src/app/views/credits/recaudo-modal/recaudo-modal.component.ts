@@ -272,13 +272,36 @@ export class RecaudoModalComponent {
       .reduce((sum, cuota) => sum + (cuota.delayPenalty || 0), 0);
   }
 
-  getTotalRecaudoEnRuta(): number {
-    if (!this.paymentStatus) return 0;
+getTotalRecaudoEnRuta(): number {
+  if (!this.paymentStatus) return 0;
 
-    return this.paymentStatus.recaudos
-      .filter(r => r.conceptName === 'RECAUDO EN RUTA')
-      .reduce((sum, r) => sum + r.valuePaid, 0);
-  }
+  const recaudos = this.paymentStatus.recaudos
+    .filter(r => r.conceptName === 'RECAUDO EN RUTA');
+
+  console.table(
+    recaudos.map(r => ({
+      valuePaid: r.valuePaid,
+      type: typeof r.valuePaid
+    }))
+  );
+
+  const total = recaudos.reduce((sum, r, index) => {
+    const value = Number(r.valuePaid);
+
+    console.log({
+      index,
+      acumuladoAnterior: sum,
+      valorActual: value,
+      nuevoTotal: sum + value
+    });
+
+    return sum + value;
+  }, 0);
+
+  console.log('TOTAL FINAL =>', total);
+
+  return total;
+}
 
   openDelayPenaltyModal(): void {
     const modalRef = this.modalService.open(DelayPenaltyModalComponent, {

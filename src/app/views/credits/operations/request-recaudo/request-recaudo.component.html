@@ -75,265 +75,289 @@
 
                 <!-- ─── VISTA MÓVIL ─── -->
                 <div class="d-md-none recaudo-mobile-list">
- 
-    <div *ngFor="let cliente of clientesFiltered" class="recaudo-card flip-container">
-        <div class="flip-card" [class.flipped]="cliente.flipped">
- 
-            <!-- ══ CARA FRONTAL ══ -->
-            <div class="flip-front" (click)="cliente.flipped = true">
- 
-                <!-- HEADER DE TARJETA -->
-                <div class="rc-header">
-                    <div class="rc-header-info">
-                        <span class="rc-name">{{ cliente.data.clientName }}</span>
-                        <span class="rc-credit">
-                            CRE #{{ cliente.data.creditId }}
-                            <span *ngIf="cliente.data.zona"> · {{ cliente.data.zona }} - {{ cliente.data.lineaName }}</span>
-                        </span>
-                    </div>
-                    <div class="d-flex flex-column align-items-end gap-1">
-                        <span class="rc-orden">#{{ cliente.data.clientOrden }}</span>
-                        <span class="rc-status-badge" [ngClass]="{
+
+                    <div *ngFor="let cliente of clientesFiltered" class="recaudo-card flip-container">
+                        <div class="flip-card" [class.flipped]="cliente.flipped">
+
+                            <!-- ══ CARA FRONTAL ══ -->
+                            <div class="flip-front" (click)="cliente.flipped = true">
+
+                                <!-- HEADER DE TARJETA -->
+                                <div class="rc-header">
+                                    <div class="rc-header-info">
+                                        <span class="rc-name">{{ cliente.data.clientName }}</span>
+                                        <span class="rc-credit">
+                                            CRE #{{ cliente.data.creditId }}
+                                            <span *ngIf="cliente.data.zona"> · {{ cliente.data.zona }} - {{
+                                                cliente.data.lineaName }}</span>
+                                        </span>
+                                    </div>
+                                    <div class="d-flex flex-column align-items-end gap-1">
+                                        <span class="rc-orden">#{{ cliente.data.clientOrden }}</span>
+                                        <span class="rc-status-badge" [ngClass]="{
                             'rc-status-success':   cliente.data.paidFull === 'S',
                             'rc-status-primary':   cliente.data.paidToday === 1 && cliente.data.paidFull !== 'S',
                             'rc-status-warning':   cliente.data.paidToday !== 1 && cliente.data.paymentPromiseDate && cliente.data.noPago !== 1,
                             'rc-status-danger':    cliente.data.paidToday !== 1 && !cliente.data.paymentPromiseDate && cliente.data.noPago !== 1,
                             'rc-status-secondary': cliente.data.noPago === 1
                         }">
-                            {{ cliente.data.paidFull === 'S'           ? 'Pagado'
-                             : cliente.data.paidToday === 1            ? 'Parcial'
-                             : cliente.data.noPago === 1               ? 'No pagó'
-                             : cliente.data.paymentPromiseDate         ? 'Promesa'
-                             : 'Pendiente' }}
-                        </span>
-                    </div>
-                </div>
- 
-                <div class="rc-body">
-  <div class="rc-section-label">
-                        <i class="ti ti-credit-card me-1"></i> Datos del Crédito
-                    </div>
-                    <!-- ── INFO GRID ── -->
-                    <div class="rc-info-grid">
-                        <div class="rc-info-item">
-                            <span class="rc-info-label">Fecha Inicio</span>
-                            <span class="rc-info-value">{{ cliente.data.fechaCredito | date:"d 'de' MMM" | uppercase }}</span>
-                        </div>
-                        <div class="rc-info-item">
-                            <span class="rc-info-label">Período</span>
-                            <span class="rc-info-value">{{ cliente.data.periodo }} ({{ cliente.data.plazoCredito }})</span>
-                        </div>
-                        <div class="rc-info-item">
-                            <span class="rc-info-label">Crédito Vence</span>
-                            <span class="rc-info-value">{{ cliente.data.expirationDate | date:"d 'de' MMM" | uppercase }}</span>
-                        </div>
-                        <div class="rc-info-item" *ngIf="cliente.data.telefono">
-                            <span class="rc-info-label">Teléfono</span>
-                            <span class="rc-info-value">{{ cliente.data.telefono }}</span>
-                        </div>
-                        <div class="rc-info-item rc-full" *ngIf="cliente.data.direccion">
-                            <span class="rc-info-label">Dirección</span>
-                            <span class="rc-info-value">
-                                {{ cliente.data.direccion }}, {{ cliente.data.barrio }}, {{ cliente.data.municipio }}
-                            </span>
-                        </div>
-                    </div>
- 
-                    <!-- <div class="rc-divider"></div> -->
- 
-                    <!-- <div class="rc-divider"></div> -->
-                    <div class="rc-summary-row">
-                        <!-- Valor crédito (verde) -->
-                        <div class="rc-total-card-credit">
-                            <span class="rc-total-label">V crédito</span>
-                            <span class="rc-total-value">
-                                $ {{ (+cliente.data.totalCapitalValue || 0) | number:'1.0-0' }}
-                            </span>
-                        </div>
- 
-                        <!-- Saldo total -->
-                        <div class="rc-total-card">
-                            <span class="rc-total-label">S total</span>
-                            <span class="rc-total-value">
-                                $ {{
-                                    ((+cliente.data.saldoPendiente || 0) + (+cliente.data.interestMora || 0))
-                                    | number:'1.0-0'
-                                }}
-                            </span>
+                                            {{ cliente.data.paidFull === 'S' ? 'Pagado'
+                                            : cliente.data.paidToday === 1 ? 'Parcial'
+                                            : cliente.data.noPago === 1 ? 'No pagó'
+                                            : cliente.data.paymentPromiseDate ? 'Promesa'
+                                            : 'Pendiente' }}
+                                        </span>
+                                    </div>
+                                </div>
+
+                                <div class="rc-body">
+                                    <div class="rc-section-label">
+                                        <i class="ti ti-credit-card me-1"></i> Datos del Crédito
+                                    </div>
+                                    <!-- ── INFO GRID ── -->
+                                    <div class="rc-info-grid">
+                                        <div class="rc-info-item">
+                                            <span class="rc-info-label">Fecha Inicio</span>
+                                            <span class="rc-info-value">{{ cliente.data.fechaCredito | date:"d 'de' MMM"
+                                                | uppercase }}</span>
+                                        </div>
+                                        <div class="rc-info-item">
+                                            <span class="rc-info-label">Período</span>
+                                            <span class="rc-info-value">{{ cliente.data.periodo }} ({{
+                                                cliente.data.plazoCredito }})</span>
+                                        </div>
+                                        <div class="rc-info-item">
+                                            <span class="rc-info-label">Crédito Vence</span>
+                                            <span class="rc-info-value">{{ cliente.data.fechaVence | date:"d 'de' MMM" |
+                                                uppercase }}</span>
+                                        </div>
+                                        <div class="rc-info-item" *ngIf="cliente.data.telefono">
+                                            <span class="rc-info-label">Teléfono</span>
+                                            <span class="rc-info-value">{{ cliente.data.telefono }}</span>
+                                        </div>
+                                        <div class="rc-info-item rc-full" *ngIf="cliente.data.direccion">
+                                            <span class="rc-info-label">Dirección</span>
+                                            <span class="rc-info-value">
+                                                {{ cliente.data.direccion }}, {{ cliente.data.barrio }}, {{
+                                                cliente.data.municipio }}
+                                            </span>
+                                        </div>
+                                    </div>
+
+                                    <div class="rc-summary-row">
+                                        <!-- Valor crédito (verde) -->
+                                        <div class="rc-total-card-credit">
+                                            <span class="rc-total-label">V crédito</span>
+                                            <span class="rc-total-value">
+                                                $ {{ (+cliente.data.totalCapitalValue || 0) | number:'1.0-0' }}
+                                            </span>
+                                        </div>
+
+                                        <!-- Saldo total -->
+                                        <div class="rc-total-card">
+                                            <span class="rc-total-label">S. crédito</span>
+                                            <span class="rc-total-value">
+                                                $ {{
+                                                (+cliente.data.saldoPendiente)
+                                                | number:'1.0-0'
+                                                }}
+                                            </span>
+                                        </div>
+
+                                        <div class="rc-total-card-credit">
+                                            <span class="rc-total-label">I morartorio</span>
+                                            <span class="rc-total-value">
+                                                $ {{ (+cliente.data.totalMoraCredito || 0) | number:'1.0-0' }}
+                                            </span>
+                                        </div>
+
+                                        <!-- Saldo total -->
+                                        <div class="rc-total-card">
+                                            <span class="rc-total-label">Total + interes</span>
+                                            <span class="rc-total-value">
+                                                $ {{
+                                                ((+cliente.data.saldoPendiente || 0) + (+cliente.data.totalMoraCredito ||
+                                                0))
+                                                | number:'1.0-0'
+                                                }}
+                                            </span>
+                                        </div>
+                                    </div>
+
+                                    <!-- ── PROGRESO DE CUOTA ── -->
+                                    <div class="rc-quota-progress">
+                                        <div class="d-flex justify-content-between align-items-center mb-1">
+                                            <span class="rc-info-label">
+                                                Cuota {{ cliente.data.quotaNumber }} de {{ cliente.data.totalCuotas }}
+                                            </span>
+                                            <span class="rc-quota-pct fw-semibold">
+                                                {{ ((cliente.data.quotaNumber / cliente.data.totalCuotas) * 100) |
+                                                number:'1.0-0' }}%
+                                            </span>
+                                        </div>
+                                        <div class="rc-prog-bar-wrap">
+                                            <div class="rc-prog-bar-fill"
+                                                [style.width.%]="(cliente.data.quotaNumber / cliente.data.totalCuotas) * 100">
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="rc-divider"></div>
+
+                                    <!-- ══════════════════════════════════════
+                         DATOS DE LA CUOTA
+                    ══════════════════════════════════════ -->
+                                    <div class="rc-section-label">
+                                        <i class="ti ti-receipt me-1"></i> Datos de la Cuota
+                                    </div>
+
+                                    <div class="rc-money-row">
+
+                                        <!-- Valor cuota -->
+                                        <div class="rc-money-card rc-money-cuota">
+                                            <span class="rc-money-label">Valor cuota</span>
+                                            <span class="rc-money-value">
+                                                $ {{ (+cliente.data.valorCuota || 0) | number:'1.0-0' }}
+                                            </span>
+                                        </div>
+
+                                        <!-- Saldo vencido -->
+                                        <div class="rc-money-card rc-money-saldo">
+                                            <span class="rc-money-label">Saldo vencido</span>
+                                            <span class="rc-money-value">
+                                                $ {{ (+cliente.data.saldoPendienteCuota || 0) | number:'1.0-0' }}
+                                            </span>
+                                        </div>
+
+                                        <!-- Interés moratorio -->
+                                        <div class="rc-money-card rc-money-mora">
+                                            <span class="rc-money-label">Interés moratorio</span>
+                                            <span class="rc-money-value">
+                                                $ {{ (+cliente.data.interestMora || 0) | number:'1.0-0' }}
+                                            </span>
+                                            <span class="rc-money-value">
+                                                {{ cliente.data.diasMora || 0 }} Días Mora
+                                            </span>
+                                        </div>
+
+                                        <!-- Total cuota -->
+                                        <div class="rc-money-card rc-money-total">
+                                            <span class="rc-money-label">Total cuota</span>
+                                            <span class="rc-money-value">
+                                                $ {{
+                                                ((+cliente.data.interestMora || 0) + (+cliente.data.saldoPendienteCuota
+                                                || 0))
+                                                | number:'1.0-0'
+                                                }}
+                                            </span>
+                                        </div>
+
+                                    </div>
+
+                                    <div class="rc-divider"></div>
+
+                                    <!-- ── BOTONERA ── -->
+                                    <div class="rc-actions-row">
+
+                                        <button type="button"
+                                            class="btn btn-llamada btn-sm flex-fill d-flex flex-column align-items-center py-2"
+                                            *ngIf="cliente.data.telefono"
+                                            (click)="callPhone(cliente.data.telefono); $event.stopPropagation()">
+                                            <i class="ti ti-phone mb-1"></i>
+                                            <span style="font-size: 10px;">Llamar</span>
+                                        </button>
+
+                                        <button type="button"
+                                            class="btn btn-whatsapp btn-sm flex-fill d-flex flex-column align-items-center py-2"
+                                            *ngIf="cliente.data.telefono"
+                                            (click)="openWhatsApp(cliente.data.telefono); $event.stopPropagation()">
+                                            <i class="ti ti-brand-whatsapp mb-1"></i>
+                                            <span style="font-size: 10px;">WhatsApp</span>
+                                        </button>
+
+                                        <button type="button"
+                                            class="btn btn-info btn-sm flex-fill d-flex flex-column align-items-center py-2"
+                                            *ngIf="cliente.data.paidFull === 'S'"
+                                            (click)="openRecaudoDetailModal(cliente.data); $event.stopPropagation()">
+                                            <i class="ti ti-eye mb-1"></i>
+                                            <span style="font-size: 10px; line-height: 1;">Ver</span>
+                                        </button>
+
+                                        <button type="button"
+                                            class="btn btn-recaudo btn-sm flex-fill d-flex flex-column align-items-center py-2"
+                                            (click)="openRecaudoModal(cliente.data); $event.stopPropagation()">
+                                            <i class="ti ti-cash mb-1"></i>
+                                            <span style="font-size: 10px; line-height: 1;">Recaudar</span>
+                                        </button>
+
+                                        <button type="button"
+                                            class="btn btn-see-details btn-sm flex-fill d-flex flex-column align-items-center py-2"
+                                            (click)="openCreditDetail(cliente.data.creditId); $event.stopPropagation()">
+                                            <i class="ti ti-eye mb-1"></i>
+                                            <span style="font-size: 10px; line-height: 1;">Detalle Crédito</span>
+                                        </button>
+
+                                        <button type="button"
+                                            class="btn btn-outline-warning btn-sm flex-fill d-flex flex-column align-items-center py-2"
+                                            *ngIf="cliente.data.paidFull !== 'S' && cliente.data.liquidated !== 'S' && cliente.data.paidToday !== 1"
+                                            (click)="registrarPromesa(cliente.data); $event.stopPropagation()">
+                                            <i class="ti ti-calendar-event mb-1"></i>
+                                            <span style="font-size: 10px; line-height: 1;">Promesa</span>
+                                        </button>
+
+                                    </div>
+
+                                </div>
+                            </div>
+                            <!-- ══ FIN CARA FRONTAL ══ -->
+
+                            <!-- ══ CARA TRASERA (historial de recaudos) ══ -->
+                            <div class="flip-back" (click)="cliente.flipped = false; $event.stopPropagation()">
+                                <div class="rc-header">
+                                    <span class="rc-name">Historial de recaudos</span>
+                                </div>
+                                <div class="rc-body">
+                                    <table class="table table-sm table-bordered mb-0">
+                                        <thead>
+                                            <tr>
+                                                <th>Fecha</th>
+                                                <th>Valor</th>
+                                                <th>Día</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr *ngFor="let r of cliente.recaudos">
+                                                <td>{{ r.fechaInicio | date:'dd/MM/yyyy' }}</td>
+                                                <td>{{ r.totalPagado | currency:'COP':'$':'1.0-0' }}</td>
+                                                <td>{{ getDiaEspanol(r.nombreDia) }}</td>
+                                            </tr>
+                                        </tbody>
+                                        <tfoot *ngIf="cliente.recaudos && cliente.recaudos.length > 0">
+                                            <tr class="table-secondary">
+                                                <td><strong>TOTAL</strong></td>
+                                                <td><strong>{{ calcularTotalPagado(cliente.recaudos) |
+                                                        currency:'COP':'$':'1.0-0' }}</strong></td>
+                                                <td></td>
+                                            </tr>
+                                        </tfoot>
+                                    </table>
+                                    <p class="text-center text-muted small mt-3">
+                                        <i class="ti ti-arrow-left me-1"></i>Toca para volver
+                                    </p>
+                                </div>
+                            </div>
+                            <!-- ══ FIN CARA TRASERA ══ -->
+
                         </div>
                     </div>
 
-                    <!-- ── PROGRESO DE CUOTA ── -->
-                    <div class="rc-quota-progress">
-                        <div class="d-flex justify-content-between align-items-center mb-1">
-                            <span class="rc-info-label">
-                                Cuota {{ cliente.data.quotaNumber }} de {{ cliente.data.totalCuotas }}
-                            </span>
-                            <span class="rc-quota-pct fw-semibold">
-                                {{ ((cliente.data.quotaNumber / cliente.data.totalCuotas) * 100) | number:'1.0-0' }}%
-                            </span>
-                        </div>
-                        <div class="rc-prog-bar-wrap">
-                            <div class="rc-prog-bar-fill"
-                                [style.width.%]="(cliente.data.quotaNumber / cliente.data.totalCuotas) * 100">
-                            </div>
-                        </div>
+                    <!-- Sin clientes -->
+                    <div *ngIf="clientesFiltered.length === 0" class="text-center py-5">
+                        <i class="ti ti-users-off" style="font-size: 3rem; color: #dc3545;"></i>
+                        <p class="text-muted mt-3 mb-0">No hay clientes para recaudo el día de hoy</p>
                     </div>
- 
-                    <div class="rc-divider"></div>
- 
-                    <!-- ══════════════════════════════════════
-                         DATOS DE LA CUOTA
-                    ══════════════════════════════════════ -->
-                    <div class="rc-section-label">
-                        <i class="ti ti-receipt me-1"></i> Datos de la Cuota
-                    </div>
- 
-                    <div class="rc-money-row">
- 
-                        <!-- Valor cuota -->
-                        <div class="rc-money-card rc-money-cuota">
-                            <span class="rc-money-label">Valor cuota</span>
-                            <span class="rc-money-value">
-                                $ {{ (+cliente.data.valorCuota || 0) | number:'1.0-0' }}
-                            </span>
-                        </div>
- 
-                        <!-- Saldo vencido -->
-                        <div class="rc-money-card rc-money-saldo">
-                            <span class="rc-money-label">Saldo vencido</span>
-                            <span class="rc-money-value">
-                                $ {{ (+cliente.data.saldoPendienteCuota || 0) | number:'1.0-0' }}
-                            </span>
-                        </div>
- 
-                        <!-- Interés moratorio -->
-                        <div class="rc-money-card rc-money-mora">
-                            <span class="rc-money-label">Interés moratorio</span>
-                            <span class="rc-money-value">
-                                $ {{ (+cliente.data.interestMora || 0) | number:'1.0-0' }}
-                            </span>
-                            <span class="rc-money-value">
-                                {{ cliente.data.diasMora || 0 }} Días Mora
-                            </span>
-                        </div>
- 
-                        <!-- Total cuota -->
-                        <div class="rc-money-card rc-money-total">
-                            <span class="rc-money-label">Total cuota</span>
-                            <span class="rc-money-value">
-                                $ {{
-                                    ((+cliente.data.interestMora || 0) + (+cliente.data.saldoPendienteCuota || 0))
-                                    | number:'1.0-0'
-                                }}
-                            </span>
-                        </div>
- 
-                    </div>
- 
-                    <div class="rc-divider"></div>
- 
-                    <!-- ── BOTONERA ── -->
-                    <div class="rc-actions-row">
- 
-                        <button type="button"
-                            class="btn btn-llamada btn-sm flex-fill d-flex flex-column align-items-center py-2"
-                            *ngIf="cliente.data.telefono"
-                            (click)="callPhone(cliente.data.telefono); $event.stopPropagation()">
-                            <i class="ti ti-phone mb-1"></i>
-                            <span style="font-size: 10px;">Llamar</span>
-                        </button>
- 
-                        <button type="button"
-                            class="btn btn-whatsapp btn-sm flex-fill d-flex flex-column align-items-center py-2"
-                            *ngIf="cliente.data.telefono"
-                            (click)="openWhatsApp(cliente.data.telefono); $event.stopPropagation()">
-                            <i class="ti ti-brand-whatsapp mb-1"></i>
-                            <span style="font-size: 10px;">WhatsApp</span>
-                        </button>
- 
-                        <button type="button"
-                            class="btn btn-info btn-sm flex-fill d-flex flex-column align-items-center py-2"
-                            *ngIf="cliente.data.paidFull === 'S'"
-                            (click)="openRecaudoDetailModal(cliente.data); $event.stopPropagation()">
-                            <i class="ti ti-eye mb-1"></i>
-                            <span style="font-size: 10px; line-height: 1;">Ver</span>
-                        </button>
- 
-                        <button type="button"
-                            class="btn btn-recaudo btn-sm flex-fill d-flex flex-column align-items-center py-2"
-                            (click)="openRecaudoModal(cliente.data); $event.stopPropagation()">
-                            <i class="ti ti-cash mb-1"></i>
-                            <span style="font-size: 10px; line-height: 1;">Recaudar</span>
-                        </button>
- 
-                        <button type="button"
-                            class="btn btn-see-details btn-sm flex-fill d-flex flex-column align-items-center py-2"
-                            (click)="openCreditDetail(cliente.data.creditId); $event.stopPropagation()">
-                            <i class="ti ti-eye mb-1"></i>
-                            <span style="font-size: 10px; line-height: 1;">Detalle Crédito</span>
-                        </button>
- 
-                        <button type="button"
-                            class="btn btn-outline-warning btn-sm flex-fill d-flex flex-column align-items-center py-2"
-                            *ngIf="cliente.data.paidFull !== 'S' && cliente.data.liquidated !== 'S' && cliente.data.paidToday !== 1"
-                            (click)="registrarPromesa(cliente.data); $event.stopPropagation()">
-                            <i class="ti ti-calendar-event mb-1"></i>
-                            <span style="font-size: 10px; line-height: 1;">Promesa</span>
-                        </button>
- 
-                    </div>
- 
+
                 </div>
-            </div>
-            <!-- ══ FIN CARA FRONTAL ══ -->
- 
-            <!-- ══ CARA TRASERA (historial de recaudos) ══ -->
-            <div class="flip-back" (click)="cliente.flipped = false; $event.stopPropagation()">
-                <div class="rc-header">
-                    <span class="rc-name">Historial de recaudos</span>
-                </div>
-                <div class="rc-body">
-                    <table class="table table-sm table-bordered mb-0">
-                        <thead>
-                            <tr>
-                                <th>Fecha</th>
-                                <th>Valor</th>
-                                <th>Día</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr *ngFor="let r of cliente.recaudos">
-                                <td>{{ r.fechaInicio | date:'dd/MM/yyyy' }}</td>
-                                <td>{{ r.totalPagado | currency:'COP':'$':'1.0-0' }}</td>
-                                <td>{{ getDiaEspanol(r.nombreDia) }}</td>
-                            </tr>
-                        </tbody>
-                        <tfoot *ngIf="cliente.recaudos && cliente.recaudos.length > 0">
-                            <tr class="table-secondary">
-                                <td><strong>TOTAL</strong></td>
-                                <td><strong>{{ calcularTotalPagado(cliente.recaudos) | currency:'COP':'$':'1.0-0' }}</strong></td>
-                                <td></td>
-                            </tr>
-                        </tfoot>
-                    </table>
-                    <p class="text-center text-muted small mt-3">
-                        <i class="ti ti-arrow-left me-1"></i>Toca para volver
-                    </p>
-                </div>
-            </div>
-            <!-- ══ FIN CARA TRASERA ══ -->
- 
-        </div>
-    </div>
- 
-    <!-- Sin clientes -->
-    <div *ngIf="clientesFiltered.length === 0" class="text-center py-5">
-        <i class="ti ti-users-off" style="font-size: 3rem; color: #dc3545;"></i>
-        <p class="text-muted mt-3 mb-0">No hay clientes para recaudo el día de hoy</p>
-    </div>
- 
-</div>
 
                 <!-- ─── VISTA DESKTOP (tabla) ─── -->
                 <div class="table-responsive d-none d-md-block">
@@ -665,7 +689,7 @@
         color: #155724;
     }
 
-    
+
     .rc-money-total .rc-money-value {
         color: #193dcd;
     }
@@ -678,26 +702,23 @@
         color: #d66706;
     }
 
-    /* ── Saldo total ── */
-    .rc-total-card {
-        background: #c0392b;
-        border-radius: 8px;
-        padding: 8px 12px;
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        margin-top: 2px;
-    }
+.rc-total-card,
+.rc-total-card-credit {
+    border-radius: 8px;
+    padding: 8px 12px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 2px;
+}
 
-    .rc-total-card-credit {
-        background: #13c551;
-        border-radius: 8px;
-        padding: 8px 12px;
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        margin-top: 2px;
-    }
+.rc-total-card {
+    background: #c0392b;
+}
+
+.rc-total-card-credit {
+    background: #13c551;
+}
 
     .rc-total-label {
         font-size: 10px;
