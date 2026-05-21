@@ -2,8 +2,9 @@ import { HttpClient, HttpHeaders } from "@angular/common/http";
 import { Injectable } from "@angular/core";
 import baseUrl from "./api";
 import { CookieService } from 'ngx-cookie-service';
-import { Observable } from "rxjs";
+import { Observable, map } from "rxjs";
 import { UploadedFile } from "@components/file-uploader.component";
+import { Router } from "@angular/router";
 
 
 export interface CreditProjectionDto {
@@ -235,7 +236,8 @@ export interface DefaultResponseDto<T> {
 export class CreditIntentionService {
     constructor(
         private http: HttpClient,
-        private cookieService: CookieService
+        private cookieService: CookieService,
+        private router: Router
     ) { }
 
     private getHeaders(): HttpHeaders {
@@ -410,6 +412,34 @@ export class CreditIntentionService {
             `${baseUrl}credit-intention/${intentionId}/resend-approval-link`,
             {}
         );
+    }
+
+    getRecentIntentions(limit: number = 5): Observable<CreditIntentionResponseDto[]> {
+        return this.getIntentions().pipe(
+            map(response => {
+                if (response.status === 'OK') {
+                    return response.data
+                        .sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime())
+                        .slice(0, limit);
+                }
+                return [];
+            })
+        );
+    }
+
+    manageIntention(intention?: CreditIntentionResponseDto): void {
+        if (!intention?.id) {
+            console.warn('Intención inválida', intention);
+            return;
+        }
+
+        const url = `/operaciones/management-credit-intention/${intention.id}`;
+
+        // Navega a una ruta temporal invisible y luego vuelve a la ruta destino.
+        // Esto destruye y recrea el componente, disparando nuevamente ngOnInit().
+        this.router.navigateByUrl('/', { skipLocationChange: true }).then(() => {
+            this.router.navigateByUrl(url);
+        });
     }
 
 }

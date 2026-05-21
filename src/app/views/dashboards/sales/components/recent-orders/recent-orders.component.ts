@@ -31,14 +31,9 @@ export class RecentOrdersComponent implements OnInit {
 
   loadRecentIntentions(): void {
     this.loadingIntentions = true;
-    this.creditIntentionService.getIntentions().subscribe({
-      next: (response) => {
-        if (response.status === 'OK') {
-          // Ordenar por fecha de creación descendente y tomar las 5 más recientes
-          this.intentions = response.data
-            .sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime())
-            .slice(0, 5);
-        }
+    this.creditIntentionService.getRecentIntentions(5).subscribe({
+      next: (intentions) => {
+        this.intentions = intentions;
         this.loadingIntentions = false;
       },
       error: (err) => {
@@ -49,15 +44,7 @@ export class RecentOrdersComponent implements OnInit {
   }
 
   manageIntention(intention?: CreditIntentionResponseDto): void {
-    if (!intention?.id) {
-      console.warn('Intención inválida', intention);
-      return;
-    }
-
-    this.router.navigate([
-      '/operaciones/management-credit-intention',
-      intention.id
-    ]);
+    this.creditIntentionService.manageIntention(intention);
   }
 
 
