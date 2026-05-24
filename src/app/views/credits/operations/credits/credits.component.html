@@ -30,6 +30,15 @@
                                     </option>
                                 </select>
                             </div>
+                            <div class="col-12 col-sm-auto" style="min-width: 180px;">
+                                <select class="form-select w-100" aria-label="Filtrar por estado"
+                                    formControlName="status">
+                                    <option value="">Todos los estados</option>
+                                    <option value="ACTIVE">Activo</option>
+                                    <option value="CANCELLED">Cancelado</option>
+                                    <option value="INACTIVE">Inactivo</option>
+                                </select>
+                            </div>
                             <div class="col-12 col-sm-auto">
                                 <div class="input-group">
                                     <input #date mwlFlatpickr [flatpickrOptions]="flatpickrOptions"
@@ -106,6 +115,7 @@
                             <tr>
                                 <th class="text-center" style="width: 150px;">Acciones</th>
                                 <th style="width: 80px;">ID</th>
+                                <th style="width: 120px;">Estado</th>
                                 <th style="width: 120px;">Documento</th>
                                 <th>Cliente</th>
                                 <th>Zona</th>
@@ -127,6 +137,7 @@
                                     </div>
                                 </td>
                                 <td>{{ intention.id }} ({{intention.creditIntentionId}})</td>
+                                <td>{{ translateCreditStatus(intention.creditStatus) }}</td>
                                 <td>{{ intention.document }}</td>
                                 <td>{{ intention.fullname }}</td>
                                 <td>{{ intention.zoneName }}</td>

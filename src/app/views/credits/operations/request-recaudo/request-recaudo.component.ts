@@ -10,12 +10,13 @@ import { FormsModule } from "@angular/forms";
 import { RecaudoModalComponent } from "@views/credits/recaudo-modal/recaudo-modal.component";
 import { Capacitor } from "@capacitor/core";
 import { AppLauncher } from '@capacitor/app-launcher';
-
+import { MatTooltipModule } from '@angular/material/tooltip';
+import { A11yModule } from "@angular/cdk/a11y";
 
 @Component({
   selector: 'app-request-recaudo',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, MatTooltipModule, A11yModule],
   templateUrl: './request-recaudo.component.html',
   styleUrl: './request-recaudo.component.scss'
 })

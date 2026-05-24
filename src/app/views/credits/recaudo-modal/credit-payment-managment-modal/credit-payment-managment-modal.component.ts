@@ -201,24 +201,59 @@ export class CreditPaymentManagmentModalComponent implements OnInit {
 
   formatCurrency(controlName: string): void {
     const control = this.paymentForm.get(controlName);
+
     if (!control) return;
 
-    let value = control.value.toString().replace(/\D/g, '');
-    if (value) {
-      const numberValue = parseInt(value);
-      const formatted = numberValue.toLocaleString('es-CO');
-      control.setValue(formatted, { emitEvent: false });
+    let value = control.value || '';
+
+    // Permitir solo números, puntos y comas
+    value = value.replace(/[^0-9.,]/g, '');
+
+    // Separar parte decimal
+    const parts = value.split(',');
+
+    // Solo permitir UNA coma decimal
+    if (parts.length > 2) {
+      return;
     }
+
+    // Parte entera sin puntos existentes
+    let integerPart = parts[0].replace(/\./g, '');
+
+    // Formatear miles
+    integerPart = Number(integerPart || 0).toLocaleString('es-CO');
+
+    // Parte decimal
+    let decimalPart = parts[1] || '';
+
+    // Máximo 2 decimales
+    decimalPart = decimalPart.substring(0, 2);
+
+    // Reconstruir valor
+    const formatted = decimalPart
+      ? `${integerPart},${decimalPart}`
+      : integerPart;
+
+    control.setValue(formatted, { emitEvent: false });
   }
 
   parseCurrency(value: string): number {
-    return parseInt(value.replace(/\D/g, '')) || 0;
-  }
 
+    if (!value) return 0;
+
+    // Eliminar puntos de miles
+    let normalized = value.replace(/\./g, '');
+
+    // Convertir coma decimal a punto
+    normalized = normalized.replace(',', '.');
+
+    return parseFloat(normalized) || 0;
+  }
   formatearMoneda(valor: number): string {
+
     return new Intl.NumberFormat('es-CO', {
-      minimumFractionDigits: 0,
-      maximumFractionDigits: 0
+      minimumFractionDigits: 2,
+      maximumFractionDigits: 2
     }).format(Math.abs(valor));
   }
 
@@ -254,7 +289,7 @@ export class CreditPaymentManagmentModalComponent implements OnInit {
       paymentTypeId: this.paymentForm.value.paymentTypeId,
       bankId: this.paymentForm.value.bankId || null,
       accountNumber: this.paymentForm.value.accountNumber || null,
-      distributionType: this.distributionType  
+      distributionType: this.distributionType
     };
 
     formData.append('data', new Blob([JSON.stringify(paymentData)], { type: 'application/json' }));

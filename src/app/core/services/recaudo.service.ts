@@ -46,6 +46,7 @@ export interface RecaudoDetail {
 export interface CreditPaymentStatus {
   creditId: number;
   personId: number;
+  personName: string;
   quotaValue: number;
   periodQuantity: number;
   periodName: string;

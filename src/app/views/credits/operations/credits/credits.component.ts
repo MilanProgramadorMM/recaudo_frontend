@@ -87,7 +87,8 @@ export class CreditsComponent {
       line: [''],
       zona: [''],
       date: [''],
-      creditId: ['']
+      creditId: [''],
+      status: ['']
     });
 
     this.filterForm.valueChanges.subscribe(filters => {
@@ -95,6 +96,8 @@ export class CreditsComponent {
       const date = filters.date;
       const line = filters.line;
       const creditId = filters.creditId;
+      const status = filters.status;
+
 
       this.filteredIntentions = this.intentions.filter(intention => {
         const createdAt = intention.createdAt ? new Date(intention.createdAt.replace(' ', 'T')) : null;
@@ -111,7 +114,8 @@ export class CreditsComponent {
         const sameCreditId = (creditId === null || creditId === undefined || creditId === '')
           || intention.id == Number(creditId);
 
-        return sameZone && sameDate && sameLine && sameCreditId;
+        const sameStatus = !status || intention.creditStatus === status;
+        return sameZone && sameDate && sameLine && sameCreditId && sameStatus;
       });
 
       this.page = 1;
@@ -147,7 +151,8 @@ export class CreditsComponent {
       zona: '',
       line: '',
       date: null,
-      creditId: ''
+      creditId: '',
+      status: ''
 
     });
     this.filteredIntentions = [...this.intentions];
@@ -181,6 +186,16 @@ export class CreditsComponent {
         this.loading = false;
       }
     });
+  }
+
+  creditStatusMap: Record<string, string> = {
+    ACTIVE: 'ACTIVO',
+    CANCELLED: 'CANCELADO',
+    INACTIVE: 'INACTIVO'
+  };
+
+  translateCreditStatus(status: string): string {
+    return this.creditStatusMap[status] || status;
   }
 
   applyFilter(): void {

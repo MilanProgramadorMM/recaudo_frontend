@@ -273,27 +273,14 @@ export class RecaudoModalComponent {
   }
 
 getTotalRecaudoEnRuta(): number {
-  if (!this.paymentStatus) return 0;
+  if (!this.paymentStatus || !this.paymentStatus.recaudos) return 0;
 
-  const recaudos = this.paymentStatus.recaudos
-    .filter(r => r.conceptName === 'RECAUDO EN RUTA');
-
-  console.table(
-    recaudos.map(r => ({
-      valuePaid: r.valuePaid,
-      type: typeof r.valuePaid
-    }))
+  const recaudos = this.paymentStatus.recaudos.filter(r => 
+    r.conceptName === 'NOTA CREDITO' || r.conceptName === 'NOTA DEBITO'
   );
 
   const total = recaudos.reduce((sum, r, index) => {
-    const value = Number(r.valuePaid);
-
-    console.log({
-      index,
-      acumuladoAnterior: sum,
-      valorActual: value,
-      nuevoTotal: sum + value
-    });
+    const value = Number(r.valuePaid || 0);
 
     return sum + value;
   }, 0);

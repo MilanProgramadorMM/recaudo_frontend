@@ -57,7 +57,10 @@ export class ReversePaymentModalComponent {
 
       case 'RECAUDO':
         this.recaudos = this.recaudos.filter(r =>
-          r.valuePaid !== 0 && r.valuePaid !== null
+          r.valuePaid !== 0 &&
+          r.valuePaid !== null &&
+          r.conceptName &&
+          r.conceptName.trim().toUpperCase().includes('NOTA CREDITO')
         );
         break;
 

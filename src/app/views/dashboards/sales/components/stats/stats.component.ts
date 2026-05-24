@@ -2,8 +2,9 @@ import { Component, CUSTOM_ELEMENTS_SCHEMA, OnInit, OnDestroy } from '@angular/c
 import { CommonModule } from '@angular/common';
 import { Subject, takeUntil } from 'rxjs';
 import { SharedFilterService } from '@core/services/shared-filter.service';
-import { DashboardSummaryDto, ZonaService } from '@core/services/zona.service';
+import { ZonaService } from '@core/services/zona.service';
 import { currency } from '@common/constants';
+import { DashBoardMetrictsService, DashboardSummaryDto } from '@core/services/dashboard-metrics.service';
 
 interface StatType {
   title: string;
@@ -19,7 +20,7 @@ interface StatType {
   imports: [CommonModule],
   templateUrl: './stats.component.html',
   styleUrl: './stats.component.scss',
-  schemas:[CUSTOM_ELEMENTS_SCHEMA]
+  schemas: [CUSTOM_ELEMENTS_SCHEMA]
 })
 export class StatsComponent implements OnInit, OnDestroy {
   statData: StatType[] = this.getEmptyStats();
@@ -29,7 +30,8 @@ export class StatsComponent implements OnInit, OnDestroy {
 
   constructor(
     private sharedFilterService: SharedFilterService,
-    private zonaService: ZonaService
+    private zonaService: ZonaService,
+    private dashBoardMetrictsService: DashBoardMetrictsService
   ) { }
 
   ngOnInit(): void {
@@ -53,17 +55,37 @@ export class StatsComponent implements OnInit, OnDestroy {
     this.destroy$.complete();
   }
 
+  // loadDashboardDataOld(filters: any): void {
+  //   this.loading = true;
+
+  //   this.zonaService.getDashboardSummary(
+  //     filters.fechaInicio,
+  //     filters.fechaFin,
+  //     filters.zonaId
+  //   ).subscribe({
+  //     next: (response) => {
+  //       console.log('Stats - Datos recibidos:', response.data);
+  //       this.updateStats(response.data);
+  //       this.loading = false;
+  //     },
+  //     error: (err) => {
+  //       console.error('Error al cargar dashboard:', err);
+  //       this.statData = this.getEmptyStats();
+  //       this.loading = false;
+  //     }
+  //   });
+  // }
+
   loadDashboardData(filters: any): void {
     this.loading = true;
 
-    this.zonaService.getDashboardSummary(
+    this.dashBoardMetrictsService.getData(
       filters.fechaInicio,
       filters.fechaFin,
       filters.zonaId
     ).subscribe({
       next: (response) => {
-        console.log('Stats - Datos recibidos:', response.data);
-        this.updateStats(response.data);
+        this.updateStats(response.data);  
         this.loading = false;
       },
       error: (err) => {
@@ -74,7 +96,7 @@ export class StatsComponent implements OnInit, OnDestroy {
     });
   }
 
-  private updateStats(data: DashboardSummaryDto[]): void {
+  private updateStatsOld(data: DashboardSummaryDto[]): void {
     const totals = data.reduce((acc, item) => ({
       debidoCobrar: acc.debidoCobrar + (item.totalDebidoCobrar || 0),
       recaudado: acc.recaudado + (item.totalRecaudado || 0) * -1,
@@ -115,67 +137,100 @@ export class StatsComponent implements OnInit, OnDestroy {
     ];
   }
 
-  private getEmptyStats(): StatType[] {
-    return [
+  private updateStats(data: DashboardSummaryDto): void {  
+    this.statData = [
       {
         title: 'Debido a Cobrar',
         icon: 'solar:case-round-minimalistic-bold-duotone',
-        count: this.formatCurrency(0),
-        rawValue: 0
+        count: this.formatCurrency(data.totalDebidoCobrar),
+        rawValue: data.totalDebidoCobrar,
+        variant: 'primary'
       },
       {
         title: 'Recaudo',
         icon: 'solar:bill-list-bold-duotone',
-        count: this.formatCurrency(0),
-        rawValue: 0
+        count: this.formatCurrency(data.totalRecaudado),
+        rawValue: data.totalRecaudado,
+        variant: 'success'
       },
       {
         title: 'No pago',
         icon: 'solar:wallet-money-bold-duotone',
-        count: this.formatCurrency(0),
-        rawValue: 0,
+        count: this.formatCurrency(data.totalNoPagado),
+        rawValue: data.totalNoPagado,
         variant: 'danger'
       },
       {
         title: 'Total cartera',
         icon: 'solar:eye-bold-duotone',
-        count: this.formatCurrency(0),
-        rawValue: 0,
-        variant: 'success'
+        count: this.formatCurrency(data.totalCartera),
+        rawValue: data.totalCartera,
+        variant: 'warning'
       },
     ];
   }
 
-  formatCurrency(value: number): string {
-    return value.toLocaleString('es-CO', {
-      minimumFractionDigits: 0,  // ✅ Sin decimales
-      maximumFractionDigits: 0   // ✅ Sin decimales
-    });
-  }
+  private getEmptyStats(): StatType[] {
+  return [
+    {
+      title: 'Debido a Cobrar',
+      icon: 'solar:case-round-minimalistic-bold-duotone',
+      count: this.formatCurrency(0),
+      rawValue: 0
+    },
+    {
+      title: 'Recaudo',
+      icon: 'solar:bill-list-bold-duotone',
+      count: this.formatCurrency(0),
+      rawValue: 0
+    },
+    {
+      title: 'No pago',
+      icon: 'solar:wallet-money-bold-duotone',
+      count: this.formatCurrency(0),
+      rawValue: 0,
+      variant: 'danger'
+    },
+    {
+      title: 'Total cartera',
+      icon: 'solar:eye-bold-duotone',
+      count: this.formatCurrency(0),
+      rawValue: 0,
+      variant: 'success'
+    },
+  ];
+}
 
-  getColor(variant: string): string {
-    switch (variant) {
-      case 'success': return '#198754';
-      case 'danger': return '#DC3545';
-      case 'warning': return '#FFC107';
-      case 'primary': return '#0D6EFD';
-      default: return '#6c757d';
-    }
-  }
+formatCurrency(value: number): string {
+  return value.toLocaleString('es-CO', {
+    minimumFractionDigits: 0,  // ✅ Sin decimales
+    maximumFractionDigits: 0   // ✅ Sin decimales
+  });
+}
 
-  getCardStyle(variant: string) {
-    switch (variant) {
-      case 'success':
-        return { background: 'linear-gradient(135deg, #22c55e, #4ade80)' };
-      case 'danger':
-        return { background: 'linear-gradient(135deg, #ef4444, #f87171)' };
-      case 'primary':
-        return { background: 'linear-gradient(135deg, #3b82f6, #60a5fa)' };
-      case 'warning':
-        return { background: 'linear-gradient(135deg, #f59e0b, #fbbf24)' };
-      default:
-        return { background: 'linear-gradient(135deg, #6b7280, #9ca3af)' };
-    }
+getColor(variant: string): string {
+  switch (variant) {
+    case 'success': return '#198754';
+    case 'danger': return '#DC3545';
+    case 'warning': return '#FFC107';
+    case 'primary': return '#0D6EFD';
+    default: return '#6c757d';
   }
+}
+
+getCardStyle(variant: string) {
+  switch (variant) {
+    case 'success':
+      return { background: 'linear-gradient(135deg, #22c55e, #4ade80)' };
+    case 'danger':
+      return { background: 'linear-gradient(135deg, #ef4444, #f87171)' };
+    case 'primary':
+      return { background: 'linear-gradient(135deg, #3b82f6, #60a5fa)' };
+    case 'warning':
+      return { background: 'linear-gradient(135deg, #f59e0b, #fbbf24)' };
+    default:
+      return { background: 'linear-gradient(135deg, #6b7280, #9ca3af)' };
+  }
+}
 
 }

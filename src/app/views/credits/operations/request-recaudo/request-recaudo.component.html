@@ -87,14 +87,14 @@
                                     <div class="rc-header-info">
                                         <span class="rc-name">{{ cliente.data.clientName }}</span>
                                         <span class="rc-credit">
-                                            CRE #{{ cliente.data.creditId }}
+                                            CRE N-{{ cliente.data.creditId }}
                                             <span *ngIf="cliente.data.zona"> · {{ cliente.data.zona }} - {{
                                                 cliente.data.lineaName }}</span>
                                         </span>
                                     </div>
                                     <div class="d-flex flex-column align-items-end gap-1">
                                         <span class="rc-orden">#{{ cliente.data.clientOrden }}</span>
-                                        <span class="rc-status-badge" [ngClass]="{
+                                        <!-- <span class="rc-status-badge" [ngClass]="{
                             'rc-status-success':   cliente.data.paidFull === 'S',
                             'rc-status-primary':   cliente.data.paidToday === 1 && cliente.data.paidFull !== 'S',
                             'rc-status-warning':   cliente.data.paidToday !== 1 && cliente.data.paymentPromiseDate && cliente.data.noPago !== 1,
@@ -106,7 +106,7 @@
                                             : cliente.data.noPago === 1 ? 'No pagó'
                                             : cliente.data.paymentPromiseDate ? 'Promesa'
                                             : 'Pendiente' }}
-                                        </span>
+                                        </span> -->
                                     </div>
                                 </div>
 
@@ -146,16 +146,16 @@
 
                                     <div class="rc-summary-row">
                                         <!-- Valor crédito (verde) -->
-                                        <div class="rc-total-card-credit">
-                                            <span class="rc-total-label">V crédito</span>
+                                        <div class="rc-total-card-credit" matTooltip="Valor total del crédito sin intereses moratorios"
+                                            matTooltipPosition="above">
                                             <span class="rc-total-value">
                                                 $ {{ (+cliente.data.totalCapitalValue || 0) | number:'1.0-0' }}
                                             </span>
                                         </div>
 
                                         <!-- Saldo total -->
-                                        <div class="rc-total-card">
-                                            <span class="rc-total-label">S. crédito</span>
+                                        <div class="rc-total-card" matTooltip="Saldo total del crédito"
+                                            matTooltipPosition="above">
                                             <span class="rc-total-value">
                                                 $ {{
                                                 (+cliente.data.saldoPendiente)
@@ -164,19 +164,22 @@
                                             </span>
                                         </div>
 
-                                        <div class="rc-total-card-credit">
-                                            <span class="rc-total-label">I morartorio</span>
+                                        <div class="rc-total-card-credit"
+                                            matTooltip="Interés moratorio total del crédito"
+                                            matTooltipPosition="above">
                                             <span class="rc-total-value">
                                                 $ {{ (+cliente.data.totalMoraCredito || 0) | number:'1.0-0' }}
                                             </span>
                                         </div>
 
                                         <!-- Saldo total -->
-                                        <div class="rc-total-card">
-                                            <span class="rc-total-label">Total + interes</span>
+                                        <div class="rc-total-card"
+                                            matTooltip="Saldo total del crédito más intereses moratorios"
+                                            matTooltipPosition="above">
                                             <span class="rc-total-value">
                                                 $ {{
-                                                ((+cliente.data.saldoPendiente || 0) + (+cliente.data.totalMoraCredito ||
+                                                ((+cliente.data.saldoPendiente || 0) + (+cliente.data.totalMoraCredito
+                                                ||
                                                 0))
                                                 | number:'1.0-0'
                                                 }}
@@ -188,7 +191,10 @@
                                     <div class="rc-quota-progress">
                                         <div class="d-flex justify-content-between align-items-center mb-1">
                                             <span class="rc-info-label">
-                                                Cuota {{ cliente.data.quotaNumber }} de {{ cliente.data.totalCuotas }}
+                                                Cuota
+                                                <span class="text-green">{{ cliente.data.quotaNumber }}</span>
+                                                de
+                                                <span class="text-red">{{ cliente.data.totalCuotas }}</span>
                                             </span>
                                             <span class="rc-quota-pct fw-semibold">
                                                 {{ ((cliente.data.quotaNumber / cliente.data.totalCuotas) * 100) |
@@ -214,24 +220,25 @@
                                     <div class="rc-money-row">
 
                                         <!-- Valor cuota -->
-                                        <div class="rc-money-card rc-money-cuota">
-                                            <span class="rc-money-label">Valor cuota</span>
+                                        <div class="rc-money-card rc-money-cuota"
+                                            matTooltip="Valor de la cuota sin intereses moratorios"
+                                            matTooltipPosition="above">
                                             <span class="rc-money-value">
                                                 $ {{ (+cliente.data.valorCuota || 0) | number:'1.0-0' }}
                                             </span>
                                         </div>
 
                                         <!-- Saldo vencido -->
-                                        <div class="rc-money-card rc-money-saldo">
-                                            <span class="rc-money-label">Saldo vencido</span>
+                                        <div class="rc-money-card rc-money-saldo" matTooltip="Saldo vencido de la cuota"
+                                            matTooltipPosition="above">
                                             <span class="rc-money-value">
                                                 $ {{ (+cliente.data.saldoPendienteCuota || 0) | number:'1.0-0' }}
                                             </span>
                                         </div>
 
                                         <!-- Interés moratorio -->
-                                        <div class="rc-money-card rc-money-mora">
-                                            <span class="rc-money-label">Interés moratorio</span>
+                                        <div class="rc-money-card rc-money-mora"
+                                            matTooltip="Interés moratorio de la cuota" matTooltipPosition="above">
                                             <span class="rc-money-value">
                                                 $ {{ (+cliente.data.interestMora || 0) | number:'1.0-0' }}
                                             </span>
@@ -241,8 +248,9 @@
                                         </div>
 
                                         <!-- Total cuota -->
-                                        <div class="rc-money-card rc-money-total">
-                                            <span class="rc-money-label">Total cuota</span>
+                                        <div class="rc-money-card rc-money-total"
+                                            matTooltip="Total de la cuota incluyendo intereses moratorios"
+                                            matTooltipPosition="above">
                                             <span class="rc-money-value">
                                                 $ {{
                                                 ((+cliente.data.interestMora || 0) + (+cliente.data.saldoPendienteCuota
@@ -619,6 +627,20 @@
         text-transform: uppercase;
         letter-spacing: .4px;
         margin-bottom: 2px;
+
+        .text-green {
+            color: #13c551;
+            /* El mismo verde que usas en tus tarjetas */
+            font-weight: bold;
+            /* Opcional: por si quieres resaltarlo más */
+        }
+
+        .text-red {
+            color: #dc3545;
+            /* Un tono rojo estándar para alertas/totales */
+            font-weight: bold;
+            /* Opcional: por si quieres resaltarlo más */
+        }
     }
 
     .rc-info-value {
@@ -704,23 +726,23 @@
         color: #d66706;
     }
 
-.rc-total-card,
-.rc-total-card-credit {
-    border-radius: 8px;
-    padding: 8px 12px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-top: 2px;
-}
+    .rc-total-card,
+    .rc-total-card-credit {
+        border-radius: 8px;
+        padding: 8px 12px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-top: 2px;
+    }
 
-.rc-total-card {
-    background: #c0392b;
-}
+    .rc-total-card {
+        background: #c0392b;
+    }
 
-.rc-total-card-credit {
-    background: #13c551;
-}
+    .rc-total-card-credit {
+        background: #13c551;
+    }
 
     .rc-total-label {
         font-size: 10px;

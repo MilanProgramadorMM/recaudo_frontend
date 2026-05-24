@@ -33,7 +33,7 @@ export interface CreditCausadoDetail {
 export interface CreditResponseDto {
     id: number;
     creditIntentionId: number;
-
+    creditStatus: string;
     quotaValue: number;
     periodQuantity: number;
 
