@@ -79,6 +79,7 @@ export interface PersonResponseDto {
     // cierre del día
     hasClosingToday?: boolean;
     closingStatus?: string;
+    ratingCredit?: string;
 }
 
 

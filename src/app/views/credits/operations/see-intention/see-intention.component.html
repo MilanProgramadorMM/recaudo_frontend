@@ -36,6 +36,7 @@
                         <tr>
                             <th style="width: 80px;">ID</th>
                             <th style="width: 120px;">Documento</th>
+                            <th>Calificacion del cliente</th>
                             <th>Nombre completo</th>
                             <th>Zona</th>
                             <th>Plazo</th>
@@ -53,6 +54,45 @@
                         <tr *ngFor="let intention of pagedIntentions">
                             <td>{{ intention.id }}</td>
                             <td>{{ intention.document }}</td>
+                            <!-- <td class="text-center align-middle">
+                                <div class="d-flex flex-column align-items-center gap-1">
+                                    <span class="rc-rating-badge" [ngClass]="{
+                                        'rating-aa': intention.ratingCredit === 'AA',
+                                        'rating-a':  intention.ratingCredit === 'A',
+                                        'rating-b':  intention.ratingCredit === 'B',
+                                        'rating-c':  intention.ratingCredit === 'C',
+                                        'rating-d':  intention.ratingCredit === 'D'
+                                    }">
+                                        {{ intention.ratingCredit ?? 'N/A' }}
+                                        <ng-container *ngIf="intention.ratingEnd != null">
+                                            ({{ intention.ratingStart }} - {{ intention.ratingEnd }} días)
+                                        </ng-container>
+                                        <ng-container *ngIf="intention.ratingEnd == null">
+                                            (+{{ intention.ratingStart }} días)
+                                        </ng-container>
+                                    </span>
+                                </div>
+                            </td> -->
+
+                            <td class="text-center align-middle">
+                                <div class="d-flex flex-column align-items-center gap-1">
+                                    <span class="rc-rating-badge" [ngClass]="{
+                                        'rating-a':  intention.ratingCredit === 'A',
+                                        'rating-b':  intention.ratingCredit === 'B',
+                                        'rating-c':  intention.ratingCredit === 'C',
+                                        'rating-d':  intention.ratingCredit === 'D'
+                                    }">
+                                        {{ intention.ratingCredit ?? 'N/A' }}
+                                        <ng-container *ngIf="intention.ratingEnd != null">
+                                            ({{ intention.ratingStart }} - {{ intention.ratingEnd }}
+                                            días)
+                                        </ng-container>
+                                        <ng-container *ngIf="intention.ratingEnd == null">
+                                            (+{{ intention.ratingStart }} días)
+                                        </ng-container>
+                                    </span>
+                                </div>
+                            </td>
                             <td>{{ intention.fullname }}</td>
                             <td>{{ intention.zoneName }}</td>
                             <td>{{ intention.periodQuantity }} cuotas</td>

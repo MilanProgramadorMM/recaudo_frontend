@@ -30,6 +30,12 @@ export interface CreditCausadoDetail {
     clientName: string;
 }
 
+export interface RatingCredit {
+    ratingValue: string;
+    start: number;
+    end: number | null;
+}
+
 export interface CreditResponseDto {
     id: number;
     creditIntentionId: number;
@@ -56,6 +62,7 @@ export interface CreditResponseDto {
     editedAt: string | null;
 
     periodName: string;
+    ratingCredit: RatingCredit;
 }
 
 

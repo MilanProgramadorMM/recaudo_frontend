@@ -1,0 +1,18 @@
+.rc-rating-badge {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 4px 10px;       // ← en lugar de width/height fijos
+    border-radius: 20px;     // ← píldora en lugar de 50% círculo
+    font-weight: 700;
+    font-size: 0.82rem;
+    color: #fff;
+    flex-shrink: 0;
+    white-space: nowrap;     // ← evita salto de línea
+
+    &.rating-aa { background-color: #198754; }
+    &.rating-a  { background-color: #198754; }
+    &.rating-b  { background-color: #ffc107; color: #212529; }
+    &.rating-c  { background-color: #fd7e14; }
+    &.rating-d  { background-color: #dc3545; }
+}

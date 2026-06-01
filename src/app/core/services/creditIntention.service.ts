@@ -133,6 +133,9 @@ export interface CreditIntentionResponseDto {
     approvalIp?: string;
     tokenExpiresAt?: string;
     fechaInicio: string;
+    ratingCredit: string;
+    ratingStart?: number;
+    ratingEnd?: number | null;
 }
 
 export interface ClientDataCreditIntentionUpdateDto {

@@ -34,9 +34,14 @@
             </div>
             <div class="card-body">
                 <div class="row g-3">
-                    <div class="col-md-2 col-12">
-                        <small class="text-muted d-block">Nombre</small>
+                    <div class="col-md-6">
+                        <small class="text-muted">Nombre cliente: </small>
                         <strong>{{ paymentStatus.personName }}</strong>
+                    </div>
+
+                    <div class="col-md-6">
+                        <small class="text-muted">Zona: </small>
+                        <strong>{{ paymentStatus.zoneName }}</strong>
                     </div>
                 </div>
             </div>
@@ -49,62 +54,49 @@
             </div>
             <div class="card-body">
                 <div class="row g-3">
-                    <!-- Valor Cuota -->
                     <div class="col-md-2 col-6">
                         <small class="text-muted d-block">Valor Cuota</small>
                         <strong>{{ currency }} {{ formatCurrency(paymentStatus.quotaValue) }}</strong>
                     </div>
-                    <!-- Total Cuotas -->
                     <div class="col-md-2 col-6">
                         <small class="text-muted d-block">Total Cuotas</small>
                         <strong>{{ paymentStatus.totalCuotas }}</strong>
                     </div>
-                    <!-- Cuotas Pendientes -->
-                    <div [class]="(isAdmin || isAsistente) ? 'col-md-2 col-6' : 'col-6'">
+                    <div class="col-md-2 col-6">
                         <small class="text-muted d-block">Cuotas Pendientes</small>
                         <strong class="text-danger">{{ paymentStatus.cuotasPendientes }}</strong>
                     </div>
-                    <!-- Cuotas Pagadas: en móvil (asesor) al lado de pendientes, en desktop en esta misma fila -->
-                    <div [class]="(isAdmin || isAsistente) ? 'col-md-2 col-6' : 'col-6'">
+                    <div class="col-md-2 col-6">
                         <small class="text-muted d-block">Cuotas Pagadas</small>
                         <strong class="text-success">{{ paymentStatus.cuotasPagadas }}</strong>
                     </div>
-
-                    <!-- Tasa -->
                     <div class="col-md-2 col-6">
                         <small class="text-muted d-block">Tasa</small>
                         <strong>{{ paymentStatus.taxValue }}%</strong>
                     </div>
-                    <!-- Papeleria -->
                     <div class="col-md-2 col-6">
                         <small class="text-muted d-block">Papelería</small>
                         <strong>{{ currency }} {{ formatCurrency(paymentStatus.stationery) }}</strong>
                     </div>
-                    <!-- Periodo - SOLO ADMIN / BACKOFFICE -->
-                    <div class="col-md-2 col-6" *ngIf="isAdmin || isAsistente">
+                    <div class="col-md-2 col-6">
                         <small class="text-muted d-block">Periodo</small>
                         <strong>{{ paymentStatus.periodName }}</strong>
                     </div>
-
-                    <!-- SOLO ADMIN / BACKOFFICE -->
-                    <ng-container *ngIf="isAdmin || isAsistente">
-                        <div class="col-md-2 col-6">
-                            <small class="text-muted d-block">Total Crédito</small>
-                            <strong>{{ currency }} {{ formatCurrency(paymentStatus.totalIntentionValue) }}</strong>
-                        </div>
-                        <div class="col-md-2 col-6">
-                            <small class="text-muted d-block">Total Pagado</small>
-                            <strong class="text-success">{{ currency }} {{ formatCurrency(paymentStatus.totalPagado)
-                                }}</strong>
-                        </div>
-                        <div class="col-md-2 col-6">
-                            <small class="text-muted d-block">Total Pendiente</small>
-                            <strong class="text-danger">{{ currency }} {{ formatCurrency(paymentStatus.totalPendiente)
-                                }}</strong>
-                        </div>
-                    </ng-container>
+                    <div class="col-md-2 col-6">
+                        <small class="text-muted d-block">Total Crédito</small>
+                        <strong>{{ currency }} {{ formatCurrency(paymentStatus.totalIntentionValue) }}</strong>
+                    </div>
+                    <div class="col-md-2 col-6">
+                        <small class="text-muted d-block">Total Pagado</small>
+                        <strong class="text-success">{{ currency }} {{ formatCurrency(paymentStatus.totalPagado)
+                            }}</strong>
+                    </div>
+                    <div class="col-md-2 col-6">
+                        <small class="text-muted d-block">Total Pendiente</small>
+                        <strong class="text-danger">{{ currency }} {{ formatCurrency(paymentStatus.totalPendiente)
+                            }}</strong>
+                    </div>
                 </div>
-
                 <!-- BARRA DE PROGRESO - SOLO ADMIN / BACKOFFICE -->
                 <ng-container *ngIf="isAdmin || isAsistente">
                     <hr class="my-3">
@@ -145,84 +137,12 @@
         </div>
 
 
-        <!-- VISTA ASESOR -->
-        <ng-container *ngIf="isAsesor">
-            <div class="row mt-4">
-                <!-- Deuda total -->
-                <div class="col-6 mb-3">
-                    <div class="card border text-center h-100">
-                        <div class="card-body py-4">
-                            <i class="ti ti-credit-card fs-1 text-danger mb-2 d-block"></i>
-                            <small class="text-muted d-block mb-1">Deuda Total Pendiente</small>
-                            <h4 class="text-danger mb-0">
-                                {{ currency }} {{ formatCurrency(paymentStatus.totalPendiente) }}
-                            </h4>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Abono de hoy -->
-                <div class="col-6 mb-3">
-                    <div class="card border text-center h-100">
-                        <div class="card-body py-4">
-                            <i class="ti ti-cash fs-1 text-success mb-2 d-block"></i>
-                            <small class="text-muted d-block mb-1">Abono de Hoy</small>
-                            <h4 class="text-success mb-0">
-                                {{ currency }} {{ formatCurrency(getTotalAbonadoHoy()) }}
-                            </h4>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Detalle abono de hoy si existe -->
-                <div class="col-12" *ngIf="getRecaudoDeHoy().length > 0">
-                    <div class="card border">
-                        <div class="card-header bg-light">
-                            <h6 class="mb-0">
-                                <i class="ti ti-calendar-check me-2"></i>Detalle del abono de hoy
-                            </h6>
-                        </div>
-                        <div class="card-body p-0">
-                            <table class="table table-sm mb-0">
-                                <thead class="table-light">
-                                    <tr>
-                                        <th>Cuota N°</th>
-                                        <th>Valor pagado</th>
-                                        <th>Capital</th>
-                                        <th>Intereses</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <tr *ngFor="let r of getRecaudoDeHoy()">
-                                        <td><strong>{{ r.quotaNumber }}</strong></td>
-                                        <td class="text-success">
-                                            <strong>{{ currency }} {{ formatCurrency(r.valuePaid) }}</strong>
-                                        </td>
-                                        <td>{{ currency }} {{ formatCurrencyValue(r.investmentValue) }}</td>
-                                        <td>{{ currency }} {{ formatCurrencyValue(r.interestValue) }}</td>
-                                    </tr>
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Sin abono hoy -->
-                <div class="col-12" *ngIf="getRecaudoDeHoy().length === 0">
-                    <div class="alert alert-warning d-flex align-items-center gap-2">
-                        <i class="ti ti-info-circle"></i>
-                        <span>No se ha registrado ningún abono el día de hoy.</span>
-                    </div>
-                </div>
-            </div>
-        </ng-container>
-
-
-        <!-- VISTA ADMIN / BACKOFFICE - tablas completas -->
+        <!-- DETALLE DE CUOTAS Y RECAUDOS - visible para todos los roles -->
         <ng-container>
             <div class="row">
-                <!-- TABLA DE CUOTAS - IZQUIERDA -->
-                <div class="col-lg-6 mb-4">
+
+                <!-- TABLA DE CUOTAS -->
+                <div class="col-12 col-lg-6 mb-4">
                     <div class="card border h-100">
                         <div class="card-header header-rojo">
                             <h4 class="mb-0"><i class="ti ti-list-check me-2"></i>Detalle de Cuotas</h4>
@@ -237,7 +157,6 @@
                                             <th>Valor Cuota</th>
                                             <th>Saldo Pend.</th>
                                             <th>Int. Moratorio</th>
-                                            <!-- <th>Total Pagado</th> -->
                                             <th class="text-center">Estado</th>
                                         </tr>
                                     </thead>
@@ -261,9 +180,6 @@
                                                     </small>
                                                 </span>
                                             </td>
-                                            <!-- <td>{{ currency }} {{ formatCurrency(getTotalPagadoCuota(cuota.quotaNumber))
-                                                }}
-                                            </td> -->
                                             <td class="text-center">
                                                 <span [ngClass]="getEstadoCuotaClass(cuota)">
                                                     {{ getEstadoCuota(cuota) }}
@@ -278,8 +194,7 @@
                                                     }}</strong></td>
                                             <td><strong>{{ currency }} {{ formatCurrency(getTotalInteresesMoratorios())
                                                     }}</strong></td>
-                                            <!-- <td><strong>{{ currency }} {{ formatCurrency(paymentStatus.totalPagado)
-                                                    }}</strong></td> -->
+                                            <td></td>
                                         </tr>
                                     </tbody>
                                 </table>
@@ -288,8 +203,8 @@
                     </div>
                 </div>
 
-                <!-- TABLA DE RECAUDOS - DERECHA -->
-                <div class="col-lg-6 mb-4">
+                <!-- TABLA DE RECAUDOS -->
+                <div class="col-12 col-lg-6 mb-4">
                     <div class="card border h-100">
                         <div class="card-header header-rojo">
                             <h4 class="mb-0"><i class="ti ti-cash me-2"></i>Historial de Recaudos/Pagos</h4>
@@ -297,7 +212,6 @@
                         <div class="card-body p-0">
                             <div class="table-responsive" *ngIf="paymentStatus.recaudos.length > 0"
                                 style="max-height: 400px; overflow-y: auto;">
-                                <!-- TABLA DE RECAUDOS - corregir nombres de campos -->
                                 <table class="table table-bordered tabla-roja mb-0">
                                     <thead>
                                         <tr>
@@ -329,12 +243,9 @@
                                             </td>
                                             <td>{{ currency }} {{ formatCurrencyValue(recaudo.investmentValue) }}</td>
                                             <td>{{ currency }} {{ formatCurrencyValue(recaudo.interestValue) }}</td>
-
                                             <td>{{ currency }} {{ formatCurrencyValue(recaudo.lifeInsurance) }}</td>
-
                                             <td>{{ currency }} {{ formatCurrencyValue(recaudo.portfolioInsurance) }}
                                             </td>
-
                                             <td>
                                                 <span *ngIf="recaudo.delayPenalty > 0; else sinMora"
                                                     class="text-danger">
@@ -342,11 +253,8 @@
                                                 </span>
                                                 <ng-template #sinMora>-</ng-template>
                                             </td>
-
                                             <td>{{ recaudo.userCreate }}</td>
                                         </tr>
-
-                                        <!-- Fila de totales -->
                                         <tr class="table-active">
                                             <td colspan="3" class="text-end"><strong>TOTAL RECAUDADO:</strong></td>
                                             <td>
@@ -370,7 +278,6 @@
                                 </table>
                             </div>
 
-                            <!-- SI NO HAY RECAUDOS -->
                             <div *ngIf="paymentStatus.recaudos.length === 0" class="text-center py-4">
                                 <i class="ti ti-mood-empty fs-1 text-muted"></i>
                                 <p class="text-muted mt-2">No se han registrado pagos para este crédito</p>
@@ -379,8 +286,8 @@
                     </div>
                 </div>
 
-                <!-- OBSERVACIONES - SOLO ADMIN / BACKOFFICE -->
-                <div class="col-12 mb-4" *ngIf="isAdmin || isAsistente">
+                <!-- OBSERVACIONES - visible para todos -->
+                <div class="col-12 mb-4">
                     <div class="card border">
                         <div class="card-header header-rojo d-flex align-items-center justify-content-between">
                             <h4 class="mb-0">
@@ -389,74 +296,55 @@
                         </div>
                         <div class="card-body">
 
-                            <!-- Loading -->
                             <div *ngIf="loadingObservations" class="text-center py-3">
                                 <div class="spinner-border spinner-border-sm text-danger" role="status"></div>
                                 <span class="ms-2 text-muted">Cargando observaciones...</span>
                             </div>
 
-                            <!-- Sin observaciones -->
                             <div *ngIf="!loadingObservations && observations.length === 0" class="text-center py-3">
                                 <i class="ti ti-mood-empty fs-2 text-muted"></i>
                                 <p class="text-muted mt-2 mb-0">No hay observaciones registradas para este crédito.</p>
                             </div>
 
-                            <!-- Timeline agrupada por fase -->
                             <div *ngIf="!loadingObservations && groupedObservations.length > 0"
                                 class="observations-timeline"
                                 style="max-height: 450px; overflow-y: auto; padding-right: 4px;">
 
                                 <ng-container *ngFor="let group of groupedObservations; let gi = index">
-
-                                    <!-- Indicador de cambio de fase -->
                                     <div class="phase-header d-flex align-items-center gap-2 my-3">
                                         <div class="phase-line flex-grow-1" style="height: 1px; background: #dee2e6;">
                                         </div>
-
-                                        <!-- Si hay transición de fase, muestra origen → destino -->
                                         <ng-container *ngIf="group.isTransition && group.transitionFrom; else soloFase">
-                                            <span class="badge bg-secondary" style="font-size: 0.72rem;">
-                                                {{ group.transitionFrom }}
-                                            </span>
+                                            <span class="badge bg-secondary" style="font-size: 0.72rem;">{{
+                                                group.transitionFrom }}</span>
                                             <i class="ti ti-arrow-right text-muted" style="font-size: 0.85rem;"></i>
-                                            <span class="badge bg-danger-custom" style="font-size: 0.72rem;">
-                                                {{ group.phase }}
-                                            </span>
+                                            <span class="badge bg-danger-custom" style="font-size: 0.72rem;">{{
+                                                group.phase }}</span>
                                         </ng-container>
                                         <ng-template #soloFase>
-                                            <span class="badge bg-danger-custom" style="font-size: 0.72rem;">
-                                                {{ group.phase }}
-                                            </span>
+                                            <span class="badge bg-danger-custom" style="font-size: 0.72rem;">{{
+                                                group.phase }}</span>
                                         </ng-template>
-
                                         <div class="phase-line flex-grow-1" style="height: 1px; background: #dee2e6;">
                                         </div>
                                     </div>
 
-                                    <!-- Observaciones de esta fase -->
                                     <div *ngFor="let obs of group.items; let oi = index"
                                         class="observation-item d-flex gap-3 mb-3">
-
-                                        <!-- Icono lateral -->
                                         <div class="flex-shrink-0 d-flex flex-column align-items-center">
                                             <div class="observation-dot rounded-circle bg-danger d-flex align-items-center justify-content-center"
                                                 style="width: 32px; height: 32px; min-width: 32px;">
                                                 <i class="ti ti-message text-white" style="font-size: 0.8rem;"></i>
                                             </div>
-                                            <!-- Línea vertical conectora (excepto último elemento del último grupo) -->
                                             <div *ngIf="!(gi === groupedObservations.length - 1 && oi === group.items.length - 1)"
                                                 style="width: 2px; flex-grow: 1; background: #f0d0d0; min-height: 16px; margin-top: 4px;">
                                             </div>
                                         </div>
-
-                                        <!-- Contenido -->
                                         <div class="flex-grow-1 pb-1">
                                             <div class="card border-0 bg-light rounded-3 p-3"
                                                 [class.border-start]="obs.credit_intention_status_start !== obs.credit_intention_status_end"
                                                 [style.border-left-color]="obs.credit_intention_status_start !== obs.credit_intention_status_end ? '#dc3545' : ''"
                                                 [style.border-left-width]="obs.credit_intention_status_start !== obs.credit_intention_status_end ? '3px' : ''">
-
-                                                <!-- Header de la observación -->
                                                 <div
                                                     class="d-flex justify-content-between align-items-start flex-wrap gap-1 mb-2">
                                                     <div class="d-flex align-items-center gap-2">
@@ -474,30 +362,20 @@
                                                         {{ formatCreatedAt(obs.created_at) }}
                                                     </small>
                                                 </div>
-
-                                                <!-- Texto de la observación -->
                                                 <p class="mb-0 text-secondary"
                                                     style="font-size: 0.88rem; line-height: 1.5;">
                                                     {{ obs.observation }}
                                                 </p>
-
                                             </div>
                                         </div>
-
                                     </div>
-                                    <!-- fin observaciones del grupo -->
-                                    <!-- <button>
-                                        Añadir observación
-                                    </button> -->
-
                                 </ng-container>
-
                             </div>
                         </div>
                     </div>
                 </div>
-            </div>
 
+            </div>
         </ng-container>
 
 

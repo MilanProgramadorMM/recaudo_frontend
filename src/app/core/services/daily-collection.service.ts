@@ -50,9 +50,16 @@ export interface DailyCollectionItemRespaldo {
     nombreDia: string;
 }
 
+export interface RatingCredit {
+    ratingValue: string;
+    start: number;
+    end: number | null;
+}
+
 export interface DailyCollectionItemDTO {
     data: DailyCollectionItem,
     recaudos: DailyCollectionItemRespaldo,
+    ratingCredit: RatingCredit,
     flipped: boolean
 }
 

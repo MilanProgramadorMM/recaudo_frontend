@@ -116,6 +116,7 @@
                                 <th class="text-center" style="width: 150px;">Acciones</th>
                                 <th style="width: 80px;">ID</th>
                                 <th style="width: 120px;">Estado</th>
+                                <th style="width: 120px;">Calificacion</th>
                                 <th style="width: 120px;">Documento</th>
                                 <th>Cliente</th>
                                 <th>Zona</th>
@@ -138,6 +139,26 @@
                                 </td>
                                 <td>{{ intention.id }} ({{intention.creditIntentionId}})</td>
                                 <td>{{ translateCreditStatus(intention.creditStatus) }}</td>
+                                <td class="text-center align-middle">
+                                    <div class="d-flex flex-column align-items-center gap-1">
+                                        <span class="rc-rating-badge" [ngClass]="{
+                                            'rating-aa': intention.ratingCredit?.ratingValue === 'AA',
+                                            'rating-a':  intention.ratingCredit?.ratingValue === 'A',
+                                            'rating-b':  intention.ratingCredit?.ratingValue === 'B',
+                                            'rating-c':  intention.ratingCredit?.ratingValue === 'C',
+                                            'rating-d':  intention.ratingCredit?.ratingValue === 'D'
+                                        }">
+                                            {{ intention.ratingCredit?.ratingValue ?? 'N/A' }}
+                                            <ng-container *ngIf="intention.ratingCredit?.end != null">
+                                                ({{ intention.ratingCredit?.start }} - {{ intention.ratingCredit?.end }}
+                                                días)
+                                            </ng-container>
+                                            <ng-container *ngIf="intention.ratingCredit?.end == null">
+                                                (+{{ intention.ratingCredit?.start }} días)
+                                            </ng-container>
+                                        </span>
+                                    </div>
+                                </td>
                                 <td>{{ intention.document }}</td>
                                 <td>{{ intention.fullname }}</td>
                                 <td>{{ intention.zoneName }}</td>

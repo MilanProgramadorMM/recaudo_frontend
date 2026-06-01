@@ -60,6 +60,8 @@ export class SimulationIntentionComponent implements OnInit {
   private formSubscription?: Subscription;
   currentUserRole: string | null = null;
   currentUserId: number | null = null;
+  clientRating: string | null = null;
+
 
 
 
@@ -583,6 +585,7 @@ export class SimulationIntentionComponent implements OnInit {
         const person = response.data;
 
         if (!person) {
+          this.clientRating = null;
           this.resetPersonForm();
           this.errorMessage = 'No se encontró ninguna persona con el documento ingresado.';
           this.updatingFromBackend = false;
@@ -591,6 +594,7 @@ export class SimulationIntentionComponent implements OnInit {
 
         this.errorMessage = '';
 
+        this.clientRating = person.ratingCredit ?? null;
         this.form.patchValue({
           document_type: person.documentType,
           document: person.document,

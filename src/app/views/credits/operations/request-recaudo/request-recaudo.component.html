@@ -87,7 +87,7 @@
                                     <div class="rc-header-info">
                                         <span class="rc-name">{{ cliente.data.clientName }}</span>
                                         <span class="rc-credit">
-                                            CRE N-{{ cliente.data.creditId }}
+                                            NRO-{{ cliente.data.creditId }}
                                             <span *ngIf="cliente.data.zona"> · {{ cliente.data.zona }} - {{
                                                 cliente.data.lineaName }}</span>
                                         </span>
@@ -117,7 +117,7 @@
                                     <!-- ── INFO GRID ── -->
                                     <div class="rc-info-grid">
                                         <div class="rc-info-item">
-                                            <span class="rc-info-label">Fecha Inicio</span>
+                                            <span class="rc-info-label">Fecha Desembolso</span>
                                             <span class="rc-info-value">{{ cliente.data.fechaCredito | date:"d 'de' MMM"
                                                 | uppercase }}</span>
                                         </div>
@@ -138,7 +138,7 @@
                                         <div class="rc-info-item rc-full" *ngIf="cliente.data.direccion">
                                             <span class="rc-info-label">Dirección</span>
                                             <span class="rc-info-value">
-                                                {{ cliente.data.direccion }}, {{ cliente.data.barrio }}, {{
+                                                {{ cliente.data.direccion }} {{ cliente.data.barrio }} {{
                                                 cliente.data.municipio }}
                                             </span>
                                         </div>
@@ -146,7 +146,8 @@
 
                                     <div class="rc-summary-row">
                                         <!-- Valor crédito (verde) -->
-                                        <div class="rc-total-card-credit" matTooltip="Valor total del crédito sin intereses moratorios"
+                                        <div class="rc-total-card-credit"
+                                            matTooltip="Valor total del crédito sin intereses moratorios"
                                             matTooltipPosition="above">
                                             <span class="rc-total-value">
                                                 $ {{ (+cliente.data.totalCapitalValue || 0) | number:'1.0-0' }}
@@ -165,8 +166,7 @@
                                         </div>
 
                                         <div class="rc-total-card-credit"
-                                            matTooltip="Interés moratorio total del crédito"
-                                            matTooltipPosition="above">
+                                            matTooltip="Interés moratorio total del crédito" matTooltipPosition="above">
                                             <span class="rc-total-value">
                                                 $ {{ (+cliente.data.totalMoraCredito || 0) | number:'1.0-0' }}
                                             </span>
@@ -187,25 +187,31 @@
                                         </div>
                                     </div>
 
-                                    <!-- ── PROGRESO DE CUOTA ── -->
-                                    <div class="rc-quota-progress">
-                                        <div class="d-flex justify-content-between align-items-center mb-1">
-                                            <span class="rc-info-label">
-                                                Cuota
-                                                <span class="text-green">{{ cliente.data.quotaNumber }}</span>
-                                                de
-                                                <span class="text-red">{{ cliente.data.totalCuotas }}</span>
-                                            </span>
-                                            <span class="rc-quota-pct fw-semibold">
-                                                {{ ((cliente.data.quotaNumber / cliente.data.totalCuotas) * 100) |
-                                                number:'1.0-0' }}%
-                                            </span>
-                                        </div>
-                                        <div class="rc-prog-bar-wrap">
-                                            <div class="rc-prog-bar-fill"
-                                                [style.width.%]="(cliente.data.quotaNumber / cliente.data.totalCuotas) * 100">
-                                            </div>
-                                        </div>
+                                    <!-- Calificación del crédito -->
+                                    <div class="d-flex flex-column align-items-center justify-content-center gap-1">
+
+                                        <!-- Badge de calificación -->
+                                        <span class="rc-rating-badge" [ngClass]="{
+                                                'rating-aa': cliente.ratingCredit?.ratingValue === 'AA',
+                                                'rating-a':  cliente.ratingCredit?.ratingValue === 'A',
+                                                'rating-b':  cliente.ratingCredit?.ratingValue === 'B',
+                                                'rating-c':  cliente.ratingCredit?.ratingValue === 'C',
+                                                'rating-d':  cliente.ratingCredit?.ratingValue === 'D'
+                                            }">
+                                            {{ cliente.ratingCredit?.ratingValue ?? 'N/A' }}
+                                        </span>
+
+                                        <!-- Rango de días -->
+                                        <span class="rc-info-label text-center">
+                                            <ng-container *ngIf="cliente.ratingCredit?.end != null">
+                                                {{ cliente.ratingCredit?.start }} - {{ cliente.ratingCredit?.end }} días
+                                                de mora
+                                            </ng-container>
+                                            <ng-container *ngIf="cliente.ratingCredit?.end == null">
+                                                Más de {{ cliente.ratingCredit?.start }} días de mora
+                                            </ng-container>
+                                        </span>
+
                                     </div>
 
                                     <div class="rc-divider"></div>
@@ -307,10 +313,11 @@
 
                                         <button type="button"
                                             class="btn btn-outline-warning btn-sm flex-fill d-flex flex-column align-items-center py-2"
-                                            *ngIf="cliente.data.paidFull !== 'S' && cliente.data.liquidated !== 'S' && cliente.data.paidToday !== 1"
                                             (click)="registrarPromesa(cliente.data); $event.stopPropagation()">
                                             <i class="ti ti-calendar-event mb-1"></i>
                                             <span style="font-size: 10px; line-height: 1;">Promesa</span>
+                                            <!--  *ngIf="cliente.data.paidFull !== 'S' && cliente.data.liquidated !== 'S' && cliente.data.paidToday !== 1"
+                                            Condicion promera  -->
                                         </button>
 
                                     </div>
@@ -486,367 +493,3 @@
         </div>
     </div>
 </div>
-
-
-<!-- ══ ESTILOS DE LA TARJETA MÓVIL ══ -->
-<style>
-    /* ── Tarjeta base ── */
-    .recaudo-mobile-list {
-        padding: 12px;
-        display: flex;
-        flex-direction: column;
-        gap: 14px;
-    }
-
-    .recaudo-card {
-        perspective: 1000px;
-    }
-
-    .flip-card {
-        position: relative;
-        transform-style: preserve-3d;
-        transition: transform .45s ease;
-    }
-
-    .flip-card.flipped {
-        transform: rotateY(180deg);
-    }
-
-    .flip-front,
-    .flip-back {
-        backface-visibility: hidden;
-        border: 0.5px solid #e0e0e0;
-        border-radius: 12px;
-        overflow: hidden;
-        background: #fff;
-        box-shadow: 0 2px 8px rgba(0, 0, 0, .07);
-    }
-
-    .flip-back {
-        position: absolute;
-        top: 0;
-        left: 0;
-        width: 100%;
-        transform: rotateY(180deg);
-        overflow-y: auto;
-        height: auto;
-    }
-
-    /* ── Header ── */
-    .rc-header {
-        background: #c0392b;
-        padding: 12px 14px;
-        display: flex;
-        justify-content: space-between;
-        align-items: flex-start;
-    }
-
-    .rc-header-info {
-        display: flex;
-        flex-direction: column;
-        gap: 2px;
-    }
-
-    .rc-name {
-        font-size: 14px;
-        font-weight: 600;
-        color: #fff;
-        line-height: 1.2;
-    }
-
-    .rc-credit {
-        font-size: 11px;
-        color: rgba(255, 255, 255, .75);
-    }
-
-    .rc-orden {
-        background: rgba(255, 255, 255, .2);
-        color: #fff;
-        font-size: 12px;
-        font-weight: 600;
-        padding: 2px 9px;
-        border-radius: 20px;
-    }
-
-    /* ── Badge de estado ── */
-    .rc-status-badge {
-        font-size: 10px;
-        font-weight: 600;
-        padding: 2px 8px;
-        border-radius: 20px;
-        white-space: nowrap;
-    }
-
-    .rc-status-success {
-        background: #d4edda;
-        color: #155724;
-    }
-
-    .rc-status-primary {
-        background: #cce5ff;
-        color: #004085;
-    }
-
-    .rc-status-warning {
-        background: #fff3cd;
-        color: #856404;
-    }
-
-    .rc-status-danger {
-        background: #f8d7da;
-        color: #721c24;
-    }
-
-    .rc-status-secondary {
-        background: #e2e3e5;
-        color: #383d41;
-    }
-
-    /* ── Cuerpo ── */
-    .rc-body {
-        padding: 12px 14px;
-    }
-
-    /* ── Info grid ── */
-    .rc-info-grid {
-        display: grid;
-        grid-template-columns: repeat(2, 1fr);
-        gap: 6px;
-    }
-
-    .rc-info-item {
-        background: #f8f9fa;
-        border-radius: 8px;
-        padding: 7px 9px;
-    }
-
-    .rc-info-label {
-        display: block;
-        font-size: 9px;
-        color: #888;
-        text-transform: uppercase;
-        letter-spacing: .4px;
-        margin-bottom: 2px;
-
-        .text-green {
-            color: #13c551;
-            /* El mismo verde que usas en tus tarjetas */
-            font-weight: bold;
-            /* Opcional: por si quieres resaltarlo más */
-        }
-
-        .text-red {
-            color: #dc3545;
-            /* Un tono rojo estándar para alertas/totales */
-            font-weight: bold;
-            /* Opcional: por si quieres resaltarlo más */
-        }
-    }
-
-    .rc-info-value {
-        font-size: 12px;
-        font-weight: 500;
-        color: #222;
-    }
-
-    /* ── Separador ── */
-    .rc-divider {
-        border: none;
-        border-top: 0.5px solid #e9ecef;
-        margin: 10px 0;
-    }
-
-    /* ── Progreso de cuota ── */
-    .rc-quota-progress {
-        margin-bottom: 2px;
-    }
-
-    .rc-quota-pct {
-        font-size: 12px;
-        color: #c0392b;
-    }
-
-    .rc-prog-bar-wrap {
-        width: 100%;
-        height: 5px;
-        background: #e9ecef;
-        border-radius: 3px;
-        overflow: hidden;
-    }
-
-    .rc-prog-bar-fill {
-        height: 100%;
-        background: #c0392b;
-        border-radius: 3px;
-        transition: width .4s ease;
-    }
-
-    /* ── Montos financieros ── */
-    .rc-money-row {
-        display: grid;
-        grid-template-columns: repeat(2, 1fr);
-        gap: 6px;
-        margin-bottom: 6px;
-    }
-
-    .rc-money-card {
-        background: #f8f9fa;
-        border-radius: 8px;
-        padding: 8px 10px;
-    }
-
-    .rc-money-label {
-        display: block;
-        font-size: 9px;
-        color: #888;
-        text-transform: uppercase;
-        letter-spacing: .4px;
-        margin-bottom: 3px;
-    }
-
-    .rc-money-value {
-        font-size: 14px;
-        font-weight: 600;
-    }
-
-    .rc-money-cuota .rc-money-value {
-        color: #155724;
-    }
-
-
-    .rc-money-total .rc-money-value {
-        color: #193dcd;
-    }
-
-    .rc-money-saldo .rc-money-value {
-        color: #b01625;
-    }
-
-    .rc-money-mora .rc-money-value {
-        color: #d66706;
-    }
-
-    .rc-total-card,
-    .rc-total-card-credit {
-        border-radius: 8px;
-        padding: 8px 12px;
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        margin-top: 2px;
-    }
-
-    .rc-total-card {
-        background: #c0392b;
-    }
-
-    .rc-total-card-credit {
-        background: #13c551;
-    }
-
-    .rc-total-label {
-        font-size: 10px;
-        color: rgba(255, 255, 255, .8);
-        text-transform: uppercase;
-        letter-spacing: .4px;
-    }
-
-    .rc-total-value {
-        font-size: 15px;
-        font-weight: 700;
-        color: #fff;
-    }
-
-    /* ── Contadores ── */
-    .rc-counters-row {
-        display: grid;
-        grid-template-columns: repeat(3, 1fr);
-        gap: 6px;
-    }
-
-    .rc-counter-item {
-        border-radius: 8px;
-        padding: 8px 6px;
-        text-align: center;
-        border: 0.5px solid transparent;
-    }
-
-    .rc-counter-num {
-        display: block;
-        font-size: 18px;
-        font-weight: 700;
-    }
-
-    .rc-counter-label {
-        display: block;
-        font-size: 9px;
-        text-transform: uppercase;
-        letter-spacing: .4px;
-        margin-top: 2px;
-    }
-
-    .rc-counter-pagadas {
-        background: #d4edda;
-        border-color: #c3e6cb;
-    }
-
-    .rc-counter-pagadas .rc-counter-num {
-        color: #155724;
-    }
-
-    .rc-counter-pagadas .rc-counter-label {
-        color: #1e7e34;
-    }
-
-    .rc-counter-vencidas {
-        background: #f8d7da;
-        border-color: #f5c6cb;
-    }
-
-    .rc-counter-vencidas .rc-counter-num {
-        color: #721c24;
-    }
-
-    .rc-counter-vencidas .rc-counter-label {
-        color: #a32d2d;
-    }
-
-    .rc-counter-neutral {
-        background: #e2e3e5;
-        border-color: #d6d8db;
-    }
-
-    .rc-counter-neutral .rc-counter-num {
-        color: #383d41;
-    }
-
-    .rc-counter-neutral .rc-counter-label {
-        color: #6c757d;
-    }
-
-    .rc-counter-pendientes {
-        background: #fff3cd;
-        border-color: #ffeeba;
-    }
-
-    .rc-counter-pendientes .rc-counter-num {
-        color: #533f03;
-    }
-
-    .rc-counter-pendientes .rc-counter-label {
-        color: #856404;
-    }
-
-    /* ── Botonera (sin cambios de comportamiento) ── */
-    .rc-actions-row {
-        display: flex;
-        flex-wrap: wrap;
-        gap: 6px;
-    }
-
-    .rc-actions-row .btn {
-        min-width: 54px;
-        border-radius: 8px;
-        font-size: 11px;
-    }
-</style>

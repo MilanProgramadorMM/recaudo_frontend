@@ -20,3 +20,45 @@ span.active {
   background-color: #dc3545;
   color: #fff;
 }
+
+
+.rc-rating-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  font-weight: 700;
+  font-size: 0.95rem;
+  color: #fff;
+  flex-shrink: 0;
+
+  &.rating-aa {
+      background-color: #198754;
+  }
+
+  // verde oscuro - sin mora
+  &.rating-a {
+      background-color: #198754;
+  }
+
+  // verde claro  - 1-15 días
+  &.rating-b {
+      background-color: #ffc107;
+      color: #212529;
+  }
+
+  // amarillo - 16-45
+  &.rating-c {
+      background-color: #fd7e14;
+  }
+
+  // naranja - 46-60
+  &.rating-d {
+      background-color: #dc3545;
+  }
+
+  // rojo - +60
+}
+  

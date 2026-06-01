@@ -62,8 +62,21 @@
                                                 Campo obligatorio
                                             </div>
                                         </div>
+                                        <div *ngIf="clientRating" class="d-flex align-items-center gap-2 mt-1">
+                                            <small class="text-muted">Calificación:</small>
+                                            <span class="rc-rating-badge" [ngClass]="{
+                                                'rating-a':  clientRating === 'A',
+                                                'rating-b':  clientRating === 'B',
+                                                'rating-c':  clientRating === 'C',
+                                                'rating-d':  clientRating === 'D'
+                                            }">
+                                                {{ clientRating }}
+                                            </span>
+                                        </div>
                                     </div>
 
+                                    <hr class="my-4">
+                                    
                                     <div class="row">
                                         <div class="col-lg-3 mb-3">
                                             <label class="form-label">Primer nombre <span
@@ -249,11 +262,8 @@
                                         <div class="col-lg-4 mb-3">
                                             <label class="form-label">Departamento <span
                                                     class="required">*</span></label>
-                                            <ng-select 
-                                                [items]="departamentos" 
-                                                bindLabel="label"
-                                                formControlName="department_id"
-                                                bindValue="id"
+                                            <ng-select [items]="departamentos" bindLabel="label"
+                                                formControlName="department_id" bindValue="id"
                                                 [ngClass]="{ 'is-invalid': submitted && form.get('department_id')?.invalid }">
                                             </ng-select>
                                             <!--<select class="form-control form-select" formControlName="department_id"
@@ -271,10 +281,7 @@
 
                                         <div class="col-lg-4 mb-3">
                                             <label class="form-label">Municipio <span class="required">*</span></label>
-                                            <ng-select 
-                                                [items]="municipios" 
-                                                bindLabel="label"
-                                                bindValue="id"
+                                            <ng-select [items]="municipios" bindLabel="label" bindValue="id"
                                                 formControlName="municipality_id"
                                                 [ngClass]="{ 'is-invalid': submitted && form.get('municipality_id')?.invalid }">
                                             </ng-select>
@@ -293,10 +300,7 @@
 
                                         <div class="col-lg-4 mb-3">
                                             <label class="form-label">Barrio <span class="required">*</span></label>
-                                            <ng-select 
-                                                [items]="barrios" 
-                                                bindLabel="label"
-                                                bindValue="id"
+                                            <ng-select [items]="barrios" bindLabel="label" bindValue="id"
                                                 formControlName="neighborhood_id"
                                                 [ngClass]="{ 'is-invalid': submitted && form.get('neighborhood_id')?.invalid }">
                                             </ng-select>
@@ -400,7 +404,7 @@
                                             </label>
 
                                             <input type="number" class="form-control" formControlName="period_quantity"
-                                                 (keypress)="soloNumeros($event)"
+                                                (keypress)="soloNumeros($event)"
                                                 [placeholder]="'Ingrese el numero de coutas'"
                                                 (blur)="limitarCuotas($event)" [ngClass]="{
                                                     'is-invalid':
@@ -524,7 +528,8 @@
 
                                                 <input type="text" class="form-control" formControlName="item_value"
                                                     (input)="formatCurrency('item_value')"
-                                                    placeholder="Ingrese el valor" [ngClass]="{ 'is-invalid': submitted && form.get('item_value')?.invalid }">
+                                                    placeholder="Ingrese el valor"
+                                                    [ngClass]="{ 'is-invalid': submitted && form.get('item_value')?.invalid }">
                                             </div>
                                             <small class="form-text text-muted">
                                                 Papelería: $ {{ getPapeleria }}
@@ -600,7 +605,8 @@
                                                 <input type="text" class="form-control"
                                                     formControlName="value_to_financiate"
                                                     (input)="formatCurrency('value_to_financiate')"
-                                                    placeholder="Se calcula automáticamente" readonly [ngClass]="{ 'is-invalid': submitted && form.get('value_to_financiate')?.invalid }">
+                                                    placeholder="Se calcula automáticamente" readonly
+                                                    [ngClass]="{ 'is-invalid': submitted && form.get('value_to_financiate')?.invalid }">
                                             </div>
 
                                             <div class="invalid-feedback"
@@ -623,7 +629,8 @@
 
                                                 <input type="text" class="form-control" formControlName="initial_quota"
                                                     (input)="formatCurrency('initial_quota')"
-                                                    [placeholder]="'Ingrese el valor de la cuota inicial'" [ngClass]="{ 'is-invalid': submitted && form.get('initial_quota')?.invalid || errorValueToFinanciate }">
+                                                    [placeholder]="'Ingrese el valor de la cuota inicial'"
+                                                    [ngClass]="{ 'is-invalid': submitted && form.get('initial_quota')?.invalid || errorValueToFinanciate }">
                                             </div>
 
                                             <div class="invalid-feedback"
@@ -687,7 +694,8 @@
                                                                                 <div class="badge bg-primary me-2">
                                                                                     <i class="ti ti-id-badge"></i>
                                                                                 </div>
-                                                                                <h6 class="mb-0 fw-semibold">Frontal</h6>
+                                                                                <h6 class="mb-0 fw-semibold">Frontal
+                                                                                </h6>
                                                                             </div>
                                                                             <FileUploader [showPreview]="true"
                                                                                 [side]="'front'" [maxFiles]="1"
@@ -702,7 +710,8 @@
                                                                                 <div class="badge bg-secondary me-2">
                                                                                     <i class="ti ti-id-badge-2"></i>
                                                                                 </div>
-                                                                                <h6 class="mb-0 fw-semibold">Respaldo</h6>
+                                                                                <h6 class="mb-0 fw-semibold">Respaldo
+                                                                                </h6>
                                                                             </div>
                                                                             <FileUploader [showPreview]="true"
                                                                                 [side]="'back'" [maxFiles]="1"

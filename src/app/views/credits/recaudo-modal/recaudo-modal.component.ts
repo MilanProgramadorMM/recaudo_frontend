@@ -25,6 +25,8 @@ interface CreditPaymentStatus {
   totalPagado: number;
   totalPendiente: number;
   porcentajePagado: number;
+  zoneId?: number;
+  zoneName?: string;
   cuotas: QuotaDetail[];
   recaudos: RecaudoDetail[];
 }
@@ -272,23 +274,23 @@ export class RecaudoModalComponent {
       .reduce((sum, cuota) => sum + (cuota.delayPenalty || 0), 0);
   }
 
-getTotalRecaudoEnRuta(): number {
-  if (!this.paymentStatus || !this.paymentStatus.recaudos) return 0;
+  getTotalRecaudoEnRuta(): number {
+    if (!this.paymentStatus || !this.paymentStatus.recaudos) return 0;
 
-  const recaudos = this.paymentStatus.recaudos.filter(r => 
-    r.conceptName === 'NOTA CREDITO' || r.conceptName === 'NOTA DEBITO'
-  );
+    const recaudos = this.paymentStatus.recaudos.filter(r =>
+      r.conceptName === 'NOTA CREDITO' || r.conceptName === 'NOTA DEBITO'
+    );
 
-  const total = recaudos.reduce((sum, r, index) => {
-    const value = Number(r.valuePaid || 0);
+    const total = recaudos.reduce((sum, r, index) => {
+      const value = Number(r.valuePaid || 0);
 
-    return sum + value;
-  }, 0);
+      return sum + value;
+    }, 0);
 
-  console.log('TOTAL FINAL =>', total);
+    console.log('TOTAL FINAL =>', total);
 
-  return total;
-}
+    return total;
+  }
 
   openDelayPenaltyModal(): void {
     const modalRef = this.modalService.open(DelayPenaltyModalComponent, {
