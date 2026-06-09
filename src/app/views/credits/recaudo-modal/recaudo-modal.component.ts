@@ -399,11 +399,17 @@ export class RecaudoModalComponent {
   }
 
   // Suma cualquier columna numérica de recaudos
+  // getTotalByConcepto(field: keyof RecaudoDetail): number {
+  //   if (!this.paymentStatus) return 0;
+  //   return this.paymentStatus.recaudos
+  //     .filter(r => r.conceptName === 'RECAUDO EN RUTA')
+  //     .reduce((sum, r) => sum + (Number(r[field]) || 0), 0);
+  // }
+
   getTotalByConcepto(field: keyof RecaudoDetail): number {
     if (!this.paymentStatus) return 0;
     return this.paymentStatus.recaudos
-      .filter(r => r.conceptName === 'RECAUDO EN RUTA')
+      .filter(r => this.getRecaudoNaturaleza(r.conceptName) === 'CREDITO')
       .reduce((sum, r) => sum + (Number(r[field]) || 0), 0);
   }
-
 }

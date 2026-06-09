@@ -1037,7 +1037,7 @@ export class ClosingComponent implements OnInit {
         approvalDto.amountAdmin,   // ← valor correcto del DTO
         approvalDto.amountAsesor   // ← valor correcto del DTO
       );
-         
+
       this.confirmAndApproveWithDelivery(approvalDto, title, message);
 
     } else {
@@ -1342,7 +1342,7 @@ export class ClosingComponent implements OnInit {
   formatCurrency(value: number): string {
     return value.toLocaleString('es-CO', {
       minimumFractionDigits: 0,
-      maximumFractionDigits: 0
+      maximumFractionDigits: 2
     });
   }
 

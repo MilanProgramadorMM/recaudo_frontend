@@ -14,8 +14,9 @@ export interface DefaultResponseDto<T> {
 export interface DashboardSummaryDto {
   totalDebidoCobrar: number;
   totalRecaudado: number;
-  totalNoPagado: number;
   totalCartera: number;
+  totalNoPagado: number; 
+  totalNoPagoCantidad: number; 
 }
 
 @Injectable({
@@ -49,5 +50,4 @@ export class DashBoardMetrictsService {
       { headers: this.getHeaders(), params }
     );
   }
-
 }

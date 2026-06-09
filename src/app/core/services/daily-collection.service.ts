@@ -36,9 +36,10 @@ export interface DailyCollectionItem {
     interestMora: number;
     fechaVence: string;
     saldoPendienteCuota: number;
-    diasMora: number;
+    //diasMora: number;
     lineaname?: string;
     totalMoraCredito: number;
+    periodosVencidos: number;
 }
 
 export interface DailyCollectionItemRespaldo {

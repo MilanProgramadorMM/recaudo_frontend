@@ -37,7 +37,7 @@
                         <option value="pending">Pendientes</option>
                         <option value="paid">Pagados hoy</option>
                         <option value="promise">Con promesa</option>
-                        <option value="nopago">No pagó</option>
+                        <!-- <option value="nopago">No pagó</option> -->
                     </select>
                 </div>
 
@@ -249,7 +249,9 @@
                                                 $ {{ (+cliente.data.interestMora || 0) | number:'1.0-0' }}
                                             </span>
                                             <span class="rc-money-value">
-                                                {{ cliente.data.diasMora || 0 }} Días Mora
+                                                {{ cliente.data.periodosVencidos || 0 }}
+                                                {{ cliente.data.periodosVencidos === 1 ? 'Periodo vencido' : 'Periodos
+                                                vencidos' }}
                                             </span>
                                         </div>
 

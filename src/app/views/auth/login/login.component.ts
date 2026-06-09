@@ -25,7 +25,7 @@ export class LoginComponent {
   loading = false;
   showPassword = false;
   errorMessage: string = ''
-  
+
   alertData: AlertType[] = [];
 
 
@@ -67,30 +67,30 @@ export class LoginComponent {
   }
 
   login() {
-  if (!this.signInForm.valid) return;
+    if (!this.signInForm.valid) return;
 
-  const username = this.formValues['username'].value;
-  const password = this.formValues['password'].value;
+    const username = this.formValues['username'].value;
+    const password = this.formValues['password'].value;
 
-  this.loading = true;
-  this.store.dispatch(login({ username, password }));
+    this.loading = true;
+    this.store.dispatch(login({ username, password }));
 
-  // Manejar éxito
-  this.actions$.pipe(ofType(loginSuccess), take(1)).subscribe(() => {
-    this.loading = false;
-    this.showSuccessAlert();
-  });
+    // Manejar éxito
+    this.actions$.pipe(ofType(loginSuccess), take(1)).subscribe(() => {
+      this.loading = false;
+      this.showSuccessAlert();
+    });
 
-  // Manejar error
-  this.actions$.pipe(ofType(loginFailure), take(1)).subscribe(({ error }) => {
-    this.loading = false;
-    this.errorMessage = error;
-    this.showErrorAlert();
-  });
-}
+    // Manejar error
+    this.actions$.pipe(ofType(loginFailure), take(1)).subscribe(({ error }) => {
+      this.loading = false;
+      this.errorMessage = error;
+      this.showErrorAlert();
+    });
+  }
 
-togglePassword() {
-  this.showPassword = !this.showPassword;
-}
+  togglePassword() {
+    this.showPassword = !this.showPassword;
+  }
 
 }
