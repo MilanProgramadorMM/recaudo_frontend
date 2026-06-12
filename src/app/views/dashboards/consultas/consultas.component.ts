@@ -96,6 +96,7 @@ export class ConsultasComponent implements OnInit, AfterViewInit {
     this.loadTable1();
     this.loadTable2();
     this.loadTable3();
+    this.loadTable4();
   }
 
   ngAfterViewInit(): void { }
