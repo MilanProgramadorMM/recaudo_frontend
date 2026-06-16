@@ -18,8 +18,8 @@ export default baseUrl;
 
 // -----------------LOCAL-----------------
 
-//let baseUrl = 'http://localhost:8080/api/'
-//export default baseUrl;
+// let baseUrl = 'http://localhost:8081/api/'
+// export default baseUrl;
 
 //API PUBLICA PARA ENVIAR SMS
 //let baseUrlPublic = 'http://localhost:8081/api/';
