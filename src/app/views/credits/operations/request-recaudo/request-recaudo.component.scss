@@ -1057,6 +1057,9 @@ $recaudo-red-light: #f8d7da;
     justify-content: space-between;
     align-items: center;
     margin-top: 2px;
+    touch-action: pan-y;
+    -webkit-user-select: none;
+    user-select: none;
 }
 
 .rc-total-card {

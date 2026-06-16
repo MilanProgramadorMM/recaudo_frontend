@@ -30,7 +30,10 @@ import { FlatpickrDirective } from '@core/directive/flatpickr.directive';
 })
 export class CreditsComponent {
 
-  loading: boolean = false;
+  pendingRequests: number = 0;
+  get loading(): boolean {
+    return this.pendingRequests > 0;
+  }
   intentions: CreditResponseDto[] = [];
   filteredIntentions: CreditResponseDto[] = [];
   pagedIntentions: CreditResponseDto[] = [];
@@ -124,17 +127,23 @@ export class CreditsComponent {
   }
 
   private loadAllActiveZonas(): void {
+    this.pendingRequests++;
+    console.log('Iniciando carga de zonas...'); // Debug
     this.zonaService.getByStatus().subscribe({
       next: (response) => {
+        console.log('Zonas recibidas'); // Debug
         this.zonas = response.data;
         //this.initializeFilters();
-        this.loading = false;
+        //this.loading = false;
         console.log('Zonas activas cargadas:', this.zonas);
       },
       error: (err) => {
         console.error('Error al cargar zonas:', err);
         this.zonas = [];
-        this.loading = false;
+        this.pendingRequests--;
+      },
+      complete: () => {
+        this.pendingRequests--;
       }
     });
   }
@@ -166,25 +175,25 @@ export class CreditsComponent {
   }
 
   loadCredit(): void {
-    this.loading = true;
+    this.pendingRequests++;
+    console.log('Iniciando carga de créditos...');
     this.creditservice.getCredits().subscribe({
       next: (response) => {
+        console.log('Créditos recibidos'); // Debug
         if (response.status === 'OK') {
           this.intentions = response.data;
           this.filteredIntentions = [...this.intentions];
           this.updatePagedData();
         }
-        this.loading = false;
       },
       error: (err) => {
-        console.error('Error al cargar intenciones:', err);
-        Swal.fire({
+        console.error('Error en créditos:', err); Swal.fire({
           icon: 'error',
           title: 'Error',
           text: 'No se pudieron cargar los créditos'
         });
-        this.loading = false;
-      }
+      },
+      complete: () => { this.pendingRequests--; }
     });
   }
 

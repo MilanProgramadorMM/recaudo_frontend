@@ -11,12 +11,17 @@ export interface DefaultResponseDto<T> {
   data: T;
 }
 
+export interface DashboardHistorialDto {
+  fecha: string;
+  valor: number;
+}
+
 export interface DashboardSummaryDto {
   totalDebidoCobrar: number;
   totalRecaudado: number;
   totalCartera: number;
-  totalNoPagado: number; 
-  totalNoPagoCantidad: number; 
+  totalNoPagado: number;
+  totalNoPagoCantidad: number;
 }
 
 @Injectable({
@@ -39,7 +44,7 @@ export class DashBoardMetrictsService {
     fechaInicio: string,
     fechaFin: string,
     zonaId: number
-  ): Observable<DefaultResponseDto<DashboardSummaryDto>> {  
+  ): Observable<DefaultResponseDto<DashboardSummaryDto>> {
     const params = new HttpParams()
       .set('fechaInicio', fechaInicio)
       .set('fechaFin', fechaFin)
@@ -49,5 +54,17 @@ export class DashBoardMetrictsService {
       `${baseUrl}dashboard/summary`,
       { headers: this.getHeaders(), params }
     );
+  }
+
+  getHistorial(
+    tipo: string,
+    fechaInicio: string,
+    fechaFin: string,
+    zonaId: number
+  ): Observable<any> {
+    return this.http.get(
+      `${baseUrl}dashboard/historial`, {
+      params: { tipo, fechaInicio, fechaFin, zonaId: zonaId.toString() }
+    });
   }
 }

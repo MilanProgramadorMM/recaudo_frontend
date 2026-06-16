@@ -88,7 +88,8 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                <tr *ngFor="let row of tableData1" class="consultas-row" (click)="onRowClick('MOVIMIENTOS_POR_ZONA', row)">
+                                <tr *ngFor="let row of tableData1" class="consultas-row"
+                                    (click)="onRowClick('MOVIMIENTOS_POR_ZONA', row)">
                                     <td class="fw-medium zona-cell">{{ row.zona }}</td>
                                     <td class="text-end">{{ currency }} {{ row.quota_value | number:'1.0-0' }}</td>
                                     <td class="text-end">{{ currency }} {{ row.capital_balance | number:'1.0-0' }}</td>
@@ -129,9 +130,10 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                <tr *ngFor="let row of tableData2" class="consultas-row" (click)="onRowClick('SALDOS_VENCIDOS', row)">
+                                <tr *ngFor="let row of tableData2" class="consultas-row"
+                                    (click)="onRowClick('SALDOS_VENCIDOS', row)">
                                     <td class="fw-medium zona-cell">{{ row.name }}</td>
-                                    <td class="text-end">{{ currency }} {{ row.value | number:'1.0-0' }}</td>                                    
+                                    <td class="text-end">{{ currency }} {{ row.value | number:'1.0-0' }}</td>
                                 </tr>
                                 <tr *ngIf="tableData2.length === 0">
                                     <td colspan="8" class="text-center text-muted py-4 empty-state">
@@ -161,11 +163,12 @@
                             <thead class="sticky-header">
                                 <tr>
                                     <th>Zona</th>
-                                    <th class="text-end">Cantidad</th>                                    
+                                    <th class="text-end">Cantidad</th>
                                 </tr>
                             </thead>
                             <tbody>
-                                <tr *ngFor="let row of tableData3" class="consultas-row" (click)="onRowClick('CREDITOS_ZONA',row)">
+                                <tr *ngFor="let row of tableData3" class="consultas-row"
+                                    (click)="onRowClick('CREDITOS_ZONA',row)">
                                     <td class="fw-medium zona-cell">{{ row.name }}</td>
                                     <td class="text-end">{{ row.value | number:'1.0-0' }}</td>
                                 </tr>
@@ -220,6 +223,99 @@
                             </tbody>
                         </table>
                     </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- GRÁFICOS -->
+    <div class="row mt-3 g-3" *ngIf="!loading">
+
+        <!-- Gráfico 1: Movimientos por Zona (OPERATIVAS) -->
+        <div class="col-12 col-xl-6" *ngIf="type=='OPERATIVAS'">
+            <div class="card shadow-sm">
+                <div class="card-header border-bottom border-dashed">
+                    <h5 class="header-title mb-0">
+                        <span class="me-2" style="color:#3b82f6">●</span>
+                        Movimientos por Zona
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <div *ngIf="!chart1Series.length" class="text-center py-4 text-muted">
+                        <i class="ti ti-chart-bar-off fs-36 opacity-25 d-block"></i>
+                        <small>Sin datos — usa el botón Consultar</small>
+                    </div>
+                    <apx-chart *ngIf="chart1Series.length" [series]="chart1Series" [chart]="chart1Opts.chart"
+                        [plotOptions]="chart1Opts.plotOptions" [dataLabels]="chart1Opts.dataLabels"
+                        [colors]="chart1Opts.colors" [xaxis]="chart1Opts.xaxis" [yaxis]="chart1Opts.yaxis"
+                        [tooltip]="chart1Opts.tooltip" [grid]="chart1Opts.grid" [legend]="chart1Opts.legend" />
+                </div>
+            </div>
+        </div>
+
+        <!-- Gráfico 3: Créditos por Zona (OPERATIVAS) -->
+        <div class="col-12 col-xl-6" *ngIf="type=='OPERATIVAS'">
+            <div class="card shadow-sm">
+                <div class="card-header border-bottom border-dashed">
+                    <h5 class="header-title mb-0">
+                        <span class="me-2" style="color:#f59e0b">●</span>
+                        Créditos por Zona
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <div *ngIf="!chart3Series.length" class="text-center py-4 text-muted">
+                        <i class="ti ti-chart-bar-off fs-36 opacity-25 d-block"></i>
+                        <small>Sin datos — usa el botón Consultar</small>
+                    </div>
+                    <apx-chart *ngIf="chart3Series.length" [series]="chart3Series" [chart]="chart3Opts.chart"
+                        [plotOptions]="chart3Opts.plotOptions" [dataLabels]="chart3Opts.dataLabels"
+                        [colors]="chart3Opts.colors" [xaxis]="chart3Opts.xaxis" [yaxis]="chart3Opts.yaxis"
+                        [tooltip]="chart3Opts.tooltip" [grid]="chart3Opts.grid" [legend]="chart3Opts.legend" />
+                </div>
+            </div>
+        </div>
+
+        <!-- Gráfico 2: Saldos Vencidos (TACTICAS) -->
+        <div class="col-12 col-xl-6" *ngIf="type=='TACTICAS'">
+            <div class="card shadow-sm">
+                <div class="card-header border-bottom border-dashed">
+                    <h5 class="header-title mb-0">
+                        <span class="me-2" style="color:#ef4444">●</span>
+                        Saldos Vencidos por Zona
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <div *ngIf="!chart2Series.length" class="text-center py-4 text-muted">
+                        <i class="ti ti-chart-bar-off fs-36 opacity-25 d-block"></i>
+                        <small>Sin datos — usa el botón Consultar</small>
+                    </div>
+                    <apx-chart *ngIf="chart2Series.length" [series]="chart2Series" [chart]="chart2Opts.chart"
+                        [plotOptions]="chart2Opts.plotOptions" [dataLabels]="chart2Opts.dataLabels"
+                        [colors]="chart2Opts.colors" [xaxis]="chart2Opts.xaxis" [yaxis]="chart2Opts.yaxis"
+                        [tooltip]="chart2Opts.tooltip" [grid]="chart2Opts.grid" [legend]="chart2Opts.legend" />
+                </div>
+            </div>
+        </div>
+
+        <!-- Gráfico 4: Debido Cobrar (TACTICAS) -->
+        <div class="col-12 col-xl-6" *ngIf="type=='TACTICAS'">
+            <div class="card shadow-sm">
+                <div class="card-header border-bottom border-dashed">
+                    <h5 class="header-title mb-0">
+                        <span class="me-2" style="color:#22c55e">●</span>
+                        Debido Cobrar por Zona
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <div *ngIf="!chart4Series.length" class="text-center py-4 text-muted">
+                        <i class="ti ti-chart-bar-off fs-36 opacity-25 d-block"></i>
+                        <small>Sin datos — usa el botón Consultar</small>
+                    </div>
+                    <apx-chart *ngIf="chart4Series.length" [series]="chart4Series" [chart]="chart4Opts.chart"
+                        [plotOptions]="chart4Opts.plotOptions" [dataLabels]="chart4Opts.dataLabels"
+                        [colors]="chart4Opts.colors" [xaxis]="chart4Opts.xaxis" [yaxis]="chart4Opts.yaxis"
+                        [tooltip]="chart4Opts.tooltip" [grid]="chart4Opts.grid" [legend]="chart4Opts.legend" />
                 </div>
             </div>
         </div>

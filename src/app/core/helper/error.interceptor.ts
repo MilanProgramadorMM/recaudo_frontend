@@ -1,4 +1,5 @@
-import  { AuthenticationEffects } from '@/store/authentication/authentication.effects'
+import { AuthenticationEffects } from '@/store/authentication/authentication.effects'
+import { MatSnackBar } from '@angular/material/snack-bar';
 import {
   HttpEvent,
   HttpHandler,
@@ -12,7 +13,10 @@ import { catchError } from 'rxjs/operators'
 
 @Injectable()
 export class ErrorInterceptor implements HttpInterceptor {
-  constructor(public autheffect: AuthenticationEffects) {}
+  constructor(
+    public autheffect: AuthenticationEffects,
+    private snackBar: MatSnackBar
+  ) { }
 
   intercept(
     request: HttpRequest<Request>,
@@ -25,6 +29,22 @@ export class ErrorInterceptor implements HttpInterceptor {
         if (err.status === 401) {
           authenticationService.removeSession()
           window.location.reload()
+        }
+
+        if (err.status === 426) {
+
+          authenticationService.removeSession();
+
+          this.snackBar.open(
+            'Existe una nueva versión del sistema',
+            'Actualizar',
+            {
+              duration: 10000
+            }
+          );
+
+          return throwError(() => err);
+
         }
 
         const error = err.error.message || err.statusText

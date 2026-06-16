@@ -2,7 +2,7 @@ import { Component, CUSTOM_ELEMENTS_SCHEMA, OnInit, ViewChild, ElementRef, After
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { StatsComponent } from "./components/stats/stats.component";
-// import { OverviewChartComponent } from "./components/overview-chart/overview-chart.component";
+import { OverviewChartComponent } from "./components/overview-chart/overview-chart.component";
 import { RecentOrdersComponent } from "./components/recent-orders/recent-orders.component";
 import { FlatpickrDirective } from '@core/directive/flatpickr.directive';
 import { ZonaService, ZonaResponseDto } from '@core/services/zona.service';
@@ -21,7 +21,7 @@ import { switchMap } from 'rxjs';
     CommonModule,
     ReactiveFormsModule,
     StatsComponent,
-    // OverviewChartComponent,
+    OverviewChartComponent,
     FlatpickrDirective,
     RecentOrdersComponent
   ],
@@ -42,6 +42,7 @@ export class SalesComponent implements OnInit, AfterViewInit {
   currentUserRole: string | null = null;
   currentUserId: number | null = null;
 
+
   constructor(
     private fb: FormBuilder,
     private zonaService: ZonaService,
@@ -51,9 +52,9 @@ export class SalesComponent implements OnInit, AfterViewInit {
     private userService: UserService
   ) {
     const today = new Date();
-    console.log('Local:', today.toString());
-    console.log('UTC:', today.toISOString());
-    console.log('Timezone offset:', today.getTimezoneOffset());
+    //console.log('Local:', today.toString());
+    //console.log('UTC:', today.toISOString());
+    //console.log('Timezone offset:', today.getTimezoneOffset());
 
 
     // Configurar opciones de Flatpickr con fecha de hoy por defecto

@@ -33,7 +33,7 @@ export interface PersonRegisterDto {
     details?: string;
     correo?: string;
     celular?: string;
-    telefono?: string;
+    whatsApp?: string;
 }
 
 
@@ -69,7 +69,7 @@ export interface PersonResponseDto {
     details?: string | null;
     correo?: string | null;
     celular?: string | null;
-    telefono?: string | null;
+    whatsApp?: string | null;
     // ===== CRÉDITO =====
     creditId?: number;
     creditAmount?: number;

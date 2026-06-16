@@ -223,11 +223,11 @@
               </div>
 
               <div class="col-lg-4 mb-3">
-                <label class="form-label">Teléfono</label>
-                <input type="tel" class="form-control" formControlName="telefono" placeholder="Ingrese solo números"
+                <label class="form-label">WhatsApp</label>
+                <input type="tel" class="form-control" formControlName="whatsApp" placeholder="Ingrese solo números"
                   pattern="[0-9]*" inputmode="numeric" (keypress)="soloNumeros($event)"
-                  [ngClass]="{ 'is-invalid': submitted && form.get('telefono')?.invalid }" />
-                <div class="invalid-feedback" *ngIf="submitted && form.get('telefono')?.errors?.['required']">
+                  [ngClass]="{ 'is-invalid': submitted && form.get('whatsApp')?.invalid }" />
+                <div class="invalid-feedback" *ngIf="submitted && form.get('whatsApp')?.errors?.['required']">
                   Campo obligatorio
                 </div>
               </div>

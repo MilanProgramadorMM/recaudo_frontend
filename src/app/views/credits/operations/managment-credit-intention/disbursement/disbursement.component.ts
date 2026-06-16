@@ -539,8 +539,8 @@ export class DisbursementComponent {
       neighborhoodId: credit.neighborhoodId,
       adress: credit.homeAddress || '',
       correo: credit.email || '',
-      celular: credit.whatsappNumber || '',
-      telefono: credit.phoneNumber || ''
+      whatsApp: credit.whatsappNumber || '',
+      celular: credit.phoneNumber || ''
     };
 
     // Verificar si el cliente existe

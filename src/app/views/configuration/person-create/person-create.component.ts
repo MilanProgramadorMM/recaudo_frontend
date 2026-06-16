@@ -88,7 +88,7 @@ export class PersonCreateComponent implements OnInit {
       departamento: [''],
       ciudad: [],
       barrio: [],
-      telefono: [''],
+      whatsApp: [''],
       celular: [''],
       orden: [''],
       correo: [''],
@@ -165,7 +165,7 @@ export class PersonCreateComponent implements OnInit {
       barrio: data.neighborhoodId,
       direccion: data.adress,
       descripcion: data.descriptionD,
-      telefono: data.telefono,
+      whatsApp: data.whatsApp,
       celular: data.celular,
       correo: data.correo,
 
@@ -287,7 +287,7 @@ export class PersonCreateComponent implements OnInit {
       details: formValues.descripcion,
       correo: formValues.correo,
       celular: formValues.celular,
-      telefono: formValues.telefono
+      whatsApp: formValues.whatsApp
     };
 
     // Asignar zona según el tipo de persona (SOLO UNA VEZ)

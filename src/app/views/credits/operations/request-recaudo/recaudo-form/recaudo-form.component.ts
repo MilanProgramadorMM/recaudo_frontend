@@ -247,25 +247,44 @@ export class RecaudoFormComponent implements OnInit {
 
   formatCurrency(controlName: string): void {
     const control = this.recaudoForm.get(controlName);
-    if (!control) return;
+    if (!control?.value) return;
 
-    let value = control.value.toString().replace(/\D/g, '');
-    if (value) {
-      const numberValue = parseInt(value);
-      control.setValue(numberValue.toLocaleString('es-CO'), { emitEvent: false });
-    }
+    let value = control.value.toString();
+
+    // Permitir números y coma
+    value = value.replace(/[^\d,]/g, '');
+
+    const parts = value.split(',');
+
+    // Parte entera con miles
+    const integerPart = parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, '.');
+
+    // Máximo 2 decimales
+    const decimalPart = parts[1]?.substring(0, 2);
+
+    const formatted = decimalPart !== undefined
+      ? `${integerPart},${decimalPart}`
+      : integerPart;
+
+    control.setValue(formatted, { emitEvent: false });
   }
 
   formatearMoneda(valor: number): string {
     return new Intl.NumberFormat('es-CO', {
       style: 'currency',
       currency: 'COP',
-      minimumFractionDigits: 0
+      minimumFractionDigits: 2
     }).format(Math.abs(valor));
   }
 
   parseCurrency(value: string): number {
-    return parseInt(value.replace(/\D/g, '')) || 0;
+    if (!value) return 0;
+
+    const normalized = value
+      .replace(/\./g, '') // elimina miles
+      .replace(',', '.'); // decimal colombiano -> decimal estándar
+
+    return Number(normalized);
   }
 
   close(): void {

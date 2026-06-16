@@ -65,6 +65,7 @@ export interface CreditIntentionResponseDto {
 
     documentType: string;
     document: string;
+    documentName: string;
 
     firstname: string;
     middlename?: string | null;

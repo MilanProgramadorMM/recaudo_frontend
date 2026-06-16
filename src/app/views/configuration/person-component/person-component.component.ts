@@ -155,7 +155,7 @@ export class PersonComponentComponent {
       person.orden?.toString().toLowerCase().includes(term) ||
       person.zona?.toLowerCase().includes(term) ||
       person.celular?.toLowerCase().includes(term) ||
-      person.telefono?.toLowerCase().includes(term))
+      person.whatsApp?.toLowerCase().includes(term))
     );
     this.page = 1;
   }

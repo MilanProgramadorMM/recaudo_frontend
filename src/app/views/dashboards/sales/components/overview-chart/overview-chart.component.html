@@ -1,51 +1,89 @@
-<div class="card">
-  <div class="card-header d-flex justify-content-between align-items-center">
-    <h4 class="header-title fw-bold">Resumen por zona</h4>
-    <!-- <div ngbDropdown placement="bottom-start">
-      <a ngbDropdownToggle class="drop-arrow-none cursor-pointer card-drop" data-bs-toggle="dropdown"
-        aria-expanded="false">
-        <i class="ti ti-dots-vertical"></i>
-      </a>
-      <div ngbDropdownMenu class="dropdown-menu-end">
+<div class="row g-3">
+  <div class="col-12 col-xl-4" *ngFor="let g of graficos">
+    <div class="card h-100">
 
-        <a href="javascript:void(0);" ngbDropdownItem>Sales Report</a>
+      <!-- Header -->
+      <div class="card-header d-flex justify-content-between align-items-center flex-wrap gap-2">
+        <h6 class="fw-bold mb-0 d-flex align-items-center gap-2">
+          <span class="rounded-circle d-inline-block"
+            [style.background]="g.color"
+            style="width:10px; height:10px"></span>
+          {{ g.titulo }}
+        </h6>
 
-        <a href="javascript:void(0);" ngbDropdownItem>Export Report</a>
-
-        <a href="javascript:void(0);" ngbDropdownItem>Profit</a>
-
-        <a href="javascript:void(0);" ngbDropdownItem>Action</a>
+        <!-- Comparador -->
+        <div class="d-flex align-items-center gap-1">
+          <input
+            type="date"
+            class="form-control form-control-sm"
+            style="width: 145px"
+            [(ngModel)]="g.fechaComparacion"
+            (change)="onComparacionChange(g)"
+            placeholder="Comparar fecha"
+          />
+          <button
+            *ngIf="g.fechaComparacion"
+            class="btn btn-sm btn-outline-secondary px-2"
+            (click)="limpiarComparacion(g)"
+            title="Limpiar">
+            <i class="ti ti-x"></i>
+          </button>
+        </div>
       </div>
-    </div> -->
-  </div>
 
-  <div *ngIf="loading" class="bg-light bg-opacity-50 py-5 text-center">
-    <div class="spinner-border text-danger" role="status">
-      <span class="visually-hidden">Cargando datos...</span>
-    </div>
-  </div>
+      <div class="card-body pt-2">
 
-  <div *ngIf="!loading" class="bg-light bg-opacity-50">
-    <div class="row text-center">
-      @for (item of overViewData; track $index) {
-      <div class="col-md-4 col-6">
-        <p class="text-muted mt-3 mb-1">{{item.title}}</p>
-        <h4 class="mb-3">
-          <span class="ti {{item.icon}} text-{{item.variant}} me-1"></span>
-          <span>{{currency}} {{item.count}}</span>
-        </h4>
+        <!-- Loading -->
+        <div *ngIf="g.loading" class="text-center py-4">
+          <div class="spinner-border spinner-border-sm" [style.color]="g.color" role="status"></div>
+          <p class="mt-2 text-muted small mb-0">Cargando...</p>
+        </div>
+
+        <!-- Error -->
+        <div *ngIf="!g.loading && g.errorMsg" class="alert alert-danger py-2 d-flex align-items-center gap-2 mb-0">
+          <i class="ti ti-alert-circle"></i>
+          <span class="small flex-grow-1">{{ g.errorMsg }}</span>
+          <button class="btn btn-sm btn-outline-danger py-0 px-2" (click)="cargarGrafico(g)">
+            <i class="ti ti-refresh"></i>
+          </button>
+        </div>
+
+        <!-- Sin datos -->
+        <div *ngIf="!g.loading && !g.errorMsg && g.sinDatos" class="text-center py-4 text-muted">
+          <i class="ti ti-inbox fs-36 opacity-25"></i>
+          <p class="mt-2 mb-0 small">Sin datos para el período</p>
+          <small *ngIf="g.fechaComparacion" class="d-block mt-1">
+            Tampoco hay datos para <strong>{{ g.fechaComparacion }}</strong>
+          </small>
+        </div>
+
+        <!-- Gráfico -->
+        <div *ngIf="!g.loading && !g.errorMsg && !g.sinDatos">
+          <div *ngIf="g.fechaComparacion" class="d-flex align-items-center gap-2 mb-2">
+            <span class="badge rounded-pill" [style.background]="g.colorComparacion" style="color:#333; font-size:11px">
+              Ref: {{ g.fechaComparacion }}
+            </span>
+            <small class="text-muted" style="font-size:11px">Línea punteada = valor de ese día</small>
+          </div>
+
+          <apx-chart
+            [series]="g.chartSeries"
+            [chart]="g.chartOpts.chart"
+            [plotOptions]="g.chartOpts.plotOptions"
+            [dataLabels]="g.chartOpts.dataLabels"
+            [colors]="g.chartOpts.colors"
+            [xaxis]="g.chartOpts.xaxis"
+            [yaxis]="g.chartOpts.yaxis"
+            [tooltip]="g.chartOpts.tooltip"
+            [legend]="g.chartOpts.legend"
+            [stroke]="g.chartOpts.stroke"
+            [fill]="g.chartOpts.fill"
+            [markers]="g.chartOpts.markers"
+            [grid]="g.chartOpts.grid"
+          />
+        </div>
+
       </div>
-      }
-    </div>
-  </div>
-
-  <div class="card-body pt-0">
-    <div dir="ltr">
-      <apx-chart [xaxis]="overViewChartOpts.xaxis!" [yaxis]="overViewChartOpts.yaxis!" [grid]="overViewChartOpts.grid!"
-        [legend]="overViewChartOpts.legend!" [plotOptions]="overViewChartOpts.plotOptions!"
-        [chart]="overViewChartOpts.chart!" [series]="overViewChartOpts.series!" [stroke]="overViewChartOpts.stroke!"
-        [fill]="overViewChartOpts.fill!" [markers]="overViewChartOpts.markers!" [colors]="overViewChartOpts.colors!"
-        [tooltip]="overViewChartOpts.tooltip!" />
     </div>
   </div>
 </div>

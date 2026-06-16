@@ -13,10 +13,11 @@ import { ConsultasService, DebidoCobrarPorZonaDto, DefaultConsultasDto, Movimien
 import { ModalDetalleConsultaComponent } from './modal-detalle-consulta/modal-detalle-consulta.component';
 import { firstValueFrom } from 'rxjs';
 import { ActivatedRoute, Route } from '@angular/router';
+import { NgApexchartsModule } from 'ng-apexcharts';
 
 export interface ConsultaRow {
   id: number;
-  zone_id: number;             
+  zone_id: number;
   zona: string;
   name: string;
   quota_value: number;
@@ -34,6 +35,7 @@ export interface ConsultaRow {
     CommonModule,
     ReactiveFormsModule,
     FlatpickrDirective,
+    NgApexchartsModule
   ],
   templateUrl: './consultas.component.html',
   styleUrl: './consultas.component.scss'
@@ -57,6 +59,22 @@ export class ConsultasComponent implements OnInit, AfterViewInit {
   tableData2: DefaultConsultasDto[] = [];
   tableData3: DefaultConsultasDto[] = [];
   tableData4: DebidoCobrarPorZonaDto[] = [];
+
+  // ── Gráficos ──────────────────────────────────────────
+  chart1Opts: any = this.buildBarChart('Movimientos por Zona', '#3b82f6');
+  chart2Opts: any = this.buildBarChart('Saldos Vencidos por Zona', '#ef4444');
+  chart3Opts: any = this.buildBarChart('Créditos por Zona', '#f59e0b');
+  chart4Opts: any = this.buildBarChart('Debido Cobrar por Zona', '#22c55e');
+
+  chart1Series: any[] = [];
+  chart2Series: any[] = [];
+  chart3Series: any[] = [];
+  chart4Series: any[] = [];
+
+  chart1Categories: string[] = [];
+  chart2Categories: string[] = [];
+  chart3Categories: string[] = [];
+  chart4Categories: string[] = [];
 
   constructor(
     private fb: FormBuilder,
@@ -85,7 +103,7 @@ export class ConsultasComponent implements OnInit, AfterViewInit {
     this.flatpickrOptions = {
       mode: 'range',
       dateFormat: 'Y-m-d',
-      defaultDate: todayStr,      
+      defaultDate: todayStr,
       altFormat: 'd F Y',
       onChange: (selectedDates: Date[]) => this.onDateRangeChange(selectedDates)
     };
@@ -117,6 +135,7 @@ export class ConsultasComponent implements OnInit, AfterViewInit {
       );
 
       this.tableData1 = this.mapMovimientosToRows(data);
+      this.updateChart1();
 
     } catch (err) {
       console.error('Error cargando movimientos tabla 1:', err);
@@ -135,6 +154,7 @@ export class ConsultasComponent implements OnInit, AfterViewInit {
       );
 
       this.tableData2 = data;
+      this.updateChart2();
 
     } catch (err) {
       console.error('Error cargando movimientos tabla 1:', err);
@@ -153,6 +173,7 @@ export class ConsultasComponent implements OnInit, AfterViewInit {
       );
 
       this.tableData3 = data;
+      this.updateChart3();
 
     } catch (err) {
       console.error('Error cargando movimientos tabla 1:', err);
@@ -171,6 +192,7 @@ export class ConsultasComponent implements OnInit, AfterViewInit {
       );
 
       this.tableData4 = data;
+      this.updateChart4();
 
     } catch (err) {
       console.error('Error cargando movimientos tabla 1:', err);
@@ -212,7 +234,7 @@ export class ConsultasComponent implements OnInit, AfterViewInit {
 
     this.loading = true;
     const dialogRef = this.dialog.open(LoadingComponent, { disableClose: true });
-    
+
     await this.loadTable1(filters.fechaInicio, filters.fechaFin);
     await this.loadTable2(filters.fechaInicio, filters.fechaFin);
     await this.loadTable3(filters.fechaInicio, filters.fechaFin);
@@ -258,4 +280,99 @@ export class ConsultasComponent implements OnInit, AfterViewInit {
       String(date.getMonth() + 1).padStart(2, '0') + '-' +
       String(date.getDate()).padStart(2, '0');
   }
+
+  private buildBarChart(titulo: string, color: string): any {
+    return {
+      chart: {
+        type: 'bar',
+        height: 260,
+        toolbar: { show: false },
+        fontFamily: 'inherit'
+      },
+      plotOptions: {
+        bar: {
+          horizontal: true,
+          barHeight: '60%',
+          borderRadius: 4,
+          dataLabels: { position: 'top' }
+        }
+      },
+      dataLabels: { enabled: false },
+      colors: [color],
+      xaxis: {
+        categories: [],
+        labels: {
+          formatter: (val: number) => this.formatChartValue(val)
+        }
+      },
+      yaxis: { labels: { style: { fontSize: '12px' } } },
+      tooltip: {
+        y: { formatter: (val: number) => `$ ${this.formatChartValue(val)}` }
+      },
+      grid: { borderColor: '#f1f3fa', xaxis: { lines: { show: true } } },
+      legend: { show: false }
+    };
+  }
+
+  private formatChartValue(val: number): string {
+    if (val >= 1_000_000) return (val / 1_000_000).toFixed(1) + 'M';
+    if (val >= 1_000) return (val / 1_000).toFixed(0) + 'K';
+    return val.toFixed(0);
+  }
+
+  private updateChart1(): void {
+    if (!this.tableData1.length) { this.chart1Series = []; return; }
+    this.chart1Categories = this.tableData1.map(r => r.zona);
+    this.chart1Series = [
+      { name: 'Total', data: this.tableData1.map(r => Math.abs(r.quota_value)) },
+      { name: 'Capital', data: this.tableData1.map(r => Math.abs(r.capital_balance)) },
+      { name: 'Interés', data: this.tableData1.map(r => Math.abs(r.interest_value)) },
+    ];
+    this.chart1Opts = {
+      ...this.chart1Opts,
+      colors: ['#3b82f6', '#22c55e', '#f59e0b'],
+      xaxis: { ...this.chart1Opts.xaxis, categories: this.chart1Categories },
+      legend: { show: true, position: 'bottom' }
+    };
+  }
+
+  private updateChart2(): void {
+    if (!this.tableData2.length) { this.chart2Series = []; return; }
+    this.chart2Categories = this.tableData2.map(r => r.name);
+    this.chart2Series = [{ name: 'Saldo Vencido', data: this.tableData2.map(r => Math.abs(r.value)) }];
+    this.chart2Opts = { ...this.chart2Opts, xaxis: { ...this.chart2Opts.xaxis, categories: this.chart2Categories } };
+  }
+
+  private updateChart3(): void {
+    if (!this.tableData3.length) { this.chart3Series = []; return; }
+    this.chart3Categories = this.tableData3.map(r => r.name);
+    this.chart3Series = [{ name: 'Créditos', data: this.tableData3.map(r => r.value) }];
+    this.chart3Opts = {
+      ...this.chart3Opts,
+      colors: ['#f59e0b'],
+      xaxis: {
+        ...this.chart3Opts.xaxis,
+        categories: this.chart3Categories,
+        labels: { formatter: (val: number) => val.toFixed(0) }
+      },
+      tooltip: { y: { formatter: (val: number) => `${val} créditos` } }
+    };
+  }
+
+  private updateChart4(): void {
+    if (!this.tableData4.length) { this.chart4Series = []; return; }
+    this.chart4Categories = this.tableData4.map(r => r.zona);
+    this.chart4Series = [
+      { name: 'Cuota', data: this.tableData4.map(r => Math.abs(r.quotaValue)) },
+      { name: 'Interés', data: this.tableData4.map(r => Math.abs(r.interestValue)) },
+      { name: 'Inversión', data: this.tableData4.map(r => Math.abs(r.investmentValue)) },
+    ];
+    this.chart4Opts = {
+      ...this.chart4Opts,
+      colors: ['#22c55e', '#3b82f6', '#a855f7'],
+      xaxis: { ...this.chart4Opts.xaxis, categories: this.chart4Categories },
+      legend: { show: true, position: 'bottom' }
+    };
+  }
+
 }

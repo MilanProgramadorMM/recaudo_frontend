@@ -122,7 +122,7 @@ export class ListContactInfoComponent {
     const principales = [
       'CORREO PRINCIPAL',
       'CELULAR PRINCIPAL',
-      'TELÉFONO PRINCIPAL',
+      'WHATSAPP',
       'DIRECCIÓN PRINCIPAL'
     ];
     return principales.includes(typeName.toUpperCase());

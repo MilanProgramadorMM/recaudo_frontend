@@ -12,6 +12,7 @@ import { Capacitor } from "@capacitor/core";
 import { AppLauncher } from '@capacitor/app-launcher';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { A11yModule } from "@angular/cdk/a11y";
+import { MatSnackBar } from '@angular/material/snack-bar';
 
 @Component({
   selector: 'app-request-recaudo',
@@ -39,12 +40,15 @@ export class RequestRecaudoComponent implements OnInit {
   isAsesor = false;
   isAdmin = false;
   currentRole: string = '';
+  searchOrden: number = 0;
 
   constructor(
     private personService: PersonService,
     private authService: AuthenticationService,
     private modalService: NgbModal,
-    private dailyCollectionService: DailyCollectionService
+    private dailyCollectionService: DailyCollectionService,
+    private snackBar: MatSnackBar
+
   ) { }
 
   ngOnInit(): void {
@@ -60,13 +64,13 @@ export class RequestRecaudoComponent implements OnInit {
       .filter(word => word.length > 0);
 
     if (words.length === 1) {
-      return words[0].substring(0, 2).toUpperCase(); 
+      return words[0].substring(0, 2).toUpperCase();
     }
 
     return words
       .slice(0, 2)
       .map(word => word[0].toUpperCase())
-      .join(''); 
+      .join('');
   }
 
   loadRecaudoData(): void {
@@ -125,6 +129,8 @@ export class RequestRecaudoComponent implements OnInit {
       this.errorMessage = 'No se pudo obtener el usuario logueado';
       return;
     }
+    this.clientesnew = [];
+    this.loading = true;
 
     const today = new Date().toLocaleDateString('en-CA');
 
@@ -171,8 +177,6 @@ export class RequestRecaudoComponent implements OnInit {
 
   applyFilter(): void {
     let filtered = [...this.clientesnew];
-    console.log('selectedZona:', this.selectedZona);
-    console.log('zonas en data:', filtered.map(c => c.data.zona));
     // if (this.selectedZona !== 'all') {
     //   filtered = filtered.filter(c => c.data.zona === this.selectedZona);
     // }
@@ -188,6 +192,14 @@ export class RequestRecaudoComponent implements OnInit {
     if (term) {
       filtered = filtered.filter(c =>
         c.data.clientName?.toLowerCase().includes(term)
+      );
+    }
+
+    const orden = this.searchOrden;
+
+    if (orden) {
+      filtered = filtered.filter(c =>
+        Number(c.data.clientOrden) === Number(orden)
       );
     }
 
@@ -504,5 +516,106 @@ export class RequestRecaudoComponent implements OnInit {
 
   applyCustomerFilter(): void {
     this.applyFilter();
+  }
+
+  getPeriodoAbreviado(periodo: string | null | undefined): string {
+    return (periodo || '').substring(0, 3);
+  }
+
+  showInfo(event: Event, cliente: any, tipo: string): void {
+    event.stopPropagation();
+    console.log('TIPO:', tipo);
+
+    switch (tipo) {
+      case 'capital':
+        this.snackBar.open(
+          'Valor total del crédito sin intereses moratorios',
+          undefined,
+          {
+            duration: 3000,
+            horizontalPosition: 'center',
+            verticalPosition: 'top'
+          }
+        );
+        break;
+
+      case 'saldo':
+        this.snackBar.open(
+          'Saldo total del crédito',
+          undefined, {
+          duration: 3000,
+          horizontalPosition: 'center',
+          verticalPosition: 'top'
+        }
+        );
+        break;
+
+      case 'mora':
+        this.snackBar.open(
+          'Interés moratorio total del crédito',
+          undefined, {
+          duration: 3000,
+          horizontalPosition: 'center',
+          verticalPosition: 'top'
+        }
+        );
+        break;
+
+      case 'saldototalmora':
+        this.snackBar.open(
+          'Saldo total del crédito más intereses moratorios',
+          undefined, {
+          duration: 3000,
+          horizontalPosition: 'center',
+          verticalPosition: 'top'
+        }
+        );
+        break;
+
+      case 'valorcuota':
+        this.snackBar.open(
+          'Valor de la cuota sin intereses moratorios',
+          undefined, {
+          duration: 3000,
+          horizontalPosition: 'center',
+          verticalPosition: 'top'
+        }
+        );
+        break;
+
+      case 'saldovencidocuota':
+        this.snackBar.open(
+          'Saldo vencido de la cuota',
+          undefined, {
+          duration: 3000,
+          horizontalPosition: 'center',
+          verticalPosition: 'top'
+        }
+        );
+        break;
+
+      case 'interesmoracuota':
+        this.snackBar.open(
+          'Interés moratorio de la cuota',
+          undefined, {
+          duration: 3000,
+          horizontalPosition: 'center',
+          verticalPosition: 'top'
+        }
+        );
+        break;
+
+      case 'totalcuota':
+        this.snackBar.open(
+          'Total de la cuota incluyendo intereses moratorios',
+          undefined, {
+          duration: 3000,
+          horizontalPosition: 'center',
+          verticalPosition: 'top'
+        }
+        );
+        break;
+
+    }
   }
 }

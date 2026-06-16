@@ -1,4 +1,4 @@
-import { Component, CUSTOM_ELEMENTS_SCHEMA, OnInit, OnDestroy } from '@angular/core';
+import { Component, CUSTOM_ELEMENTS_SCHEMA, OnInit, OnDestroy, Output, EventEmitter } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Subject, takeUntil } from 'rxjs';
 import { SharedFilterService } from '@core/services/shared-filter.service';
@@ -27,6 +27,11 @@ export class StatsComponent implements OnInit, OnDestroy {
   loading = false;
   currency = currency;
   private destroy$ = new Subject<void>();
+  @Output() cardSelected = new EventEmitter<{ tipo: string; titulo: string; color: string }>();
+
+  private tipoMap = ['debidocobrar', 'recaudado', 'nopago', 'cartera'];
+  private colorMap = ['#3b82f6', '#22c55e', '#ef4444', '#f59e0b'];
+
 
   constructor(
     private sharedFilterService: SharedFilterService,
@@ -54,6 +59,16 @@ export class StatsComponent implements OnInit, OnDestroy {
     this.destroy$.next();
     this.destroy$.complete();
   }
+
+  onCardClick(index: number): void {
+  if (index === 3) return; // cartera no tiene acción
+  const item = this.statData[index];
+  this.cardSelected.emit({
+    tipo: this.tipoMap[index],
+    titulo: item.title,
+    color: this.colorMap[index]
+  });
+}
 
   // loadDashboardDataOld(filters: any): void {
   //   this.loading = true;
@@ -85,7 +100,7 @@ export class StatsComponent implements OnInit, OnDestroy {
       filters.zonaId
     ).subscribe({
       next: (response) => {
-        this.updateStats(response.data);  
+        this.updateStats(response.data);
         this.loading = false;
       },
       error: (err) => {
@@ -137,7 +152,7 @@ export class StatsComponent implements OnInit, OnDestroy {
     ];
   }
 
-  private updateStats(data: DashboardSummaryDto): void {  
+  private updateStats(data: DashboardSummaryDto): void {
     this.statData = [
       {
         title: 'Debido a Cobrar',
@@ -171,66 +186,66 @@ export class StatsComponent implements OnInit, OnDestroy {
   }
 
   private getEmptyStats(): StatType[] {
-  return [
-    {
-      title: 'Debido a Cobrar',
-      icon: 'solar:case-round-minimalistic-bold-duotone',
-      count: this.formatCurrency(0),
-      rawValue: 0
-    },
-    {
-      title: 'Recaudo',
-      icon: 'solar:bill-list-bold-duotone',
-      count: this.formatCurrency(0),
-      rawValue: 0
-    },
-    {
-      title: 'No pago',
-      icon: 'solar:wallet-money-bold-duotone',
-      count: this.formatCurrency(0),
-      rawValue: 0,
-      variant: 'danger'
-    },
-    {
-      title: 'Total cartera',
-      icon: 'solar:eye-bold-duotone',
-      count: this.formatCurrency(0),
-      rawValue: 0,
-      variant: 'success'
-    },
-  ];
-}
-
-formatCurrency(value: number): string {
-  return value.toLocaleString('es-CO', {
-    minimumFractionDigits: 0,  // ✅ Sin decimales
-    maximumFractionDigits: 0   // ✅ Sin decimales
-  });
-}
-
-getColor(variant: string): string {
-  switch (variant) {
-    case 'success': return '#198754';
-    case 'danger': return '#DC3545';
-    case 'warning': return '#FFC107';
-    case 'primary': return '#0D6EFD';
-    default: return '#6c757d';
+    return [
+      {
+        title: 'Debido a Cobrar',
+        icon: 'solar:case-round-minimalistic-bold-duotone',
+        count: this.formatCurrency(0),
+        rawValue: 0
+      },
+      {
+        title: 'Recaudo',
+        icon: 'solar:bill-list-bold-duotone',
+        count: this.formatCurrency(0),
+        rawValue: 0
+      },
+      {
+        title: 'No pago',
+        icon: 'solar:wallet-money-bold-duotone',
+        count: this.formatCurrency(0),
+        rawValue: 0,
+        variant: 'danger'
+      },
+      {
+        title: 'Total cartera',
+        icon: 'solar:eye-bold-duotone',
+        count: this.formatCurrency(0),
+        rawValue: 0,
+        variant: 'success'
+      },
+    ];
   }
-}
 
-getCardStyle(variant: string) {
-  switch (variant) {
-    case 'success':
-      return { background: 'linear-gradient(135deg, #22c55e, #4ade80)' };
-    case 'danger':
-      return { background: 'linear-gradient(135deg, #ef4444, #f87171)' };
-    case 'primary':
-      return { background: 'linear-gradient(135deg, #3b82f6, #60a5fa)' };
-    case 'warning':
-      return { background: 'linear-gradient(135deg, #f59e0b, #fbbf24)' };
-    default:
-      return { background: 'linear-gradient(135deg, #6b7280, #9ca3af)' };
+  formatCurrency(value: number): string {
+    return value.toLocaleString('es-CO', {
+      minimumFractionDigits: 0,  // ✅ Sin decimales
+      maximumFractionDigits: 0   // ✅ Sin decimales
+    });
   }
-}
+
+  getColor(variant: string): string {
+    switch (variant) {
+      case 'success': return '#198754';
+      case 'danger': return '#DC3545';
+      case 'warning': return '#FFC107';
+      case 'primary': return '#0D6EFD';
+      default: return '#6c757d';
+    }
+  }
+
+  getCardStyle(variant: string) {
+    switch (variant) {
+      case 'success':
+        return { background: 'linear-gradient(135deg, #22c55e, #4ade80)' };
+      case 'danger':
+        return { background: 'linear-gradient(135deg, #ef4444, #f87171)' };
+      case 'primary':
+        return { background: 'linear-gradient(135deg, #3b82f6, #60a5fa)' };
+      case 'warning':
+        return { background: 'linear-gradient(135deg, #f59e0b, #fbbf24)' };
+      default:
+        return { background: 'linear-gradient(135deg, #6b7280, #9ca3af)' };
+    }
+  }
 
 }
