@@ -247,24 +247,32 @@ export class RecaudoFormComponent implements OnInit {
 
   formatCurrency(controlName: string): void {
     const control = this.recaudoForm.get(controlName);
-    if (!control?.value) return;
+    if (!control) return;
 
-    let value = control.value.toString();
+    const raw = control.value?.toString() ?? '';
+    if (!raw) return;
 
-    // Permitir números y coma
-    value = value.replace(/[^\d,]/g, '');
+    // Separar si hay coma decimal
+    const hasComa = raw.includes(',');
+    const [intRaw, decRaw] = raw.split(',');
 
-    const parts = value.split(',');
+    // Limpiar parte entera: solo dígitos
+    const intClean = intRaw.replace(/\D/g, '');
 
-    // Parte entera con miles
-    const integerPart = parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, '.');
+    // Formatear miles solo si hay dígitos enteros
+    const intFormatted = intClean
+      ? intClean.replace(/\B(?=(\d{3})+(?!\d))/g, '.')
+      : '';
 
-    // Máximo 2 decimales
-    const decimalPart = parts[1]?.substring(0, 2);
+    let formatted: string;
 
-    const formatted = decimalPart !== undefined
-      ? `${integerPart},${decimalPart}`
-      : integerPart;
+    if (hasComa) {
+      // Mantener la coma aunque el decimal esté vacío o incompleto
+      const decClean = (decRaw ?? '').replace(/\D/g, '').substring(0, 2);
+      formatted = `${intFormatted},${decClean}`;
+    } else {
+      formatted = intFormatted;
+    }
 
     control.setValue(formatted, { emitEvent: false });
   }

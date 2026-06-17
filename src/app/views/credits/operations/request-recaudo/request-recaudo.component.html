@@ -141,9 +141,21 @@
                                             <span class="rc-info-value">{{ cliente.data.fechaVence | date:"d 'de' MMM" |
                                                 uppercase }}</span>
                                         </div>
-                                        <div class="rc-info-item" *ngIf="cliente.data.telefono">
+                                        <div class="rc-info-item" *ngIf="cliente.data.whatsapp">
                                             <span class="rc-info-label">WhatsApp</span>
-                                            <span class="rc-info-value">{{ cliente.data.telefono }}</span>
+                                            <span class="rc-info-value">
+                                                {{ isValidPhone(cliente.data.whatsapp)
+                                                ? cliente.data.whatsapp
+                                                : 'No registra WhatsApp' }}
+                                            </span>
+                                        </div>
+                                        <div class="rc-info-item" *ngIf="cliente.data.celular">
+                                            <span class="rc-info-label">Celular</span>
+                                            <span class="rc-info-value">
+                                                {{ isValidPhone(cliente.data.celular)
+                                                ? cliente.data.celular
+                                                : 'No registra celular' }}
+                                            </span>
                                         </div>
                                         <div class="rc-info-item rc-full" *ngIf="cliente.data.direccion">
                                             <span class="rc-info-label">Dirección</span>
@@ -281,16 +293,14 @@
 
                                         <button type="button"
                                             class="btn btn-llamada btn-sm flex-fill d-flex flex-column align-items-center py-2"
-                                            *ngIf="cliente.data.telefono"
-                                            (click)="callPhone(cliente.data.telefono); $event.stopPropagation()">
+                                            (click)="callPhone(cliente.data.celular); $event.stopPropagation()">
                                             <i class="ti ti-phone mb-1"></i>
                                             <span style="font-size: 10px;">Llamar</span>
                                         </button>
 
                                         <button type="button"
                                             class="btn btn-whatsapp btn-sm flex-fill d-flex flex-column align-items-center py-2"
-                                            *ngIf="cliente.data.telefono"
-                                            (click)="openWhatsApp(cliente.data.telefono); $event.stopPropagation()">
+                                            (click)="openWhatsApp(cliente.data.whatsapp); $event.stopPropagation()">
                                             <i class="ti ti-brand-whatsapp mb-1"></i>
                                             <span style="font-size: 10px;">WhatsApp</span>
                                         </button>

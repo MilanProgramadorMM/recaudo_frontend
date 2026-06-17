@@ -170,7 +170,7 @@
                         <span class="input-group-text">
                             <i class="ti ti-currency-dollar"></i>
                         </span>
-                        <input type="number" class="form-control" formControlName="amount"
+                        <input type="text" inputmode="decimal" class="form-control" formControlName="amount"
                             (input)="formatCurrency('amount')" placeholder="Ingrese el valor"
                             [class.is-invalid]="submitted && recaudoForm.get('amount')?.invalid">
                     </div>

@@ -28,7 +28,8 @@ export interface DailyCollectionItem {
     saldoPendiente: number;
     totalCuotas: number;
     direccion?: string | null;
-    telefono?: string | null;
+    whatsapp?: string | null;
+    celular?: string | null;
     barrio?: string | null;
     municipio?: string | null;
     nombreDia?: string | null;

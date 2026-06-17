@@ -40,7 +40,7 @@ export class RequestRecaudoComponent implements OnInit {
   isAsesor = false;
   isAdmin = false;
   currentRole: string = '';
-  searchOrden: number = 0;
+  searchOrden: string = '';
 
   constructor(
     private personService: PersonService,
@@ -197,7 +197,7 @@ export class RequestRecaudoComponent implements OnInit {
 
     const orden = this.searchOrden;
 
-    if (orden) {
+    if (orden !== null && orden !== '' && orden !== undefined) {
       filtered = filtered.filter(c =>
         Number(c.data.clientOrden) === Number(orden)
       );
@@ -468,14 +468,31 @@ export class RequestRecaudoComponent implements OnInit {
   }
 
   callPhone(number: string): void {
-    if (!number) return;
 
-    const cleanNumber = number.replace(/[^\d+]/g, '');
+    if (!this.isValidPhone(number)) {
+      this.snackBar.open(
+        'El cliente no tiene celular registrado',
+        'Cerrar',
+        { duration: 3000 }
+      );
+      return;
+    }
+
+    const cleanNumber = number.replace(/\D/g, '');
+
     window.location.href = `tel:${cleanNumber}`;
   }
 
   async openWhatsApp(phone: string): Promise<void> {
-    if (!phone) return;
+
+    if (!this.isValidPhone(phone)) {
+      this.snackBar.open(
+        'El cliente no tiene WhatsApp registrado',
+        'Cerrar',
+        { duration: 3000 }
+      );
+      return;
+    }
 
     const cleanedPhone = phone.replace(/\D/g, '');
     const fullPhone = cleanedPhone.startsWith('57')
@@ -504,6 +521,13 @@ export class RequestRecaudoComponent implements OnInit {
     }
   }
 
+  private isValidPhone(phone: string | null | undefined): boolean {
+    if (!phone) return false;
+
+    const cleaned = phone.replace(/\D/g, '');
+
+    return cleaned !== '' && cleaned !== '0' && cleaned.length >= 10;
+  }
   // applyCustomerFilter(): void {
   //   const term = this.searchTerm.toLowerCase().trim();
   //   let filtered = this.clientesnew;
