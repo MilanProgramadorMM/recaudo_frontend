@@ -101,10 +101,7 @@ export class RecaudoFormComponent implements OnInit {
         if (currentQuota) {
           this.quotaValue = currentQuota.quotaValue;
           this.totalPaid = Math.abs(Number(currentQuota.totalPaid || 0));
-          this.remainingBalance = Math.max(
-            Number(this.quotaValue) - this.totalPaid,
-            0
-          );
+          this.remainingBalance = Number(currentQuota.remainingBalance || 0);
 
           console.log('Valores asignados:', {
             quotaValue: this.quotaValue,
@@ -390,5 +387,36 @@ export class RecaudoFormComponent implements OnInit {
         });
       }
     });
+  }
+
+  get totalPagar(): number {
+
+    // Lo que falta por pagar
+    return this.remainingBalance;
+  }
+
+  cargarPagoRestante(): void {
+    // Usamos el saldo calculado dinámicamente
+    const montoAPagar = this.totalPagar;
+
+    this.recaudoForm.patchValue({
+      amount: montoAPagar > 0 ? montoAPagar.toString() : '2'
+    });
+
+    this.formatCurrency('amount');
+  }
+
+  cargarPagoCompleto(): void {
+    this.recaudoForm.patchValue({
+      amount: this.totalPagar.toString()
+    });
+
+    this.formatCurrency('amount');
+  }
+
+  get colorEstado(): string {
+    if (this.totalPaid > 0) return 'text-danger';
+    if (this.cliente.interestMora > 0) return 'text-warning';
+    return 'text-primary';
   }
 }

@@ -218,8 +218,8 @@ export class StatsComponent implements OnInit, OnDestroy {
 
   formatCurrency(value: number): string {
     return value.toLocaleString('es-CO', {
-      minimumFractionDigits: 0,  // ✅ Sin decimales
-      maximumFractionDigits: 0   // ✅ Sin decimales
+      minimumFractionDigits: 2,  
+      maximumFractionDigits: 2   
     });
   }
 

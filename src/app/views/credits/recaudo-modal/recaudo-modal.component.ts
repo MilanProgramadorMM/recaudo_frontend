@@ -47,6 +47,7 @@ interface QuotaDetail {
   remainingBalance: number;
   moraAcumulada: number;
   moraSaldada: boolean;
+  moraPendiente: number;
   diasMoraRegistrados: number;
   isPaid: boolean;
   isOverdue: boolean;
@@ -267,18 +268,29 @@ export class RecaudoModalComponent {
     this.activeModal.dismiss();
   }
 
+  // getTotalInteresesMoratorios(): number {
+  //   if (!this.paymentStatus) return 0;
+
+  //   return this.paymentStatus.cuotas
+  //     .reduce((sum, cuota) => sum + (cuota.delayPenalty || 0), 0);
+  // }
+
   getTotalInteresesMoratorios(): number {
     if (!this.paymentStatus) return 0;
 
     return this.paymentStatus.cuotas
-      .reduce((sum, cuota) => sum + (cuota.delayPenalty || 0), 0);
+      .reduce((sum, cuota) => sum + (cuota.moraPendiente || 0), 0);  // <-- antes: cuota.delayPenalty
   }
 
   getTotalRecaudoEnRuta(): number {
     if (!this.paymentStatus || !this.paymentStatus.recaudos) return 0;
 
+    this.paymentStatus.recaudos.forEach(r => {
+      console.log(r.conceptName);
+    });
+
     const recaudos = this.paymentStatus.recaudos.filter(r =>
-      r.conceptName === 'NOTA CREDITO' || r.conceptName === 'NOTA DEBITO'
+      r.conceptName === 'RECAUDO EN RUTA' || r.conceptName === 'NOTA DEBITO' || r.conceptName === 'NOTA CREDITO'
     );
 
     const total = recaudos.reduce((sum, r, index) => {
@@ -364,7 +376,7 @@ export class RecaudoModalComponent {
 
   //IDENTIFICAR NATURALEZA DE CREDITO
   getRecaudoNaturaleza(conceptName: string): 'DEBITO' | 'CREDITO' {
-    const conceptosCredito = ['RECAUDO EN RUTA', 'NOTA CREDITO', 'LIQUIDACIÓN ANTICIPADA CREDITO', 'AJUSTE POR PERDIDA'];
+    const conceptosCredito = ['RECAUDO EN RUTA', 'NOTA CREDITO', 'LIQUIDACIÓN ANTICIPADA CREDITO', 'AJUSTE POR PERDIDA', 'RECAUDO MORA'];
     const conceptosDebito = ['NOTA DEBITO', 'REFINANCIACION'];
 
     if (conceptosCredito.includes(conceptName)) {
@@ -407,9 +419,19 @@ export class RecaudoModalComponent {
   // }
 
   getTotalByConcepto(field: keyof RecaudoDetail): number {
-    if (!this.paymentStatus) return 0;
-    return this.paymentStatus.recaudos
-      .filter(r => this.getRecaudoNaturaleza(r.conceptName) === 'CREDITO')
-      .reduce((sum, r) => sum + (Number(r[field]) || 0), 0);
+    if (!this.paymentStatus?.recaudos) return 0;
+
+    const grouped = new Map<string, number>();
+
+    for (const r of this.paymentStatus.recaudos) {
+      const key = `${r.quotaNumber}-${r.conceptName}`;
+
+      const value = Number(r[field]) || 0;
+
+      grouped.set(key, (grouped.get(key) || 0) + value);
+    }
+
+    return Array.from(grouped.values())
+      .reduce((sum, v) => sum + v, 0);
   }
 }

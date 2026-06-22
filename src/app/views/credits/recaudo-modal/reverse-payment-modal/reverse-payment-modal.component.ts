@@ -60,7 +60,7 @@ export class ReversePaymentModalComponent {
           r.valuePaid !== 0 &&
           r.valuePaid !== null &&
           r.conceptName &&
-          r.conceptName.trim().toUpperCase().includes('NOTA CREDITO')
+          r.conceptName.trim().toUpperCase().includes('RECAUDO EN RUTA')
         );
         break;
 

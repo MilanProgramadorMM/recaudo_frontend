@@ -174,7 +174,7 @@
                                             <td>
                                                 <span [class.text-danger]="cuota.delayPenalty > 0"
                                                     [class.text-muted]="cuota.delayPenalty === 0">
-                                                    {{ currency }} {{ formatCurrency(cuota.delayPenalty) }}
+                                                    {{ currency }} {{ formatCurrency(cuota.moraPendiente) }}
                                                     <small *ngIf="cuota.daysOverdue > 0" class="d-block text-muted">
                                                         ({{ cuota.daysOverdue }} días)
                                                     </small>
@@ -228,7 +228,8 @@
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        <tr *ngFor="let recaudo of paymentStatus.recaudos">
+                                        <tr *ngFor="let recaudo of paymentStatus.recaudos"
+                                            [class.table-warning]="recaudo.conceptName === 'RECAUDO MORA'">
                                             <td class="text-center"><strong>{{ recaudo.quotaNumber }}</strong></td>
                                             <td>{{ formatDateTime(recaudo.createdAt) }}</td>
                                             <td>
@@ -236,8 +237,12 @@
                                                     [ngClass]="getRecaudoNaturaleza(recaudo.conceptName) === 'CREDITO' ? 'bg-success' : 'bg-danger-custom'">
                                                     {{ getRecaudoNaturaleza(recaudo.conceptName) }}
                                                 </span>
+                                                <span *ngIf="recaudo.conceptName === 'RECAUDO MORA'"
+                                                    class="badge bg-warning text-dark ms-1">
+                                                    MORA
+                                                </span>
                                             </td>
-                                            <td [class]="getRecaudoClass(recaudo.conceptName)">
+                                            <td  [class]="recaudo.conceptName === 'RECAUDO MORA' ? 'text-warning fw-bold' : getRecaudoClass(recaudo.conceptName)">
                                                 <strong>{{ currency }} {{ formatCurrencyValue(recaudo.valuePaid)
                                                     }}</strong>
                                             </td>
