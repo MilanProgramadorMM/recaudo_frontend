@@ -8,8 +8,8 @@
 //export default baseUrl;
 
 //DOCKER
-let baseUrl = '/api/';
-export default baseUrl;
+// let baseUrl = '/api/';
+// export default baseUrl;
 
 
 //API PUBLICA PARA ENVIAR LINK A CLIENTE
@@ -25,5 +25,5 @@ export default baseUrl;
 //let baseUrlPublic = 'http://localhost:8081/api/';
 
 //APP
-// let baseUrl = 'http://159.203.163.185:8080/api/'
-// export default baseUrl;
+let baseUrl = 'http://159.203.163.185:8080/api/'
+export default baseUrl;

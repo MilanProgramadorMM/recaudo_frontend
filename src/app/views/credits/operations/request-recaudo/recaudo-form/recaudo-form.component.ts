@@ -396,14 +396,21 @@ export class RecaudoFormComponent implements OnInit {
   }
 
   cargarPagoRestante(): void {
-    // Usamos el saldo calculado dinámicamente
     const montoAPagar = this.totalPagar;
+    if (montoAPagar <= 0) return;
+
+    // Formatear el número al formato colombiano antes de poner en el input
+    // Ej: 5626.13 → "5.626,13"
+    const [intPart, decPart] = montoAPagar.toFixed(2).split('.');
+
+    const intFormatted = intPart.replace(/\B(?=(\d{3})+(?!\d))/g, '.');
+    const decFormatted = decPart === '00' ? '' : `,${decPart}`;
+
+    const formatted = `${intFormatted}${decFormatted}`;
 
     this.recaudoForm.patchValue({
-      amount: montoAPagar > 0 ? montoAPagar.toString() : '2'
-    });
-
-    this.formatCurrency('amount');
+      amount: formatted
+    }, { emitEvent: false });
   }
 
   cargarPagoCompleto(): void {
