@@ -70,7 +70,7 @@
                         <span class="input-group-text">
                             <i class="ti ti-currency-dollar"></i>
                         </span>
-                        <input type="text" class="form-control" formControlName="valuePaid"
+                        <input type="text" inputmode="decimal" class="form-control" formControlName="valuePaid"
                             (input)="formatCurrency('valuePaid')" placeholder="Ingrese el monto"
                             [class.is-invalid]="submitted && paymentForm.get('valuePaid')?.invalid">
                     </div>

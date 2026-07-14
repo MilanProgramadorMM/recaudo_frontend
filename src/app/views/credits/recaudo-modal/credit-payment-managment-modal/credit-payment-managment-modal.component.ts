@@ -201,38 +201,32 @@ export class CreditPaymentManagmentModalComponent implements OnInit {
 
   formatCurrency(controlName: string): void {
     const control = this.paymentForm.get(controlName);
-
     if (!control) return;
 
-    let value = control.value || '';
+    const raw = control.value?.toString() ?? '';
+    if (!raw) return;
 
-    // Permitir solo números, puntos y comas
-    value = value.replace(/[^0-9.,]/g, '');
+    // Separar si hay coma decimal
+    const hasComa = raw.includes(',');
+    const [intRaw, decRaw] = raw.split(',');
 
-    // Separar parte decimal
-    const parts = value.split(',');
+    // Limpiar parte entera: solo dígitos
+    const intClean = intRaw.replace(/\D/g, '');
 
-    // Solo permitir UNA coma decimal
-    if (parts.length > 2) {
-      return;
+    // Formatear miles solo si hay dígitos enteros
+    const intFormatted = intClean
+      ? intClean.replace(/\B(?=(\d{3})+(?!\d))/g, '.')
+      : '';
+
+    let formatted: string;
+
+    if (hasComa) {
+      // Mantener la coma aunque el decimal esté vacío o incompleto
+      const decClean = (decRaw ?? '').replace(/\D/g, '').substring(0, 2);
+      formatted = `${intFormatted},${decClean}`;
+    } else {
+      formatted = intFormatted;
     }
-
-    // Parte entera sin puntos existentes
-    let integerPart = parts[0].replace(/\./g, '');
-
-    // Formatear miles
-    integerPart = Number(integerPart || 0).toLocaleString('es-CO');
-
-    // Parte decimal
-    let decimalPart = parts[1] || '';
-
-    // Máximo 2 decimales
-    decimalPart = decimalPart.substring(0, 2);
-
-    // Reconstruir valor
-    const formatted = decimalPart
-      ? `${integerPart},${decimalPart}`
-      : integerPart;
 
     control.setValue(formatted, { emitEvent: false });
   }
