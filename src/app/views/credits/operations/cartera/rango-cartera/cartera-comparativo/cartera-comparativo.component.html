@@ -1,0 +1,173 @@
+<div class="card">
+  <div class="card-header">
+    <h5 class="card-title mb-0">Comparativo de zonas</h5>
+    <p class="text-muted fs-13 mb-0">Selecciona varias zonas y una fecha para comparar su estado de cartera.</p>
+  </div>
+  <div class="card-body">
+
+    <!-- Controles: selección de zonas + fecha -->
+    <div class="row g-3 mb-3">
+      <div class="col-12 col-lg-8">
+        <label class="form-label fs-13 text-muted text-uppercase">Zonas</label>
+
+        <div *ngIf="loadingZonas" class="text-muted">
+          <div class="spinner-border spinner-border-sm text-danger me-2" role="status"></div>
+          Cargando zonas...
+        </div>
+
+        <div *ngIf="!loadingZonas" class="d-flex flex-wrap gap-2 mb-2">
+          <button type="button" class="btn btn-sm btn-outline-secondary" (click)="toggleSeleccionarTodas(true)">
+            Seleccionar todas
+          </button>
+          <button type="button" class="btn btn-sm btn-outline-secondary" (click)="toggleSeleccionarTodas(false)">
+            Limpiar selección
+          </button>
+        </div>
+
+        <div *ngIf="!loadingZonas" class="zonas-checklist border rounded p-2">
+          <div class="form-check" *ngFor="let zona of zonas">
+            <input
+              class="form-check-input"
+              type="checkbox"
+              [id]="'zona-' + zona.id"
+              [(ngModel)]="zona.seleccionada"
+            />
+            <label class="form-check-label" [for]="'zona-' + zona.id">
+              {{ zona.value }}
+            </label>
+          </div>
+          <div *ngIf="zonas.length === 0" class="text-muted">No hay zonas disponibles.</div>
+        </div>
+      </div>
+
+      <div class="col-12 col-lg-4">
+        <label class="form-label fs-13 text-muted text-uppercase" for="fechaComparativo">Fecha</label>
+        <input
+          id="fechaComparativo"
+          type="date"
+          class="form-control"
+          [(ngModel)]="fecha"
+        />
+        <button
+          type="button"
+          class="btn btn-danger w-100 mt-3"
+          [disabled]="!puedeConsultar || loadingResultados"
+          (click)="consultar()"
+        >
+          <span *ngIf="loadingResultados" class="spinner-border spinner-border-sm me-2"></span>
+          Comparar {{ zonasSeleccionadas.length > 0 ? '(' + zonasSeleccionadas.length + ')' : '' }}
+        </button>
+      </div>
+    </div>
+
+    <!-- ERROR -->
+    <div *ngIf="!loadingResultados && error" class="alert alert-danger mb-0">
+      <i class="ti ti-alert-circle me-2"></i>
+      No se pudo cargar el comparativo de zonas.
+    </div>
+
+    <!-- SIN SELECCIÓN AÚN -->
+    <div *ngIf="!consultado && !loadingResultados" class="text-muted text-center py-4">
+      Selecciona una o más zonas y una fecha, luego presiona "Comparar".
+    </div>
+
+    <!-- RESULTADOS -->
+    <div *ngIf="consultado && !loadingResultados && !error" class="table-responsive">
+
+      <ng-container *ngIf="resultados.length > 0">
+        <!-- Gráfico 1: montos por zona -->
+        <h6 class="text-muted fs-13 text-uppercase mb-2">Saldo, capital y mora pendientes por zona</h6>
+        <apx-chart
+          [series]="montosChartOptions.series!"
+          [chart]="montosChartOptions.chart!"
+          [xaxis]="montosChartOptions.xaxis!"
+          [plotOptions]="montosChartOptions.plotOptions!"
+          [dataLabels]="montosChartOptions.dataLabels!"
+          [tooltip]="montosChartOptions.tooltip!"
+          [legend]="montosChartOptions.legend!"
+          [fill]="montosChartOptions.fill!"
+          [colors]="montosChartOptions.colors!"
+        ></apx-chart>
+
+        <div class="row g-3 mt-2">
+          <!-- Gráfico 2: conteo de créditos por zona -->
+          <div class="col-12 col-lg-7">
+            <h6 class="text-muted fs-13 text-uppercase mb-2">Créditos por zona</h6>
+            <apx-chart
+              [series]="conteosChartOptions.series!"
+              [chart]="conteosChartOptions.chart!"
+              [xaxis]="conteosChartOptions.xaxis!"
+              [plotOptions]="conteosChartOptions.plotOptions!"
+              [dataLabels]="conteosChartOptions.dataLabels!"
+              [tooltip]="conteosChartOptions.tooltip!"
+              [legend]="conteosChartOptions.legend!"
+              [fill]="conteosChartOptions.fill!"
+              [colors]="conteosChartOptions.colors!"
+            ></apx-chart>
+          </div>
+
+          <!-- Gráfico 3: participación de cada zona en el saldo total -->
+          <div class="col-12 col-lg-5">
+            <h6 class="text-muted fs-13 text-uppercase mb-2">Participación en el saldo total</h6>
+            <apx-chart
+              [series]="participacionChartOptions.series!"
+              [chart]="participacionChartOptions.chart!"
+              [labels]="participacionChartOptions.labels!"
+              [dataLabels]="participacionChartOptions.dataLabels!"
+              [tooltip]="participacionChartOptions.tooltip!"
+              [legend]="participacionChartOptions.legend!"
+              [responsive]="participacionChartOptions.responsive!"
+              [colors]="participacionChartOptions.colors!"
+            ></apx-chart>
+          </div>
+        </div>
+      </ng-container>
+
+      <table class="table table-sm table-hover align-middle mt-4" *ngIf="resultados.length > 0">
+        <thead>
+          <tr>
+            <th>Zona</th>
+            <th class="text-end">Créditos</th>
+            <th class="text-end">En mora</th>
+            <th class="text-end">Al día</th>
+            <th class="text-end">Saldo total</th>
+            <th class="text-end">Capital pendiente</th>
+            <th class="text-end">Mora pendiente</th>
+            <th class="text-end">Total pagado</th>
+            <th class="text-end">Días mora prom.</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let r of resultados">
+            <td class="fw-semibold">{{ r.zonaNombre }}</td>
+            <td class="text-end">{{ r.conteos.total }}</td>
+            <td class="text-end text-danger">{{ r.conteos.enMora }}</td>
+            <td class="text-end text-success">{{ r.conteos.alDia }}</td>
+            <td class="text-end">{{ currency }} {{ formatCurrency(r.saldoTotal) }}</td>
+            <td class="text-end">{{ currency }} {{ formatCurrency(r.capital.pendiente) }}</td>
+            <td class="text-end">{{ currency }} {{ formatCurrency(r.mora.pendiente) }}</td>
+            <td class="text-end">{{ currency }} {{ formatCurrency(r.totalPagado) }}</td>
+            <td class="text-end">{{ r.diasMoraPromedio }}</td>
+          </tr>
+        </tbody>
+        <tfoot>
+          <tr class="fw-semibold table-light">
+            <td>Total ({{ resultados.length }} zonas)</td>
+            <td class="text-end">{{ totalCreditos }}</td>
+            <td class="text-end text-danger">{{ totalEnMora }}</td>
+            <td class="text-end text-success">{{ totalAlDia }}</td>
+            <td class="text-end">{{ currency }} {{ formatCurrency(totalSaldoTotal) }}</td>
+            <td class="text-end">{{ currency }} {{ formatCurrency(totalCapitalPendiente) }}</td>
+            <td class="text-end">{{ currency }} {{ formatCurrency(totalMoraPendiente) }}</td>
+            <td class="text-end">{{ currency }} {{ formatCurrency(totalPagadoSuma) }}</td>
+            <td class="text-end">—</td>
+          </tr>
+        </tfoot>
+      </table>
+
+      <div *ngIf="resultados.length === 0" class="text-muted text-center py-4">
+        No hay snapshots para las zonas y fecha seleccionadas.
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,141 @@
+<div class="card">
+  <div class="card-body">
+
+    <!-- LOADING -->
+    <div *ngIf="loading" class="text-center py-5">
+      <div class="spinner-border text-danger" role="status">
+        <span class="visually-hidden">Cargando evolución de cartera...</span>
+      </div>
+    </div>
+
+    <!-- ERROR -->
+    <div *ngIf="!loading && error" class="alert alert-danger mb-0">
+      <i class="ti ti-alert-circle me-2"></i>
+      No se pudo cargar la evolución histórica de la cartera.
+    </div>
+
+    <!-- SIN DATOS EN EL RANGO -->
+    <div *ngIf="!loading && sinDatos" class="text-center text-muted py-5">
+      <iconify-icon icon="solar:chart-square-bold-duotone" class="fs-1 d-block mb-2 text-secondary"></iconify-icon>
+      <div class="fw-semibold">Sin datos en el rango seleccionado</div>
+      <div class="fs-13">No existen registros de cartera para las fechas elegidas. Prueba con un rango más amplio.</div>
+    </div>
+
+    <ng-container *ngIf="!loading && !error && !sinDatos && historia">
+      <!-- KPIs de resumen del período -->
+      <div class="row g-3 mb-4">
+        <div class="col-6 col-lg-3">
+          <div class="text-muted fs-13 text-uppercase">Variación de saldo</div>
+          <div class="fs-18 fw-semibold" [ngClass]="variacionClass(historia.resumenEvolucion.variacionSaldo)">
+            <i [class]="trendIcon(historia.resumenEvolucion.variacionSaldo)" class="me-1"></i>
+            {{ currency }} {{ formatCurrency(historia.resumenEvolucion.variacionSaldo) }}
+            <span *ngIf="historia.resumenEvolucion.pctVariacionSaldo !== null" class="fs-13">
+              ({{ historia.resumenEvolucion.pctVariacionSaldo }}%)
+            </span>
+          </div>
+        </div>
+        <div class="col-6 col-lg-3">
+          <div class="text-muted fs-13 text-uppercase">Total recuperado</div>
+          <div class="fs-18 fw-semibold text-success">
+            <i class="ti ti-cash me-1"></i>
+            {{ currency }} {{ formatCurrency(historia.resumenEvolucion.totalRecuperado) }}
+          </div>
+        </div>
+        <div class="col-6 col-lg-3">
+          <div class="text-muted fs-13 text-uppercase">Créditos en mora</div>
+          <div class="fs-18 fw-semibold" [ngClass]="variacionClass(historia.resumenEvolucion.variacionCreditosEnMora)">
+            <i [class]="trendIcon(historia.resumenEvolucion.variacionCreditosEnMora)" class="me-1"></i>
+            {{ historia.resumenEvolucion.creditosEnMoraInicial }} → {{ historia.resumenEvolucion.creditosEnMoraFinal }}
+            <span class="fs-13">
+              ({{ historia.resumenEvolucion.variacionCreditosEnMora > 0 ? '+' : '' }}{{ historia.resumenEvolucion.variacionCreditosEnMora }})
+            </span>
+          </div>
+        </div>
+        <div class="col-6 col-lg-3">
+          <div class="text-muted fs-13 text-uppercase">Créditos cancelados</div>
+          <div class="fs-18 fw-semibold">
+            <i class="ti ti-checkbox me-1 text-muted"></i>
+            {{ historia.resumenEvolucion.totalCancelados }}
+          </div>
+        </div>
+      </div>
+
+      <!-- Gráfico de saldo / capital / mora en el tiempo -->
+      <h6 class="fs-14 fw-semibold mb-0">Saldo, capital y mora pendientes</h6>
+      <p class="text-muted fs-13 mb-2">Evolución diaria de la deuda pendiente en el periodo</p>
+      <apx-chart
+        [series]="saldoChartOptions.series!"
+        [chart]="saldoChartOptions.chart!"
+        [xaxis]="saldoChartOptions.xaxis!"
+        [stroke]="saldoChartOptions.stroke!"
+        [markers]="saldoChartOptions.markers!"
+        [grid]="saldoChartOptions.grid!"
+        [dataLabels]="saldoChartOptions.dataLabels!"
+        [tooltip]="saldoChartOptions.tooltip!"
+        [legend]="saldoChartOptions.legend!"
+        [colors]="saldoChartOptions.colors!"
+      ></apx-chart>
+
+      <!-- Gráfico de transiciones diarias -->
+      <h6 class="fs-14 fw-semibold mt-4 mb-0">Movimientos diarios de cartera</h6>
+      <p class="text-muted fs-13 mb-2">Créditos que entran y salen de mora, y cancelaciones por día</p>
+      <apx-chart
+        [series]="transicionesChartOptions.series!"
+        [chart]="transicionesChartOptions.chart!"
+        [xaxis]="transicionesChartOptions.xaxis!"
+        [plotOptions]="transicionesChartOptions.plotOptions!"
+        [grid]="transicionesChartOptions.grid!"
+        [dataLabels]="transicionesChartOptions.dataLabels!"
+        [tooltip]="transicionesChartOptions.tooltip!"
+        [legend]="transicionesChartOptions.legend!"
+        [fill]="transicionesChartOptions.fill!"
+        [colors]="transicionesChartOptions.colors!"
+      ></apx-chart>
+
+      <!-- Tabla de transiciones diarias (detalle para auditoría) -->
+      <h6 class="fs-14 fw-semibold mt-4 mb-2">Detalle diario</h6>
+      <div class="table-responsive">
+        <table class="table table-sm table-hover align-middle mb-0">
+          <thead class="table-light">
+            <tr>
+              <th>Fecha</th>
+              <th class="text-end">Ingresaron a mora</th>
+              <th class="text-end">Salieron de mora</th>
+              <th class="text-end">Cambios de estado</th>
+              <th class="text-end">Cancelados</th>
+              <th class="text-end">Cambios de calificación</th>
+              <th class="text-end">Créditos nuevos</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let t of historia.transiciones">
+              <td class="fw-semibold">{{ formatFecha(t.fecha) }}</td>
+              <td class="text-end" [class.text-danger]="t.ingresaronMora > 0">{{ t.ingresaronMora }}</td>
+              <td class="text-end" [class.text-success]="t.salieronMora > 0">{{ t.salieronMora }}</td>
+              <td class="text-end">{{ t.cambiaronEstado }}</td>
+              <td class="text-end">{{ t.cancelados }}</td>
+              <td class="text-end">{{ t.cambiosCalificacion }}</td>
+              <td class="text-end">{{ t.nuevosCreditos }}</td>
+            </tr>
+            <tr *ngIf="historia.transiciones.length === 0">
+              <td colspan="7" class="text-center text-muted py-3">
+                Solo hay un día de registro en el rango seleccionado — no hay transición que comparar.
+              </td>
+            </tr>
+          </tbody>
+          <tfoot *ngIf="historia.transiciones.length > 0" class="table-light fw-semibold">
+            <tr>
+              <td>Total del periodo</td>
+              <td class="text-end">{{ historia.resumenEvolucion.totalIngresaronMora }}</td>
+              <td class="text-end">{{ historia.resumenEvolucion.totalSalieronMora }}</td>
+              <td class="text-end">{{ historia.resumenEvolucion.totalCambiaronEstado }}</td>
+              <td class="text-end">{{ historia.resumenEvolucion.totalCancelados }}</td>
+              <td class="text-end">{{ historia.resumenEvolucion.totalCambiosCalificacion }}</td>
+              <td class="text-end">{{ historia.resumenEvolucion.totalNuevosCreditos }}</td>
+            </tr>
+          </tfoot>
+        </table>
+      </div>
+    </ng-container>
+  </div>
+</div>

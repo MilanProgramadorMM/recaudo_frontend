@@ -1,0 +1,79 @@
+<div class="container-fluid">
+    <!-- Encabezado + filtros -->
+    <div class="row">
+        <div class="col-12">
+            <div
+                class="page-title-head d-flex flex-column flex-sm-row align-items-start align-items-sm-center justify-content-between gap-3">
+                <div class="flex-grow-1 text-sm-start text-center">
+                    <h4 class="fs-18 fw-semibold m-0">Cartera</h4>
+                </div>
+                <div class="w-100 w-sm-auto">
+                    <form [formGroup]="filterForm">
+                        <div class="row g-2 align-items-center justify-content-center justify-content-sm-end">
+                            <!-- SELECT DE ZONAS -->
+                            <div class="col-12 col-sm-auto" style="min-width: 180px;">
+                                <select class="form-select w-100" aria-label="Filtrar por zona" formControlName="zona">
+                                    <option value="" disabled>Seleccione una zona</option>
+                                    <option *ngFor="let zona of zonas" [value]="zona.value">
+                                        {{ zona.value }}
+                                    </option>
+                                </select>
+                            </div>
+                            <div class="col-12 col-sm-auto">
+                                <div class="input-group">
+                                    <input mwlFlatpickr [flatpickrOptions]="flatpickrOptions"
+                                        placeholder="Seleccione rango de fechas" type="text"
+                                        class="form-control border-0 shadow" formControlName="dateRange" />
+                                    <span class="input-group-text text-white"
+                                        style="background-color: #DC3545; border-color: #DC3545;">
+                                        <i class="ti ti-calendar fs-15"></i>
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- LOADING -->
+    <div *ngIf="loading" class="row mt-3">
+        <div class="col-12 text-center py-5">
+            <div class="spinner-border text-danger" role="status">
+                <span class="visually-hidden">Cargando zonas...</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- MENSAJE SI NO HAY ZONAS -->
+    <div *ngIf="!loading && zonas.length === 0" class="row mt-3">
+        <div class="col-12">
+            <div class="alert alert-warning">
+                <i class="ti ti-alert-circle me-2"></i>
+                No hay zonas disponibles para mostrar información de cartera.
+            </div>
+        </div>
+    </div>
+
+    <!-- Estado actual de la cartera (foto del día — usa fechaFin del filtro) -->
+    <div class="row mt-3" *ngIf="!loading && zonas.length > 0">
+        <div class="col-12">
+            <app-cartera-estado></app-cartera-estado>
+        </div>
+    </div>
+
+    <!-- Evolución histórica de la cartera (usa fechaInicio/fechaFin como rango) -->
+    <div class="row mt-3" *ngIf="!loading && zonas.length > 0">
+        <div class="col-12">
+            <app-cartera-evolucion></app-cartera-evolucion>
+        </div>
+    </div>
+
+    <!-- Comparativo de varias zonas (selección propia de zonas + fecha, endpoint 2) -->
+    <!-- <div class="row mt-3" *ngIf="!loading && zonas.length > 0">
+        <div class="col-12">
+            <app-cartera-comparativo></app-cartera-comparativo>
+        </div>
+    </div> -->
+</div>

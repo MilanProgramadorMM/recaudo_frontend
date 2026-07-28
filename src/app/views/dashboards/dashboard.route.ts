@@ -3,6 +3,9 @@ import { SalesComponent } from "./sales/sales.component";
 import { ClinicComponent } from "./clinic/clinic.component";
 import { WalletComponent } from "./wallet/wallet.component";
 import { ConsultasComponent } from "./consultas/consultas.component";
+import { CarteraComponentsComponent } from "@views/credits/operations/cartera/cartera-components.component";
+import { CarteraComparativoComponent } from "@views/credits/operations/cartera/rango-cartera/cartera-comparativo/cartera-comparativo.component";
+import { ClienteCarteraComponent } from "@views/credits/operations/cartera/cliente-cartera-components/cliente-cartera-components.component";
 
 export const DASHBOARD_ROUTES: Route[] = [
   {
@@ -24,6 +27,18 @@ export const DASHBOARD_ROUTES: Route[] = [
     path: 'consultas/tacticas',
     component: ConsultasComponent,
     data: { title: 'Consultas', type: 'TACTICAS' }
+  },
+  {
+    path: 'consultas/dashboards-cartera',
+    component: CarteraComponentsComponent
+  },
+  {
+    path: 'consultas/comparativo-cartera',
+    component: CarteraComparativoComponent
+  },
+  {
+    path: 'consultas/cartera-cliente',
+    component: ClienteCarteraComponent
   },
   {
     path: 'clinic',

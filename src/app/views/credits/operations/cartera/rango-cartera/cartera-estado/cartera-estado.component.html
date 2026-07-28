@@ -1,0 +1,143 @@
+<div class="row g-3">
+  <!-- LOADING -->
+  <div *ngIf="loading" class="col-12 text-center py-4">
+    <div class="spinner-border text-danger" role="status">
+      <span class="visually-hidden">Cargando estado de cartera...</span>
+    </div>
+  </div>
+
+  <!-- ERROR -->
+  <div *ngIf="!loading && error" class="col-12">
+    <div class="alert alert-danger mb-0">
+      <i class="ti ti-alert-circle me-2"></i>
+      No se pudo cargar el estado de cartera para la zona y fecha seleccionadas.
+    </div>
+  </div>
+
+  <!-- ESTADO VACÍO (sin filtro aún) -->
+  <div *ngIf="!loading && !error && !estado" class="col-12">
+    <div class="card mb-0">
+      <div class="card-body text-center text-muted py-5">
+        <iconify-icon icon="solar:wallet-money-bold-duotone" class="fs-1 d-block mb-2 text-secondary"></iconify-icon>
+        Selecciona una zona y una fecha de corte para ver el estado de la cartera.
+      </div>
+    </div>
+  </div>
+
+  <ng-container *ngIf="!loading && !error && estado">
+    <!-- Tarjetas de resumen (KPIs principales) -->
+    <div class="row row-cols-xxl-4 row-cols-md-2 row-cols-1 g-3">
+      <div *ngFor="let item of statCards" class="col">
+        <div class="balance-card h-100" [ngStyle]="getCardStyle(item.variant)">
+          <div class="d-flex justify-content-between align-items-center mb-2">
+            <span class="title">{{ item.title }}</span>
+            <div class="icon-circle">
+              <iconify-icon [icon]="item.icon"></iconify-icon>
+            </div>
+          </div>
+          <div class="value-box">
+            {{ currency }} {{ item.count }}
+          </div>
+          <div *ngIf="item.subtitle" class="fs-13 fw-semibold mt-2" style="opacity: 0.95;">
+            <i class="ti ti-percentage me-1"></i>{{ item.subtitle }}
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Detalle: conteos, cuotas, calificación -->
+    <div class="row g-3 mt-1">
+      <!-- Conteo de créditos -->
+      <div class="col-12 col-md-6 col-lg-4">
+        <div class="card h-100">
+          <div class="card-body">
+            <h5 class="card-title fs-14 text-uppercase text-muted fw-semibold d-flex align-items-center gap-2">
+              <iconify-icon icon="solar:card-2-bold-duotone" class="text-primary"></iconify-icon>
+              Créditos
+            </h5>
+            <ul class="list-group list-group-flush">
+              <li class="list-group-item d-flex justify-content-between px-0">
+                <span>Total</span><strong>{{ estado.conteos.total }}</strong>
+              </li>
+              <li class="list-group-item d-flex justify-content-between px-0">
+                <span>Activos</span><strong>{{ estado.conteos.activos }}</strong>
+              </li>
+              <li class="list-group-item d-flex justify-content-between px-0">
+                <span class="text-success"><i class="ti ti-circle-check me-1"></i>Al día</span>
+                <strong class="text-success">{{ estado.conteos.alDia }}</strong>
+              </li>
+              <li class="list-group-item d-flex justify-content-between px-0">
+                <span class="text-danger"><i class="ti ti-alert-triangle me-1"></i>En mora</span>
+                <strong class="text-danger">{{ estado.conteos.enMora }}</strong>
+              </li>
+              <li class="list-group-item d-flex justify-content-between px-0">
+                <span>Cancelados</span><strong>{{ estado.conteos.cancelados }}</strong>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <!-- Cuotas -->
+      <div class="col-12 col-md-6 col-lg-4">
+        <div class="card h-100">
+          <div class="card-body">
+            <h5 class="card-title fs-14 text-uppercase text-muted fw-semibold d-flex align-items-center gap-2">
+              <iconify-icon icon="solar:calendar-bold-duotone" class="text-primary"></iconify-icon>
+              Cuotas
+            </h5>
+            <ul class="list-group list-group-flush">
+              <li class="list-group-item d-flex justify-content-between px-0">
+                <span>Planeadas</span><strong>{{ estado.cuotas.planeadas }}</strong>
+              </li>
+              <li class="list-group-item d-flex justify-content-between px-0">
+                <span>Totales</span><strong>{{ estado.cuotas.totales }}</strong>
+              </li>
+              <li class="list-group-item d-flex justify-content-between px-0">
+                <span class="text-success"><i class="ti ti-circle-check me-1"></i>Pagadas</span>
+                <strong class="text-success">{{ estado.cuotas.pagadas }}</strong>
+              </li>
+              <li class="list-group-item d-flex justify-content-between px-0">
+                <span class="text-warning"><i class="ti ti-clock me-1"></i>Pendientes</span>
+                <strong class="text-warning">{{ estado.cuotas.pendientes }}</strong>
+              </li>
+              <li class="list-group-item d-flex justify-content-between px-0 border-top">
+                <span class="fw-semibold">Días mora promedio</span>
+                <strong>{{ estado.diasMoraPromedio }}</strong>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <!-- Distribución de calificación -->
+      <div class="col-12 col-lg-4">
+        <div class="card h-100">
+          <div class="card-body">
+            <h5 class="card-title fs-14 text-uppercase text-muted fw-semibold d-flex align-items-center gap-2">
+              <iconify-icon icon="solar:chart-2-bold-duotone" class="text-primary"></iconify-icon>
+              Calificación de riesgo
+            </h5>
+            <div *ngIf="calificaciones.length === 0" class="text-muted text-center py-3">
+              <i class="ti ti-chart-bar me-1"></i>Sin datos de calificación
+            </div>
+            <div *ngFor="let c of calificacionesOrdenadas" class="mb-3">
+              <div class="d-flex justify-content-between align-items-center mb-1">
+                <span class="badge rounded-pill {{ ratingBadgeClass(c.ratingValue) }}">{{ c.ratingValue }}</span>
+                <span class="fs-13">
+                  <strong>{{ c.cantidad }}</strong> créditos
+                  <span class="text-muted">({{ pctCalificacion(c) }}%)</span>
+                </span>
+              </div>
+              <div class="progress" style="height: 6px;">
+                <div class="progress-bar {{ ratingBarClass(c.ratingValue) }}"
+                  role="progressbar" [style.width.%]="pctCalificacion(c)"
+                  [attr.aria-valuenow]="pctCalificacion(c)" aria-valuemin="0" aria-valuemax="100"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </ng-container>
+</div>

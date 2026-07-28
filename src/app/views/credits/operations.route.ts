@@ -8,6 +8,7 @@ import { ClosingComponent } from "./operations/closing/closing.component";
 import { AuthGuard } from "@/store/authentication/guards/guard.guard";
 import { ListClosingAsesorComponent } from "./operations/list-closing-asesor/list-closing-asesor.component";
 import { SimulationIntentionComponentv2 } from "./operations/simulation-intentionv2/simulation-intention.componentv2";
+import { CarteraComponentsComponent } from "./operations/cartera/cartera-components.component";
 
 export const OPERATIONS_ROUTES: Route[] = [
 
@@ -50,6 +51,5 @@ export const OPERATIONS_ROUTES: Route[] = [
     component: ListClosingAsesorComponent,
     canActivate: [AuthGuard],
     data: { roles: ['Asesor'] }
-  },
-
+  }
 ]

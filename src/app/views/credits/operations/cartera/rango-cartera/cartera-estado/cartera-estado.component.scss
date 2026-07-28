@@ -1,0 +1,33 @@
+// Si el proyecto ya define .balance-card, .icon-circle, .value-box y .title
+// de forma global (como en stats.component.scss), este bloque es redundante
+// y puede eliminarse. Se incluye aquí como respaldo por si este componente
+// se usa en un contexto donde esos estilos globales no están cargados.
+
+.balance-card {
+  border-radius: 0.75rem;
+  padding: 1rem 1.25rem;
+  color: #fff;
+  height: 100%;
+
+  .title {
+    font-size: 0.8125rem;
+    font-weight: 600;
+    opacity: 0.9;
+  }
+
+  .icon-circle {
+    width: 2.25rem;
+    height: 2.25rem;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.2);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.1rem;
+  }
+
+  .value-box {
+    font-size: 1.25rem;
+    font-weight: 700;
+  }
+}
