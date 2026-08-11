@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { MAT_DIALOG_DATA, MatDialogModule, MatDialogRef } from '@angular/material/dialog';
 import { FlatpickrDirective } from '@core/directive/flatpickr.directive';
-import { ConsultasService, CreditosZonaDetalleDto, MovimientoDetalleDto, SaldosVencidosDetalleDto } from '@core/services/consultas.service';
+import { ConsultasService, CreditosZonaDetalleDto, DebidoCobrarDetalleDto, MovimientoDetalleDto, SaldosVencidosDetalleDto } from '@core/services/consultas.service';
 import { NgbModal, NgbPaginationModule } from '@ng-bootstrap/ng-bootstrap';
 import * as XLSX from 'xlsx-js-style';
 import * as FileSaver from 'file-saver';
@@ -47,6 +47,10 @@ export class ModalDetalleConsultaComponent implements OnInit {
   rawDataCreditosZona: CreditosZonaDetalleDto[] = [];
   filteredDataCreditosZona: CreditosZonaDetalleDto[] = [];
   pagedDataCreditosZona: CreditosZonaDetalleDto[] = [];
+
+  rawDataDebidoCobrar: DebidoCobrarDetalleDto[] = [];
+  filteredDataDebidoCobrar: DebidoCobrarDetalleDto[] = [];
+  pagedDataDebidoCobrar: DebidoCobrarDetalleDto[] = [];
 
 
   conceptOptions: string[] = [];
@@ -114,7 +118,72 @@ export class ModalDetalleConsultaComponent implements OnInit {
       case 'CREDITOS_ZONA':
         this.loadDetalleCreditosZona(startDate, endDate);
         break;
+      case 'DEBIDO_COBRAR_DETALLE':
+        this.loadDetalleDebidoCobrar(startDate, endDate);
+        break;
     }
+  }
+
+  private loadDetalleDebidoCobrar(startDate: string, endDate: string) {
+    this.loading = true;
+    this.consultasService.getDebidoCobrarDetalle(this.data.zoneId, startDate, endDate).subscribe({
+      next: (data) => {
+        this.rawDataDebidoCobrar = data.map(row => ({
+          ...row,
+          expirationDate: this.normalizeBackendDate(row.expirationDate),
+          nombreDia: this.diasEsp[row.nombreDia] ?? row.nombreDia
+        }));
+        this.applyFiltersDebidoCobrar();
+        this.loading = false;
+      },
+      error: (err) => {
+        console.error('Error cargando detalle:', err);
+        this.rawDataDebidoCobrar = [];
+        this.filteredDataDebidoCobrar = [];
+        this.loading = false;
+      }
+    });
+  }
+
+  applyFiltersDebidoCobrar(): void {
+    const customer = (this.filterForm.get('customer')?.value ?? '').trim().toUpperCase();
+    this.filteredDataDebidoCobrar = this.rawDataDebidoCobrar.filter(row =>
+      !customer || row.clientName.toUpperCase().includes(customer)
+    );
+    this.page = 1;
+    this.updatePagedDataDebidoCobrar();
+  }
+
+  updatePagedDataDebidoCobrar(): void {
+    const startIndex = (this.page - 1) * this.pageSize;
+    const endIndex = startIndex + this.pageSize;
+    this.pagedDataDebidoCobrar = this.filteredDataDebidoCobrar.slice(startIndex, endIndex);
+  }
+
+  onPageChangeDebidoCobrar(): void {
+    this.updatePagedDataDebidoCobrar();
+    const body = document.querySelector('.modal-detalle-body');
+    if (body) body.scrollTop = 0;
+  }
+
+  onPageSizeChangeDebidoCobrar(newSize: number): void {
+    this.pageSize = newSize;
+    this.page = 1;
+    this.updatePagedDataDebidoCobrar();
+  }
+
+  getShowingStartDebidoCobrar(): number {
+    if (this.filteredDataDebidoCobrar.length === 0) return 0;
+    return (this.page - 1) * this.pageSize + 1;
+  }
+
+  getShowingEndDebidoCobrar(): number {
+    const end = this.page * this.pageSize;
+    return end > this.filteredDataDebidoCobrar.length ? this.filteredDataDebidoCobrar.length : end;
+  }
+
+  get totalValorCuotaDebidoCobrar(): number {
+    return this.filteredDataDebidoCobrar.reduce((acc, r) => acc + r.valorCuota, 0);
   }
 
   private loadDetalleMovimientos(startDate: string, endDate: string) {
@@ -139,7 +208,7 @@ export class ModalDetalleConsultaComponent implements OnInit {
     this.loading = true;
     this.consultasService.getSaldosVencidosDetalle(this.data.zoneId, startDate, endDate).subscribe({
       next: (data) => {
-        this.rawDataSaldosVencidos = data;        
+        this.rawDataSaldosVencidos = data;
         this.applyFiltersSaldosVencidos();
         this.applyFilters();
         this.loading = false;
@@ -192,7 +261,10 @@ export class ModalDetalleConsultaComponent implements OnInit {
       case 'CREDITOS_ZONA':
         this.applyFiltersCreditosZona();
         break;
-    }    
+      case 'DEBIDO_COBRAR_DETALLE':
+        this.applyFiltersDebidoCobrar();
+        break;
+    }
   }
 
   applyFiltersDetalleMovimientos(): void {
@@ -269,17 +341,17 @@ export class ModalDetalleConsultaComponent implements OnInit {
     return date.getFullYear() + '-' +
       String(date.getMonth() + 1).padStart(2, '0') + '-' +
       String(date.getDate()).padStart(2, '0');
-  }  
+  }
 
   exportToExcel(): void {
-    switch(this.data.type) {
+    switch (this.data.type) {
       case 'MOVIMIENTOS_POR_ZONA':
         this.exportToExcelMovimientosPorZona();
         break;
-      case 'SALDOS_VENCIDOS':        
+      case 'SALDOS_VENCIDOS':
         this.exportToExcelSaldosVencidos();
         break;
-      case 'CREDITOS_ZONA':        
+      case 'CREDITOS_ZONA':
         this.exportToExcelCreditosZona();
         break;
     }
@@ -396,7 +468,7 @@ export class ModalDetalleConsultaComponent implements OnInit {
         font: { bold: true }
       };
     }
-    
+
     worksheet['!freeze'] = { xSplit: 0, ySplit: 1 };
 
     const workbook: XLSX.WorkBook = {
@@ -421,7 +493,7 @@ export class ModalDetalleConsultaComponent implements OnInit {
   exportToExcelSaldosVencidos() {
     const tableData = this.rawDataSaldosVencidos.map(item => ({
       'ZONA': item.zona,
-      'CLIENTE': item.personName,      
+      'CLIENTE': item.personName,
       'VALOR': item.value,
       'DÍAS DE MORA': item.diasMora,
       'PERIODOS VENCIDOS': item.periodosVencidos,
@@ -430,7 +502,7 @@ export class ModalDetalleConsultaComponent implements OnInit {
 
     const totalRow = {
       'ZONA': 'TOTAL',
-      'CLIENTE': '',      
+      'CLIENTE': '',
       'VALOR': this.rawDataSaldosVencidos.reduce((sum, i) => sum + (i.value || 0), 0),
       'DÍAS DE MORA': 0,
       'PERIODOS VENCIDOS': 0,
@@ -521,7 +593,7 @@ export class ModalDetalleConsultaComponent implements OnInit {
         font: { bold: true }
       };
     }
-    
+
     worksheet['!freeze'] = { xSplit: 0, ySplit: 1 };
 
     const workbook: XLSX.WorkBook = {
@@ -559,7 +631,7 @@ export class ModalDetalleConsultaComponent implements OnInit {
       'PAPELERÍA': item.stationery
     }));
 
-    const totalRow = { 
+    const totalRow = {
       'N. CRÉDITO': 0,
       'CLIENTE': '',
       'LÍNEA': '',
@@ -667,7 +739,7 @@ export class ModalDetalleConsultaComponent implements OnInit {
         }
       };
     }
-    
+
     worksheet['!freeze'] = { xSplit: 0, ySplit: 1 };
 
     const workbook: XLSX.WorkBook = {
@@ -691,11 +763,11 @@ export class ModalDetalleConsultaComponent implements OnInit {
 
   //SALDOS VENCIDOS LOGIC
   applyFiltersSaldosVencidos(): void {
-    const cartera = this.filterForm.get('cartera')?.value ?? [];    
+    const cartera = this.filterForm.get('cartera')?.value ?? [];
     this.filteredDataSaldosVencidos = this.rawDataSaldosVencidos.filter(row => {
       if (cartera.length == 0) {
         return row;
-      } else if (cartera.length == 2){
+      } else if (cartera.length == 2) {
         const isValid = row.diasMora > cartera[0] && row.diasMora < cartera[1];
         return isValid;
       } else if (cartera.length == 1) {
@@ -732,16 +804,16 @@ export class ModalDetalleConsultaComponent implements OnInit {
   }
 
   onSaldosVencidosRowClick(creditId: number, creditIntentionId: number) {
-      const modalRef = this.modalService.open(RecaudoModalComponent, {
-          size: 'xl',
-          backdrop: 'static',
-          keyboard: true,
-          centered: true,
-          scrollable: true,
-          windowClass: 'modal-extra-large'
-        });
-        modalRef.componentInstance.creditId = creditId;
-        modalRef.componentInstance.creditIntentionId = creditIntentionId;
+    const modalRef = this.modalService.open(RecaudoModalComponent, {
+      size: 'xl',
+      backdrop: 'static',
+      keyboard: true,
+      centered: true,
+      scrollable: true,
+      windowClass: 'modal-extra-large'
+    });
+    modalRef.componentInstance.creditId = creditId;
+    modalRef.componentInstance.creditIntentionId = creditIntentionId;
   }
 
   onPageSizeChangeSaldosVencidos(newSize: number): void {
@@ -797,16 +869,16 @@ export class ModalDetalleConsultaComponent implements OnInit {
   }
 
   onCreditosZonaRowClick(creditId: number, creditIntentionId: number) {
-      const modalRef = this.modalService.open(RecaudoModalComponent, {
-          size: 'xl',
-          backdrop: 'static',
-          keyboard: true,
-          centered: true,
-          scrollable: true,
-          windowClass: 'modal-extra-large'
-        });
-        modalRef.componentInstance.creditId = creditId;
-        modalRef.componentInstance.creditIntentionId = creditIntentionId;
+    const modalRef = this.modalService.open(RecaudoModalComponent, {
+      size: 'xl',
+      backdrop: 'static',
+      keyboard: true,
+      centered: true,
+      scrollable: true,
+      windowClass: 'modal-extra-large'
+    });
+    modalRef.componentInstance.creditId = creditId;
+    modalRef.componentInstance.creditIntentionId = creditIntentionId;
   }
 
   onPageSizeChangeCreditosZona(newSize: number): void {
@@ -821,14 +893,27 @@ export class ModalDetalleConsultaComponent implements OnInit {
 
   get totalIntencionCreditosZona(): number {
     return this.filteredDataCreditosZona.reduce((acc, r) => acc + r.totalIntentionValue, 0);
-  }  
+  }
 
   get totalFinancedValueCreditosZona(): number {
     return this.filteredDataCreditosZona.reduce((acc, r) => acc + r.totalFinancedValue, 0);
-  }  
+  }
 
   get totalInteresCreditosZona(): number {
     return this.filteredDataCreditosZona.reduce((acc, r) => acc + r.totalInterestValue, 0);
   }
-  
+  private readonly diasEsp: Record<string, string> = {
+    Monday: 'Lunes', Tuesday: 'Martes', Wednesday: 'Miércoles',
+    Thursday: 'Jueves', Friday: 'Viernes', Saturday: 'Sábado', Sunday: 'Domingo'
+  };
+
+  /** El backend serializa LocalDate como [año, mes, día] -> 'YYYY-MM-DD' */
+  private normalizeBackendDate(fecha: any): string {
+    if (Array.isArray(fecha) && fecha.length >= 3) {
+      const [y, m, d] = fecha;
+      return `${y}-${String(m).padStart(2, '0')}-${String(d).padStart(2, '0')}`;
+    }
+    return fecha ?? '';
+  }
+
 }

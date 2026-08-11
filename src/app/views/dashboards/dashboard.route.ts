@@ -6,6 +6,7 @@ import { ConsultasComponent } from "./consultas/consultas.component";
 import { CarteraComponentsComponent } from "@views/credits/operations/cartera/cartera-components.component";
 import { CarteraComparativoComponent } from "@views/credits/operations/cartera/rango-cartera/cartera-comparativo/cartera-comparativo.component";
 import { ClienteCarteraComponent } from "@views/credits/operations/cartera/cliente-cartera-components/cliente-cartera-components.component";
+import { ComparativoDebidoCobrarComponent } from "@views/credits/operations/cartera/rango-cartera/comparativo-debido-cobrar/comparativo-debido-cobrar.component";
 
 export const DASHBOARD_ROUTES: Route[] = [
   {
@@ -31,6 +32,10 @@ export const DASHBOARD_ROUTES: Route[] = [
   {
     path: 'consultas/dashboards-cartera',
     component: CarteraComponentsComponent
+  },
+  {
+    path: 'consultas/comparativo-cuota',
+    component: ComparativoDebidoCobrarComponent
   },
   {
     path: 'consultas/comparativo-cartera',

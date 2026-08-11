@@ -4,43 +4,51 @@ import baseUrl from './api';
 import { CookieService } from 'ngx-cookie-service';
 import { Observable } from 'rxjs';
 
-export interface DailyCollectionItem {
+export interface CardData {
     creditId: number;
-    cuotaId: number;
-    totalCapitalValue: number;
-    quotaNumber: number;
-    expirationDate: string;
     clientName: string;
-    paidToday: number;
-    paidFull: string;
-    liquidated: string;
-    paymentPromiseDate?: string | null;
-    noPago?: number;
-    noPagoReason?: string | null;
     clientOrden: number;
-    clientCuota: number;
-    zona?: string;
-    periodo: string;
-    plazoCredito: number;
-    valorCuota: number;
-    cuotasPagadas: number;
-    cuotasVencidas: number;
-    saldoPendiente: number;
-    totalCuotas: number;
-    direccion?: string | null;
-    whatsapp?: string | null;
-    celular?: string | null;
-    barrio?: string | null;
-    municipio?: string | null;
-    nombreDia?: string | null;
-    fechaCredito: string;
-    interestMora: number;
-    fechaVence: string;
-    saldoPendienteCuota: number;
-    //diasMora: number;
-    lineaname?: string;
-    totalMoraCredito: number;
-    periodosVencidos: number;
+    zonaCode: string;
+    zona: string;
+    totalCapitalValue: number | null;
+    saldoPendiente: number | null;
+    totalMoraCredito: number | null;
+    periodosVencidos: number | null;
+
+    fechaCredito: number[] | null;
+    lineaname: string | null;
+    periodo: string | null;
+    plazoCredito: number | null;
+    fechaVence: number[] | null;
+    totalCuotas: number | null;
+    cuotasPagadas: number | null;
+    cuotasVencidas: number | null;
+    direccion: string | null;
+    whatsapp: string | null;
+    celular: string | null;
+    barrio: string | null;
+    municipio: string | null;
+
+    cuotaId: number | null;
+    quotaNumber: number | null;
+    expirationDate: number[] | null;
+    valorCuota: number | null;
+    saldoPendienteCuota: number | null;
+    interestMora: number | null;
+    paidToday: number | null;
+    paidFull: string | null;
+    liquidated: string | null;
+    paymentPromiseDate: number[] | null;
+    noPago: number | null;
+    noPagoReason: string | null;
+    nombreDia: string | null;
+
+    cuotasPendientes: number | null;
+    proximaCuotaFecha: number[] | null;
+    proximaCuotaNumero: number | null;
+
+    primeraCuotaVencida: number[] | null;
+    primeraCuotaVencidaNumero: number | null;
 }
 
 export interface DailyCollectionItemRespaldo {
@@ -54,15 +62,21 @@ export interface DailyCollectionItemRespaldo {
 
 export interface RatingCredit {
     ratingValue: string;
-    start: number;
+    start: number | null;
     end: number | null;
 }
 
 export interface DailyCollectionItemDTO {
-    data: DailyCollectionItem,
-    recaudos: DailyCollectionItemRespaldo,
-    ratingCredit: RatingCredit,
-    flipped: boolean
+    data: CardData;
+    recaudos: DailyCollectionItemRespaldo[];
+    ratingCredit: RatingCredit;
+    flipped?: boolean;
+}
+
+export interface DailyCollectionResultDTO {
+    cobroHoy: DailyCollectionItemDTO[];
+    carteraZona: DailyCollectionItemDTO[];
+    enMora: DailyCollectionItemDTO[];
 }
 
 @Injectable({
@@ -82,8 +96,8 @@ export class DailyCollectionService {
         });
     }
 
-    getDailyCollection(date: string): Observable<DailyCollectionItemDTO[]> {
-        return this.http.get<DailyCollectionItemDTO[]>(
+    getDailyCollection(date: string): Observable<DailyCollectionResultDTO> {
+        return this.http.get<DailyCollectionResultDTO>(
             `${baseUrl}collection/daily?date=${date}`,
             { headers: this.getHeaders() }
         );

@@ -37,61 +37,124 @@
         </div>
 
         <!-- RESUMEN FINANCIERO -->
-        <div class="row mt-3 pt-3 border-top">
-            <div class="col-4">
-                <small class="text-muted d-block">Valor Total Cuota:</small>
-                <strong class="text-success" *ngIf="!loadingQuota">
-                    {{ formatearMoneda(quotaValue) }}
-                </strong>
-                <span *ngIf="loadingQuota" class="spinner-border spinner-border-sm text-primary"></span>
-            </div>
-            <div class="col-4">
-                <small class="text-muted d-block">Interés de Mora:</small>
-                <strong class="text-warning">
-                    {{ formatearMoneda(cliente.interestMora) }}
-                </strong>
-            </div>
-            <div class="col-4">
-                <small class="text-muted d-block">Total Pagado:</small>
-                <strong class="text-info" *ngIf="!loadingQuota">
-                    {{ formatearMoneda(totalPaid) }}
-                </strong>
-            </div>
-        </div>
+        <div class="row g-2 mt-3 pt-3 border-top">
 
-        <div class="row mt-3" *ngIf="totalPagar > 0">
-            <div class="col-12">
-                <div class="card bg-light" [class.border-primary]="totalPaid === 0 && cliente.interestMora === 0"
-                    [class.border-warning]="cliente.interestMora > 0 && totalPaid === 0"
-                    [class.border-danger]="totalPaid > 0">
-                    <div class="card-body py-3">
-                        <div class="d-flex justify-content-between align-items-center flex-wrap">
+            <!-- 1. Valor total de la cuota (informativo) -->
+            <div class="col-6 col-md">
+                <!-- Cargando -->
+                <div class="p-2 h-100" *ngIf="loadingQuota">
+                    <small class="text-muted d-block">Valor total cuota</small>
+                    <span class="spinner-border spinner-border-sm text-success"></span>
+                </div>
 
-                            <div>
-                                <small class="text-muted d-block">
-                                    {{ totalPaid > 0 ? 'Saldo pendiente por cancelar' : 'Total a pagar (Cuota + Mora)'
-                                    }}
-                                </small>
-                                <h4 class="mb-0" [class]="colorEstado">
-                                    {{ formatearMoneda(totalPagar) }}
-                                </h4>
-                            </div>
+                <!-- Botón: solo si no hay abono ni mora -->
+                <button type="button" *ngIf="!loadingQuota && puedeCargarCuotaTotal"
+                    class="btn w-100 h-100 text-start p-2" [class.btn-success]="opcionSeleccionada === 'cuota'"
+                    [class.btn-outline-success]="opcionSeleccionada !== 'cuota'" [disabled]="viewMode"
+                    (click)="pagarSoloCuota()">
+                    <small class="d-block opacity-75">Valor total cuota</small>
+                    <strong>{{ formatearMoneda(valorCuotaTotal) }}</strong>
+                </button>
 
-                            <div class="d-flex justify-content-center w-100 mt-2">
-                                <button type="button" class="btn"
-                                    [class.btn-primary]="totalPaid === 0 && cliente.interestMora === 0"
-                                    [class.btn-warning]="cliente.interestMora > 0 && totalPaid === 0"
-                                    [class.btn-danger]="totalPaid > 0" (click)="cargarPagoRestante()">
-                                    <i class="ti ti-check me-1"></i>
-                                    {{ totalPaid > 0 ? 'Pagar Saldo Restante' : 'Pagar Total' }}
-                                </button>
-                            </div>
-
-                        </div>
-                    </div>
+                <!-- Informativo: si ya hay abono o mora -->
+                <div class="p-2 h-100" *ngIf="!loadingQuota && !puedeCargarCuotaTotal">
+                    <small class="text-muted d-block">Valor total cuota</small>
+                    <strong class="text-success">{{ formatearMoneda(valorCuotaTotal) }}</strong>
                 </div>
             </div>
+
+            <!-- 2. Valor pendiente de la cuota (carga al formulario) -->
+            <!-- <div class="col-6 col-md">
+                <div class="p-2 h-100" *ngIf="loadingQuota">
+                    <small class="text-muted d-block">Pendiente cuota</small>
+                    <span class="spinner-border spinner-border-sm text-primary"></span>
+                </div>
+                <button type="button" *ngIf="!loadingQuota" class="btn w-100 h-100 text-start p-2"
+                    [class.btn-primary]="opcionSeleccionada === 'cuota'"
+                    [class.btn-outline-primary]="opcionSeleccionada !== 'cuota'"
+                    [disabled]="viewMode || valorPendienteCuota <= 0" (click)="pagarSoloCuota()">
+                    <small class="d-block opacity-75">Pendiente cuota</small>
+                    <strong>{{ formatearMoneda(valorPendienteCuota) }}</strong>
+                </button>
+            </div> -->
+
+            <!-- 3. Mora de la cuota (carga al formulario) -->
+            <div class="col-6 col-md">
+                <div class="p-2 h-100" *ngIf="loadingQuota">
+                    <small class="text-muted d-block">Mora cuota</small>
+                    <span class="spinner-border spinner-border-sm text-warning"></span>
+                </div>
+                <button type="button" *ngIf="!loadingQuota" class="btn w-100 h-100 text-start p-2"
+                    [class.btn-warning]="opcionSeleccionada === 'mora'"
+                    [class.btn-outline-warning]="opcionSeleccionada !== 'mora'" [disabled]="viewMode || valorMora <= 0"
+                    (click)="pagarSoloMora()">
+                    <small class="d-block opacity-75">Mora cuota</small>
+                    <strong>{{ formatearMoneda(valorMora) }}</strong>
+                    <small class="d-block opacity-75 mt-1" *ngIf="diasMora > 0">
+                        <i class="ti ti-clock-hour-4 me-1"></i>{{ diasMora }}
+                        {{ diasMora === 1 ? 'día' : 'días' }} de mora
+                    </small>
+                </button>
+            </div>
+
+            <!-- 4. Valor pagado (informativo) -->
+            <div class="col-6 col-md">
+                <div class="p-2 h-100">
+                    <small class="text-muted d-block">Valor abonado cuota</small>
+                    <strong class="text-info" *ngIf="!loadingQuota">
+                        {{ formatearMoneda(totalPaid) }}
+                    </strong>
+                    <span *ngIf="loadingQuota" class="spinner-border spinner-border-sm text-info"></span>
+                </div>
+            </div>
+
+            <!-- 5. Total a cancelar (pendiente + mora, carga al formulario) -->
+            <div class="col-6 col-md">
+                <div class="p-2 h-100" *ngIf="loadingQuota">
+                    <small class="text-muted d-block">Total a cancelar</small>
+                    <span class="spinner-border spinner-border-sm text-danger"></span>
+                </div>
+                <button type="button" *ngIf="!loadingQuota" class="btn w-100 h-100 text-start p-2 custom-color-btn"
+                    [class.selected]="opcionSeleccionada === 'total'" [disabled]="viewMode || valorTotalConMora <= 0"
+                    (click)="pagarTodo()">
+                    <small class="d-block opacity-75">Total a cancelar</small>
+                    <strong>{{ formatearMoneda(valorTotalConMora) }}</strong>
+                </button>
+            </div>
         </div>
+
+        <!-- OPCIONES DE PAGO -->
+        <!-- <div class="mt-3 pt-3 border-top" *ngIf="!viewMode && hayValoresPorPagar">
+            <small class="text-muted d-block mb-2">
+                <i class="ti ti-click me-1"></i>Selecciona qué valor deseas cargar:
+            </small>
+
+            <div class="d-grid gap-2">
+                <button type="button" class="btn d-flex justify-content-between align-items-center"
+                    *ngIf="valorPendienteCuota > 0" [class.btn-primary]="opcionSeleccionada === 'cuota'"
+                    [class.btn-outline-primary]="opcionSeleccionada !== 'cuota'" (click)="pagarSoloCuota()">
+                    <span>
+                        <i class="ti ti-receipt me-2"></i>
+                        {{ totalPaid > 0 ? 'Saldo pendiente de la cuota' : 'Valor total de la cuota' }}
+                    </span>
+                    <strong>{{ formatearMoneda(valorPendienteCuota) }}</strong>
+                </button>
+
+                <button type="button" class="btn d-flex justify-content-between align-items-center"
+                    *ngIf="valorMora > 0" [class.btn-warning]="opcionSeleccionada === 'mora'"
+                    [class.btn-outline-warning]="opcionSeleccionada !== 'mora'" (click)="pagarSoloMora()">
+                    <span><i class="ti ti-alert-triangle me-2"></i>Valor total de mora</span>
+                    <strong>{{ formatearMoneda(valorMora) }}</strong>
+                </button>
+
+                <button type="button" class="btn d-flex justify-content-between align-items-center"
+                    *ngIf="valorPendienteCuota > 0 && valorMora > 0" [class.btn-danger]="opcionSeleccionada === 'total'"
+                    [class.btn-outline-danger]="opcionSeleccionada !== 'total'" (click)="pagarTodo()">
+                    <span><i class="ti ti-cash me-2"></i>Pagar toda la cuota (cuota + mora)</span>
+                    <strong>{{ formatearMoneda(valorTotalConMora) }}</strong>
+                </button>
+            </div>
+        </div> -->
 
 
         <!-- SALDO PENDIENTE / CUOTA PAGADA -->
@@ -244,14 +307,14 @@
 </div>
 
 <div class="modal-footer">
-    <button type="button" class="btn btn-secondary" (click)="close()" [disabled]="loading">
+    <button type="button" class="btn btn-danger" (click)="close()" [disabled]="loading">
         <i class="ti ti-x me-1"></i>
         {{ viewMode ? 'Cerrar' : 'Cancelar' }}
     </button>
-    <button type="button" *ngIf="!viewMode" class="btn btn-danger" (click)="guardarRecaudo()"
+   <button type="button" *ngIf="!viewMode" class="btn btn-success custom-success-btn" (click)="guardarRecaudo()"
         [disabled]="!metodoSeleccionado || loading">
-        <span *ngIf="loading" class="spinner-border spinner-border-sm me-1"></span>
-        <i *ngIf="!loading" class="ti ti-check me-1"></i>
-        Guardar Recaudo
-    </button>
+    <span *ngIf="loading" class="spinner-border spinner-border-sm me-1"></span>
+    <i *ngIf="!loading" class="ti ti-check me-1"></i>
+    Pagar
+</button>
 </div>

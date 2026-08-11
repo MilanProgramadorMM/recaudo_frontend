@@ -4,7 +4,7 @@
     font-weight: 600;
     font-size: 0.875rem;
   }
-  
+
   td {
     vertical-align: middle;
   }
@@ -13,6 +13,44 @@
 .btn-success {
   &:hover {
     transform: translateY(-1px);
-    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
   }
+}
+
+.custom-color-btn {
+  border: 1px solid #198754 !important;
+  color: #198754 !important;
+  background-color: transparent !important;
+  transition: all 0.2s ease-in-out;
+}
+
+/* Estado cuando está seleccionado (opcionSeleccionada === 'total') */
+.custom-color-btn.selected {
+  background-color: #198754 !important;
+  color: #ffffff !important;
+}
+
+/* Efecto hover cuando NO está seleccionado */
+.custom-color-btn:not(.selected):hover:not(:disabled) {
+  background-color: rgba(25, 135, 84, 0.1) !important;
+  /* Un verde muy sutil al pasar el mouse */
+  color: #198754 !important;
+}
+
+/* Estado deshabilitado */
+.custom-color-btn:disabled {
+  opacity: 0.65;
+  cursor: not-allowed;
+}
+
+.custom-success-btn {
+  background-color: #198754 !important;
+  border-color: #198754 !important;
+  color: #ffffff !important;
+}
+
+.custom-success-btn:hover:not(:disabled) {
+  background-color: #157347 !important;
+  /* Un verde ligeramente más oscuro para el efecto hover */
+  border-color: #146c43 !important;
 }

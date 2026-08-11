@@ -75,6 +75,10 @@
                         <strong>{{ paymentStatus.taxValue }}%</strong>
                     </div>
                     <div class="col-md-2 col-6">
+                        <small class="text-muted d-block">Valor desembolsado</small>
+                        <strong>{{ currency }} {{ formatCurrency(paymentStatus.totalCapitalValue) }}</strong>
+                    </div>
+                    <div class="col-md-2 col-6">
                         <small class="text-muted d-block">Papelería</small>
                         <strong>{{ currency }} {{ formatCurrency(paymentStatus.stationery) }}</strong>
                     </div>

@@ -4,10 +4,10 @@ import baseUrl from "./api";
 import { CookieService } from 'ngx-cookie-service';
 import { Observable } from "rxjs";
 
-export interface DefaultConsultasDto {    
+export interface DefaultConsultasDto {
     id: number;
     name: string;
-    value: number;    
+    value: number;
 }
 
 export interface MovimientoZonaDto {
@@ -22,6 +22,7 @@ export interface MovimientoZonaDto {
 
 export interface MovimientoDetalleDto {
     zona: string;
+    clientName: string;
     concept_key: string;
     concept: string;
     payment_type: string;
@@ -71,6 +72,19 @@ export interface DebidoCobrarPorZonaDto {
     investmentValue: number;
 }
 
+export interface DebidoCobrarDetalleDto {
+    creditId: number;
+    cuotaId: number;
+    quotaNumber: number;
+    expirationDate: string;
+    clientName: string;
+    clientOrden: number;
+    valorCuota: number;
+    zonaCode: string;
+    zona: string;
+    nombreDia: string;
+}
+
 export interface MovimientosResponse {
     data: MovimientoZonaDto[];
 }
@@ -102,11 +116,11 @@ export class ConsultasService {
             { headers: this.getHeaders(), params }
         );
     }
-    
+
     getMovimientosDetalle(zoneId: number, startDate: string, endDate: string): Observable<MovimientoDetalleDto[]> {
         const params = new HttpParams()
-        .set('startDate', startDate)
-        .set('endDate', endDate);
+            .set('startDate', startDate)
+            .set('endDate', endDate);
         return this.http.get<MovimientoDetalleDto[]>(
             `${baseUrl}consultas/movimientos/detalle/${zoneId}`,
             { headers: this.getHeaders(), params }
@@ -126,8 +140,8 @@ export class ConsultasService {
 
     getSaldosVencidosDetalle(zoneId: number, startDate: string, endDate: string): Observable<SaldosVencidosDetalleDto[]> {
         const params = new HttpParams()
-        .set('startDate', startDate)
-        .set('endDate', endDate);
+            .set('startDate', startDate)
+            .set('endDate', endDate);
         return this.http.get<SaldosVencidosDetalleDto[]>(
             `${baseUrl}consultas/saldos-vencidos/${zoneId}`,
             { headers: this.getHeaders(), params }
@@ -147,18 +161,28 @@ export class ConsultasService {
 
     getDetalleCreditosPorZona(zoneId: number, startDate: string, endDate: string): Observable<CreditosZonaDetalleDto[]> {
         const params = new HttpParams()
-        .set('startDate', startDate)
-        .set('endDate', endDate);
+            .set('startDate', startDate)
+            .set('endDate', endDate);
         return this.http.get<CreditosZonaDetalleDto[]>(
             `${baseUrl}consultas/creditos/${zoneId}`,
             { headers: this.getHeaders(), params }
         );
     }
 
+    getDebidoCobrarDetalle(zoneId: number, startDate: string, endDate: string): Observable<DebidoCobrarDetalleDto[]> {
+        const params = new HttpParams()
+            .set('startDate', startDate)
+            .set('endDate', endDate);
+        return this.http.get<DebidoCobrarDetalleDto[]>(
+            `${baseUrl}dashboard/debido-cobrar/detalle/${zoneId}`,
+            { headers: this.getHeaders(), params }
+        );
+    }
+
     getDebidoCobrarPorZona(startDate: string, endDate: string): Observable<DebidoCobrarPorZonaDto[]> {
         const params = new HttpParams()
-        .set('startDate', startDate)
-        .set('endDate', endDate);
+            .set('startDate', startDate)
+            .set('endDate', endDate);
         return this.http.get<DebidoCobrarPorZonaDto[]>(
             `${baseUrl}consultas/debido-cobrar`,
             { headers: this.getHeaders(), params }

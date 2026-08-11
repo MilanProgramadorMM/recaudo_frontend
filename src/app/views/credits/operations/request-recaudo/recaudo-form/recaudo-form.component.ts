@@ -35,6 +35,9 @@ export class RecaudoFormComponent implements OnInit {
   loadingQuota: boolean = false;
 
   recaudos: RecaudoDetail[] = [];
+  opcionSeleccionada: 'cuota' | 'mora' | 'total' | null = null;
+  moraPendiente: number = 0;
+  diasMora: number = 0;
 
   constructor(
     public activeModal: NgbActiveModal,
@@ -59,8 +62,6 @@ export class RecaudoFormComponent implements OnInit {
       this.loadBanks();
     }
     this.loadQuotaDetails();
-    console.log('Cliente recibido:', this.cliente);
-    console.log('Modo vista:', this.viewMode);
   }
 
   loadBanks(): void {
@@ -96,21 +97,17 @@ export class RecaudoFormComponent implements OnInit {
           q => q.quotaNumber === this.cliente.quotaNumber
         );
 
-        console.log('Cuota encontrada:', currentQuota);
 
         if (currentQuota) {
           this.quotaValue = currentQuota.quotaValue;
           this.totalPaid = Math.abs(Number(currentQuota.totalPaid || 0));
           this.remainingBalance = Number(currentQuota.remainingBalance || 0);
+          this.moraPendiente = Number(currentQuota.moraPendiente || 0);
 
-          console.log('Valores asignados:', {
-            quotaValue: this.quotaValue,
-            totalPaid: this.totalPaid,
-            remainingBalance: this.remainingBalance
-          });
         } else {
           this.quotaValue = this.cliente.clientCuota || 0;
           this.remainingBalance = this.quotaValue;
+          this.moraPendiente = 0;
         }
 
         // NUEVO: Cargar historial de pagos si está en modo vista
@@ -165,6 +162,7 @@ export class RecaudoFormComponent implements OnInit {
   }
 
   onMetodoChange(): void {
+    this.opcionSeleccionada = null;
     const metodoNombre = this.metodoSeleccionado;
 
     this.recaudoForm.patchValue({
@@ -243,6 +241,10 @@ export class RecaudoFormComponent implements OnInit {
   }
 
   formatCurrency(controlName: string): void {
+
+    if (controlName === 'amount') {
+      this.opcionSeleccionada = null; // edición manual quita el resaltado
+    }
     const control = this.recaudoForm.get(controlName);
     if (!control) return;
 
@@ -425,5 +427,58 @@ export class RecaudoFormComponent implements OnInit {
     if (this.totalPaid > 0) return 'text-danger';
     if (this.cliente.interestMora > 0) return 'text-warning';
     return 'text-primary';
+  }
+
+  get valorPendienteCuota(): number {
+    // remainingBalance = lo que falta de la cuota (o el total si no se ha abonado nada)
+    return Number(this.remainingBalance || 0);
+  }
+
+  get valorMora(): number {
+    return Number(this.moraPendiente || 0);
+  }
+
+  get valorTotalConMora(): number {
+    return this.valorPendienteCuota + this.valorMora;
+  }
+
+  get puedeCargarCuotaTotal(): boolean {
+    return this.totalPaid === 0 && this.valorMora <= 0;
+  }
+  
+  get hayValoresPorPagar(): boolean {
+    return this.valorPendienteCuota > 0 || this.valorMora > 0;
+  }
+
+  // --- Acciones: cargan el valor en el formulario ---
+  pagarSoloCuota(): void {
+    this.opcionSeleccionada = 'cuota';
+    this.setAmount(this.valorPendienteCuota);
+  }
+
+  pagarSoloMora(): void {
+    this.opcionSeleccionada = 'mora';
+    this.setAmount(this.valorMora);
+  }
+
+  pagarTodo(): void {
+    this.opcionSeleccionada = 'total';
+    this.setAmount(this.valorTotalConMora);
+  }
+
+  get valorCuotaTotal(): number {
+    return Number(this.quotaValue || 0);
+  }
+
+  // Helper único de formateo -> input (formato colombiano)
+  private setAmount(valor: number): void {
+    if (valor <= 0) return;
+    const [intPart, decPart] = valor.toFixed(2).split('.');
+    const intFormatted = intPart.replace(/\B(?=(\d{3})+(?!\d))/g, '.');
+    const decFormatted = decPart === '00' ? '' : `,${decPart}`;
+    this.recaudoForm.patchValue(
+      { amount: `${intFormatted}${decFormatted}` },
+      { emitEvent: false }
+    );
   }
 }

@@ -122,7 +122,7 @@ export class StatsComponent implements OnInit, OnDestroy {
 
     this.statData = [
       {
-        title: 'Debido a Cobrar',
+        title: 'Valor cuota',
         icon: 'solar:case-round-minimalistic-bold-duotone',
         count: this.formatCurrency(totals.debidoCobrar),
         rawValue: totals.debidoCobrar,
@@ -155,7 +155,7 @@ export class StatsComponent implements OnInit, OnDestroy {
   private updateStats(data: DashboardSummaryDto): void {
     this.statData = [
       {
-        title: 'Debido a Cobrar',
+        title: 'Valor cuota',
         icon: 'solar:case-round-minimalistic-bold-duotone',
         count: this.formatCurrency(data.totalDebidoCobrar),
         rawValue: data.totalDebidoCobrar,
@@ -188,7 +188,7 @@ export class StatsComponent implements OnInit, OnDestroy {
   private getEmptyStats(): StatType[] {
     return [
       {
-        title: 'Debido a Cobrar',
+        title: 'Valor cuota',
         icon: 'solar:case-round-minimalistic-bold-duotone',
         count: this.formatCurrency(0),
         rawValue: 0

@@ -1,12 +1,13 @@
 <div class="modal-header">
   <h5 class="modal-title">
-    <i class="bi bi-layout-text-sidebar me-2"></i>
-    Ordenar clientes por zona: {{ zonaValue }}
+    <i class="bi bi-list-ol me-2"></i>
+    Ordenar clientes — {{ zonaValue }}
   </h5>
   <button type="button" class="btn-close" aria-label="Close" (click)="activeModal.dismiss('Cross click')"></button>
 </div>
 
 <div class="modal-body">
+
   <!-- Loading -->
   <div *ngIf="loading" class="text-center py-4">
     <div class="spinner-border text-primary" role="status">
@@ -14,52 +15,138 @@
     </div>
   </div>
 
-  <!-- Contenido principal -->
-  <div *ngIf="!loading" class="clientes-container row g-3">
-    <!-- CLIENTES CON ORDEN -->
-    <div class="col-12 col-md-6">
-      <h5 class="text-center text-md-start">Clientes con orden</h5>
-      <div cdkDropList id="clientesConOrden" [cdkDropListData]="clientesConOrden"
-        [cdkDropListConnectedTo]="['sinOrden']" class="list-group shadow-sm p-1 cliente-list"
-        (cdkDropListDropped)="dropToLeft($event)">
-        <div *ngFor="let cliente of clientesConOrden" cdkDrag
-          class="list-group-item d-flex align-items-center draggable-item">
-          <div class="orden-number">{{ cliente?.orden || 0 }}</div>
-          <div class="flex-grow-1">
-            <i class="bi bi-person-circle me-2 text-primary"></i>{{ cliente?.fullName || 'Sin nombre' }}
+  <div *ngIf="!loading">
+
+    <p class="text-muted fs-13 mb-3">
+      Usa las flechas para mover cada cliente. El número es el orden en que se visitarán.
+    </p>
+
+    <!-- ════════ EN LA RUTA ════════ -->
+    <div class="d-flex align-items-center justify-content-between mb-2">
+      <h6 class="mb-0">
+        <i class="bi bi-geo-alt me-1 text-primary"></i>
+        En la ruta ({{ clientesConOrden.length }})
+      </h6>
+      <button type="button" class="btn btn-sm btn-link text-danger p-0" *ngIf="clientesConOrden.length > 0"
+        (click)="limpiarRuta()">
+        Vaciar
+      </button>
+    </div>
+
+    <div class="input-group input-group-sm mb-2" *ngIf="clientesConOrden.length > 0">
+      <span class="input-group-text"><i class="bi bi-search"></i></span>
+      <input type="text" class="form-control" placeholder="Buscar en la ruta por nombre o cédula"
+        [(ngModel)]="filtroRuta" />
+    </div>
+
+    <div cdkDropList class="list-group mb-2 ruta-list" (cdkDropListDropped)="drop($event)">
+      <div *ngFor="let cliente of conOrdenFiltrados; trackBy: trackById"
+        class="list-group-item d-flex align-items-center gap-2" [attr.data-cliente-id]="cliente.id"
+        [class.cliente-movido]="cliente.id === clienteMovidoId">
+
+        <input #ordenInput type="number" min="1" [max]="clientesConOrden.length"
+          class="form-control form-control-sm orden-input" [value]="cliente.orden"
+          (change)="cambiarOrden(cliente, ordenInput.value)" (keyup.enter)="cambiarOrden(cliente, ordenInput.value)"
+          aria-label="Número de orden" />
+
+        <div class="flex-grow-1 min-w-0">
+          <div class="cliente-nombre text-truncate">
+            <i class="bi bi-person-circle me-1 text-primary"></i>{{ cliente.fullName || 'Sin nombre' }}
           </div>
-          <div class="cliente-documento">{{ cliente?.document || '' }}</div>
-          <i class="bi bi-arrows-move text-muted ms-2"></i>
+          <small class="text-muted">{{ cliente.document || '' }}</small>
         </div>
+
+        <!-- Con el buscador activo se ocultan los controles: reordenar sobre una
+             lista filtrada movería al cliente equivocado. El filtro es para ubicar. -->
+        <div class="btn-group-vertical btn-group-sm flechas" *ngIf="!filtroRuta">
+          <button type="button" class="btn btn-outline-secondary" [disabled]="esPrimero(cliente)"
+            (click)="subir(cliente)" aria-label="Subir">
+            <i class="bi bi-chevron-up"></i>
+          </button>
+          <button type="button" class="btn btn-outline-secondary" [disabled]="esUltimo(cliente)"
+            (click)="bajar(cliente)" aria-label="Bajar">
+            <i class="bi bi-chevron-down"></i>
+          </button>
+        </div>
+
+        <!-- Quitar: siempre disponible, incluso con el buscador activo -->
+        <button type="button" class="btn btn-sm btn-outline-danger" (click)="quitarDeRuta(cliente)"
+          aria-label="Quitar de la ruta">
+          <i class="bi bi-x-lg"></i>
+        </button>
+
+        <!-- Agarradera de arrastre (opcional): solo sin filtro -->
+        <!-- <i class="bi bi-grip-vertical text-muted drag-handle" *ngIf="!filtroRuta" cdkDragHandle></i> -->
+
+      </div>
+
+      <div *ngIf="clientesConOrden.length === 0" class="text-center text-muted py-3">
+        Todavía no hay clientes en la ruta. Agrégalos desde la lista de abajo.
+      </div>
+
+      <div *ngIf="clientesConOrden.length > 0 && conOrdenFiltrados.length === 0" class="text-center text-muted py-3">
+        Ningún cliente en la ruta coincide con la búsqueda.
       </div>
     </div>
 
-    <!-- CLIENTES SIN ORDEN -->
-    <div class="col-12 col-md-6">
-      <h5 class="text-center text-md-start">Clientes sin orden</h5>
-      <div cdkDropList id="sinOrden" [cdkDropListData]="clientesSinOrden"
-        [cdkDropListConnectedTo]="['clientesConOrden']" class="list-group shadow-sm p-1 cliente-list"
-        (cdkDropListDropped)="dropToLeft($event)">
-        <div *ngFor="let cliente of clientesSinOrden" cdkDrag
-          class="list-group-item d-flex align-items-center draggable-item">
-          <div class="flex-grow-1">
-            <i class="bi bi-person-circle me-2 text-primary"></i>{{ cliente.fullName }}
+    <div *ngIf="filtroRuta" class="text-muted fs-13 mb-2">
+      <i class="bi bi-info-circle me-1"></i>Limpia el buscador para reordenar o quitar clientes.
+    </div>
+
+    <hr class="my-3" />
+
+    <!-- ════════ SIN ORDEN ════════ -->
+    <div class="d-flex align-items-center justify-content-between mb-2">
+      <h6 class="mb-0">
+        <i class="bi bi-people me-1 text-muted"></i>
+        Por asignar ({{ clientesSinOrden.length }})
+      </h6>
+      <button type="button" class="btn btn-sm btn-link p-0" *ngIf="clientesSinOrden.length > 0"
+        (click)="agregarTodos()">
+        Agregar todos
+      </button>
+    </div>
+
+    <div class="input-group input-group-sm mb-2" *ngIf="clientesSinOrden.length > 0">
+      <span class="input-group-text"><i class="bi bi-search"></i></span>
+      <input type="text" class="form-control" placeholder="Buscar sin asignar por nombre o cédula"
+        [(ngModel)]="filtroSinAsignar" />
+    </div>
+
+    <div class="list-group sin-orden-list">
+      <div *ngFor="let cliente of sinOrdenFiltrados; trackBy: trackById"
+        class="list-group-item d-flex align-items-center gap-2">
+        <div class="flex-grow-1 min-w-0">
+          <div class="cliente-nombre text-truncate">
+            <i class="bi bi-person-circle me-1 text-secondary"></i>{{ cliente.fullName || 'Sin nombre' }}
+            <span class="badge bg-warning-subtle text-warning ms-1">
+              <i class="bi bi-exclamation-triangle me-1"></i>Sin crédito activo
+            </span>
           </div>
-          <div class="cliente-documento">{{ cliente.document }}</div>
-          <i class="bi bi-arrows-move text-muted ms-2"></i>
+          <small class="text-muted">{{ cliente.document || '' }}</small>
         </div>
 
-        <div *ngIf="clientesSinOrden.length === 0" class="text-center text-muted py-2">
-          No hay clientes por asignar orden
-        </div>
+        <button type="button" class="btn btn-sm btn-primary" (click)="agregarARuta(cliente)">
+          <i class="bi bi-plus-lg me-1"></i> Agregar
+        </button>
+      </div>
+
+      <div *ngIf="clientesSinOrden.length === 0" class="text-center text-muted py-3">
+        Todos los clientes están en la ruta.
+      </div>
+
+      <div *ngIf="clientesSinOrden.length > 0 && sinOrdenFiltrados.length === 0" class="text-center text-muted py-3">
+        Ningún cliente coincide con la búsqueda.
       </div>
     </div>
   </div>
 </div>
 
 <div class="modal-footer flex-wrap justify-content-center justify-content-md-end">
-  <button type="button" class="btn btn-danger me-2" (click)="activeModal.close('cancel')">Cancelar</button>
-  <button type="button" class="btn btn-primary" (click)="guardarOrden()">Guardar</button>
+  <button type="button" class="btn btn-light me-2" (click)="activeModal.close('cancel')">Cancelar</button>
+  <button type="button" class="btn btn-primary" (click)="guardarOrden()">
+    <i class="bi bi-check-lg me-1"></i> Guardar orden
+  </button>
 </div>
 
 <!-- ALERTA DE ÉXITO -->
@@ -67,7 +154,7 @@
   <div class="modal-filled bg-success text-white text-center p-4">
     <i class="ti ti-check h1"></i>
     <h4 class="mt-2">¡Bien hecho!</h4>
-    <p class="mt-3">Orden establecido correctamente!</p>
+    <p class="mt-3">Orden establecido correctamente.</p>
     <button (click)="onSuccessContinue(modal)" type="button" class="btn btn-light my-2">Continuar</button>
   </div>
 </ng-template>
@@ -77,7 +164,7 @@
   <div class="modal-filled bg-danger text-white text-center p-4">
     <i class="ti ti-alert-circle h1"></i>
     <h4 class="mt-2">Ocurrió un error</h4>
-    <p class="mt-3">{{ lastErrorMessage || 'No se pudo establecer orden correctamente. Intenta nuevamente.' }}</p>
+    <p class="mt-3">{{ lastErrorMessage || 'No se pudo establecer el orden. Intenta nuevamente.' }}</p>
     <button (click)="modal.dismiss()" type="button" class="btn btn-light my-2">Cerrar</button>
   </div>
 </ng-template>

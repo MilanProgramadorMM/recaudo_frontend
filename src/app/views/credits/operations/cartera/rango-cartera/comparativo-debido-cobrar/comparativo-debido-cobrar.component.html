@@ -1,0 +1,112 @@
+<div class="card">
+    <div class="card-header">
+        <h5 class="card-title mb-0">Debido cobrar vs recaudado</h5>
+        <p class="text-muted fs-13 mb-0">Selecciona una zona y una fecha para comparar lo que se debía cobrar contra lo
+            recaudado.</p>
+    </div>
+    <div class="card-body">
+
+        <!-- Controles -->
+        <div class="row g-3 mb-3">
+            <div class="col-12 col-lg-6">
+                <label class="form-label fs-13 text-muted text-uppercase" for="zonaSelect">Zona</label>
+                <div *ngIf="loadingZonas" class="text-muted">
+                    <div class="spinner-border spinner-border-sm text-danger me-2" role="status"></div>
+                    Cargando zonas...
+                </div>
+                <select *ngIf="!loadingZonas" id="zonaSelect" class="form-select" [(ngModel)]="zonaId">
+                    <option [ngValue]="null" disabled>Selecciona una zona</option>
+                    <option *ngFor="let z of zonas" [ngValue]="z.id">{{ z.value }}</option>
+                </select>
+            </div>
+
+            <div class="col-12 col-lg-3">
+                <label class="form-label fs-13 text-muted text-uppercase" for="fechaDebido">Fecha</label>
+                <input id="fechaDebido" type="date" class="form-control" [(ngModel)]="fecha" />
+            </div>
+
+            <div class="col-12 col-lg-3 d-flex align-items-end">
+                <button type="button" class="btn btn-danger w-100" [disabled]="!puedeConsultar || loadingResultado"
+                    (click)="consultar()">
+                    <span *ngIf="loadingResultado" class="spinner-border spinner-border-sm me-2"></span>
+                    Consultar
+                </button>
+            </div>
+        </div>
+
+        <!-- ERROR -->
+        <div *ngIf="!loadingResultado && error" class="alert alert-danger mb-0">
+            <i class="ti ti-alert-circle me-2"></i>
+            No se pudo cargar la comparación.
+        </div>
+
+        <!-- SIN CONSULTA AÚN -->
+        <div *ngIf="!consultado && !loadingResultado" class="text-muted text-center py-4">
+            Selecciona una zona y una fecha, luego presiona "Consultar".
+        </div>
+
+        <!-- RESULTADO -->
+        <ng-container *ngIf="consultado && !loadingResultado && !error && resumen">
+
+            <!-- Tarjetas -->
+            <div class="row g-3 mb-3">
+                <div class="col-6 col-lg-3">
+                    <div class="p-3 border rounded h-100">
+                        <small class="text-muted d-block text-uppercase fs-12">Debido cobrar</small>
+                        <h4 class="mb-0 text-primary">{{ currency }} {{ formatCurrency(resumen.totalDebidoCobrar) }}
+                        </h4>
+                    </div>
+                </div>
+                <div class="col-6 col-lg-3">
+                    <div class="p-3 border rounded h-100">
+                        <small class="text-muted d-block text-uppercase fs-12">Recaudado</small>
+                        <h4 class="mb-0 text-success">{{ currency }} {{ formatCurrency(resumen.totalRecaudado) }}</h4>
+                    </div>
+                </div>
+                <div class="col-6 col-lg-3">
+                    <div class="p-3 border rounded h-100">
+                        <small class="text-muted d-block text-uppercase fs-12">Saldo pendiente del dia</small>
+                        <h4 class="mb-0 text-danger">{{ currency }} {{ formatCurrency(resumen.totalCartera) }}</h4>
+                    </div>
+                </div>
+                <div class="col-6 col-lg-3">
+                    <div class="p-3 border rounded h-100">
+                        <small class="text-muted d-block text-uppercase fs-12">No pagado ({{ resumen.totalNoPagoCantidad
+                            }})</small>
+                        <h4 class="mb-0 text-warning">{{ currency }} {{ formatCurrency(resumen.totalNoPagado) }}</h4>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Gráficos -->
+            <div class="row g-3">
+                <div class="col-12 col-lg-7">
+                    <h6 class="text-muted fs-13 text-uppercase mb-2">Comparación de montos — {{ zonaNombre }}</h6>
+                    <apx-chart [series]="barrasChartOptions.series!" [chart]="barrasChartOptions.chart!"
+                        [xaxis]="barrasChartOptions.xaxis!" [plotOptions]="barrasChartOptions.plotOptions!"
+                        [dataLabels]="barrasChartOptions.dataLabels!" [tooltip]="barrasChartOptions.tooltip!"
+                        [legend]="barrasChartOptions.legend!" [fill]="barrasChartOptions.fill!"
+                        [colors]="barrasChartOptions.colors!"></apx-chart>
+                </div>
+                <div class="col-12 col-lg-5">
+                    <h6 class="text-muted fs-13 text-uppercase mb-2">% de cumplimiento</h6>
+                    <apx-chart [series]="cumplimientoChartOptions.series!" [chart]="cumplimientoChartOptions.chart!"
+                        [plotOptions]="cumplimientoChartOptions.plotOptions!"
+                        [labels]="cumplimientoChartOptions.labels!"
+                        [colors]="cumplimientoChartOptions.colors!"></apx-chart>
+                </div>
+            </div>
+
+            <!-- Botones de detalle -->
+            <div class="d-flex flex-wrap gap-2 mt-3">
+                <button type="button" class="btn btn-outline-primary" (click)="verDetalleDebidoCobrar()">
+                    <i class="ti ti-list-details me-1"></i>Ver detalle valor cuota
+                </button>
+                <button type="button" class="btn btn-outline-success" (click)="verDetalleRecaudos()">
+                    <i class="ti ti-cash me-1"></i>Ver detalle recaudos
+                </button>
+            </div>
+
+        </ng-container>
+    </div>
+</div>
