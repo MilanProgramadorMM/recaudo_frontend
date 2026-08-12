@@ -442,9 +442,9 @@ export class RecaudoFormComponent implements OnInit {
     return this.valorPendienteCuota + this.valorMora;
   }
 
-  get puedeCargarCuotaTotal(): boolean {
-    return this.totalPaid === 0 && this.valorMora <= 0;
-  }
+  // get puedeCargarCuotaTotal(): boolean {
+  //   return this.totalPaid === 0 && this.valorMora <= 0;
+  // }
   
   get hayValoresPorPagar(): boolean {
     return this.valorPendienteCuota > 0 || this.valorMora > 0;
