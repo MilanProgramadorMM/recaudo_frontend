@@ -256,7 +256,11 @@ export class ConsultasComponent implements OnInit, AfterViewInit {
     });*/
   }
 
+
+
+
   onRowClick(type: string, row: ConsultaRow): void {
+    //debugger;
     const filters = this.sharedFilterService.getFilters();
     const hoy = this.formatDate(new Date());
 

@@ -15,6 +15,13 @@
                                 </div>
                             </div>
 
+                            <div class="col-12 col-sm-auto" style="min-width: 180px;">
+                                <div class="input-group">
+                                    <input id="cedulafilter" type="number" class="form-control border-start-0"
+                                        placeholder="Buscar por cedula" formControlName="cedulafilter" />
+                                </div>
+                            </div>
+
                             <div class="col-12 col-sm-auto" style="min-width: 180px;" *ngIf="!isAsesor">
                                 <select class="form-select w-100" aria-label="Filtrar por línea" formControlName="line">
                                     <option value="">Seleccione una línea</option>

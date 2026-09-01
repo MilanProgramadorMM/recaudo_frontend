@@ -91,6 +91,7 @@ export class CreditsComponent {
       zona: [''],
       date: [''],
       creditId: [''],
+      cedulafilter:[''],
       status: ['']
     });
 
@@ -99,6 +100,7 @@ export class CreditsComponent {
       const date = filters.date;
       const line = filters.line;
       const creditId = filters.creditId;
+      const cedulafilter = filters.cedulafilter;
       const status = filters.status;
 
 
@@ -118,7 +120,11 @@ export class CreditsComponent {
           || intention.id == Number(creditId);
 
         const sameStatus = !status || intention.creditStatus === status;
-        return sameZone && sameDate && sameLine && sameCreditId && sameStatus;
+
+        const sameCedula = (cedulafilter === null || cedulafilter === undefined || cedulafilter === '')
+          || intention.document == cedulafilter;
+
+        return sameZone && sameDate && sameLine && sameCreditId && sameStatus && sameCedula;
       });
 
       this.page = 1;
@@ -131,14 +137,14 @@ export class CreditsComponent {
     console.log('Iniciando carga de zonas...'); // Debug
     this.zonaService.getByStatus().subscribe({
       next: (response) => {
-        console.log('Zonas recibidas'); // Debug
+        //console.log('Zonas recibidas'); // Debug
         this.zonas = response.data;
         //this.initializeFilters();
         //this.loading = false;
-        console.log('Zonas activas cargadas:', this.zonas);
+        //console.log('Zonas activas cargadas:', this.zonas);
       },
       error: (err) => {
-        console.error('Error al cargar zonas:', err);
+        //console.error('Error al cargar zonas:', err);
         this.zonas = [];
         this.pendingRequests--;
       },
@@ -179,7 +185,7 @@ export class CreditsComponent {
     console.log('Iniciando carga de créditos...');
     this.creditservice.getCredits().subscribe({
       next: (response) => {
-        console.log('Créditos recibidos'); // Debug
+        //console.log('Créditos recibidos'); // Debug
         if (response.status === 'OK') {
           this.intentions = response.data;
           this.filteredIntentions = [...this.intentions];

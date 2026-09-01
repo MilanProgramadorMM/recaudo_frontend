@@ -37,55 +37,60 @@
         </div>
 
         <!-- RESUMEN FINANCIERO -->
-        <div class="row g-2 mt-3 pt-3 border-top">
+        <div class="quota-summary-nequi mb-3" *ngIf="!viewMode">
 
-            <!-- 1. Valor total de la cuota (arriba izquierda) -->
-            <div class="col-6">
-                <div class="p-2 h-100" *ngIf="loadingQuota">
-                    <small class="text-muted d-block">Valor cuota</small>
-                    <span class="spinner-border spinner-border-sm text-success"></span>
-                </div>
-                <button type="button" *ngIf="!loadingQuota" class="btn w-100 h-100 text-start p-2"
-                    [class.btn-success]="opcionSeleccionada === 'cuota'"
-                    [class.btn-outline-success]="opcionSeleccionada !== 'cuota'" [disabled]="viewMode"
-                    (click)="pagarSoloCuota()">
-                    <small class="d-block opacity-75">Valor cuota</small>
-                    <strong>{{ formatearMoneda(valorCuotaTotal) }}</strong>
-                </button>
+            <div class="text-center py-3" *ngIf="loadingQuota">
+                <span class="spinner-border spinner-border-sm text-success"></span>
             </div>
 
-            <!-- 2. Mora de la cuota (arriba derecha) -->
-            <div class="col-6">
-                <div class="p-2 h-100" *ngIf="loadingQuota">
-                    <small class="text-muted d-block">Mora cuota</small>
-                    <span class="spinner-border spinner-border-sm text-warning"></span>
-                </div>
-                <button type="button" *ngIf="!loadingQuota" class="btn w-100 h-100 text-start p-2"
-                    [class.btn-warning]="opcionSeleccionada === 'mora'"
-                    [class.btn-outline-warning]="opcionSeleccionada !== 'mora'" [disabled]="viewMode || valorMora <= 0"
-                    (click)="pagarSoloMora()">
-                    <small class="d-block opacity-75">Mora cuota</small>
-                    <strong>{{ formatearMoneda(valorMora) }}</strong>
-                    <small class="d-block opacity-75 mt-1" *ngIf="diasMora > 0">
-                        <i class="ti ti-clock-hour-4 me-1"></i>{{ diasMora }}
-                        {{ diasMora === 1 ? 'día' : 'días' }} de mora
-                    </small>
-                </button>
-            </div>
+            <ng-container *ngIf="!loadingQuota">
 
-            <!-- 3. Total a cancelar (abajo, ancho completo) -->
-            <div class="col-12">
-                <div class="p-2 h-100" *ngIf="loadingQuota">
-                    <small class="text-muted d-block">Cuota + Mora</small>
-                    <span class="spinner-border spinner-border-sm text-danger"></span>
+                <!-- SALDOS DEL CRÉDITO (arriba) -->
+                <!-- <div class="saldos-credito">
+                    <button type="button" class="saldo-line" [class.active]="opcionSeleccionada === 'saldoCredito'"
+                        [disabled]="viewMode || valorSaldoCredito <= 0" (click)="pagarSaldoCredito()">
+                        <span class="s-label">Saldo total crédito</span>
+                        <span class="s-value text-primary">{{ formatearMoneda(valorSaldoCredito) }}</span>
+                    </button>
+                    <button type="button" class="saldo-line" [class.active]="opcionSeleccionada === 'moraCredito'"
+                        [disabled]="viewMode || valorMoraCredito <= 0" (click)="pagarMoraCredito()">
+                        <span class="s-label">Saldo total mora</span>
+                        <span class="s-value text-warning">{{ formatearMoneda(valorMoraCredito) }}</span>
+                    </button>
+                </div> -->
+
+                <!-- BLOQUE CENTRAL: valor real cuota destacado -->
+                <div class="cuota-focus">
+                    <button type="button" class="valor-real" [class.active]="opcionSeleccionada === 'cuota'"
+                        [disabled]="viewMode || valorCuotaReal <= 0" (click)="pagarSoloCuota()">
+                        <span class="vr-label">Valor real cuota</span>
+                        <span class="vr-value">{{ formatearMoneda(valorCuotaReal) }}</span>
+                    </button>
+
+                    <!-- Flancos: abonado (izq) y mora (der) -->
+                    <div class="flancos">
+                        <button type="button" class="flanco flanco-abonado"
+                            [class.active]="opcionSeleccionada === 'abonado'" [disabled]="viewMode || valorAbonado <= 0"
+                            (click)="pagarAbonado()">
+                            <span class="f-label">Abonado</span>
+                            <span class="f-value">{{ formatearMoneda(valorAbonado) }}</span>
+                        </button>
+
+                        <button type="button" class="flanco flanco-mora" [class.active]="opcionSeleccionada === 'mora'"
+                            [disabled]="viewMode || valorMora <= 0" (click)="pagarSoloMora()">
+                            <span class="f-label">Mora <small *ngIf="diasMora > 0">({{ diasMora }}d)</small></span>
+                            <span class="f-value">{{ formatearMoneda(valorMora) }}</span>
+                        </button>
+                    </div>
+
+                    <!-- Pendiente cuota + mora (abajo, ancho completo) -->
+                    <button type="button" class="pendiente-total" [class.active]="opcionSeleccionada === 'total'"
+                        [disabled]="viewMode || valorTotalConMora <= 0" (click)="pagarTodo()">
+                        <span class="p-label">Pendiente cuota + mora</span>
+                        <span class="p-value">{{ formatearMoneda(valorTotalConMora) }}</span>
+                    </button>
                 </div>
-                <button type="button" *ngIf="!loadingQuota" class="btn w-100 text-center p-2 custom-color-btn"
-                    [class.selected]="opcionSeleccionada === 'total'" [disabled]="viewMode || valorTotalConMora <= 0"
-                    (click)="pagarTodo()">
-                    <small class="d-block opacity-75">Cuota + Mora</small>
-                    <strong>{{ formatearMoneda(valorTotalConMora) }}</strong>
-                </button>
-            </div>
+            </ng-container>
         </div>
 
         <!-- OPCIONES DE PAGO -->

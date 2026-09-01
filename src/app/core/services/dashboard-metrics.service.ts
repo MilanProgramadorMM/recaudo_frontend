@@ -19,6 +19,7 @@ export interface DashboardHistorialDto {
 export interface DashboardSummaryDto {
   totalDebidoCobrar: number;
   totalRecaudado: number;
+  totalValorCuota: number;
   totalCartera: number;
   totalNoPagado: number;
   totalNoPagoCantidad: number;

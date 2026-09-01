@@ -35,9 +35,11 @@ export class RecaudoFormComponent implements OnInit {
   loadingQuota: boolean = false;
 
   recaudos: RecaudoDetail[] = [];
-  opcionSeleccionada: 'cuota' | 'mora' | 'total' | null = null;
+  opcionSeleccionada: 'cuota' | 'mora' | 'total' | 'saldoCredito' | 'moraCredito' | null = null;
   moraPendiente: number = 0;
   diasMora: number = 0;
+  saldoCreditoCompleto: number = 0;   // saldo de todas las cuotas (totalPendiente)
+  moraCreditoCompleto: number = 0;    // mora de todas las cuotas del crédito
 
   constructor(
     public activeModal: NgbActiveModal,
@@ -91,11 +93,16 @@ export class RecaudoFormComponent implements OnInit {
 
     this.recaudoService.getCreditPaymentStatus(this.cliente.creditId).subscribe({
       next: (status) => {
-        console.log('Status completo:', status);
+        //console.log('Status completo:', status);
 
         const currentQuota = status.cuotas.find(
           q => q.quotaNumber === this.cliente.quotaNumber
         );
+
+        // Conceptos del crédito completo (todas las cuotas)
+        this.saldoCreditoCompleto = Number(status.totalPendiente || 0);
+        this.moraCreditoCompleto = (status.cuotas || [])
+          .reduce((acc: number, q: any) => acc + Number(q.moraPendiente || 0), 0);
 
 
         if (currentQuota) {
@@ -110,7 +117,7 @@ export class RecaudoFormComponent implements OnInit {
           this.moraPendiente = 0;
         }
 
-        // NUEVO: Cargar historial de pagos si está en modo vista
+
         if (this.viewMode) {
           this.recaudos = status.recaudos.filter(
             r => r.quotaNumber === this.cliente.quotaNumber
@@ -123,6 +130,8 @@ export class RecaudoFormComponent implements OnInit {
         console.error('Error cargando detalles de cuota:', err);
         this.quotaValue = this.cliente.clientCuota || 0;
         this.remainingBalance = this.quotaValue;
+        this.saldoCreditoCompleto = 0;
+        this.moraCreditoCompleto = 0;
         this.loadingQuota = false;
       }
     });
@@ -445,7 +454,7 @@ export class RecaudoFormComponent implements OnInit {
   // get puedeCargarCuotaTotal(): boolean {
   //   return this.totalPaid === 0 && this.valorMora <= 0;
   // }
-  
+
   get hayValoresPorPagar(): boolean {
     return this.valorPendienteCuota > 0 || this.valorMora > 0;
   }
@@ -453,8 +462,10 @@ export class RecaudoFormComponent implements OnInit {
   // --- Acciones: cargan el valor en el formulario ---
   pagarSoloCuota(): void {
     this.opcionSeleccionada = 'cuota';
-    this.setAmount(this.valorPendienteCuota);
+    this.setAmount(this.valorCuotaReal);   // antes: valorPendienteCuota (traía mora)
   }
+
+
 
   pagarSoloMora(): void {
     this.opcionSeleccionada = 'mora';
@@ -469,6 +480,25 @@ export class RecaudoFormComponent implements OnInit {
   get valorCuotaTotal(): number {
     return Number(this.quotaValue || 0);
   }
+
+  get valorSaldoCredito(): number {
+    return Number(this.saldoCreditoCompleto || 0);
+  }
+
+  get valorMoraCredito(): number {
+    return Number(this.moraCreditoCompleto || 0);
+  }
+
+  // Valor real de la cuota SIN mora (para mostrar y para el botón de cuota)
+  get valorCuotaReal(): number {
+    const real = Number(this.valorCuotaTotal || 0)
+    return real > 0 ? real : 0;
+  }
+
+  get valorAbonado(): number {
+    return Number(this.totalPaid || 0);
+  }
+
 
   // Helper único de formateo -> input (formato colombiano)
   private setAmount(valor: number): void {
