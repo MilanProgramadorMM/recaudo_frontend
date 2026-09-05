@@ -102,9 +102,28 @@
       ></apx-chart>
 
       <!-- Tabla de transiciones diarias (detalle para auditoría) -->
-      <h6 class="fs-14 fw-semibold mt-4 mb-0">Detalle diario</h6>
-      <p class="text-muted fs-13 mb-2">Qué pasó cada día: quién entró o salió de mora, cambió de estado o fue cancelado</p>
-      <div class="table-responsive">
+      <div class="d-flex flex-wrap justify-content-between align-items-end mt-4 mb-2 gap-2">
+        <div>
+          <h6 class="fs-14 fw-semibold mb-0">Detalle diario</h6>
+          <p class="text-muted fs-13 mb-0">Qué pasó cada día: quién entró o salió de mora, cambió de estado o fue cancelado</p>
+        </div>
+        <div class="form-check form-switch mb-0" *ngIf="historia.transiciones.length > 0">
+          <input class="form-check-input" type="checkbox" role="switch" id="soloConMovimientoSwitch"
+            [(ngModel)]="soloConMovimiento">
+          <label class="form-check-label fs-13" for="soloConMovimientoSwitch">
+            Solo días con movimiento
+          </label>
+        </div>
+      </div>
+
+      <p class="text-muted fs-12 mb-2" *ngIf="historia.transiciones.length > 0">
+        Mostrando {{ transicionesFiltradas.length }} de {{ historia.transiciones.length }} días
+        <span *ngIf="diasSinMovimientoOcultos > 0">
+          ({{ diasSinMovimientoOcultos }} sin ningún movimiento, ocultos)
+        </span>
+      </p>
+
+      <div class="table-responsive detalle-diario-scroll">
         <table class="table table-sm table-hover align-middle mb-0">
           <thead class="table-light">
             <tr>
@@ -118,7 +137,7 @@
             </tr>
           </thead>
           <tbody>
-            <tr *ngFor="let t of historia.transiciones">
+            <tr *ngFor="let t of transicionesFiltradas">
               <td class="fw-semibold">{{ formatFecha(t.fecha) }}</td>
               <td class="text-end" [class.text-danger]="t.ingresaronMora > 0">{{ t.ingresaronMora }}</td>
               <td class="text-end" [class.text-success]="t.salieronMora > 0">{{ t.salieronMora }}</td>
@@ -130,6 +149,11 @@
             <tr *ngIf="historia.transiciones.length === 0">
               <td colspan="7" class="text-center text-muted py-3">
                 Solo hay un día de registro en el rango seleccionado — no hay transición que comparar.
+              </td>
+            </tr>
+            <tr *ngIf="historia.transiciones.length > 0 && transicionesFiltradas.length === 0">
+              <td colspan="7" class="text-center text-muted py-3">
+                Ningún día del rango tuvo movimientos — desactiva "Solo días con movimiento" para ver el detalle completo.
               </td>
             </tr>
           </tbody>

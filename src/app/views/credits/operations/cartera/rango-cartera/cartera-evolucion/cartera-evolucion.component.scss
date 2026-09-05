@@ -50,3 +50,22 @@
 .stat-danger {
   border-left-color: #dc3545;
 }
+
+// Detalle diario: en rangos largos puede tener muchas filas — que haga scroll
+// dentro de una caja de altura fija, no que empuje el scroll de toda la página.
+.detalle-diario-scroll {
+  max-height: 420px;
+  overflow-y: auto;
+
+  thead th {
+    position: sticky;
+    top: 0;
+    z-index: 1;
+  }
+
+  tfoot td {
+    position: sticky;
+    bottom: 0;
+    z-index: 1;
+  }
+}

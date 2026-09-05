@@ -1,5 +1,6 @@
 import { Component, CUSTOM_ELEMENTS_SCHEMA, OnInit, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
 import { Subject, takeUntil } from 'rxjs';
 import { SharedFilterService } from '@core/services/shared-filter.service';
 import { currency } from '@common/constants';
@@ -20,6 +21,7 @@ import {
 import {
   PortfolioSnapshotService,
   ZoneHistoryAnalysisDto,
+  TransicionDiariaDto,
   BackendDate,
 } from '@core/services/cartera.service';
 import { normalizeBackendDate } from '@core/services/date-utils';
@@ -64,7 +66,7 @@ export type TransicionesChartOptions = {
 @Component({
   selector: 'app-cartera-evolucion',
   standalone: true,
-  imports: [CommonModule, NgApexchartsModule],
+  imports: [CommonModule, FormsModule, NgApexchartsModule],
   templateUrl: './cartera-evolucion.component.html',
   styleUrl: './cartera-evolucion.component.scss',
   schemas: [CUSTOM_ELEMENTS_SCHEMA]
@@ -80,6 +82,9 @@ export class CarteraEvolucionComponent implements OnInit, OnDestroy {
 
   saldoChartOptions: Partial<SaldoChartOptions> = {};
   transicionesChartOptions: Partial<TransicionesChartOptions> = {};
+
+  /** Oculta por defecto los días sin ningún movimiento — en rangos largos son la mayoría. */
+  soloConMovimiento = true;
 
   private destroy$ = new Subject<void>();
 
@@ -239,5 +244,23 @@ export class CarteraEvolucionComponent implements OnInit, OnDestroy {
   /** Normaliza la fecha del backend (array [y,m,d]) a 'yyyy-MM-dd' legible en la tabla. */
   formatFecha(raw: BackendDate): string {
     return normalizeBackendDate(raw);
+  }
+
+  /** true si el día tuvo al menos un movimiento en cualquiera de las 6 columnas. */
+  private tieneMovimiento(t: TransicionDiariaDto): boolean {
+    return t.ingresaronMora > 0 || t.salieronMora > 0 || t.cambiaronEstado > 0
+        || t.cancelados > 0 || t.cambiosCalificacion > 0 || t.nuevosCreditos > 0;
+  }
+
+  /** Filas a mostrar en la tabla de detalle diario, según el toggle "solo con movimiento". */
+  get transicionesFiltradas(): TransicionDiariaDto[] {
+    const dias = this.historia?.transiciones ?? [];
+    return this.soloConMovimiento ? dias.filter(t => this.tieneMovimiento(t)) : dias;
+  }
+
+  /** Cuántos días se ocultaron por no tener ningún movimiento (para el contador). */
+  get diasSinMovimientoOcultos(): number {
+    const total = this.historia?.transiciones.length ?? 0;
+    return total - this.transicionesFiltradas.length;
   }
 }

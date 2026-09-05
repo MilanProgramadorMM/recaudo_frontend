@@ -11,21 +11,42 @@
   <div *ngIf="!loading && error" class="col-12">
     <div class="alert alert-danger mb-0">
       <i class="ti ti-alert-circle me-2"></i>
-      No se pudo cargar el estado de cartera para la zona y fecha seleccionadas.
+      No se pudo cargar el estado de cartera para la zona seleccionada.
     </div>
   </div>
 
-  <!-- ESTADO VACÍO (sin filtro aún) -->
-  <div *ngIf="!loading && !error && !estado" class="col-12">
+  <!-- SIN REGISTRO PARA ESA FECHA (no es un error) -->
+  <div *ngIf="!loading && !error && sinRegistro" class="col-12">
+    <div class="alert alert-light border text-muted mb-0 d-flex align-items-start gap-2">
+      <i class="ti ti-clock-hour-4 fs-16 mt-1"></i>
+      <span>
+        Todavía no hay un registro de cartera para la fecha seleccionada ({{ fechaCorte }}). Si es el
+        día de hoy, ese corte se genera al finalizar el día — vuelve a consultarlo más tarde. Si es una
+        fecha pasada, prueba con otra.
+      </span>
+    </div>
+  </div>
+
+  <!-- ESTADO VACÍO (sin zona seleccionada aún) -->
+  <div *ngIf="!loading && !error && !sinRegistro && !estado" class="col-12">
     <div class="card mb-0">
       <div class="card-body text-center text-muted py-5">
         <iconify-icon icon="solar:wallet-money-bold-duotone" class="fs-1 d-block mb-2 text-secondary"></iconify-icon>
-        Selecciona una zona y una fecha de corte para ver el estado de la cartera.
+        Selecciona una zona y una fecha para ver el estado de la cartera.
       </div>
     </div>
   </div>
 
   <ng-container *ngIf="!loading && !error && estado">
+    <div class="col-12">
+      <small class="text-muted d-block mb-2">
+        <i class="ti ti-calendar-event me-1"></i>Datos a corte del {{ fechaCorte }}.
+        <span *ngIf="esRango">
+          Las variaciones mostradas comparan contra el inicio del rango ({{ fechaInicioRango }}).
+        </span>
+      </small>
+    </div>
+
     <!-- Tarjetas de resumen (KPIs principales) -->
     <div class="row row-cols-xxl-4 row-cols-md-2 row-cols-1 g-3">
       <div *ngFor="let item of statCards" class="col">
@@ -39,8 +60,8 @@
           <div class="value-box">
             {{ currency }} {{ item.count }}
           </div>
-          <div *ngIf="item.subtitle" class="fs-13 fw-semibold mt-2" style="opacity: 0.95;">
-            <i class="ti ti-percentage me-1"></i>{{ item.subtitle }}
+          <div *ngFor="let sub of item.subtitles" class="fs-13 fw-semibold mt-1" style="opacity: 0.95;">
+            {{ sub }}
           </div>
         </div>
       </div>
@@ -136,6 +157,50 @@
                   role="progressbar" [style.width.%]="pctCalificacion(c)"
                   [attr.aria-valuenow]="pctCalificacion(c)" aria-valuemin="0" aria-valuemax="100"></div>
               </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Desglose financiero por concepto: aquí se ve de qué se compone
+         saldoTotal/totalPagado — no son solo capital + mora, sino la suma
+         de los 5 conceptos (capital, interés, seguros y mora). -->
+    <div class="row g-3 mt-1">
+      <div class="col-12">
+        <div class="card h-100">
+          <div class="card-body">
+            <h5 class="card-title fs-14 text-uppercase text-muted fw-semibold d-flex align-items-center gap-2">
+              <iconify-icon icon="solar:document-text-bold-duotone" class="text-primary"></iconify-icon>
+              Desglose por concepto
+            </h5>
+            <div class="table-responsive">
+              <table class="table table-sm align-middle mb-0">
+                <thead>
+                  <tr class="text-muted fs-12 text-uppercase">
+                    <th>Concepto</th>
+                    <th class="text-end">Generado</th>
+                    <th class="text-end">Pagado</th>
+                    <th class="text-end">Pendiente</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr *ngFor="let c of desgloseConceptos">
+                    <td>{{ c.nombre }}</td>
+                    <td class="text-end">{{ currency }} {{ formatCurrency(c.generado) }}</td>
+                    <td class="text-end">{{ currency }} {{ formatCurrency(c.pagado) }}</td>
+                    <td class="text-end">{{ currency }} {{ formatCurrency(c.pendiente) }}</td>
+                  </tr>
+                </tbody>
+                <tfoot>
+                  <tr class="fw-semibold border-top">
+                    <td>Total</td>
+                    <td class="text-end">{{ currency }} {{ formatCurrency(totalGeneradoDesglose) }}</td>
+                    <td class="text-end">{{ currency }} {{ formatCurrency(estado.totalPagado) }}</td>
+                    <td class="text-end">{{ currency }} {{ formatCurrency(estado.saldoTotal) }}</td>
+                  </tr>
+                </tfoot>
+              </table>
             </div>
           </div>
         </div>
