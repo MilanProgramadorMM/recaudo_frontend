@@ -229,6 +229,13 @@ export class CarteraEvolucionComponent implements OnInit, OnDestroy {
     return 'ti ti-minus';
   }
 
+  /** Color del borde del stat-tile, misma polaridad que variacionClass (subir es malo). */
+  variacionTileClass(value: number): string {
+    if (value > 0) return 'stat-danger';
+    if (value < 0) return 'stat-success';
+    return 'stat-neutral';
+  }
+
   /** Normaliza la fecha del backend (array [y,m,d]) a 'yyyy-MM-dd' legible en la tabla. */
   formatFecha(raw: BackendDate): string {
     return normalizeBackendDate(raw);

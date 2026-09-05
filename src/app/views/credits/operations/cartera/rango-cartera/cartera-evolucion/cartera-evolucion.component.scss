@@ -2,3 +2,51 @@
 .table th {
   font-size: 0.8125rem;
 }
+
+// Mismos stat-tile usados en el resto de la app para los KPIs de resumen.
+.stat-tile {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  padding: 10px 12px;
+  border-radius: 10px;
+  background: #f8f9fb;
+  border-left: 4px solid #adb5bd;
+  min-width: 0;
+}
+
+.stat-label {
+  color: #6c757d;
+  font-size: .72rem;
+  text-transform: uppercase;
+  letter-spacing: .03em;
+}
+
+.stat-value {
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: #212529;
+  line-height: 1.2;
+  overflow-wrap: break-word;
+}
+
+.stat-hint {
+  color: #9ca3af;
+  font-size: .72rem;
+}
+
+.stat-neutral {
+  border-left-color: #212529;
+}
+
+.stat-success {
+  border-left-color: #198754;
+
+  .stat-value {
+    color: #198754;
+  }
+}
+
+.stat-danger {
+  border-left-color: #dc3545;
+}

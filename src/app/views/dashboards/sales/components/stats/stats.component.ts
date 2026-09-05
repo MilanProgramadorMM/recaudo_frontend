@@ -194,8 +194,8 @@ export class StatsComponent implements OnInit, OnDestroy {
       {
         title: 'Valor cuota',
         icon: 'solar:case-round-minimalistic-bold-duotone',
-        count: this.formatCurrency(data.totalValorCuota),   // antes: totalDebidoCobrar
-        rawValue: data.totalValorCuota,
+        count: this.formatCurrency(data.totalValorCuotaTabla),   
+        rawValue: data.totalValorCuotaTabla,
         variant: 'primary'
       },
       {

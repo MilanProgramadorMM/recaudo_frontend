@@ -183,7 +183,7 @@ export class ModalDetalleConsultaComponent implements OnInit {
   }
 
   get totalValorCuotaDebidoCobrar(): number {
-    return this.filteredDataDebidoCobrar.reduce((acc, r) => acc + r.valorCuota, 0);
+    return this.filteredDataDebidoCobrar.reduce((acc, r) => acc + r.valorCuotaPendiente, 0);
   }
 
   private loadDetalleMovimientos(startDate: string, endDate: string) {

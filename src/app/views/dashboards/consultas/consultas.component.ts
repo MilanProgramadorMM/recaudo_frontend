@@ -285,6 +285,11 @@ export class ConsultasComponent implements OnInit, AfterViewInit {
       String(date.getDate()).padStart(2, '0');
   }
 
+  /** Suma total de una columna numérica de tableData1, para el pie de la tabla "Movimientos por zonas". */
+  getTotalTableData1(field: 'quota_value' | 'capital_balance' | 'interest_value' | 'portfolio_insurance' | 'life_insurance'): number {
+    return this.tableData1.reduce((sum, row) => sum + (row[field] || 0), 0);
+  }
+
   private buildBarChart(titulo: string, color: string): any {
     return {
       chart: {
@@ -324,6 +329,11 @@ export class ConsultasComponent implements OnInit, AfterViewInit {
     return val.toFixed(0);
   }
 
+  /** Valor completo con separador de miles, sin compactar a K/M. */
+  private formatValorCompleto(val: number): string {
+    return `${this.currency} ${Math.round(val).toLocaleString('es-CO')}`;
+  }
+
   private updateChart1(): void {
     if (!this.tableData1.length) { this.chart1Series = []; return; }
     this.chart1Categories = this.tableData1.map(r => r.zona);
@@ -332,11 +342,34 @@ export class ConsultasComponent implements OnInit, AfterViewInit {
       { name: 'Capital', data: this.tableData1.map(r => Math.abs(r.capital_balance)) },
       { name: 'Interés', data: this.tableData1.map(r => Math.abs(r.interest_value)) },
     ];
+    // Estilo del "Grouped Bar Chart" de charts/bar (data.ts: groupedChartOpts), con la
+    // etiqueta de valor SIEMPRE fuera de la barra (no blanca-adentro) para que se lea
+    // bien incluso en barras cortas (p. ej. la serie Interés, mucho más pequeña).
     this.chart1Opts = {
-      ...this.chart1Opts,
+      chart: { type: 'bar', height: 460, toolbar: { show: false }, fontFamily: 'inherit' },
+      plotOptions: {
+        bar: {
+          horizontal: true,
+          barHeight: '70%',
+          dataLabels: { position: 'top' }
+        }
+      },
+      dataLabels: {
+        enabled: true,
+        style: { fontSize: '12px', fontWeight: 600, colors: ['#374151'] },
+        formatter: (val: number) => this.formatValorCompleto(val)
+      },
       colors: ['#3b82f6', '#22c55e', '#f59e0b'],
-      xaxis: { ...this.chart1Opts.xaxis, categories: this.chart1Categories },
-      legend: { show: true, position: 'bottom' }
+      stroke: { show: true, width: 1, colors: ['transparent'] },
+      xaxis: {
+        categories: this.chart1Categories,
+        axisBorder: { show: false }
+      },
+      yaxis: { labels: { style: { fontSize: '13px' } } },
+      legend: { show: true, offsetY: 5 },
+      states: { hover: {} },
+      grid: { borderColor: '#f1f3fa', padding: { bottom: 5, right: 40 } },
+      tooltip: { y: { formatter: (val: number) => this.formatValorCompleto(val) } }
     };
   }
 
@@ -351,14 +384,31 @@ export class ConsultasComponent implements OnInit, AfterViewInit {
     if (!this.tableData3.length) { this.chart3Series = []; return; }
     this.chart3Categories = this.tableData3.map(r => r.name);
     this.chart3Series = [{ name: 'Créditos', data: this.tableData3.map(r => r.value) }];
+    // Estilo "Distributed" de charts/timeline (data.ts: distributedTimelineChartOpts):
+    // cada barra (zona) con su propio color en vez de un solo color repetido.
     this.chart3Opts = {
-      ...this.chart3Opts,
-      colors: ['#f59e0b'],
-      xaxis: {
-        ...this.chart3Opts.xaxis,
-        categories: this.chart3Categories,
-        labels: { formatter: (val: number) => val.toFixed(0) }
+      chart: { type: 'bar', height: 420, toolbar: { show: false } },
+      plotOptions: {
+        bar: {
+          horizontal: true,
+          distributed: true,
+          barHeight: '70%',
+          dataLabels: { hideOverflowingLabels: false }
+        }
       },
+      dataLabels: {
+        enabled: true,
+        formatter: (val: number) => `${val.toFixed(0)} créditos`,
+        style: { colors: ['#374151'] }
+      },
+      colors: ['#3b82f6', '#22c55e', '#f59e0b', '#ef4444', '#8b5cf6', '#0dcaf0'],
+      xaxis: {
+        categories: this.chart3Categories,
+        labels: { formatter: (val: number) => val.toFixed(0) },
+        axisBorder: { show: false }
+      },
+      yaxis: { show: true },
+      legend: { show: false },
       tooltip: { y: { formatter: (val: number) => `${val} créditos` } }
     };
   }

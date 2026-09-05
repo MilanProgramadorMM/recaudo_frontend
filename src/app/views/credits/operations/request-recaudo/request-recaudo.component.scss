@@ -2,14 +2,29 @@
 
 // Colores principales
 $recaudo-red: #dc3545;
-$recaudo-red-dark: #dc3545;
+$recaudo-red-dark: #b02a37;
 $recaudo-red-light: #f8d7da;
 
 ::ng-deep html {
     overflow: hidden !important;
 }
 
-// Header con rojo destacado
+::ng-deep .page-content {
+    padding: 0 0 !important;
+}
+
+::ng-deep .page-container {
+    padding-right: 0 !important;
+    padding-left: 0 !important;
+}
+
+// ============ CARD CONTENEDORA ============
+.card.shadow-sm {
+    box-shadow: 0 0.125rem 0.5rem rgba($recaudo-red, 0.1) !important;
+    border: 1px solid rgba($recaudo-red, 0.1);
+}
+
+// ============ HEADER PRINCIPAL ============
 .bg-recaudo-red {
     background: linear-gradient(135deg, $recaudo-red 0%, $recaudo-red-dark 100%);
     color: #ffffff;
@@ -17,7 +32,41 @@ $recaudo-red-light: #f8d7da;
     box-shadow: 0 2px 8px rgba($recaudo-red, 0.3);
 }
 
-// Tabla con encabezado rojo
+.page-header-icon {
+    width: 40px;
+    height: 40px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(255, 255, 255, 0.18);
+    font-size: 1.1rem;
+    flex-shrink: 0;
+}
+
+.page-header-subtitle {
+    opacity: 0.85;
+    font-size: 0.78rem;
+}
+
+@media (max-width: 767.98px) {
+    .card-header h5 {
+        font-size: 1rem;
+    }
+}
+
+@media (max-width: 575.98px) {
+    .card-header h5 {
+        font-size: 0.9rem;
+    }
+}
+
+// ============ BARRA DE FILTROS ============
+.filter-bar {
+    background: #f8f9fb;
+}
+
+// ============ TABLA DESKTOP ============
 .thead-recaudo {
     background: linear-gradient(to bottom, $recaudo-red-light 0%, #ffffff 100%);
     border-bottom: 2px solid $recaudo-red;
@@ -33,23 +82,122 @@ $recaudo-red-light: #f8d7da;
     }
 }
 
-// Botón de recaudar con estilo destacado
+.table {
+
+    th,
+    td {
+        vertical-align: middle;
+        padding: 12px 8px;
+    }
+
+    tbody tr {
+        transition: background-color 0.2s ease;
+        animation: fadeIn 0.3s ease;
+
+        &:hover {
+            background-color: $recaudo-red-light;
+        }
+    }
+}
+
+@media (max-width: 767.98px) {
+    .table {
+        font-size: 0.875rem;
+
+        th,
+        td {
+            padding: 8px 6px;
+        }
+    }
+}
+
+@media (max-width: 575.98px) {
+    .table {
+        font-size: 0.8rem;
+    }
+}
+
+.badge {
+    padding: 6px 12px;
+    font-weight: 500;
+
+    &.bg-danger {
+        background-color: $recaudo-red !important;
+        box-shadow: 0 2px 4px rgba($recaudo-red, 0.2);
+    }
+}
+
+// ============ ESTADOS: cargando / error / vacío ============
+.spinner-border.text-danger {
+    color: $recaudo-red !important;
+    border-color: $recaudo-red;
+    border-right-color: transparent;
+}
+
+.alert-danger {
+    background-color: $recaudo-red-light;
+    border-color: $recaudo-red;
+    color: $recaudo-red-dark;
+
+    .ti-alert-circle {
+        color: $recaudo-red;
+    }
+}
+
+.empty-state {
+    i {
+        font-size: 3rem;
+        color: $recaudo-red;
+        opacity: .6;
+    }
+}
+
+.summary-footer {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 14px 18px;
+    background: #fff;
+    border-top: 1px solid #eef0f3;
+
+    small { color: #9ca3af; }
+    strong { color: $recaudo-red-dark; }
+}
+
+.summary-footer-icon {
+    width: 38px;
+    height: 38px;
+    border-radius: 10px;
+    background: $recaudo-red-light;
+    color: $recaudo-red-dark;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.1rem;
+    flex-shrink: 0;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+// ============ BOTONES DE ACCIÓN ============
 .btn-recaudo {
-    background: linear-gradient(135deg, #28a745 0%, #218838 100%);
+    background: linear-gradient(135deg, $recaudo-red 0%, $recaudo-red 100%);
     color: white;
     border: none;
     font-weight: 500;
     transition: all 0.3s ease;
+    box-shadow: 0 2px 4px rgba($recaudo-red, 0.2);
 
     &:hover {
-        background: linear-gradient(135deg, #218838 0%, #1e7e34 100%);
-        transform: translateY(-2px);
-        box-shadow: 0 4px 8px rgba(40, 167, 69, 0.3);
+        background: linear-gradient(135deg, $recaudo-red 0%, $recaudo-red-dark 100%);
+        transform: translateY(-1px);
+        box-shadow: 0 4px 8px rgba($recaudo-red, 0.35);
     }
 
-    &:active {
-        transform: translateY(0);
-    }
+    &:active { transform: translateY(0); }
 }
 
 .btn-see-details {
@@ -65,145 +213,7 @@ $recaudo-red-light: #f8d7da;
         box-shadow: 0 4px 8px rgba(40, 167, 69, 0.3);
     }
 
-    &:active {
-        transform: translateY(0);
-    }
-}
-
-// Tabla responsive
-.table {
-
-    th,
-    td {
-        vertical-align: middle;
-        padding: 12px 8px;
-    }
-
-    tbody tr {
-        transition: background-color 0.2s ease;
-
-        &:hover {
-            background-color: $recaudo-red-light;
-        }
-    }
-}
-
-// Badges personalizados
-.badge {
-    padding: 6px 12px;
-    font-weight: 500;
-
-    &.bg-danger {
-        background-color: $recaudo-red !important;
-        box-shadow: 0 2px 4px rgba($recaudo-red, 0.2);
-    }
-}
-
-// Ajustes responsive
-@media (max-width: 767.98px) {
-    .card-header {
-        h5 {
-            font-size: 1rem;
-        }
-    }
-
-    .table {
-        font-size: 0.875rem;
-
-        th,
-        td {
-            padding: 8px 6px;
-        }
-    }
-
-    .btn-recaudo {
-        padding: 6px 8px;
-        font-size: 0.875rem;
-    }
-}
-
-@media (max-width: 575.98px) {
-    .card-header h5 {
-        font-size: 0.9rem;
-    }
-
-    .table {
-        font-size: 0.8rem;
-    }
-}
-
-// Spinner personalizado
-.spinner-border.text-danger {
-    color: $recaudo-red !important;
-    border-color: $recaudo-red;
-    border-right-color: transparent;
-}
-
-// Card shadow mejorado
-.card.shadow-sm {
-    box-shadow: 0 0.125rem 0.5rem rgba($recaudo-red, 0.1) !important;
-    border: 1px solid rgba($recaudo-red, 0.1);
-}
-
-// Alert personalizado
-.alert-danger {
-    background-color: $recaudo-red-light;
-    border-color: $recaudo-red;
-    color: $recaudo-red-dark;
-
-    .ti-alert-circle {
-        color: $recaudo-red;
-    }
-}
-
-// Resumen con estilo
-.bg-light.rounded {
-    border-left: 4px solid $recaudo-red;
-
-    .text-danger {
-        color: $recaudo-red !important;
-    }
-}
-
-// Animaciones
-@keyframes fadeIn {
-    from {
-        opacity: 0;
-        transform: translateY(10px);
-    }
-
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
-}
-
-.table tbody tr {
-    animation: fadeIn 0.3s ease;
-}
-
-/* Botón Recaudar - Principal */
-.btn-recaudo {
-    background: linear-gradient(135deg, #dc3545 0%, #dc3545 100%);
-    color: white;
-    border: none;
-    font-weight: 500;
-    transition: all 0.3s ease;
-    box-shadow: 0 2px 4px rgba(220, 53, 69, 0.2);
-}
-
-
-
-.btn-recaudo:hover {
-    background: linear-gradient(135deg, #dc3545 0%, #a71d2a 100%);
-    color: white;
-    transform: translateY(-1px);
-    box-shadow: 0 4px 8px rgba(220, 53, 69, 0.35);
-}
-
-.btn-recaudo:active {
-    transform: translateY(0);
-    box-shadow: 0 2px 4px rgba(220, 53, 69, 0.2);
+    &:active { transform: translateY(0); }
 }
 
 .btn-llamada {
@@ -213,6 +223,8 @@ $recaudo-red-light: #f8d7da;
     font-weight: 500;
     transition: all 0.3s ease;
     box-shadow: 0 2px 4px rgba(220, 53, 69, 0.2);
+
+    &:active { transform: translateY(0); box-shadow: 0 2px 4px rgba(220, 53, 69, 0.2); }
 }
 
 .btn-whatsapp {
@@ -224,234 +236,255 @@ $recaudo-red-light: #f8d7da;
     box-shadow: 0 2px 4px rgba(220, 53, 69, 0.2);
 }
 
-.tabla-scroll {
-    max-height: 200px;
-    overflow-y: auto;
-}
-
-// .btn-llamada:hover {
-//     background: linear-gradient(135deg, #dc3545 0%, #a71d2a 100%);
-//     color: white;
-//     transform: translateY(-1px);
-//     //box-shadow: 0 4px 8px rgba(220, 53, 69, 0.35);
-// }
-
-.btn-llamada:active {
-    transform: translateY(0);
-    box-shadow: 0 2px 4px rgba(220, 53, 69, 0.2);
-}
-
-/* Botón Promesa - Advertencia */
 .btn-promesa {
     background: white;
     color: #856404;
     border: 2px solid #ffc107;
     font-weight: 500;
     transition: all 0.3s ease;
+
+    &:hover {
+        background: #ffc107;
+        color: #856404;
+        border-color: #ffc107;
+        transform: translateY(-1px);
+        box-shadow: 0 4px 8px rgba(255, 193, 7, 0.3);
+    }
+
+    &:active { transform: translateY(0); }
+    i { color: #ffc107; }
+    &:hover i { color: #856404; }
 }
 
-.btn-promesa:hover {
-    background: #ffc107;
-    color: #856404;
-    border-color: #ffc107;
-    transform: translateY(-1px);
-    box-shadow: 0 4px 8px rgba(255, 193, 7, 0.3);
-}
-
-.btn-promesa:active {
-    transform: translateY(0);
-}
-
-.btn-promesa i {
-    color: #ffc107;
-}
-
-.btn-promesa:hover i {
-    color: #856404;
-}
-
-/* Botón No Pagó - Secundario */
 .btn-no-pago {
     background: white;
     color: #6c757d;
     border: 2px solid #6c757d;
     font-weight: 500;
     transition: all 0.3s ease;
+
+    &:hover {
+        background: #6c757d;
+        color: white;
+        border-color: #6c757d;
+        transform: translateY(-1px);
+        box-shadow: 0 4px 8px rgba(108, 117, 125, 0.3);
+    }
+
+    &:active { transform: translateY(0); }
+    i { color: #6c757d; }
+    &:hover i { color: white; }
 }
 
-.btn-no-pago:hover {
-    background: #6c757d;
-    color: white;
-    border-color: #6c757d;
-    transform: translateY(-1px);
-    box-shadow: 0 4px 8px rgba(108, 117, 125, 0.3);
-}
-
-.btn-no-pago:active {
-    transform: translateY(0);
-}
-
-.btn-no-pago i {
-    color: #6c757d;
-}
-
-.btn-no-pago:hover i {
-    color: white;
-}
-
-/* Estilos generales de botones */
 .btn-sm {
     font-size: 0.85rem;
     padding: 0.45rem 0.75rem;
-    border-radius: 6px;
+    border-radius: 8px;
     white-space: nowrap;
+
+    i { font-size: 1rem; vertical-align: middle; }
 }
 
-.btn-sm i {
-    font-size: 1rem;
-    vertical-align: middle;
-}
-
-/* Ajustes responsivos */
 @media (max-width: 1200px) {
-    .btn-sm span {
-        display: none;
-    }
-
-    .btn-sm {
-        padding: 0.45rem 0.6rem;
-    }
-
-    .btn-sm i {
-        margin: 0 !important;
-    }
+    .btn-sm { padding: 0.45rem 0.6rem; }
+    .btn-sm i { margin: 0 !important; }
 }
 
 @media (min-width: 1201px) {
-    .btn-sm {
-        min-width: 110px;
-    }
+    .btn-sm { min-width: 110px; }
 }
 
-/* Estado deshabilitado */
 .btn:disabled {
     opacity: 0.6;
     cursor: not-allowed;
     transform: none !important;
 }
 
-/* Animación de carga */
 .btn-loading {
     position: relative;
     pointer-events: none;
     opacity: 0.7;
-}
 
-.btn-loading::after {
-    content: "";
-    position: absolute;
-    width: 16px;
-    height: 16px;
-    top: 50%;
-    left: 50%;
-    margin-left: -8px;
-    margin-top: -8px;
-    border: 2px solid transparent;
-    border-top-color: currentColor;
-    border-radius: 50%;
-    animation: button-loading-spinner 0.6s linear infinite;
+    &::after {
+        content: "";
+        position: absolute;
+        width: 16px;
+        height: 16px;
+        top: 50%;
+        left: 50%;
+        margin-left: -8px;
+        margin-top: -8px;
+        border: 2px solid transparent;
+        border-top-color: currentColor;
+        border-radius: 50%;
+        animation: button-loading-spinner 0.6s linear infinite;
+    }
 }
 
 @keyframes button-loading-spinner {
-    from {
-        transform: rotate(0turn);
-    }
-
-    to {
-        transform: rotate(1turn);
-    }
+    from { transform: rotate(0turn); }
+    to { transform: rotate(1turn); }
 }
 
-
-
-/* ── Lista contenedora ── */
+// ============ TARJETA MÓVIL (flip card) ============
 .recaudo-mobile-list {
-    padding: 6px !important;
+    padding: 12px;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
     background: #f4f4f4;
     min-height: 100%;
 }
 
-/* ── Card principal ── */
 .recaudo-card {
-    background: #ffffff;
-    border-radius: 12px;
-    border: 0.5px solid rgba(0, 0, 0, 0.08);
-    overflow: hidden;
-    margin-bottom: 14px;
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06);
+    perspective: 1000px;
 }
 
-/* ── Header rojo ── */
+.flip-card {
+    position: relative;
+    width: 100%;
+    transform-style: preserve-3d;
+    transition: transform .45s ease;
+}
+
+.flip-card.flipped {
+    transform: rotateY(180deg);
+}
+
+.flip-front,
+.flip-back {
+    width: 100%;
+    backface-visibility: hidden;
+    border: 1px solid rgba(0, 0, 0, 0.06);
+    border-radius: 14px;
+    overflow: hidden;
+    background: #fff;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, .08);
+}
+
+.flip-back {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    transform: rotateY(180deg);
+    overflow-y: auto;
+    height: auto;
+}
+
+// ── Header de tarjeta ──
 .rc-header {
-    background: #dc3545;
-    padding: 10px 14px;
+    background: linear-gradient(135deg, $recaudo-red 0%, $recaudo-red-dark 100%);
+    padding: 12px 14px;
     display: flex;
-    justify-content: space-between;
     align-items: center;
+    gap: 10px;
+}
+
+.rc-header-icon {
+    width: 32px;
+    height: 32px;
+    border-radius: 10px;
+    background: rgba(255, 255, 255, 0.18);
+    color: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.95rem;
+    flex-shrink: 0;
 }
 
 .rc-header-info {
     display: flex;
     flex-direction: column;
     gap: 2px;
+    flex: 1;
+    min-width: 0;
 }
 
 .rc-name {
-    color: #fff;
-    font-size: 13px;
+    font-size: 14px;
     font-weight: 600;
-    letter-spacing: 0.01em;
+    color: #fff;
+    line-height: 1.2;
 }
 
 .rc-credit {
-    color: rgba(255, 255, 255, 0.72);
     font-size: 11px;
+    color: rgba(255, 255, 255, .8);
 }
 
 .rc-orden {
+    background: rgba(255, 255, 255, .2);
     color: #fff;
     font-size: 12px;
-    font-weight: 500;
+    font-weight: 600;
     padding: 3px 10px;
     border-radius: 20px;
     white-space: nowrap;
 }
 
-/* ── Cuerpo del card ── */
+// ── Estado de la cuota ──
+.rc-status-row {
+    display: flex;
+    align-items: center;
+}
+
+.rc-status-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 11px;
+    font-weight: 600;
+    padding: 5px 12px;
+    border-radius: 20px;
+}
+
+.rc-status-dot {
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: currentColor;
+    flex-shrink: 0;
+}
+
+.rc-status-success { background: #d4edda; color: #155724; }
+.rc-status-primary { background: #cce5ff; color: #004085; }
+.rc-status-warning { background: #fff3cd; color: #856404; }
+.rc-status-danger { background: #f8d7da; color: #721c24; }
+.rc-status-secondary { background: #e2e3e5; color: #383d41; }
+
+// ── Cuerpo ──
 .rc-body {
     padding: 12px 14px;
     display: flex;
     flex-direction: column;
     gap: 10px;
-    min-height: 0;
 }
 
-/* ── Divisor ── */
+.rc-section-label {
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    color: #6c757d;
+}
+
 .rc-divider {
-    height: 0.5px;
-    background: rgba(0, 0, 0, 0.08);
-    margin: 0 -2px;
+    border: none;
+    border-top: 1px solid #eef0f3;
+    margin: 0;
 }
 
-/* ── Grid de información ── */
+// ── Grid de información ──
 .rc-info-grid {
     display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 6px 12px;
-    background: #f8f8f8;
-    border-radius: 8px;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 6px 10px;
+    background: #f8f9fa;
+    border-radius: 10px;
     padding: 10px 12px;
-    border: 0.5px solid rgba(0, 0, 0, 0.07);
+    border: 1px solid rgba(0, 0, 0, 0.05);
 }
 
 .rc-info-item {
@@ -477,302 +510,102 @@ $recaudo-red-light: #f8d7da;
     font-weight: 500;
 }
 
-/* ── Montos ── */
-.rc-money-row {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 8px;
-}
-
-.rc-money-card {
-    background: #f8f8f8;
-    border-radius: 8px;
-    padding: 8px 10px;
-    text-align: center;
-    border: 0.5px solid rgba(0, 0, 0, 0.07);
-}
-
-.rc-money-label {
-    font-size: 9px;
-    color: #888;
-    text-transform: uppercase;
-    letter-spacing: 0.05em;
-    display: block;
-    margin-bottom: 3px;
-}
-
-.rc-money-value {
-    font-size: 15px;
-    font-weight: 600;
-    display: block;
-}
-
-.rc-cuota {
-    color: #1a7a45;
-}
-
-.rc-saldo {
-    color: #c0392b;
-}
-
-/* ── Contadores ── */
-.rc-counters-row {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 6px;
-}
-
-.rc-counter-item {
-    text-align: center;
-}
-
-.rc-counter-label {
-    font-size: 9px;
-    color: #888;
-    text-transform: uppercase;
-    letter-spacing: 0.04em;
-    display: block;
-    margin-bottom: 4px;
-}
-
-.rc-badge {
-    display: inline-block;
-    font-size: 12px;
-    font-weight: 600;
-    padding: 3px 10px;
-    border-radius: 20px;
-    min-width: 32px;
-}
-
-.rc-badge-success {
-    background: #e8f8f0;
-    color: #1a7a45;
-}
-
-.rc-badge-danger {
-    background: #fdecea;
-    color: #a32d2d;
-}
-
-.rc-badge-warning {
-    background: #fef9ec;
-    color: #7a5c00;
-    border: 0.5px solid #f5d87e;
-}
-
-.rc-badge-neutral {
-    background: #f0f0f0;
-    color: #666;
-    border: 0.5px solid #ddd;
-}
-
-/* ── Pill de estado ── */
-.rc-status-row {
-    display: flex;
-    align-items: center;
-}
-
-.rc-status-pill {
-    display: inline-flex;
-    align-items: center;
-    gap: 6px;
-    font-size: 11px;
-    font-weight: 500;
-    padding: 5px 12px;
-    border-radius: 20px;
-}
-
-.rc-status-dot {
-    width: 7px;
-    height: 7px;
-    border-radius: 50%;
-    background: currentColor;
-    flex-shrink: 0;
-}
-
-.rc-status-pendiente {
-    background: #fdecea;
-    color: #a32d2d;
-}
-
-.rc-status-pagado {
-    background: #e8f8f0;
-    color: #1a7a45;
-}
-
-.rc-status-parcial {
-    background: #e8f0fe;
-    color: #2848b0;
-}
-
-.rc-status-promesa {
-    background: #fef9ec;
-    color: #7a5c00;
-}
-
-.rc-status-nopago {
-    background: #f0f0f0;
-    color: #555;
-}
-
-/* ── Botones de acción ── */
-.rc-actions-row {
-    display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    gap: 6px;
-}
-
-/* Si en un card solo hay 2 o 3 botones, ajusta el grid dinámicamente con JS o fuerza flex */
-.rc-actions-row.two-cols {
-    grid-template-columns: repeat(2, 1fr);
-}
-
-.rc-actions-row.three-cols {
-    grid-template-columns: repeat(3, 1fr);
-}
-
-.rc-action-btn {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    gap: 3px;
-    padding: 8px 4px;
-    border-radius: 8px;
-    border: 0.5px solid rgba(0, 0, 0, 0.15);
-    background: #ffffff;
-    cursor: pointer;
-    font-size: 9px;
-    font-weight: 600;
-    text-transform: uppercase;
-    letter-spacing: 0.04em;
-    color: #555;
-    text-decoration: none;
-    transition: background 0.15s, opacity 0.15s;
-
-    &:hover {
-        background: #f5f5f5;
-        opacity: 0.9;
-    }
-
-    &:active {
-        transform: scale(0.97);
-    }
-
-    i {
-        font-size: 16px;
-    }
-}
-
-.rc-btn-call {
-    color: #1a7a45;
-    border-color: rgba(26, 122, 69, 0.4);
-}
-
-.rc-btn-cobrar {
-    color: #fff !important;
-    background: #c0392b !important;
-    border-color: #c0392b !important;
-
-    &:hover {
-        background: #a93226 !important;
-    }
-}
-
-.rc-btn-ver {
-    color: #0d6eac;
-    border-color: rgba(13, 110, 172, 0.4);
-}
-
-.rc-btn-promesa {
-    color: #7a5c00;
-    border-color: rgba(196, 160, 0, 0.4);
-}
-
-.rc-btn-nopago {
-    color: #555;
-    border-color: rgba(0, 0, 0, 0.12);
-}
-
-
-.flip-container {
-    perspective: 1000px;
-}
-
-.flip-card {
-    position: relative;
-    width: 100%;
-    //min-height: 545px;
-    transition: transform 0.6s;
-    transform-style: preserve-3d;
-}
-
-.flip-card.flipped {
-    transform: rotateY(180deg);
-}
-
-.flip-front,
-.flip-back {
-    width: 100%;
-    backface-visibility: hidden;
-    height: 80%;
-}
-
-.flip-back {
-    transform: rotateY(180deg);
-    position: absolute;
-    background: #fff;
-    top: 0;
-    left: 0;
-    bottom: 0;
-    overflow-y: auto;
-}
-
-::ng-deep .page-content {
-    padding: 0 0 !important;
-}
-
-::ng-deep .page-container {
-    padding-right: 0 !important;
-    padding-left: 0 !important;
-}
-
-
-.rc-section-label {
-    font-size: 11px;
-    font-weight: 700;
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-    color: #6c757d;
-    margin-bottom: 8px;
-}
-
-// Dos totales lado a lado
+// ── Totales del crédito completo ──
 .rc-summary-row {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
     gap: 8px;
-    margin-bottom: 4px;
-
-    .rc-total-card-credit:nth-child(3) {
-        background: #d66706;
-    }
-
-    .rc-total-card:nth-child(4) {
-        background: #198754;
-    }
 }
 
-// Variante verde para "Valor crédito"
-.rc-total-card--green {
-    background: linear-gradient(135deg, #198754, #20c997);
+.rc-total-card,
+.rc-total-card-credit {
+    border-radius: 10px;
+    padding: 8px 12px;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    cursor: pointer;
+    touch-action: pan-y;
+    -webkit-user-select: none;
+    user-select: none;
+    transition: transform .1s ease;
 
-    .rc-total-label,
-    .rc-total-value {
-        color: #fff;
-    }
+    &:active { transform: scale(0.98); }
 }
 
+.rc-total-card {
+    background: $recaudo-red-dark;
+}
+
+.rc-total-card-credit {
+    background: #13a34a;
+}
+
+// Colores individuales por concepto
+.card-valor-credito { background: #198754; } // verde claro
+.card-saldo-total   { background: #2952e3; } // azul rey
+.card-mora-total    { background: #dc3545; } // rojo
+.card-saldo-mora    { background: #f97316; } // naranja
+
+// El fondo verde claro necesita texto oscuro para mantener buen contraste
+// .card-valor-credito {
+//     .rc-total-label { color: rgba(20, 83, 45, .85); }
+//     .rc-total-value { color: #14532d; }
+// }
+
+.rc-total-label {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    font-size: 9.5px;
+    color: rgba(255, 255, 255, .82);
+    text-transform: uppercase;
+    letter-spacing: .04em;
+
+    i { font-size: 11px; }
+}
+
+.rc-total-value {
+    font-size: 15px;
+    font-weight: 700;
+    color: #fff;
+}
+
+// ── Montos de la cuota del día ──
+.rc-money-row {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 8px;
+}
+
+.rc-money-card {
+    background: #f8f9fa;
+    border-radius: 10px;
+    padding: 8px 10px;
+    border: 1px solid rgba(0, 0, 0, 0.05);
+    cursor: pointer;
+}
+
+.rc-money-label {
+    display: block;
+    font-size: 9.5px;
+    color: #888;
+    text-transform: uppercase;
+    letter-spacing: .4px;
+    margin-bottom: 3px;
+}
+
+.rc-money-value {
+    font-size: 14px;
+    font-weight: 700;
+}
+
+.rc-money-cuota .rc-money-value { color: #155724; }
+.rc-money-total .rc-money-value { color: #193dcd; }
+.rc-money-saldo .rc-money-value { color: $recaudo-red-dark; }
+.rc-money-mora .rc-money-value { color: #d66706; }
+
+// ── Calificación del crédito ──
 .rc-rating-badge {
     display: inline-flex;
     align-items: center;
@@ -785,393 +618,37 @@ $recaudo-red-light: #f8d7da;
     color: #fff;
     flex-shrink: 0;
 
-    &.rating-aa {
-        background-color: #198754;
-    }
-
-    // verde oscuro - sin mora
-    &.rating-a {
-        background-color: #198754;
-    }
-
-    // verde claro  - 1-15 días
-    &.rating-b {
-        background-color: #ffc107;
-        color: #212529;
-    }
-
-    // amarillo - 16-45
-    &.rating-c {
-        background-color: #fd7e14;
-    }
-
-    // naranja - 46-60
-    &.rating-d {
-        background-color: #dc3545;
-    }
-
-    // rojo - +60
+    &.rating-aa,
+    &.rating-a { background-color: #198754; }
+    &.rating-b { background-color: #ffc107; color: #212529; }
+    &.rating-c { background-color: #fd7e14; }
+    &.rating-d { background-color: $recaudo-red; }
 }
 
-/* ── Tarjeta base ── */
-.recaudo-mobile-list {
-    padding: 12px;
-    display: flex;
-    flex-direction: column;
-    gap: 14px;
-}
-
-.recaudo-card {
-    perspective: 1000px;
-}
-
-.flip-card {
-    position: relative;
-    transform-style: preserve-3d;
-    transition: transform .45s ease;
-}
-
-.flip-card.flipped {
-    transform: rotateY(180deg);
-}
-
-.flip-front,
-.flip-back {
-    backface-visibility: hidden;
-    border: 0.5px solid #e0e0e0;
-    border-radius: 12px;
-    overflow: hidden;
-    background: #fff;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, .07);
-}
-
-.flip-back {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    transform: rotateY(180deg);
-    overflow-y: auto;
-    height: auto;
-}
-
-/* ── Header ── */
-.rc-header {
-    background: #c0392b;
-    padding: 12px 14px;
-    display: flex;
-    justify-content: space-between;
-    align-items: flex-start;
-}
-
-.rc-header-info {
-    display: flex;
-    flex-direction: column;
-    gap: 2px;
-}
-
-.rc-name {
-    font-size: 14px;
-    font-weight: 600;
-    color: #fff;
-    line-height: 1.2;
-}
-
-.rc-credit {
-    font-size: 11px;
-    color: rgba(255, 255, 255, .75);
-}
-
-.rc-orden {
-    background: rgba(255, 255, 255, .2);
-    color: #fff;
-    font-size: 12px;
-    font-weight: 600;
-    padding: 2px 9px;
-    border-radius: 20px;
-}
-
-/* ── Badge de estado ── */
-.rc-status-badge {
-    font-size: 10px;
-    font-weight: 600;
-    padding: 2px 8px;
-    border-radius: 20px;
-    white-space: nowrap;
-}
-
-.rc-status-success {
-    background: #d4edda;
-    color: #155724;
-}
-
-.rc-status-primary {
-    background: #cce5ff;
-    color: #004085;
-}
-
-.rc-status-warning {
-    background: #fff3cd;
-    color: #856404;
-}
-
-.rc-status-danger {
-    background: #f8d7da;
-    color: #721c24;
-}
-
-.rc-status-secondary {
-    background: #e2e3e5;
-    color: #383d41;
-}
-
-/* ── Cuerpo ── */
-.rc-body {
-    padding: 12px 14px;
-}
-
-/* ── Info grid ── */
-.rc-info-grid {
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: 6px;
-}
-
-.rc-info-item {
-    background: #f8f9fa;
-    border-radius: 8px;
-    padding: 7px 9px;
-}
-
-.rc-info-label {
-    display: block;
-    font-size: 9px;
-    color: #888;
-    text-transform: uppercase;
-    letter-spacing: .4px;
-    margin-bottom: 2px;
-
-    .text-green {
-        color: #13c551;
-        /* El mismo verde que usas en tus tarjetas */
-        font-weight: bold;
-        /* Opcional: por si quieres resaltarlo más */
-    }
-
-    .text-red {
-        color: #dc3545;
-        /* Un tono rojo estándar para alertas/totales */
-        font-weight: bold;
-        /* Opcional: por si quieres resaltarlo más */
-    }
-}
-
-.rc-info-value {
-    font-size: 12px;
-    font-weight: 500;
-    color: #222;
-}
-
-/* ── Separador ── */
-.rc-divider {
-    border: none;
-    border-top: 0.5px solid #e9ecef;
-    margin: 10px 0;
-}
-
-/* ── Progreso de cuota ── */
-.rc-quota-progress {
-    margin-bottom: 2px;
-}
-
-.rc-quota-pct {
-    font-size: 12px;
-    color: #c0392b;
-}
-
-.rc-prog-bar-wrap {
-    width: 100%;
-    height: 5px;
-    background: #e9ecef;
-    border-radius: 3px;
-    overflow: hidden;
-}
-
-.rc-prog-bar-fill {
-    height: 100%;
-    background: #c0392b;
-    border-radius: 3px;
-    transition: width .4s ease;
-}
-
-/* ── Montos financieros ── */
-.rc-money-row {
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: 6px;
-    margin-bottom: 6px;
-}
-
-.rc-money-card {
-    background: #f8f9fa;
-    border-radius: 8px;
-    padding: 8px 10px;
-}
-
-.rc-money-label {
-    display: block;
-    font-size: 9px;
-    color: #888;
-    text-transform: uppercase;
-    letter-spacing: .4px;
-    margin-bottom: 3px;
-}
-
-.rc-money-value {
-    font-size: 14px;
-    font-weight: 600;
-}
-
-.rc-money-cuota .rc-money-value {
-    color: #155724;
-}
-
-
-.rc-money-total .rc-money-value {
-    color: #193dcd;
-}
-
-.rc-money-saldo .rc-money-value {
-    color: #b01625;
-}
-
-.rc-money-mora .rc-money-value {
-    color: #d66706;
-}
-
-.rc-total-card,
-.rc-total-card-credit {
-    border-radius: 8px;
-    padding: 8px 12px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-top: 2px;
-    touch-action: pan-y;
-    -webkit-user-select: none;
-    user-select: none;
-}
-
-.rc-total-card {
-    background: #c0392b;
-}
-
-.rc-total-card-credit {
-    background: #13c551;
-}
-
-.rc-total-label {
-    font-size: 10px;
-    color: rgba(255, 255, 255, .8);
-    text-transform: uppercase;
-    letter-spacing: .4px;
-}
-
-.rc-total-value {
-    font-size: 15px;
-    font-weight: 700;
-    color: #fff;
-}
-
-/* ── Contadores ── */
-.rc-counters-row {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 6px;
-}
-
-.rc-counter-item {
-    border-radius: 8px;
-    padding: 8px 6px;
-    text-align: center;
-    border: 0.5px solid transparent;
-}
-
-.rc-counter-num {
-    display: block;
-    font-size: 18px;
-    font-weight: 700;
-}
-
-.rc-counter-label {
-    display: block;
-    font-size: 9px;
-    text-transform: uppercase;
-    letter-spacing: .4px;
-    margin-top: 2px;
-}
-
-.rc-counter-pagadas {
-    background: #d4edda;
-    border-color: #c3e6cb;
-}
-
-.rc-counter-pagadas .rc-counter-num {
-    color: #155724;
-}
-
-.rc-counter-pagadas .rc-counter-label {
-    color: #1e7e34;
-}
-
-.rc-counter-vencidas {
-    background: #f8d7da;
-    border-color: #f5c6cb;
-}
-
-.rc-counter-vencidas .rc-counter-num {
-    color: #721c24;
-}
-
-.rc-counter-vencidas .rc-counter-label {
-    color: #a32d2d;
-}
-
-.rc-counter-neutral {
-    background: #e2e3e5;
-    border-color: #d6d8db;
-}
-
-.rc-counter-neutral .rc-counter-num {
-    color: #383d41;
-}
-
-.rc-counter-neutral .rc-counter-label {
-    color: #6c757d;
-}
-
-.rc-counter-pendientes {
-    background: #fff3cd;
-    border-color: #ffeeba;
-}
-
-.rc-counter-pendientes .rc-counter-num {
-    color: #533f03;
-}
-
-.rc-counter-pendientes .rc-counter-label {
-    color: #856404;
-}
-
-/* ── Botonera (sin cambios de comportamiento) ── */
+// ── Botonera de acciones (siempre en una sola fila) ──
 .rc-actions-row {
     display: flex;
-    flex-wrap: wrap;
-    gap: 6px;
-}
+    flex-wrap: nowrap;
+    gap: 4px;
 
-.rc-actions-row .btn {
-    min-width: 54px;
-    border-radius: 8px;
-    font-size: 11px;
+    .btn {
+        flex: 1 1 0;
+        min-width: 0;
+        padding: 6px 2px !important;
+        border-radius: 8px;
+    }
+
+    .btn i {
+        font-size: 15px;
+        margin: 0 0 2px !important;
+    }
+
+    .btn span {
+        display: block;
+        font-size: 8.5px !important;
+        line-height: 1.15;
+        white-space: normal;
+        text-align: center;
+        word-break: break-word;
+    }
 }

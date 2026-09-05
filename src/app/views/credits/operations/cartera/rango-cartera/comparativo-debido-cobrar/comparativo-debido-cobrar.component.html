@@ -52,8 +52,15 @@
             <div class="row g-3 mb-3">
                 <div class="col-6 col-lg-3">
                     <div class="p-3 border rounded h-100">
-                        <small class="text-muted d-block text-uppercase fs-12">Debido cobrar</small>
-                        <h4 class="mb-0 text-primary">{{ currency }} {{ formatCurrency(resumen.totalDebidoCobrar) }}
+                        <small class="text-muted d-block text-uppercase fs-12">Valor cuota</small>
+                        <h4 class="mb-0 text-primary">{{ currency }} {{ formatCurrency(resumen.totalValorCuotaTabla) }}
+                        </h4>
+                    </div>
+                </div>
+                <div class="col-6 col-lg-3">
+                    <div class="p-3 border rounded h-100">
+                        <small class="text-muted d-block text-uppercase fs-12">Valor cuota base</small>
+                        <h4 class="mb-0 text-primary">{{ currency }} {{ formatCurrency(resumen.valorCuotaTablaOriginal) }}
                         </h4>
                     </div>
                 </div>
@@ -66,7 +73,7 @@
                 <div class="col-6 col-lg-3">
                     <div class="p-3 border rounded h-100">
                         <small class="text-muted d-block text-uppercase fs-12">Saldo pendiente del dia</small>
-                        <h4 class="mb-0 text-danger">{{ currency }} {{ formatCurrency(resumen.totalCartera) }}</h4>
+                        <h4 class="mb-0 text-danger">{{ currency }} {{ formatCurrency(getSaldoPendienteDelDia) }}</h4>
                     </div>
                 </div>
                 <div class="col-6 col-lg-3">
@@ -89,13 +96,26 @@
                         [colors]="barrasChartOptions.colors!"></apx-chart>
                 </div>
                 <div class="col-12 col-lg-5">
-                    <h6 class="text-muted fs-13 text-uppercase mb-2">% de cumplimiento</h6>
+                    <!-- <h6 class="text-muted fs-13 text-uppercase mb-2">% de cumplimiento</h6> -->
                     <apx-chart [series]="cumplimientoChartOptions.series!" [chart]="cumplimientoChartOptions.chart!"
                         [plotOptions]="cumplimientoChartOptions.plotOptions!"
+                        [stroke]="cumplimientoChartOptions.stroke!"
                         [labels]="cumplimientoChartOptions.labels!"
                         [colors]="cumplimientoChartOptions.colors!"></apx-chart>
                 </div>
             </div>
+
+            <!-- Contexto de cartera total (no se limita a la fecha consultada) -->
+            <!-- <div class="row g-3 mt-1">
+                <div class="col-6 col-lg-3">
+                    <small class="text-muted d-block">Debido cobrar (total)</small>
+                    <span class="fw-semibold">{{ currency }} {{ formatCurrency(resumen.totalValorCuotaNominal) }}</span>
+                </div>
+                <div class="col-6 col-lg-3">
+                    <small class="text-muted d-block">Cartera total</small>
+                    <span class="fw-semibold">{{ currency }} {{ formatCurrency(resumen.totalCartera) }}</span>
+                </div>
+            </div> -->
 
             <!-- Botones de detalle -->
             <div class="d-flex flex-wrap gap-2 mt-3">

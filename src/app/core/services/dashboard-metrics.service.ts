@@ -20,6 +20,8 @@ export interface DashboardSummaryDto {
   totalDebidoCobrar: number;
   totalRecaudado: number;
   totalValorCuota: number;
+  totalValorCuotaTabla: number;
+  totalValorCuotaNominal: number;
   totalCartera: number;
   totalNoPagado: number;
   totalNoPagoCantidad: number;

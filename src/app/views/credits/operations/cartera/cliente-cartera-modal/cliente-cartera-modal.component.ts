@@ -313,6 +313,14 @@ export class ClienteCarteraModalComponent implements OnInit {
     return v > 0 ? 'ti ti-arrow-up-right' : 'ti ti-arrow-down-right';
   }
 
+  /** Color del borde del stat-tile, misma polaridad que variacionClass (menos es mejor). */
+  variacionTileClass(valor: number | null | undefined, mayorEsMejor = false): string {
+    const v = valor ?? 0;
+    if (v === 0) return 'stat-neutral';
+    const positivo = v > 0;
+    return positivo === mayorEsMejor ? 'stat-success' : 'stat-danger';
+  }
+
   estadoCreditoBadge(estado: string): string {
     switch ((estado ?? '').toUpperCase()) {
       case 'ACTIVE':
@@ -354,6 +362,15 @@ export class ClienteCarteraModalComponent implements OnInit {
 
   trackByCreditId(_index: number, credito: CreditResponseDto): number {
     return credito.id;
+  }
+
+  /**
+   * "Cartera activa" y "Evolución" son un consolidado de los créditos ACTIVOS
+   * del cliente. La tabla de historial solo muestra esos mismos créditos —
+   * para ver créditos cancelados/inactivos habría que ir a otra pantalla.
+   */
+  get creditosActivos(): CreditResponseDto[] {
+    return this.creditos.filter(c => (c.creditStatus ?? '').toUpperCase() === 'ACTIVE');
   }
 
   /**

@@ -9,11 +9,12 @@
                     <i class="bi bi-clock-history me-2 text-danger"></i>
                     Mis Cierres de Caja
                 </h5>
-                <button (click)="refreshClosings()" class="btn btn-danger" [disabled]="loading"
-                    title="Actualizar lista">
-                    <i class="bi" [ngClass]="loading ? 'bi-arrow-repeat spin' : 'bi-arrow-clockwise'"></i>
-                    <span class="ms-2 d-none d-md-inline">Actualizar</span>
-                </button>
+                <!-- <button (click)="refreshClosings()"
+                    class="btn btn-danger btn-lg d-inline-flex align-items-center shadow-sm align-self-center"
+                    [disabled]="loading" title="Actualizar lista">
+                    <i class="bi fs-4" [ngClass]="loading ? 'bi-arrow-repeat spin' : 'bi-arrow-clockwise'"></i>
+                    <span class="ms-3">Actualizar</span>
+                </button> -->
             </div>
             <div *ngIf="!isAsesor" class="d-flex flex-column flex-md-row align-items-start align-items-md-center mb-3 gap-2">
                 <form [formGroup]="filterForm">
@@ -58,50 +59,106 @@
             </div>
 
             <!-- Loading inicial -->
-            <div *ngIf="loading && filteredClosings.length === 0" class="text-center my-5">
+            <div *ngIf="loading && closings.length === 0" class="text-center my-5">
                 <div class="spinner-border text-danger" role="status"></div>
                 <p class="mt-3">Cargando cierres...</p>
             </div>
 
-            <!-- Sin cierres -->
-            <div *ngIf="!loading && filteredClosings.length === 0" class="alert alert-danger">
+            <!-- Sin cierres: no existen cierres registrados para esta persona/filtro -->
+            <div *ngIf="!loading && closings.length === 0" class="alert alert-danger">
                 <i class="bi bi-info-circle me-2"></i>
                 No tienes cierres registrados aún.
+            </div>
+
+            <!-- Hay cierres, pero el filtro (zona/fecha) no coincide con ninguno -->
+            <div *ngIf="!loading && closings.length > 0 && filteredClosings.length === 0" class="alert alert-info">
+                <i class="bi bi-funnel me-2"></i>
+                No hay cierres que coincidan con el filtro seleccionado.
             </div>
 
             <div *ngIf="filteredClosings.length > 0">
 
                 <!-- Resumen -->
-                <div class="row mb-4" *ngIf="isAsesor">
-                    <div class="col-6 col-md-2">
-                        <div class="card border-danger-custom">
-                            <div class="card-body text-center">
-                                <h3 class="mb-0 text-success">{{ getApprovedCount() }}</h3>
-                                <small class="text-muted">Aprobados</small>
-                            </div>
-                        </div>
+                <div class="summary-card-v2 mb-4" *ngIf="isAsesor">
+                    <div class="summary-card-v2-head">
+                        <span class="summary-card-v2-icon"><i class="bi bi-bar-chart-line"></i></span>
+                        <span>Resumen de Cierres</span>
                     </div>
-
-                    <div class="col-6 col-md-2">
-                        <div class="card border-danger-custom">
-                            <div class="card-body text-center">
-                                <h3 class="mb-0 text-danger-custom">
-                                    {{ getRejectedCount() }}
-                                </h3>
-                                <small class="text-muted">Rechazados</small>
-                            </div>
+                    <div class="summary-card-v2-body summary-card-v2-body-2col">
+                        <div class="stat-tile stat-success">
+                            <small class="stat-label">Aprobados</small>
+                            <strong class="stat-value">{{ getApprovedCount() }}</strong>
+                        </div>
+                        <div class="stat-tile stat-danger">
+                            <small class="stat-label">Rechazados</small>
+                            <strong class="stat-value">{{ getRejectedCount() }}</strong>
                         </div>
                     </div>
                 </div>
 
-                <!-- Tabla -->
-                <div class="table-responsive" style="max-height: 400px; overflow-y: auto;">
+                <div *ngIf="loading" class="text-center my-3">
+                    <div class="spinner-border spinner-border-sm text-danger"></div>
+                    <span class="ms-2">Actualizando...</span>
+                </div>
 
-                    <div *ngIf="loading" class="text-center my-3">
-                        <div class="spinner-border spinner-border-sm text-danger"></div>
-                        <span class="ms-2">Actualizando...</span>
+                <!-- Lista de cierres — mobile: tarjetas a todo el ancho -->
+                <div class="mv-card mb-4 d-md-none">
+                    <div class="mv-card-head">
+                        <span class="mv-card-icon"><i class="bi bi-clock-history"></i></span>
+                        <span class="mv-card-title">Cierres</span>
+                        <span class="mv-card-total text-muted">{{ filteredClosings.length }} registro(s)</span>
                     </div>
+                    <div class="mv-list mv-list-scroll">
+                        <div class="mv-item" *ngFor="let closing of filteredClosings">
+                            <div class="mv-item-top">
+                                <span class="mv-item-title">
+                                    <i class="bi bi-box-seam me-1 text-danger-custom"></i>
+                                    #{{ closing.id }}
+                                </span>
+                                <span [class]="getStatusBadgeClass(closing.closingStatus)">
+                                    {{ getStatusText(closing.closingStatus) }}
+                                </span>
+                            </div>
 
+                            <div class="mv-chip-grid">
+                                <div class="mv-chip">
+                                    <span class="mv-chip-label">Base</span>
+                                    <span class="mv-chip-value">
+                                        <ng-container *ngIf="closing.amount; else noBaseMobile">
+                                            ${{ formatCurrency(closing.amount) }}
+                                        </ng-container>
+                                        <ng-template #noBaseMobile>0</ng-template>
+                                    </span>
+                                </div>
+                                <div class="mv-chip">
+                                    <span class="mv-chip-label">Zona</span>
+                                    <span class="mv-chip-value">{{ closing.zona }}</span>
+                                </div>
+                            </div>
+
+                            <div class="mv-item-foot">
+                                <span><i class="bi bi-person me-1"></i>{{ closing.userCreate || '---' }}</span>
+                                <span><i class="bi bi-clock me-1"></i>{{ closing.createdAt | date: 'dd/MM/yyyy HH:mm'
+                                        }}</span>
+                            </div>
+
+                            <button (click)="goToClosing(closing.id)" class="btn btn-sm mt-2" [ngClass]="{
+    'btn-red': canEditClosing(closing),
+    'btn-secondary': closing.closingStatus === 'PRE_CIERRE' && !canEditClosing(closing),
+    'btn-outline-primary': !canEditClosing(closing) && closing.closingStatus !== 'PRE_CIERRE'
+  }" [disabled]="closing.closingStatus === 'PRE_CIERRE' && !canEditClosing(closing)">
+                                <i class="bi" [ngClass]="{
+         'bi-pencil-square': canEditClosing(closing),
+         'bi-hourglass-split': closing.closingStatus === 'PRE_CIERRE' && !canEditClosing(closing)
+       }"></i>
+                                {{ getActionButtonText(closing) }}
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Lista de cierres — desktop: tabla -->
+                <div class="table-responsive d-none d-md-block" style="max-height: 480px; overflow-y: auto;">
                     <table class="table table-hover align-middle">
                         <thead class="table-dark">
                             <tr>
@@ -110,8 +167,8 @@
                                 <th>Estado</th>
                                 <th>Base</th>
                                 <th>Zona</th>
-                                <th class="d-none d-md-table-cell">Creado por</th>
-                                <th class="d-none d-md-table-cell">Fecha Creación</th>
+                                <th>Creado por</th>
+                                <th>Fecha Creación</th>
                                 <th class="text-center">Acciones</th>
                             </tr>
                         </thead>
@@ -142,14 +199,14 @@
                                 <td><strong>{{ closing.zona }}</strong></td>
 
 
-                                <td class="d-none d-md-table-cell">
+                                <td>
                                     <small class="text-muted">
                                         <i class="bi bi-person me-1 text-danger"></i>
                                         {{ closing.userCreate || '---' }}
                                     </small>
                                 </td>
 
-                                <td class="d-none d-md-table-cell">
+                                <td>
                                     <small class="text-muted">
                                         {{ closing.createdAt | date: 'dd/MM/yyyy HH:mm' }}
                                     </small>

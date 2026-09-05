@@ -3,11 +3,25 @@
 // y puede eliminarse. Se incluye aquí como respaldo por si este componente
 // se usa en un contexto donde esos estilos globales no están cargados.
 
+.card {
+  transition: box-shadow .2s ease, transform .2s ease;
+
+  &:hover {
+    box-shadow: 0 4px 16px rgba(0, 0, 0, .08);
+  }
+}
+
 .balance-card {
   border-radius: 0.75rem;
   padding: 1rem 1.25rem;
   color: #fff;
   height: 100%;
+  transition: transform .2s ease, box-shadow .2s ease;
+
+  &:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 16px rgba(0, 0, 0, .15);
+  }
 
   .title {
     font-size: 0.8125rem;

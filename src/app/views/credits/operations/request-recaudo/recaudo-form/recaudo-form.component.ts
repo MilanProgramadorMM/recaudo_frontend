@@ -35,7 +35,7 @@ export class RecaudoFormComponent implements OnInit {
   loadingQuota: boolean = false;
 
   recaudos: RecaudoDetail[] = [];
-  opcionSeleccionada: 'cuota' | 'mora' | 'total' | 'saldoCredito' | 'moraCredito' | null = null;
+  opcionSeleccionada: 'cuota' | 'mora' | 'total' | 'saldoCredito' | 'moraCredito' | 'abonado' | null = null;
   moraPendiente: number = 0;
   diasMora: number = 0;
   saldoCreditoCompleto: number = 0;   // saldo de todas las cuotas (totalPendiente)
@@ -470,6 +470,11 @@ export class RecaudoFormComponent implements OnInit {
   pagarSoloMora(): void {
     this.opcionSeleccionada = 'mora';
     this.setAmount(this.valorMora);
+  }
+
+  pagarAbonado(): void {
+    this.opcionSeleccionada = 'abonado';
+    this.setAmount(this.valorAbonado);
   }
 
   pagarTodo(): void {

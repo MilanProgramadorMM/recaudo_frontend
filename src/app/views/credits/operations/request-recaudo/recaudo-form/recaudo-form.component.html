@@ -1,64 +1,61 @@
 <!-- recaudo-form-modal.component.html -->
-<div class="modal-header" [ngClass]="viewMode ? 'bg-info text-white' : 'bg-danger-custom text-white'">
-    <h5 class="modal-title">
-        <i class="ti" [ngClass]="viewMode ? 'ti-eye' : 'ti-cash'" class="me-2"></i>
-        {{ viewMode ? 'Detalle del Recaudo' : 'Registrar Recaudo' }}
-    </h5>
+<div class="modal-header recaudo-header" [ngClass]="viewMode ? 'is-view' : 'is-pay'">
+    <div class="d-flex align-items-center gap-3">
+        <span class="recaudo-header-icon">
+            <i class="ti" [ngClass]="viewMode ? 'ti-eye' : 'ti-cash-banknote'"></i>
+        </span>
+        <div>
+            <h5 class="modal-title mb-0">{{ viewMode ? 'Detalle del Recaudo' : 'Registrar Recaudo' }}</h5>
+            <small class="recaudo-header-subtitle">{{ cliente.clientName }} &middot; Cuota #{{ cliente.quotaNumber
+                }}</small>
+        </div>
+    </div>
     <button type="button" class="btn-close btn-close-white" aria-label="Close" (click)="close()"
         [disabled]="loading"></button>
 </div>
 
-<div class="modal-body">
-    <!-- INFO DEL CLIENTE -->
-    <div class="alert alert-info mb-3">
-        <h6 class="mb-2">
-            <i class="ti ti-user me-2"></i>
-            Información del Cliente
-        </h6>
-        <div class="row">
-            <div class="col-6">
-                <small class="text-muted d-block">Nombre:</small>
-                <strong>{{ cliente.clientName }}</strong>
+<div class="modal-body recaudo-body">
+
+    <!-- TARJETA DE CLIENTE -->
+    <!-- <div class="client-card mb-3">
+        <div class="client-card-top">
+            <span class="client-avatar"><i class="ti ti-user"></i></span>
+            <div class="client-main">
+                <span class="client-name">{{ cliente.clientName }}</span>
+                <span class="client-zone"><i class="ti ti-map-pin"></i>{{ cliente.zona }}</span>
             </div>
-            <div class="col-6">
-                <small class="text-muted d-block">Cuota:</small>
-                <strong>#{{ cliente.quotaNumber }}</strong>
+            <span class="status-pill" *ngIf="!loadingQuota"
+                [ngClass]="(remainingBalance === 0 && totalPaid > 0) ? 'status-pill-paid' : 'status-pill-pending'">
+                <i class="ti" [ngClass]="(remainingBalance === 0 && totalPaid > 0) ? 'ti-circle-check' : 'ti-clock'"></i>
+                {{ (remainingBalance === 0 && totalPaid > 0) ? 'Pagada' : 'Pendiente' }}
+            </span>
+        </div>
+        <div class="client-card-meta">
+            <div class="meta-item">
+                <span class="meta-label"><i class="ti ti-list-numbers"></i>Cuota</span>
+                <span class="meta-value">#{{ cliente.quotaNumber }}</span>
+            </div>
+            <div class="meta-item">
+                <span class="meta-label"><i class="ti ti-route"></i>Orden</span>
+                <span class="meta-value">{{ cliente.clientOrden }}</span>
             </div>
         </div>
-        <div class="row mt-2">
-            <div class="col-6">
-                <small class="text-muted d-block">Zona:</small>
-                <strong>{{ cliente.zona }}</strong>
-            </div>
-            <div class="col-6">
-                <small class="text-muted d-block">Orden:</small>
-                <strong>{{ cliente.clientOrden }}</strong>
-            </div>
+    </div> -->
+
+    <!-- RESUMEN FINANCIERO -->
+    <div class="summary-card mb-3" *ngIf="!viewMode">
+        <div class="summary-card-head">
+            <i class="ti ti-report-money"></i>
+            <span>Resumen de la cuota</span>
         </div>
 
-        <!-- RESUMEN FINANCIERO -->
-        <div class="quota-summary-nequi mb-3" *ngIf="!viewMode">
+        <div class="text-center py-4" *ngIf="loadingQuota">
+            <span class="spinner-border spinner-border-sm text-success me-2"></span>
+            <span class="text-muted small">Cargando resumen financiero&hellip;</span>
+        </div>
 
-            <div class="text-center py-3" *ngIf="loadingQuota">
-                <span class="spinner-border spinner-border-sm text-success"></span>
-            </div>
-
-            <ng-container *ngIf="!loadingQuota">
-
-                <!-- SALDOS DEL CRÉDITO (arriba) -->
-                <!-- <div class="saldos-credito">
-                    <button type="button" class="saldo-line" [class.active]="opcionSeleccionada === 'saldoCredito'"
-                        [disabled]="viewMode || valorSaldoCredito <= 0" (click)="pagarSaldoCredito()">
-                        <span class="s-label">Saldo total crédito</span>
-                        <span class="s-value text-primary">{{ formatearMoneda(valorSaldoCredito) }}</span>
-                    </button>
-                    <button type="button" class="saldo-line" [class.active]="opcionSeleccionada === 'moraCredito'"
-                        [disabled]="viewMode || valorMoraCredito <= 0" (click)="pagarMoraCredito()">
-                        <span class="s-label">Saldo total mora</span>
-                        <span class="s-value text-warning">{{ formatearMoneda(valorMoraCredito) }}</span>
-                    </button>
-                </div> -->
-
+        <ng-container *ngIf="!loadingQuota">
+            <div class="quota-summary-nequi">
                 <!-- BLOQUE CENTRAL: valor real cuota destacado -->
                 <div class="cuota-focus">
                     <button type="button" class="valor-real" [class.active]="opcionSeleccionada === 'cuota'"
@@ -70,15 +67,17 @@
                     <!-- Flancos: abonado (izq) y mora (der) -->
                     <div class="flancos">
                         <button type="button" class="flanco flanco-abonado"
-                            [class.active]="opcionSeleccionada === 'abonado'" [disabled]="viewMode || valorAbonado <= 0"
-                            (click)="pagarAbonado()">
-                            <span class="f-label">Abonado</span>
+                            [class.active]="opcionSeleccionada === 'abonado'"
+                            [disabled]="viewMode || valorAbonado <= 0">
+                            <span class="f-label"><i class="ti ti-wallet"></i>Abonado</span>
                             <span class="f-value">{{ formatearMoneda(valorAbonado) }}</span>
                         </button>
 
-                        <button type="button" class="flanco flanco-mora" [class.active]="opcionSeleccionada === 'mora'"
-                            [disabled]="viewMode || valorMora <= 0" (click)="pagarSoloMora()">
-                            <span class="f-label">Mora <small *ngIf="diasMora > 0">({{ diasMora }}d)</small></span>
+                        <button type="button" class="flanco flanco-mora"
+                            [class.active]="opcionSeleccionada === 'mora'" [disabled]="viewMode || valorMora <= 0"
+                            (click)="pagarSoloMora()">
+                            <span class="f-label"><i class="ti ti-alert-triangle"></i>Mora
+                                <small *ngIf="diasMora > 0">({{ diasMora }}d)</small></span>
                             <span class="f-value">{{ formatearMoneda(valorMora) }}</span>
                         </button>
                     </div>
@@ -86,117 +85,71 @@
                     <!-- Pendiente cuota + mora (abajo, ancho completo) -->
                     <button type="button" class="pendiente-total" [class.active]="opcionSeleccionada === 'total'"
                         [disabled]="viewMode || valorTotalConMora <= 0" (click)="pagarTodo()">
-                        <span class="p-label">Pendiente cuota + mora</span>
+                        <span class="p-label"><i class="ti ti-alert-circle"></i>Pendiente cuota + mora</span>
                         <span class="p-value">{{ formatearMoneda(valorTotalConMora) }}</span>
                     </button>
                 </div>
-            </ng-container>
-        </div>
-
-        <!-- OPCIONES DE PAGO -->
-        <!-- <div class="mt-3 pt-3 border-top" *ngIf="!viewMode && hayValoresPorPagar">
-            <small class="text-muted d-block mb-2">
-                <i class="ti ti-click me-1"></i>Selecciona qué valor deseas cargar:
-            </small>
-
-            <div class="d-grid gap-2">
-                <button type="button" class="btn d-flex justify-content-between align-items-center"
-                    *ngIf="valorPendienteCuota > 0" [class.btn-primary]="opcionSeleccionada === 'cuota'"
-                    [class.btn-outline-primary]="opcionSeleccionada !== 'cuota'" (click)="pagarSoloCuota()">
-                    <span>
-                        <i class="ti ti-receipt me-2"></i>
-                        {{ totalPaid > 0 ? 'Saldo pendiente de la cuota' : 'Valor total de la cuota' }}
-                    </span>
-                    <strong>{{ formatearMoneda(valorPendienteCuota) }}</strong>
-                </button>
-
-                <button type="button" class="btn d-flex justify-content-between align-items-center"
-                    *ngIf="valorMora > 0" [class.btn-warning]="opcionSeleccionada === 'mora'"
-                    [class.btn-outline-warning]="opcionSeleccionada !== 'mora'" (click)="pagarSoloMora()">
-                    <span><i class="ti ti-alert-triangle me-2"></i>Valor total de mora</span>
-                    <strong>{{ formatearMoneda(valorMora) }}</strong>
-                </button>
-
-                <button type="button" class="btn d-flex justify-content-between align-items-center"
-                    *ngIf="valorPendienteCuota > 0 && valorMora > 0" [class.btn-danger]="opcionSeleccionada === 'total'"
-                    [class.btn-outline-danger]="opcionSeleccionada !== 'total'" (click)="pagarTodo()">
-                    <span><i class="ti ti-cash me-2"></i>Pagar toda la cuota (cuota + mora)</span>
-                    <strong>{{ formatearMoneda(valorTotalConMora) }}</strong>
-                </button>
             </div>
-        </div> -->
 
-
-        <!-- SALDO PENDIENTE / CUOTA PAGADA -->
-        <!-- <div class="row mt-2" *ngIf="remainingBalance > 0 && remainingBalance < quotaValue">
-            <div class="col-12">
-                <div class="alert alert-warning mb-0" role="alert">
-                    <strong>Saldo Pendiente:</strong>
-                    <span class="fs-5 ms-2">{{ formatearMoneda(remainingBalance) }}</span>
-                </div>
+            <div class="paid-banner" *ngIf="remainingBalance === 0 && totalPaid > 0">
+                <i class="ti ti-circle-check"></i>
+                <span>Esta cuota está completamente pagada</span>
             </div>
-        </div> -->
-
-        <div class="row mt-2" *ngIf="remainingBalance === 0 && totalPaid > 0">
-            <div class="col-12">
-                <div class="alert alert-success mb-0" role="alert">
-                    <i class="ti ti-check-circle me-2"></i>
-                    <strong>Esta cuota está completamente pagada</strong>
-                </div>
-            </div>
-        </div>
+        </ng-container>
     </div>
 
     <!-- HISTORIAL DE PAGOS (Solo en modo vista) -->
-    <div *ngIf="viewMode && recaudos.length > 0" class="card mb-3">
-        <div class="card-header bg-light">
-            <strong><i class="ti ti-history me-2"></i>Historial de Pagos</strong>
+    <div *ngIf="viewMode && recaudos.length > 0" class="history-card mb-3">
+        <div class="history-card-head">
+            <i class="ti ti-history"></i>
+            <span>Historial de Pagos</span>
+            <span class="history-count">{{ recaudos.length }}</span>
         </div>
-        <div class="card-body p-0">
-            <div class="list-group list-group-flush">
-                <div *ngFor="let recaudo of recaudos; let i = index" class="list-group-item">
-                    <!--<div class="d-flex justify-content-between align-items-start mb-2">
-                        <strong class="text-primary">Pago #{{ recaudos.length - i }}</strong>
-                        <span class="badge bg-success">{{ formatearMoneda(recaudo.valuePaid) }}</span>
-                    </div>-->
+        <div class="history-timeline">
+            <div *ngFor="let recaudo of recaudos; let i = index" class="history-item">
+                <div class="history-item-head">
+                    <span class="history-badge">Abono #{{ recaudos.length - i }}</span>
+                    <span class="history-amount">{{ formatearMoneda(recaudo.valuePaid) }}</span>
+                </div>
 
-                    <div class="row small">
-                        <div class="col-6 mb-2" *ngIf="recaudo.portfolioInsurance > 0">
-                            <small class="text-muted">Seguro Cartera:</small>
-                            <div>{{ formatearMoneda(recaudo.portfolioInsurance) }}</div>
-                        </div>
-                        <div class="col-6 mb-2" *ngIf="recaudo.lifeInsurance > 0">
-                            <small class="text-muted">Seguro Vida:</small>
-                            <div>{{ formatearMoneda(recaudo.lifeInsurance) }}</div>
-                        </div>
-                        <div class="col-6 mb-2" *ngIf="recaudo.interestValue > 0">
-                            <small class="text-muted">Intereses:</small>
-                            <div>{{ formatearMoneda(recaudo.interestValue) }}</div>
-                        </div>
-                        <div class="col-6 mb-2" *ngIf="recaudo.investmentValue > 0">
-                            <small class="text-muted">Capital:</small>
-                            <div>{{ formatearMoneda(recaudo.investmentValue) }}</div>
-                        </div>
+                <div class="history-detail-grid">
+                    <div class="detail-chip" *ngIf="recaudo.portfolioInsurance > 0">
+                        <span class="detail-label">Seguro Cartera</span>
+                        <span class="detail-value">{{ formatearMoneda(recaudo.portfolioInsurance) }}</span>
                     </div>
+                    <div class="detail-chip" *ngIf="recaudo.lifeInsurance > 0">
+                        <span class="detail-label">Seguro Vida</span>
+                        <span class="detail-value">{{ formatearMoneda(recaudo.lifeInsurance) }}</span>
+                    </div>
+                    <div class="detail-chip" *ngIf="recaudo.interestValue > 0">
+                        <span class="detail-label">Intereses</span>
+                        <span class="detail-value">{{ formatearMoneda(recaudo.interestValue) }}</span>
+                    </div>
+                    <div class="detail-chip" *ngIf="recaudo.investmentValue > 0">
+                        <span class="detail-label">Capital</span>
+                        <span class="detail-value">{{ formatearMoneda(recaudo.investmentValue) }}</span>
+                    </div>
+                </div>
 
-                    <div class="mt-2 pt-2 border-top">
-                        <small class="text-muted">
-                            <i class="ti ti-user me-1"></i>{{ recaudo.userCreate }}
-                            <span class="ms-2">
-                                <i class="ti ti-clock me-1"></i>{{ recaudo.createdAt | date: 'dd/MM/yyyy HH:mm' }}
-                            </span>
-                        </small>
-                    </div>
+                <div class="history-item-foot">
+                    <span><i class="ti ti-user"></i>{{ recaudo.userCreate }}</span>
+                    <span><i class="ti ti-clock"></i>{{ recaudo.createdAt | date: 'dd/MM/yyyy HH:mm' }}</span>
                 </div>
             </div>
         </div>
     </div>
 
     <!-- FORMULARIO (Solo en modo registro) -->
-    <form [formGroup]="recaudoForm" *ngIf="!viewMode">
+    <form [formGroup]="recaudoForm" *ngIf="!viewMode" class="form-card">
+        <div class="form-card-head">
+            <i class="ti ti-file-invoice"></i>
+            <span>Datos del pago</span>
+        </div>
+
         <!-- SELECT MÉTODO -->
         <div class="mb-3">
-            <label class="form-label">Método de Pago <span class="text-danger">*</span></label>
+            <label class="form-label"><i class="ti ti-credit-card me-1"></i>Método de Pago <span
+                    class="text-danger">*</span></label>
             <select class="form-select" formControlName="metodoDesembolso" (change)="onMetodoChange()"
                 [class.is-invalid]="submitted && recaudoForm.get('metodoDesembolso')?.invalid">
                 <option value="">Seleccione método de pago</option>
@@ -214,7 +167,8 @@
         <ng-container *ngIf="metodoSeleccionado">
             <!-- BANCO (solo transferencia) -->
             <div *ngIf="metodoSeleccionado === 'Transferencia'" class="mb-3">
-                <label class="form-label">Banco <span class="text-danger">*</span></label>
+                <label class="form-label"><i class="ti ti-building-bank me-1"></i>Banco <span
+                        class="text-danger">*</span></label>
                 <select class="form-select" formControlName="banco"
                     [class.is-invalid]="submitted && recaudoForm.get('banco')?.invalid">
                     <option value="">Seleccione el banco</option>
@@ -228,7 +182,8 @@
             <div class="row">
                 <!-- NÚMERO DE CUENTA (solo si no es Efectivo) -->
                 <div *ngIf="metodoSeleccionado !== 'Efectivo'" class="col-lg-6 mb-3">
-                    <label class="form-label">Número de cuenta <span class="text-danger">*</span></label>
+                    <label class="form-label"><i class="ti ti-hash me-1"></i>Número de cuenta <span
+                            class="text-danger">*</span></label>
                     <input type="text" class="form-control" formControlName="numeroCuenta"
                         [placeholder]="metodoSeleccionado === 'Transferencia' ? 'Número de cuenta bancaria' : 'Número de ' + metodoSeleccionado"
                         [class.is-invalid]="submitted && recaudoForm.get('numeroCuenta')?.invalid">
@@ -239,13 +194,14 @@
 
                 <!-- CANTIDAD -->
                 <div [class]="metodoSeleccionado === 'Efectivo' ? 'col-lg-12 mb-3' : 'col-lg-6 mb-3'">
-                    <label class="form-label">Valor a Abonar <span class="text-danger">*</span></label>
-                    <div class="input-group">
+                    <label class="form-label"><i class="ti ti-currency-dollar me-1"></i>Valor a Abonar <span
+                            class="text-danger">*</span></label>
+                    <div class="input-group amount-input-group">
                         <span class="input-group-text">
                             <i class="ti ti-currency-dollar"></i>
                         </span>
-                        <input type="text" inputmode="decimal" class="form-control" formControlName="amount"
-                            (input)="formatCurrency('amount')" placeholder="Ingrese el valor"
+                        <input type="text" inputmode="decimal" class="form-control amount-input"
+                            formControlName="amount" (input)="formatCurrency('amount')" placeholder="0"
                             [class.is-invalid]="submitted && recaudoForm.get('amount')?.invalid">
                     </div>
                     <div class="invalid-feedback d-block"
@@ -256,17 +212,23 @@
             </div>
 
             <!-- COMPROBANTE (solo si no es Efectivo) -->
-            <div *ngIf="metodoSeleccionado !== 'Efectivo'" class="mb-3">
-                <label class="form-label">Comprobante de pago <span class="text-danger">*</span></label>
-                <div class="input-group">
-                    <input type="file" class="form-control" accept="image/*,application/pdf"
-                        (change)="onFileSelected($event)"
-                        [class.is-invalid]="submitted && recaudoForm.get('comprobante')?.invalid">
-                    <label class="input-group-text">
-                        <i class="ti ti-upload"></i>
-                    </label>
-                </div>
-                <small class="text-muted">Archivo cargado: {{ comprobanteTemp?.name || 'Ninguno' }}</small>
+            <div *ngIf="metodoSeleccionado !== 'Efectivo'" class="mb-1">
+                <label class="form-label"><i class="ti ti-file-upload me-1"></i>Comprobante de pago <span
+                        class="text-danger">*</span></label>
+
+                <label class="file-drop" [class.is-invalid]="submitted && recaudoForm.get('comprobante')?.invalid"
+                    [class.has-file]="comprobanteTemp">
+                    <input type="file" accept="image/*,application/pdf" (change)="onFileSelected($event)"
+                        hidden>
+                    <span class="file-drop-icon">
+                        <i class="ti" [ngClass]="comprobanteTemp ? 'ti-circle-check' : 'ti-cloud-upload'"></i>
+                    </span>
+                    <span class="file-drop-text">
+                        <strong>{{ comprobanteTemp ? comprobanteTemp.name : 'Cargar comprobante' }}</strong>
+                        <small>{{ comprobanteTemp ? 'Toca para reemplazar el archivo' : 'Imagen o PDF del pago
+                            realizado' }}</small>
+                    </span>
+                </label>
                 <div class="invalid-feedback d-block"
                     *ngIf="submitted && recaudoForm.get('comprobante')?.errors?.['required']">
                     El comprobante es requerido
@@ -276,7 +238,7 @@
     </form>
 </div>
 
-<div class="modal-footer">
+<div class="modal-footer recaudo-footer">
     <button type="button" class="btn btn-danger" (click)="close()" [disabled]="loading">
         <i class="ti ti-x me-1"></i>
         {{ viewMode ? 'Cerrar' : 'Cancelar' }}

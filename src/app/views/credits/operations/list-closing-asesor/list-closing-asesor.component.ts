@@ -10,6 +10,8 @@ import { UserRole } from '../closing/closing.component';
 import { FlatpickrDirective } from '@core/directive/flatpickr.directive';
 import { ZonaResponseDto, ZonaService } from '@core/services/zona.service';
 import { FormBuilder, FormGroup, ReactiveFormsModule } from '@angular/forms';
+import { MatDialog } from '@angular/material/dialog';
+import { LoadingComponent } from '@views/ui/loading/loading.component';
 
 interface ClosingWithStatus extends ClosingResponseDto {
   closingStatus?: string;
@@ -66,7 +68,8 @@ export class ListClosingAsesorComponent {
     private closingService: ClosingService,
     private closingStatusService: ClosingStatusService,
     private router: Router,
-    private zonaService: ZonaService
+    private zonaService: ZonaService,
+    private dialog: MatDialog
   ) {
   }
 
@@ -175,18 +178,24 @@ export class ListClosingAsesorComponent {
     if (!this.personId) return;
 
     this.loading = true;
+    const dialogRef = this.dialog.open(LoadingComponent, {
+      disableClose: true
+    });
+
     this.closingService.getClosingsByPerson(this.personId).subscribe({
       next: (response) => {
         this.closings = response.data || [];
         this.filteredClosings = [...this.closings];
         this.lastUpdate = new Date();
         this.loading = false;
+        dialogRef.close();
 
         console.log('Cierres cargados:', this.closings);
       },
       error: (error) => {
         console.error('Error al cargar cierres:', error);
         this.loading = false;
+        dialogRef.close();
       }
     });
   }

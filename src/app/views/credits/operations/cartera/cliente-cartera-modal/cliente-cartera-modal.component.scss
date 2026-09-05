@@ -20,3 +20,179 @@ apx-chart {
 .fila-credito {
   cursor: pointer;
 }
+
+// ============================================================
+// Mismo lenguaje visual usado en el resto de la app: tarjeta con
+// cabecera de icono + grid de stat-tiles, y listas tipo "mv-card".
+// ============================================================
+.rec-accordion-card {
+  background: #fff;
+  border: 1px solid #e9ecf1;
+  border-radius: 14px;
+  overflow: hidden;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, .05);
+}
+
+.rec-accordion-head {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 6px 10px;
+  padding: 14px 18px;
+  background: rgba(var(--bs-primary-rgb), .08);
+}
+
+.rec-accordion-icon {
+  width: 30px;
+  height: 30px;
+  border-radius: 9px;
+  background: rgba(var(--bs-primary-rgb), .15);
+  color: var(--bs-primary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.rec-accordion-title {
+  font-weight: 700;
+  color: var(--bs-primary);
+  font-size: .95rem;
+}
+
+.summary-card-v2-body {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 10px;
+  padding: 16px 18px;
+}
+
+@media (max-width: 991.98px) {
+  .summary-card-v2-body {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 575.98px) {
+  .summary-card-v2-body {
+    grid-template-columns: 1fr;
+    gap: 8px;
+    padding: 12px;
+  }
+}
+
+.stat-tile {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  padding: 10px 12px;
+  border-radius: 10px;
+  background: #f8f9fb;
+  border-left: 4px solid #adb5bd;
+  min-width: 0;
+}
+
+.stat-label {
+  color: #6c757d;
+  font-size: .72rem;
+  text-transform: uppercase;
+  letter-spacing: .03em;
+}
+
+.stat-value {
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: #212529;
+  line-height: 1.2;
+  overflow-wrap: break-word;
+}
+
+.stat-hint {
+  color: #9ca3af;
+  font-size: .72rem;
+}
+
+.stat-neutral {
+  border-left-color: #212529;
+}
+
+.stat-success {
+  border-left-color: #198754;
+
+  .stat-value {
+    color: #198754;
+  }
+}
+
+.stat-info {
+  border-left-color: #0dcaf0;
+
+  .stat-value {
+    color: #0a97b8;
+  }
+}
+
+.stat-danger {
+  border-left-color: #dc3545;
+
+  .stat-value {
+    color: #dc3545;
+  }
+}
+
+.stat-warning {
+  border-left-color: #ffc107;
+}
+
+.stat-primary {
+  border-left-color: var(--bs-primary);
+
+  .stat-value {
+    color: var(--bs-primary);
+  }
+}
+
+.mv-card {
+  background: #fff;
+  border: 1px solid #e9ecf1;
+  border-radius: 14px;
+  overflow: hidden;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, .05);
+}
+
+.mv-card-head {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 6px 10px;
+  padding: 12px 16px;
+  background: #f8f9fb;
+  border-bottom: 1px solid #eef0f3;
+}
+
+.mv-card-icon {
+  width: 28px;
+  height: 28px;
+  border-radius: 8px;
+  background: #eef1f5;
+  color: #495057;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: .85rem;
+  flex-shrink: 0;
+}
+
+.mv-card-title {
+  font-weight: 700;
+  font-size: .88rem;
+  color: #374151;
+  white-space: nowrap;
+}
+
+.mv-card-total {
+  margin-left: auto;
+  font-weight: 700;
+  font-size: .85rem;
+  white-space: nowrap;
+}

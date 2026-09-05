@@ -196,6 +196,17 @@ export class RequestRecaudoComponent implements OnInit {
     return recaudos.reduce((acc, r) => acc + (r.totalPagado || 0), 0);
   }
 
+  /**
+   * El flag `data.paidToday` que manda el backend no es confiable (llega en 0
+   * incluso cuando sí hubo un pago hoy). La fuente de verdad es el arreglo
+   * `recaudos`: si alguno tiene fechaInicio/fechaFin de hoy, sí se pagó hoy.
+   */
+  esPagadoHoy(cliente: DailyCollectionItemDTO): boolean {
+    if (!cliente?.recaudos?.length) return false;
+    const hoy = new Date().toLocaleDateString('en-CA');
+    return cliente.recaudos.some(r => r.fechaFin === hoy || r.fechaInicio === hoy);
+  }
+
   applyFilter(): void {
     if (this.vistaActual === 'cartera') { this.applyCarteraFilter(); return; }
     if (this.vistaActual === 'mora') { this.applyMoraFilter(); return; }
@@ -220,30 +231,30 @@ export class RequestRecaudoComponent implements OnInit {
 
     switch (this.filterStatus) {
       case 'paid':
-        this.clientesFiltered = filtered.filter(c => c.data.paidToday === 1 || c.data.paidFull === 'S');
+        this.clientesFiltered = filtered.filter(c => this.esPagadoHoy(c) || c.data.paidFull === 'S');
         break;
       case 'pending':
         const debug = filtered.map(c => ({
           orden: c.data.clientOrden,
-          paidToday: c.data.paidToday, tPaidToday: typeof c.data.paidToday,
+          paidToday: c.data.paidToday, pagadoHoy: this.esPagadoHoy(c),
           paidFull: c.data.paidFull,
           promesa: c.data.paymentPromiseDate,
           noPago: c.data.noPago, tNoPago: typeof c.data.noPago,
-          pasa: c.data.paidToday !== 1 && c.data.paidFull !== 'S' && !c.data.paymentPromiseDate && c.data.noPago !== 1
+          pasa: !this.esPagadoHoy(c) && c.data.paidFull !== 'S' && !c.data.paymentPromiseDate && c.data.noPago !== 1
         }));
         console.table(debug);
         this.clientesFiltered = filtered.filter(c =>
-          c.data.paidToday !== 1 && c.data.paidFull !== 'S' && !c.data.paymentPromiseDate && c.data.noPago !== 1);
+          !this.esPagadoHoy(c) && c.data.paidFull !== 'S' && !c.data.paymentPromiseDate && c.data.noPago !== 1);
         break;
       case 'promise':
         this.clientesFiltered = filtered.filter(c =>
-          c.data.paymentPromiseDate && c.data.paidToday !== 1 && c.data.noPago !== 1);
+          c.data.paymentPromiseDate && !this.esPagadoHoy(c) && c.data.noPago !== 1);
         break;
       case 'nopago':
         this.clientesFiltered = filtered.filter(c => c.data.noPago === 1);
         break;
       default:
-        this.clientesFiltered = filtered.filter(c => c.data.paidToday !== 1 && c.data.paidFull !== 'S');
+        this.clientesFiltered = filtered.filter(c => !this.esPagadoHoy(c) && c.data.paidFull !== 'S');
     }
 
     console.log('[CUOTA] filterStatus =', this.filterStatus, '| final =', this.clientesFiltered.length);

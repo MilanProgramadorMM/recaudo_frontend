@@ -77,11 +77,11 @@
                         <th>Zona</th>
                         <th>Concepto</th>
                         <th>Tipo pago</th>
-                        <th class="text-end">Valor pagado</th>
                         <th class="text-end">Inversión</th>
                         <th class="text-end">Interés</th>
                         <th class="text-end">Seg. Vida</th>
                         <th class="text-end">Seg. Cartera</th>
+                        <th class="text-end">Valor pagado</th>
                         <th class="text-end">Fecha</th>
                         <th class="text-end">Usuario</th>
                     </tr>
@@ -96,9 +96,6 @@
                         <td>
                             <span class="badge bg-info-subtle text-info">{{ row.payment_type }}</span>
                         </td>
-                        <td class="text-end" [ngClass]="row.value_paid < 0 ? 'text-danger' : 'text-success'">
-                            {{ row.value_paid | number:'1.0-0' }}
-                        </td>
                         <td class="text-end" [ngClass]="row.investment_value < 0 ? 'text-danger' : ''">
                             {{ row.investment_value | number:'1.0-0' }}
                         </td>
@@ -107,6 +104,9 @@
                         </td>
                         <td class="text-end">{{ row.life_insurance | number:'1.0-0' }}</td>
                         <td class="text-end">{{ row.portfolio_insurance | number:'1.0-0' }}</td>
+                        <td class="text-end" [ngClass]="row.value_paid < 0 ? 'text-danger' : 'text-success'">
+                            {{ row.value_paid | number:'1.0-0' }}
+                        </td>
                         <td class="text-end">{{ row.date }}</td>
                         <td class="text-end">{{ row.user }}</td>
                     </tr>
@@ -125,10 +125,6 @@
                         <td colspan="4" class="fw-semibold">
                             Totales:
                         </td>
-                        <td class="text-end fw-semibold"
-                            [ngClass]="totalValuePaid < 0 ? 'text-danger' : 'text-success'">
-                            {{ totalValuePaid | number:'1.0-0' }}
-                        </td>
                         <td class="text-end fw-semibold" [ngClass]="totalInvestment < 0 ? 'text-danger' : ''">
                             {{ totalInvestment | number:'1.0-0' }}
                         </td>
@@ -137,6 +133,10 @@
                         </td>
                         <td class="text-end fw-semibold">{{ totalLifeInsurance | number:'1.0-0' }}</td>
                         <td class="text-end fw-semibold">{{ totalPortfolioInsurance | number:'1.0-0' }}</td>
+                        <td class="text-end fw-semibold"
+                            [ngClass]="totalValuePaid < 0 ? 'text-danger' : 'text-success'">
+                            {{ totalValuePaid | number:'1.0-0' }}
+                        </td>
                         <td class="text-end fw-semibold"></td>
                         <td class="text-end fw-semibold"></td>
                     </tr>
@@ -571,7 +571,7 @@
                         <td class="text-center">{{ row.quotaNumber }}</td>
                         <td class="text-center">{{ row.expirationDate }}</td>
                         <td>{{ row.nombreDia }}</td>
-                        <td class="text-end">$ {{ row.valorCuota | number:'1.0-2' }}</td>
+                        <td class="text-end">$ {{ row.valorCuotaPendiente | number:'1.0-2' }}</td>
                     </tr>
                     <tr *ngIf="filteredDataDebidoCobrar.length === 0">
                         <td colspan="7" class="text-center text-muted py-4">

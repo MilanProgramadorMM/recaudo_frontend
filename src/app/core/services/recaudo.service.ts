@@ -42,6 +42,8 @@ export interface RecaudoDetail {
     delayPenalty: number;
     userCreate: string;
     createdAt: string;
+    numeroCuota: number;
+    cuotasPendientes: number;
 }
 
 export interface CreditPaymentStatus {

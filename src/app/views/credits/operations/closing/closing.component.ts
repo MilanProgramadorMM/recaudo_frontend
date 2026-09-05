@@ -17,6 +17,31 @@ import { Glotypes, GlotypesService } from '@core/services/glotypes.service';
 import { CreditIntentionDetail, RecaudoDetail, RecaudoService } from '@core/services/recaudo.service';
 import { CreditCausadoDetail, CreditService } from '@core/services/credit.service';
 
+// ════════════════════════════════════════════════════════════════════
+// MAPA DE ESTE ARCHIVO — closing.component.ts
+//
+// El componente sirve DOS vistas totalmente distintas del mismo cierre
+// de caja, controladas por `isAsesor` en el HTML:
+//   - VISTA ASESOR       -> template: *ngIf="isAsesor" (modal simplificado)
+//   - VISTA ADMIN/ASISTENTE -> template: *ngIf="!isAsesor" (wizard 3 pasos)
+//
+// Los métodos de abajo están agrupados en bloques con este mismo rótulo.
+// Para saltar directo a una sección, busca (Ctrl+F) alguna de estas
+// etiquetas tal cual aparecen en los comentarios:
+//
+//   [COMPARTIDO]        -> lo usan ambas vistas (carga de datos, permisos,
+//                          totales del resumen financiero, formateo, etc.)
+//   [ASESOR]             -> solo aparece en la vista simplificada del asesor
+//   [ADMIN/ASISTENTE]    -> solo aparece en el wizard de 3 pasos
+//
+// Si vas a AJUSTAR algo puntual:
+//   - "el asesor no puede agregar un gasto"       -> [ASESOR] addSpend
+//   - "el acordeón de recaudos / barra de cuotas" -> [ASESOR] al final del archivo
+//   - "el admin no puede aprobar el cierre"       -> [ADMIN/ASISTENTE] approveClosing
+//   - "quién puede editar qué en cada estado"     -> [COMPARTIDO] updatePermissions
+//   - "el total de X sale mal en el resumen"      -> [COMPARTIDO] Cálculos financieros
+// ════════════════════════════════════════════════════════════════════
+
 export enum UserRole {
   ASISTENTE = 'BACKOFFICE',
   ASESOR = 'Asesor',
@@ -102,6 +127,18 @@ export class ClosingComponent implements OnInit {
 
   closingData: ClosingResponseDto | null = null;
 
+  // [ASESOR] estado del acordeón de recaudos (ver también los métodos
+  // getCuotaSegments/getTotalCuotas al final del archivo, misma sección)
+  expandedRecaudoIndex: number | null = null;
+
+  toggleRecaudoDetail(i: number): void {
+    this.expandedRecaudoIndex = this.expandedRecaudoIndex === i ? null : i;
+  }
+
+  isRecaudoExpanded(i: number): boolean {
+    return this.expandedRecaudoIndex === i;
+  }
+
   get availableSpendTypes(): Glotypes[] {
     if (!this.spendGlotypes || this.spendGlotypes.length === 0) {
       return [];
@@ -132,6 +169,8 @@ export class ClosingComponent implements OnInit {
     private glotypesService: GlotypesService,
     private creditService: CreditService
   ) { }
+
+  // ===== [COMPARTIDO] Ciclo de vida del componente =====
 
   ngOnInit(): void {
     this.initializeForms();
@@ -184,12 +223,15 @@ export class ClosingComponent implements OnInit {
     });
   }
 
+  // [COMPARTIDO] cálculo — ver también getTotalSpends/getTotalAjustes/getSubtotal más abajo
   getTotalRecaudos(): number {
     return this.recaudos.reduce(
       (total, r) => total + Math.abs(r.valuePaid),
       0
     );
   }
+
+  // ===== [COMPARTIDO] Carga de datos desde el backend =====
 
   loadRecaudosByUser() {
     if (!this.currentZone) return;
@@ -410,6 +452,9 @@ export class ClosingComponent implements OnInit {
     return type ? type.name : 'Desconocido';
   }
 
+  // ===== [COMPARTIDO] Permisos y estado del cierre (define qué puede
+  // hacer cada rol en cada ClosingStatus — aquí se ajusta el flujo) =====
+
   updatePermissions(): void {
     this.canEditBase = false;
     this.canAddSpends = false;
@@ -491,6 +536,7 @@ export class ClosingComponent implements OnInit {
     }
   }
 
+  // (sin uso actual en el template)
   hasFinishedSpends(): boolean {
     return this.currentStatus !== ClosingStatus.PRE_CIERRE;
   }
@@ -532,7 +578,8 @@ export class ClosingComponent implements OnInit {
     }, 1400);
   }
 
-  // ================ CONSULTA MANUAL DE ESTADO (MEJORADA) ================
+  // ===== [COMPARTIDO] Consulta manual de estado (botón "Consultar
+  // Estado", lo usan tanto el Asesor como el Admin/Asistente) =====
   consultarEstado(): void {
     if (!this.closingId) return;
 
@@ -671,10 +718,13 @@ export class ClosingComponent implements OnInit {
     });
   }
 
+  // ===== [COMPARTIDO] Chequeos de estado =====
+
   hasBase(): boolean {
     return this.hasBaseRegistered;
   }
 
+  // (sin uso actual en el template — el botón "Finalizar" ya no valida mínimo de gastos)
   canFinishSpends(): boolean {
     const nonBaseSpends = this.spendsList.filter(s =>
       s.spendTypeId !== this.baseSpendTypeId &&
@@ -682,7 +732,7 @@ export class ClosingComponent implements OnInit {
     );
     return nonBaseSpends.length >= 1;
   }
-  // ================ PASO 1: BASE ================
+  // ===== [ADMIN/ASISTENTE] Paso 1 del wizard — Registro de la base del día =====
   saveBase(): void {
     this.submitted = true;
     this.errorMessage = '';
@@ -762,6 +812,7 @@ export class ClosingComponent implements OnInit {
     });
   }
 
+  // ===== [ADMIN/ASISTENTE] Ajustes a la base (pasos Estudio / Pre-aprobación) =====
   addAjuste(): void {
     this.submitted = true;
     this.errorMessage = '';
@@ -818,7 +869,7 @@ export class ClosingComponent implements OnInit {
     });
   }
 
-  // ================ PASO 2: GASTOS ================
+  // ===== [ASESOR] Registro de gastos diarios (modal simplificado) =====
   addSpend(): void {
     this.submitted = true;
     this.errorMessage = '';
@@ -885,6 +936,8 @@ export class ClosingComponent implements OnInit {
     });
   }
 
+  // [COMPARTIDO] elimina un gasto/ajuste — lo usan las tablas de gastos y
+  // ajustes tanto del Asesor como del wizard de Admin/Asistente
   removeSpend(spend: ClosingSpend): void {
     if (spend.spendTypeId === this.baseSpendTypeId) {
       Swal.fire({
@@ -937,6 +990,7 @@ export class ClosingComponent implements OnInit {
     });
   }
 
+  // [ASESOR] botón "Finalizar y Enviar a Estudio" -> pasa el cierre a PRE_CIERRE→STUDY
   finishSpends(): void {
     const nonBaseSpends = this.spendsList.filter(s =>
       s.spendTypeId !== this.baseSpendTypeId && s.status !== false
@@ -975,6 +1029,8 @@ export class ClosingComponent implements OnInit {
     });
   }
 
+  // ===== [ADMIN/ASISTENTE] Aprobación y flujo de entrega (pasos
+  // Estudio -> Pre-aprobación -> Aprobado, del wizard) =====
   approveClosing(): void {
     if (!this.canApprove) return;
 
@@ -1173,6 +1229,9 @@ export class ClosingComponent implements OnInit {
     return this.getSubtotal() === this.getSumaParcial();
   }
 
+  // ===== [COMPARTIDO] Motor de cambio de estado (usado por finishSpends
+  // del Asesor y por approveClosing/rejectClosing del Admin/Asistente) =====
+
   confirmAndChangeStatus(newStatus: ClosingStatus, title: string, message: string): void {
     Swal.fire({
       title,
@@ -1319,7 +1378,7 @@ export class ClosingComponent implements OnInit {
     });
   }
 
-  // ================ UTILIDADES ================
+  // ===== [COMPARTIDO] Utilidades generales =====
   resetSpendsForm(): void {
     this.spendsForm.reset();
     this.currentSpendFile = null;
@@ -1329,6 +1388,7 @@ export class ClosingComponent implements OnInit {
     this.editingSpend = null;
   }
 
+  // [ADMIN/ASISTENTE] modo edición de gastos durante Pre-aprobación
   cancelEdit(): void {
     this.isEditMode = false;
     this.editingSpend = null;
@@ -1376,6 +1436,8 @@ export class ClosingComponent implements OnInit {
     return Number(numStr) || 0;
   }
 
+  // ---- [COMPARTIDO] Cálculos financieros del resumen (tarjeta
+  // "Resumen Financiero", igual en la vista Asesor y en el wizard) ----
   getTotalSpends(): number {
     return this.spendsList
       .filter(s => s.amount < 0)
@@ -1388,18 +1450,21 @@ export class ClosingComponent implements OnInit {
       .reduce((sum, spend) => sum + spend.amount, 0);
   }
 
+  // (sin uso actual en el template — el subtotal real se calcula con getSubtotal())
   calculateSubtotal(): number {
     return this.spendsList
       .filter(s => s.status !== false)
       .reduce((sum, spend) => sum + spend.amount, 0);
   }
 
+  // (sin uso actual en el template)
   getDiferencia(): number {
     const base = this.toNumber(this.baseForm.get('base')?.value);
     const total = this.getTotalSpends();
     return base - total;
   }
 
+  // (sin uso actual en el template)
   getStatusBadgeClass(): string {
     switch (this.currentStatus) {
       case ClosingStatus.PRE_CIERRE:
@@ -1451,6 +1516,7 @@ export class ClosingComponent implements OnInit {
     return (base + recaudos + ajustes) + gastos - creditos;
   }
 
+  // ===== [ADMIN/ASISTENTE] Edición de gastos durante Pre-aprobación =====
   addSpendInPreApproval(): void {
     this.submitted = true;
     this.errorMessage = '';
@@ -1554,6 +1620,7 @@ export class ClosingComponent implements OnInit {
     }
   }
 
+  // (referenciado solo desde un botón comentado en el template — sin uso actual)
   editSpend(spend: ClosingSpend): void {
     if (spend.spendTypeId === this.baseSpendTypeId) {
       Swal.fire({
@@ -1592,6 +1659,7 @@ export class ClosingComponent implements OnInit {
     }
   }
 
+  // ---- [COMPARTIDO] Validaciones del subtotal ----
   isSubtotalValid(): boolean {
     return this.getSubtotal() >= 0;
   }
@@ -1607,6 +1675,7 @@ export class ClosingComponent implements OnInit {
     );
   }
 
+  // [ADMIN/ASISTENTE] descarga el soporte de un gasto, paso de Revisión (3)
   downloadEvidence(spend: ClosingSpend): void {
     if (!spend.id) return;
 
@@ -1629,6 +1698,7 @@ export class ClosingComponent implements OnInit {
     });
   }
 
+  // [COMPARTIDO] carga de datos — créditos desembolsados el día del cierre
   loadCreditsCausados(): void {
     if (!this.closingId) return;
 
@@ -1658,6 +1728,7 @@ export class ClosingComponent implements OnInit {
     });
   }
 
+  // [ADMIN/ASISTENTE] formulario de aprobación — precalcula el monto según el tipo de entrega
   deliveryTotal(): void {
     const deliveryType = this.approvalForm.get('deliveryType')?.value;
     const subtotal = this.getSubtotal();
@@ -1679,5 +1750,62 @@ export class ClosingComponent implements OnInit {
         asesorAmount: ''
       }, { emitEvent: false });
     }
+
   }
+
+  // ===== [ASESOR] Acordeón de recaudos: progreso de cuotas =====
+
+  getTotalCuotas(r: RecaudoDetail): number {
+    return (r.numeroCuota ?? 0) + (r.cuotasPendientes ?? 0);
+  }
+
+  /**
+   * Porcentaje real de avance del crédito (0-1), según la cuota de este
+   * recaudo sobre el total de cuotas. Ej: cuota 5 de 10 -> 0.5.
+   */
+  getCuotaProgress(r: RecaudoDetail): number {
+    const total = this.getTotalCuotas(r);
+    if (!total || total <= 0) return 0;
+
+    const avance = Math.min(Math.max(r.numeroCuota ?? 0, 0), total);
+    return avance / total;
+  }
+
+  getCuotaPercentText(r: RecaudoDetail): string {
+    return `${Math.round(this.getCuotaProgress(r) * 100)}%`;
+  }
+
+  /**
+   * Segmentos de la barra ('done' | 'current' | 'pending'), máximo 24
+   * visibles. El relleno se calcula por PORCENTAJE real de avance, no por
+   * índice de cuota directo, para que un crédito de más de 24 cuotas siga
+   * mostrando el porcentaje correcto en vez de saturarse en verde.
+   */
+  getCuotaSegments(r: RecaudoDetail): string[] {
+    const total = this.getTotalCuotas(r);
+    if (!total || total <= 0) return [];
+
+    const segmentCount = Math.min(total, 24);
+    const filled = Math.round(this.getCuotaProgress(r) * segmentCount);
+
+    return Array.from({ length: segmentCount }, (_, i) => {
+      if (i < filled - 1) return 'done';
+      if (i === filled - 1) return 'current';
+      return 'pending';
+    });
+  }
+
+  getPendientesText(r: RecaudoDetail): string {
+    const p = r.cuotasPendientes ?? 0;
+    if (p === 0) return 'Crédito completado';
+    return `Restan ${p} ${p === 1 ? 'cuota' : 'cuotas'}`;
+  }
+
+  getEstadoCuota(r: RecaudoDetail): { text: string; cls: string } {
+    const p = r.cuotasPendientes ?? 0;
+    if (p === 0) return { text: 'Última cuota', cls: 'chip-warn' };
+    if (p === 1) return { text: 'Penúltima cuota', cls: 'chip-warn' };
+    return { text: 'Al día', cls: 'chip-ok' };
+  }
+
 }

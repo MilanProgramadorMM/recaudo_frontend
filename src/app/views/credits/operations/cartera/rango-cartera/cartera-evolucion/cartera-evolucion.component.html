@@ -2,10 +2,11 @@
   <div class="card-body">
 
     <!-- LOADING -->
-    <div *ngIf="loading" class="text-center py-5">
-      <div class="spinner-border text-danger" role="status">
+    <div *ngIf="loading" class="text-center py-5 text-muted">
+      <div class="spinner-border text-danger mb-2" role="status">
         <span class="visually-hidden">Cargando evolución de cartera...</span>
       </div>
+      <p class="mb-0">Cargando evolución de cartera...</p>
     </div>
 
     <!-- ERROR -->
@@ -23,39 +24,47 @@
 
     <ng-container *ngIf="!loading && !error && !sinDatos && historia">
       <!-- KPIs de resumen del período -->
-      <div class="row g-3 mb-4">
+      <div class="row g-2 mb-4">
         <div class="col-6 col-lg-3">
-          <div class="text-muted fs-13 text-uppercase">Variación de saldo</div>
-          <div class="fs-18 fw-semibold" [ngClass]="variacionClass(historia.resumenEvolucion.variacionSaldo)">
-            <i [class]="trendIcon(historia.resumenEvolucion.variacionSaldo)" class="me-1"></i>
-            {{ currency }} {{ formatCurrency(historia.resumenEvolucion.variacionSaldo) }}
-            <span *ngIf="historia.resumenEvolucion.pctVariacionSaldo !== null" class="fs-13">
-              ({{ historia.resumenEvolucion.pctVariacionSaldo }}%)
-            </span>
+          <div class="stat-tile h-100" [ngClass]="variacionTileClass(historia.resumenEvolucion.variacionSaldo)">
+            <small class="stat-label">Variación de saldo</small>
+            <strong class="stat-value" [ngClass]="variacionClass(historia.resumenEvolucion.variacionSaldo)">
+              <i [class]="trendIcon(historia.resumenEvolucion.variacionSaldo)" class="me-1"></i>
+              {{ currency }} {{ formatCurrency(historia.resumenEvolucion.variacionSaldo) }}
+            </strong>
+            <small class="stat-hint" *ngIf="historia.resumenEvolucion.pctVariacionSaldo !== null">
+              {{ historia.resumenEvolucion.pctVariacionSaldo }}%
+            </small>
           </div>
         </div>
         <div class="col-6 col-lg-3">
-          <div class="text-muted fs-13 text-uppercase">Total recuperado</div>
-          <div class="fs-18 fw-semibold text-success">
-            <i class="ti ti-cash me-1"></i>
-            {{ currency }} {{ formatCurrency(historia.resumenEvolucion.totalRecuperado) }}
+          <div class="stat-tile stat-success h-100">
+            <small class="stat-label">Total recuperado</small>
+            <strong class="stat-value">
+              <i class="ti ti-cash me-1"></i>
+              {{ currency }} {{ formatCurrency(historia.resumenEvolucion.totalRecuperado) }}
+            </strong>
           </div>
         </div>
         <div class="col-6 col-lg-3">
-          <div class="text-muted fs-13 text-uppercase">Créditos en mora</div>
-          <div class="fs-18 fw-semibold" [ngClass]="variacionClass(historia.resumenEvolucion.variacionCreditosEnMora)">
-            <i [class]="trendIcon(historia.resumenEvolucion.variacionCreditosEnMora)" class="me-1"></i>
-            {{ historia.resumenEvolucion.creditosEnMoraInicial }} → {{ historia.resumenEvolucion.creditosEnMoraFinal }}
-            <span class="fs-13">
+          <div class="stat-tile h-100" [ngClass]="variacionTileClass(historia.resumenEvolucion.variacionCreditosEnMora)">
+            <small class="stat-label">Créditos en mora</small>
+            <strong class="stat-value" [ngClass]="variacionClass(historia.resumenEvolucion.variacionCreditosEnMora)">
+              <i [class]="trendIcon(historia.resumenEvolucion.variacionCreditosEnMora)" class="me-1"></i>
+              {{ historia.resumenEvolucion.creditosEnMoraInicial }} → {{ historia.resumenEvolucion.creditosEnMoraFinal }}
+            </strong>
+            <small class="stat-hint">
               ({{ historia.resumenEvolucion.variacionCreditosEnMora > 0 ? '+' : '' }}{{ historia.resumenEvolucion.variacionCreditosEnMora }})
-            </span>
+            </small>
           </div>
         </div>
         <div class="col-6 col-lg-3">
-          <div class="text-muted fs-13 text-uppercase">Créditos cancelados</div>
-          <div class="fs-18 fw-semibold">
-            <i class="ti ti-checkbox me-1 text-muted"></i>
-            {{ historia.resumenEvolucion.totalCancelados }}
+          <div class="stat-tile stat-neutral h-100">
+            <small class="stat-label">Créditos cancelados</small>
+            <strong class="stat-value">
+              <i class="ti ti-checkbox me-1 text-muted"></i>
+              {{ historia.resumenEvolucion.totalCancelados }}
+            </strong>
           </div>
         </div>
       </div>
@@ -93,7 +102,8 @@
       ></apx-chart>
 
       <!-- Tabla de transiciones diarias (detalle para auditoría) -->
-      <h6 class="fs-14 fw-semibold mt-4 mb-2">Detalle diario</h6>
+      <h6 class="fs-14 fw-semibold mt-4 mb-0">Detalle diario</h6>
+      <p class="text-muted fs-13 mb-2">Qué pasó cada día: quién entró o salió de mora, cambió de estado o fue cancelado</p>
       <div class="table-responsive">
         <table class="table table-sm table-hover align-middle mb-0">
           <thead class="table-light">

@@ -1,23 +1,35 @@
+<!--
+    MAPA DE ESTE TEMPLATE
+    Todo el archivo se reparte en 2 ramas exclusivas según *ngIf="isAsesor":
+
+      [ASESOR]            líneas ~21-511   -> modal simplificado (gastos, ajustes,
+                                              recaudos, intenciones, dinero entregado)
+      [ADMIN/ASISTENTE]   líneas ~513+     -> wizard de 3 pasos (Base / Estudio / Aprobación)
+
+    Busca (Ctrl+F) "[ASESOR]" o "[ADMIN/ASISTENTE]" para saltar a cada sección.
+    La lógica de cada método está agrupada igual en closing.component.ts.
+-->
 <page-title subtitle="Cierre de Caja" [title]="'Cierre #' + (closingId || 'Nuevo')" />
 
 <div class="col-lg-12">
     <div class="card">
         <div class="card-body">
-            <!-- Estado actual -->
+            <!-- [COMPARTIDO] Estado actual -->
             <div class="mb-4 d-flex justify-content-between align-items-center flex-wrap gap-2">
                 <!-- Botón consultar estado (para Asesor en STUDY, PRE_APPROVED o APPROVED) -->
                 <button
                     *ngIf="isAsesor && !canAddSpends && (currentStatus === 'STUDY' || currentStatus === 'PRE_APPROVED' || currentStatus === 'APPROVED')"
-                    class="btn btn-outline-primary" (click)="consultarEstado()" [disabled]="isRefreshing">
-                    <i class="bi" [ngClass]="isRefreshing ? 'bi-arrow-repeat spin' : 'bi-search'"></i>
-                    <span class="ms-2">Consultar Estado</span>
+                    class="btn btn-outline-primary btn-lg d-inline-flex align-items-center shadow-sm align-self-center"
+                    (click)="consultarEstado()" [disabled]="isRefreshing">
+                    <i class="bi fs-4" [ngClass]="isRefreshing ? 'bi-arrow-repeat spin' : 'bi-search'"></i>
+                    <span class="ms-3">Consultar Estado</span>
                 </button>
 
                 <p *ngIf="errorMessage" class="fs-14 text-danger">
                     <i class="bi bi-exclamation-triangle me-2"></i>{{ errorMessage }}
                 </p>
             </div>
-            <!-- VISTA PARA ASESOR: MODAL SIMPLIFICADO -->
+            <!-- ════════════════════ [ASESOR] MODAL SIMPLIFICADO ════════════════════ -->
             <div *ngIf="isAsesor" class="asesor-view">
                 <div *ngIf="isAsesor && !hasBaseRegistered && currentStatus === 'PRE_CIERRE'"
                     class="alert alert-warning">
@@ -33,128 +45,78 @@
                         </button>
                     </div>
                 </div>
+                <!-- [ASESOR] Contenido principal: solo se ve una vez el Admin/Asistente registró la BASE -->
                 <div *ngIf="isAsesor && hasBaseRegistered" class="card border-primary">
-                    <div class="card-header bg-primary bg-opacity-10">
-                        <h5 class="mb-0 text-primary">
-                            <i class="bi bi-receipt fs-18 me-2"></i>
-                            Registro de Gastos
+                    <div
+                        class="card-header bg-primary bg-opacity-10 d-flex justify-content-between align-items-center flex-wrap gap-2">
+                        <h5 class="mb-0 d-flex align-items-center gap-2">
+                            <span class="rec-accordion-icon"><i class="bi bi-receipt"></i></span>
+                            <span class="rec-accordion-title">Registro de Gastos</span>
                         </h5>
+                        <div class="badge bg-success">
+                            <i class="bi bi-check-circle me-1"></i>
+                            BASE: ${{ formatCurrency(toNumber(baseForm.get('base')?.value)) }}
+                        </div>
                     </div>
                     <div class="card-body">
-                        <!-- Indicador de progreso de gastos -->
-                        <div *ngIf="canAddSpends" class="alert alert-info mb-3">
-                            <!-- <div class="d-flex justify-content-between align-items-center">
-                                <span class="badge"
-                                    [ngClass]="canFinishSpends() ? 'bg-success' : 'bg-warning text-dark'">
-                                    {{ canFinishSpends() ? 'Puede finalizar' : 'Mínimo 1 gasto requerido' }}
-                                </span>
-                            </div> -->
-                        </div>
-
-                        <div class="card-header bg-primary bg-opacity-10">
-                            <div class="d-flex justify-content-between align-items-center">
-                                <!-- <h5 class="mb-0 text-primary">
-                                    <i class="bi bi-receipt fs-18 me-2"></i>
-                                    Registro de Gastos
-                                </h5> -->
-                                <div class="badge bg-success">
-                                    <i class="bi bi-check-circle me-1"></i>
-                                    BASE: ${{ formatCurrency(toNumber(baseForm.get('base')?.value)) }}
+                        <!-- [COMPARTIDO] Resumen Financiero — misma info que en el wizard de Admin/Asistente
+                             (pasos Estudio y Aprobación), aquí con estilo de tarjeta para mobile -->
+                        <div class="summary-card-v2 mb-4">
+                            <div class="summary-card-v2-head">
+                                <span class="summary-card-v2-icon"><i class="bi bi-calculator"></i></span>
+                                <span>Resumen Financiero</span>
+                            </div>
+                            <div class="summary-card-v2-body">
+                                <div class="stat-tile stat-neutral">
+                                    <small class="stat-label">Saldo Anterior</small>
+                                    <strong class="stat-value">${{ formatCurrency(toNumber(previousBaseValue))
+                                        }}</strong>
+                                </div>
+                                <div class="stat-tile stat-success">
+                                    <small class="stat-label">Base Inicial</small>
+                                    <strong class="stat-value">${{ formatCurrency(toNumber(baseForm.get('base')?.value))
+                                        }}</strong>
+                                </div>
+                                <div class="stat-tile stat-success">
+                                    <small class="stat-label">Total Ajustes</small>
+                                    <strong class="stat-value">${{ formatCurrency(toNumber(getTotalAjustes()))
+                                        }}</strong>
+                                </div>
+                                <div class="stat-tile stat-info">
+                                    <small class="stat-label">Total Recaudos</small>
+                                    <strong class="stat-value">${{ formatCurrency(getTotalRecaudos()) }}</strong>
+                                    <small class="stat-hint">{{ recaudos.length }} registro(s)</small>
+                                </div>
+                                <div class="stat-tile stat-danger">
+                                    <small class="stat-label">Total Gastos</small>
+                                    <strong class="stat-value">${{ formatCurrency(getTotalSpends()) }}</strong>
+                                    <small class="stat-hint">{{ spendsList.length }} registro(s)</small>
+                                </div>
+                                <div class="stat-tile stat-warning">
+                                    <small class="stat-label">Créditos Causados</small>
+                                    <strong class="stat-value">-${{ formatCurrency(getTotalCreditsCausados())
+                                        }}</strong>
+                                    <small class="stat-hint">{{ creditsCausados.length }} crédito(s)</small>
+                                </div>
+                                <div class="stat-tile stat-highlight" [class.stat-danger]="isSubtotalNegative()"
+                                    [class.stat-primary]="!isSubtotalNegative()">
+                                    <small class="stat-label">Subtotal a Entregar</small>
+                                    <strong class="stat-value">${{ formatCurrency(getSubtotal()) }}</strong>
+                                    <small *ngIf="isSubtotalNegative()" class="stat-hint stat-hint-danger">
+                                        <i class="bi bi-exclamation-triangle me-1"></i>Saldo negativo
+                                    </small>
                                 </div>
                             </div>
                         </div>
 
-                        
-                        <!-- Resumen mejorado -->
-                        <div class="card border-primary mb-4">
-                            <div class="card-header bg-primary bg-opacity-10">
-                                <h5 class="mb-0 text-primary">
-                                    <i class="bi bi-calculator me-2"></i>
-                                    Resumen Financiero
-                                </h5>
+                        <!-- [ASESOR] Formulario para agregar gastos del día -->
+                        <form [formGroup]="spendsForm" *ngIf="canAddSpends" class="rec-accordion-card mb-4">
+                            <div class="rec-accordion-head">
+                                <span class="rec-accordion-icon"><i class="bi bi-receipt"></i></span>
+                                <span class="rec-accordion-title">Gastos diarios</span>
                             </div>
-                            <div class="card-body">
-                                <div class="row">
-                                    <div class="col-md-3 mb-3">
-                                        <div class="border-start border-black border-4 ps-3">
-                                            <small class="text-muted d-block">Saldo Anterior</small>
-                                            <h4 class="mb-0 text-black">
-                                                ${{ formatCurrency(toNumber(previousBaseValue)) }}
-                                            </h4>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-3 mb-3">
-                                        <div class="border-start border-success border-4 ps-3">
-                                            <small class="text-muted d-block">Base Inicial</small>
-                                            <h4 class="mb-0 text-success">
-                                                ${{ formatCurrency(toNumber(baseForm.get('base')?.value)) }}
-                                            </h4>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-3 mb-3">
-                                        <div class="border-start border-success border-4 ps-3">
-                                            <small class="text-muted d-block">Total Ajustes</small>
-                                            <h4 class="mb-0 text-success">
-                                                ${{ formatCurrency(toNumber(getTotalAjustes())) }}
-                                            </h4>
-                                        </div>
-                                    </div>
 
-                                    <div class="col-md-3 mb-3">
-                                        <div class="border-start border-info border-4 ps-3">
-                                            <small class="text-muted d-block">Total Recaudos</small>
-                                            <h4 class="mb-0 text-info">
-                                                ${{ formatCurrency(getTotalRecaudos()) }}
-                                            </h4>
-                                            <small class="text-muted">{{ recaudos.length }} registro(s)</small>
-                                        </div>
-                                    </div>
-
-                                    <div class="col-md-3 mb-3">
-                                        <div class="border-start border-danger border-4 ps-3">
-                                            <small class="text-muted d-block">Total Gastos</small>
-                                            <h4 class="mb-0 text-danger">
-                                                ${{ formatCurrency(getTotalSpends()) }}
-                                            </h4>
-                                            <small class="text-muted">{{ spendsList.length }}
-                                                registro(s)</small>
-                                        </div>
-                                    </div>
-
-                                    <div class="col-md-3 mb-3">
-                                        <div class="border-start border-warning border-4 ps-3">
-                                            <small class="text-muted d-block">Créditos Causados</small>
-                                            <h4 class="mb-0 text-warning">
-                                                -${{ formatCurrency(getTotalCreditsCausados()) }}
-                                            </h4>
-                                            <small class="text-muted">{{ creditsCausados.length }}
-                                                crédito(s)</small>
-                                        </div>
-                                    </div>
-
-                                    <div class="col-md-3 mb-3">
-                                        <div class="border-start border-4 ps-3"
-                                            [ngClass]="isSubtotalNegative() ? 'border-danger' : 'border-primary'">
-                                            <small class="text-muted d-block">Subtotal a Entregar</small>
-                                            <h4 class="mb-0"
-                                                [ngClass]="isSubtotalNegative() ? 'text-danger' : 'text-primary'">
-                                                ${{ formatCurrency(getSubtotal()) }}
-                                            </h4>
-                                            <small *ngIf="isSubtotalNegative()" class="text-danger">
-                                                <i class="bi bi-exclamation-triangle me-1"></i>
-                                                Saldo negativo
-                                            </small>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Formulario para agregar gastos -->
-                        <form [formGroup]="spendsForm" *ngIf="canAddSpends">
-                            <fieldset>
-                                <legend>Gastos diarios</legend>
-
+                            <div class="rec-form-body">
                                 <div class="row">
                                     <div class="col-lg-4 mb-3">
                                         <label class="form-label">
@@ -229,9 +191,10 @@
                                         Agregar Gasto
                                     </button>
                                 </div>
-                            </fieldset>
+                            </div>
                         </form>
 
+                        <!-- [ASESOR] -->
                         <fieldset class="mt-4">
                             <legend>Gastos registrados</legend>
 
@@ -240,81 +203,46 @@
                                 No hay gastos registrados aún
                             </div>
 
-                            <div *ngIf="spendsList.length > 0" class="card border-secondary mb-4">
-                                <div class="card-header bg-light">
-                                    <h5 class="mb-0">
-                                        <i class="bi bi-receipt me-2"></i>
-                                        Detalle de Gastos
-                                    </h5>
+                            <div *ngIf="spendsList.length > 0" class="mv-card mb-4">
+                                <div class="mv-card-head">
+                                    <span class="mv-card-icon"><i class="bi bi-receipt"></i></span>
+                                    <span class="mv-card-title">Detalle de Gastos</span>
+                                    <span class="mv-card-total text-danger">${{ formatCurrency(getTotalSpends())
+                                        }}</span>
                                 </div>
-                                <div class="card-body">
-                                    <div class="table-responsive">
-                                        <table class="table table-hover table-sm mb-0">
-                                            <thead class="table-light">
-                                                <tr>
-                                                    <th>Tipo</th>
-                                                    <th class="d-none d-md-table-cell">Descripción</th>
-                                                    <!-- oculta en mobile -->
-                                                    <th class="text-end">Valor</th>
-                                                    <th class="d-none d-md-table-cell">Evidencia</th>
-                                                    <!-- oculta en mobile -->
-                                                    <th *ngIf="canAddSpends" class="text-center">Acciones</th>
-                                                </tr>
-                                            </thead>
-                                            <tbody>
-                                                <tr *ngFor="let spend of visibleSpendsList">
-                                                    <td>
-                                                        <span class="badge"
-                                                            [ngClass]="spend.spendTypeId === baseSpendTypeId ? 'bg-primary' : 'bg-secondary'">
-                                                            {{ spend.spendTypeName }}
-                                                        </span>
-                                                    </td>
-                                                    <td class="d-none d-md-table-cell">{{ spend.description || '-' }}
-                                                    </td> <!-- oculta en mobile -->
-                                                    <td class="text-end">
-                                                        <strong>${{ formatCurrency(spend.amount) }}</strong>
-                                                    </td>
-                                                    <td class="d-none d-md-table-cell"> <!-- oculta en mobile -->
-                                                        <span *ngIf="spend.fileName" class="text-success">
-                                                            <i class="bi bi-file-earmark-check me-1"></i>
-                                                            {{ spend.fileName }}
-                                                        </span>
-                                                        <span *ngIf="!spend.fileName" class="text-muted">
-                                                            Sin evidencia
-                                                        </span>
-                                                    </td>
-                                                    <td *ngIf="canAddSpends" class="text-center">
-                                                        <button *ngIf="spend.spendTypeId !== baseSpendTypeId"
-                                                            type="button" (click)="removeSpend(spend)"
-                                                            class="btn btn-sm btn-danger" title="Eliminar gasto">
-                                                            <i class="bi bi-trash"></i>
-                                                        </button>
-                                                        <span *ngIf="spend.spendTypeId === baseSpendTypeId"
-                                                            class="text-muted small">
-                                                            No eliminable
-                                                        </span>
-                                                    </td>
-                                                </tr>
-                                            </tbody>
-                                            <tfoot class="table-light">
-                                                <tr>
-                                                    <th>TOTAL:</th>
-                                                    <th class="d-none d-md-table-cell"></th> <!-- oculta en mobile -->
-                                                    <th class="text-end">
-                                                        <span class="fs-5 text-primary">
-                                                            ${{ formatCurrency(getTotalSpends()) }}
-                                                        </span>
-                                                    </th>
-                                                    <th class="d-none d-md-table-cell"></th> <!-- oculta en mobile -->
-                                                    <th *ngIf="canAddSpends"></th>
-                                                </tr>
-                                            </tfoot>
-                                        </table>
+                                <div class="mv-list">
+                                    <div class="mv-item" *ngFor="let spend of visibleSpendsList">
+                                        <div class="mv-item-top">
+                                            <span class="badge"
+                                                [ngClass]="spend.spendTypeId === baseSpendTypeId ? 'bg-primary' : 'bg-secondary'">
+                                                {{ spend.spendTypeName }}
+                                            </span>
+                                            <span class="mv-item-amount text-danger">${{ formatCurrency(spend.amount)
+                                                }}</span>
+                                        </div>
+                                        <p class="mv-item-desc" *ngIf="spend.description">{{ spend.description }}</p>
+                                        <div class="mv-item-foot">
+                                            <span class="mv-evidence" [class.has-file]="spend.fileName">
+                                                <i class="bi"
+                                                    [ngClass]="spend.fileName ? 'bi-file-earmark-check' : 'bi-file-earmark-x'"></i>
+                                                {{ spend.fileName || 'Sin evidencia' }}
+                                            </span>
+                                            <ng-container *ngIf="canAddSpends">
+                                                <button *ngIf="spend.spendTypeId !== baseSpendTypeId" type="button"
+                                                    (click)="removeSpend(spend)" class="btn btn-sm btn-outline-danger"
+                                                    title="Eliminar gasto">
+                                                    <i class="bi bi-trash"></i>
+                                                </button>
+                                                <span *ngIf="spend.spendTypeId === baseSpendTypeId"
+                                                    class="text-muted small">No eliminable</span>
+                                            </ng-container>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
                         </fieldset>
 
+                        <!-- [ASESOR] -->
                         <fieldset class="mt-4">
                             <legend>Ajustes registrados</legend>
 
@@ -323,240 +251,231 @@
                                 No hay ajustes registrados aún
                             </div>
 
-                            <div *ngIf="spendsList.length > 0" class="card border-secondary mb-4">
-                                <div class="card-header bg-light">
-                                    <h5 class="mb-0">
-                                        <i class="bi bi-receipt me-2"></i>
-                                        Detalle de ajustes
-                                    </h5>
+                            <div *ngIf="spendsList.length > 0" class="mv-card mb-4">
+                                <div class="mv-card-head">
+                                    <span class="mv-card-icon"><i class="bi bi-receipt"></i></span>
+                                    <span class="mv-card-title">Detalle de ajustes</span>
+                                    <span class="mv-card-total text-success">${{ formatCurrency(getTotalAjustes())
+                                        }}</span>
                                 </div>
-                                <div class="card-body">
-                                    <div class="table-responsive">
-                                        <table class="table table-hover table-sm mb-0">
-                                            <thead class="table-light">
-                                                <tr>
-                                                    <th>Tipo</th>
-                                                    <th class="d-none d-md-table-cell">Descripción</th>
-                                                    <!-- oculta en mobile -->
-                                                    <th class="text-end">Valor</th>
-                                                    <th class="d-none d-md-table-cell">Evidencia</th>
-                                                    <!-- oculta en mobile -->
-                                                    <th *ngIf="canAddSpends" class="text-center">Acciones</th>
-                                                </tr>
-                                            </thead>
-                                            <tbody>
-                                                <tr *ngFor="let spend of visibleAjustesList">
-                                                    <td>
-                                                        <span class="badge"
-                                                            [ngClass]="spend.spendTypeId === baseSpendTypeId ? 'bg-primary' : 'bg-secondary'">
-                                                            {{ spend.spendTypeName }}
-                                                        </span>
-                                                    </td>
-                                                    <td class="d-none d-md-table-cell">{{ spend.description || '-' }}
-                                                    </td> <!-- oculta en mobile -->
-                                                    <td class="text-end">
-                                                        <strong>${{ formatCurrency(spend.amount) }}</strong>
-                                                    </td>
-                                                    <td class="d-none d-md-table-cell"> <!-- oculta en mobile -->
-                                                        <span *ngIf="spend.fileName" class="text-success">
-                                                            <i class="bi bi-file-earmark-check me-1"></i>
-                                                            {{ spend.fileName }}
-                                                        </span>
-                                                        <span *ngIf="!spend.fileName" class="text-muted">
-                                                            Sin evidencia
-                                                        </span>
-                                                    </td>
-                                                    <td *ngIf="canAddSpends" class="text-center">
-                                                        <button *ngIf="spend.spendTypeId !== baseSpendTypeId"
-                                                            type="button" (click)="removeSpend(spend)"
-                                                            class="btn btn-sm btn-danger" title="Eliminar gasto">
-                                                            <i class="bi bi-trash"></i>
-                                                        </button>
-                                                        <span *ngIf="spend.spendTypeId === baseSpendTypeId"
-                                                            class="text-muted small">
-                                                            No eliminable
-                                                        </span>
-                                                    </td>
-                                                </tr>
-                                            </tbody>
-                                            <tfoot class="table-light">
-                                                <tr>
-                                                    <th>TOTAL:</th>
-                                                    <th class="d-none d-md-table-cell"></th> <!-- oculta en mobile -->
-                                                    <th class="text-end">
-                                                        <span class="fs-5 text-primary">
-                                                            ${{ formatCurrency(getTotalAjustes()) }}
-                                                        </span>
-                                                    </th>
-                                                    <th class="d-none d-md-table-cell"></th> <!-- oculta en mobile -->
-                                                    <th *ngIf="canAddSpends"></th>
-                                                </tr>
-                                            </tfoot>
-                                        </table>
+                                <div class="mv-list">
+                                    <div class="mv-item" *ngFor="let spend of visibleAjustesList">
+                                        <div class="mv-item-top">
+                                            <span class="badge"
+                                                [ngClass]="spend.spendTypeId === baseSpendTypeId ? 'bg-primary' : 'bg-secondary'">
+                                                {{ spend.spendTypeName }}
+                                            </span>
+                                            <span class="mv-item-amount text-success">${{ formatCurrency(spend.amount)
+                                                }}</span>
+                                        </div>
+                                        <p class="mv-item-desc" *ngIf="spend.description">{{ spend.description }}</p>
+                                        <!-- <div class="mv-item-foot">
+                                            <span class="mv-evidence" [class.has-file]="spend.fileName">
+                                                <i class="bi"
+                                                    [ngClass]="spend.fileName ? 'bi-file-earmark-check' : 'bi-file-earmark-x'"></i>
+                                                {{ spend.fileName || 'Sin evidencia' }}
+                                            </span>
+                                            <ng-container *ngIf="canAddSpends">
+                                                <button *ngIf="spend.spendTypeId !== baseSpendTypeId" type="button"
+                                                    (click)="removeSpend(spend)" class="btn btn-sm btn-outline-danger"
+                                                    title="Eliminar gasto">
+                                                    <i class="bi bi-trash"></i>
+                                                </button>
+                                                <span *ngIf="spend.spendTypeId === baseSpendTypeId"
+                                                    class="text-muted small">No eliminable</span>
+                                            </ng-container>
+                                        </div> -->
                                     </div>
                                 </div>
                             </div>
                         </fieldset>
 
+                        <!-- [ASESOR] Acordeón de recaudos con barra de progreso de cuotas -->
                         <fieldset class="mt-4">
                             <legend>Recaudos</legend>
                             <div *ngIf="recaudos.length === 0" class="alert alert-info">
                                 <i class="bi bi-info-circle me-2"></i>
                                 No hay recaudos registrados aún
                             </div>
-                            <!-- Tabla de recaudos -->
-                            <div *ngIf="recaudos.length > 0" class="card border-secondary mb-4">
-                                <div class="card-header bg-light">
-                                    <h5 class="mb-0">
-                                        <i class="bi bi-list-check me-2"></i>
-                                        Recaudos del dia
-                                    </h5>
+
+                            <!-- Acordeón de recaudos -->
+                            <div *ngIf="recaudos.length > 0" class="rec-accordion-card mb-4">
+                                <div class="rec-accordion-head">
+                                    <span class="rec-accordion-icon"><i class="bi bi-list-check"></i></span>
+                                    <span class="rec-accordion-title">Recaudos del día</span>
+                                    <span class="rec-accordion-count">{{ recaudos.length }}</span>
+                                    <!-- <span class="rec-accordion-total">${{ formatCurrency(getTotalRecaudos()) }}</span> -->
                                 </div>
-                                <div class="card-body">
-                                    <div class="table-responsive">
-                                        <table class="table table-hover table-sm mb-0">
-                                            <thead class="table-light">
-                                                <tr>
-                                                    <th>Cliente</th>
-                                                    <th class="text-end">Monto</th>
-                                                </tr>
-                                            </thead>
-                                            <tbody>
-                                                <tr *ngFor="let r of recaudos; let i = index">
-                                                    <td>
-                                                        {{ r.clientName || '-' }}
-                                                    </td>
-                                                    <td class="text-end">
-                                                        <strong>
-                                                            ${{ formatCurrency(getAbsValue(r.valuePaid)) }}
-                                                        </strong>
-                                                    </td>
-                                                </tr>
-                                            </tbody>
-                                            <tfoot class="table-light">
-                                                <tr>
-                                                    <th>TOTAL:</th>
-                                                    <th class="text-end">
-                                                        <span class="fs-5 text-primary">
-                                                            ${{ formatCurrency(getTotalRecaudos()) }}
-                                                        </span>
-                                                    </th>
-                                                </tr>
-                                            </tfoot>
-                                        </table>
+
+                                <div class="rec-accordion-body">
+                                    <div class="rec-item" *ngFor="let r of recaudos; let i = index"
+                                        [class.open]="isRecaudoExpanded(i)">
+                                        <button type="button" class="rec-item-summary" (click)="toggleRecaudoDetail(i)">
+                                            <span class="rec-item-index">{{ i + 1 }}</span>
+                                            <span class="rec-item-client">{{ r.clientName || '-' }}</span>
+                                            <span class="rec-item-amount">${{ formatCurrency(getAbsValue(r.valuePaid))
+                                                }}</span>
+                                            <i class="bi bi-chevron-down rec-item-chevron"></i>
+                                        </button>
+
+                                        <div class="rec-item-body" *ngIf="isRecaudoExpanded(i)">
+                                            <div class="rec-detail-grid">
+                                                <!-- <div class="rec-detail-chip">
+                                                    <span class="rec-detail-label">Cuota</span>
+                                                    <span class="rec-detail-value">#{{ r.numeroCuota }}</span>
+                                                </div> -->
+                                                <div class="rec-detail-chip" *ngIf="r.conceptName">
+                                                    <span class="rec-detail-label">Concepto</span>
+                                                    <span class="rec-detail-value">{{ r.conceptName }}</span>
+                                                </div>
+                                                <div class="rec-detail-chip" *ngIf="r.investmentValue > 0">
+                                                    <span class="rec-detail-label">Capital</span>
+                                                    <span class="rec-detail-value">${{
+                                                        formatCurrency(r.investmentValue) }}</span>
+                                                </div>
+                                                <div class="rec-detail-chip" *ngIf="r.interestValue > 0">
+                                                    <span class="rec-detail-label">Intereses</span>
+                                                    <span class="rec-detail-value">${{
+                                                        formatCurrency(r.interestValue) }}</span>
+                                                </div>
+                                                <div class="rec-detail-chip" *ngIf="r.delayPenalty > 0">
+                                                    <span class="rec-detail-label">Mora</span>
+                                                    <span class="rec-detail-value">${{ formatCurrency(r.delayPenalty)
+                                                        }}</span>
+                                                </div>
+                                                <div class="rec-detail-chip" *ngIf="r.lifeInsurance > 0">
+                                                    <span class="rec-detail-label">Seguro Vida</span>
+                                                    <span class="rec-detail-value">${{
+                                                        formatCurrency(r.lifeInsurance) }}</span>
+                                                </div>
+                                                <div class="rec-detail-chip" *ngIf="r.portfolioInsurance > 0">
+                                                    <span class="rec-detail-label">Seguro Cartera</span>
+                                                    <span class="rec-detail-value">${{
+                                                        formatCurrency(r.portfolioInsurance) }}</span>
+                                                </div>
+                                            </div>
+                                            <div class="rec-item-detail" *ngIf="isRecaudoExpanded(i) && getTotalCuotas(r) > 0">
+                                                <div class="rec-cuota-head">
+                                                    <span class="rec-cuota-title">
+                                                        Cuota {{ r.numeroCuota }} <small>de {{ getTotalCuotas(r)
+                                                            }}</small>
+                                                    </span>
+                                                    <span class="rec-cuota-pend">
+                                                        {{ getPendientesText(r) }} · <strong>{{ getCuotaPercentText(r) }}</strong>
+                                                    </span>
+                                                </div>
+
+                                                <div class="rec-progress">
+                                                    <span *ngFor="let s of getCuotaSegments(r)" class="seg"
+                                                        [ngClass]="s"></span>
+                                                </div>
+
+                                                <!-- <div class="rec-chips">
+                                                    <span class="chip" [ngClass]="getEstadoCuota(r).cls">{{
+                                                        getEstadoCuota(r).text }}</span>
+                                                    <span class="chip">{{ r.description }}</span>
+                                                    <span class="chip"><i class="bi bi-geo-alt me-1"></i>{{ r.zona
+                                                        }}</span>
+                                                </div> -->
+
+                                                <div class="rec-item-foot">
+                                                    <span><i class="bi bi-person me-1"></i>{{ r.userCreate }}</span>
+                                                    <span><i class="bi bi-clock me-1"></i>{{ formatDateTime(r.createdAt)
+                                                        }}</span>
+                                                    <!-- <span class="rec-id">#{{ r.recaudoId }}</span> -->
+                                                </div>
+                                            </div>
+                                        </div>
                                     </div>
+                                </div>
+
+                                <div class="rec-accordion-foot">
+                                    <span>Total recaudos</span>
+                                    <strong>${{ formatCurrency(getTotalRecaudos()) }}</strong>
                                 </div>
                             </div>
                         </fieldset>
 
+
+                        <!-- [ASESOR] -->
+                        <fieldset class="mt-4">
+                            <legend>Intenciones del día</legend>
 
                             <div *ngIf="intentions.length === 0" class="alert alert-info">
                                 <i class="bi bi-info-circle me-2"></i>
                                 No hay intenciones de crédito registradas
                             </div>
 
-                            <div *ngIf="intentions.length > 0" class="card border-secondary mb-4">
-                                <div class="card-header bg-light">
-                                    <h5 class="mb-0">
-                                        <i class="bi bi-file-earmark-text me-2"></i>
-                                        Intenciones del día
-                                    </h5>
+                            <div *ngIf="intentions.length > 0" class="mv-card mb-4">
+                                <div class="mv-card-head">
+                                    <span class="mv-card-icon"><i class="bi bi-file-earmark-text"></i></span>
+                                    <span class="mv-card-title">Intenciones del día</span>
+                                    <span class="mv-card-total text-primary">${{ formatCurrency(getTotalIntentions())
+                                        }}</span>
                                 </div>
-                                <div class="card-body">
-                                    <div class="table-responsive">
-                                        <table class="table table-hover table-sm mb-0">
-                                            <thead class="table-light">
-                                                <tr>
-                                                    <th>#</th>
-                                                    <th>Cliente</th>
-                                                    <th>Documento</th>
-                                                    <th class="text-end">Capital</th>
-                                                    <th class="text-end">Valor Total</th>
-                                                    <th>Cuota</th>
-                                                    <th>Plazo</th>
-                                                </tr>
-                                            </thead>
-                                            <tbody>
-                                                <tr *ngFor="let intention of intentions; let i = index">
-                                                    <td>{{ i + 1 }}</td>
-                                                    <td>{{ intention.clientName || '-' }}</td>
-                                                    <td>{{ intention.document || '-' }}</td>
-                                                    <td class="text-end">
-                                                        <strong>${{ formatCurrency(intention.totalCapitalValue)
-                                                            }}</strong>
-                                                    </td>
-                                                    <td class="text-end">
-                                                        <strong class="text-primary">${{
-                                                            formatCurrency(intention.totalIntentionValue) }}</strong>
-                                                    </td>
-                                                    <td class="text-end">${{ formatCurrency(intention.quotaValue) }}
-                                                    </td>
-                                                    <td>{{ intention.periodQuantity }} cuotas</td>
-                                                </tr>
-                                            </tbody>
-                                            <tfoot class="table-light">
-                                                <tr>
-                                                    <th colspan="4">TOTAL:</th>
-                                                    <th class="text-end">
-                                                        <span class="fs-5 text-primary">
-                                                            ${{ formatCurrency(getTotalIntentions()) }}
-                                                        </span>
-                                                    </th>
-                                                    <th colspan="2"></th>
-                                                </tr>
-                                            </tfoot>
-                                        </table>
+                                <div class="mv-list">
+                                    <div class="mv-item" *ngFor="let intention of intentions; let i = index">
+                                        <div class="mv-item-top">
+                                            <span class="mv-item-title">{{ intention.clientName || '-' }}</span>
+                                            <span class="mv-item-amount text-primary">${{
+                                                formatCurrency(intention.totalIntentionValue) }}</span>
+                                        </div>
+                                        <div class="mv-chip-grid">
+                                            <div class="mv-chip">
+                                                <span class="mv-chip-label">Documento</span>
+                                                <span class="mv-chip-value">{{ intention.document || '-' }}</span>
+                                            </div>
+                                            <div class="mv-chip">
+                                                <span class="mv-chip-label">Capital</span>
+                                                <span class="mv-chip-value">${{
+                                                    formatCurrency(intention.totalCapitalValue) }}</span>
+                                            </div>
+                                            <div class="mv-chip">
+                                                <span class="mv-chip-label">Cuota</span>
+                                                <span class="mv-chip-value">${{ formatCurrency(intention.quotaValue)
+                                                    }}</span>
+                                            </div>
+                                            <div class="mv-chip">
+                                                <span class="mv-chip-label">Plazo</span>
+                                                <span class="mv-chip-value">{{ intention.periodQuantity }} cuotas</span>
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
+                        </fieldset>
+
+                        <!-- [ASESOR] -->
+                        <fieldset class="mt-4">
+                            <legend>Dinero entregado a clientes</legend>
 
                             <div *ngIf="creditsCausados.length === 0" class="alert alert-info">
                                 <i class="bi bi-info-circle me-2"></i>
                                 No hay créditos causados registrados hoy
                             </div>
 
-                            <div *ngIf="creditsCausados.length > 0" class="card border-secondary mb-4">
-                                <div class="card-header bg-light">
-                                    <h5 class="mb-0">
-                                        <i class="bi bi-arrow-up-right-circle me-2"></i>
-                                        Dinero entregado a clientes hoy
-                                    </h5>
+                            <div *ngIf="creditsCausados.length > 0" class="mv-card mb-4">
+                                <div class="mv-card-head">
+                                    <span class="mv-card-icon"><i class="bi bi-arrow-up-right-circle"></i></span>
+                                    <span class="mv-card-title">Dinero entregado</span>
+                                    <span class="mv-card-total text-warning">-${{
+                                        formatCurrency(getTotalCreditsCausados()) }}</span>
                                 </div>
-                                <div class="card-body">
-                                    <div class="table-responsive">
-                                        <table class="table table-hover table-sm mb-0">
-                                            <thead class="table-light">
-                                                <tr>
-                                                    <th>#</th>
-                                                    <th>Cliente</th>
-                                                    <th class="text-end">Capital entregado</th>
-                                                    <th>Hora</th>
-                                                </tr>
-                                            </thead>
-                                            <tbody>
-                                                <tr *ngFor="let c of creditsCausados; let i = index">
-                                                    <td>{{ i + 1 }}</td>
-                                                    <td>{{ c.clientName || '-' }}</td>
-                                                    <td class="text-end">
-                                                        <strong>-${{ formatCurrency(c.totalCapitalValue) }}</strong>
-                                                    </td>
-                                                    <td>{{ formatDateTime(c.createdAt) }}</td>
-                                                </tr>
-                                            </tbody>
-                                            <tfoot class="table-light">
-                                                <tr>
-                                                    <th colspan="3">TOTAL SALIDAS:</th>
-                                                    <th class="text-end">
-                                                        <span class="fs-5 text-primary">
-                                                            -${{ formatCurrency(getTotalCreditsCausados()) }}
-                                                        </span>
-                                                    </th>
-                                                </tr>
-                                            </tfoot>
-                                        </table>
+                                <div class="mv-list">
+                                    <div class="mv-item" *ngFor="let c of creditsCausados; let i = index">
+                                        <div class="mv-item-top">
+                                            <span class="mv-item-title">{{ c.clientName || '-' }}</span>
+                                            <span class="mv-item-amount text-warning">-${{
+                                                formatCurrency(c.totalCapitalValue) }}</span>
+                                        </div>
+                                        <div class="mv-item-foot">
+                                            <span><i class="bi bi-clock me-1"></i>{{ formatDateTime(c.createdAt)
+                                                }}</span>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
+                        </fieldset>
 
                         <!-- Alertas según estado -->
                         <!-- <div *ngIf="currentStatus === 'PRE_CIERRE'" class="alert alert-info mt-3">
@@ -586,7 +505,7 @@
                             El cierre ha sido RECHAZADO.
                         </div>
 
-                        <!-- Botones de acción -->
+                        <!-- [ASESOR] Botones de acción -->
                         <div class="d-flex justify-content-between flex-wrap gap-2 mt-4">
                             <button (click)="cancel()" class="btn btn-secondary">
                                 <i class="bi bi-arrow-left me-2"></i>
@@ -596,10 +515,11 @@
                             <!-- Botón Consultar Estado (después de finalizar) -->
                             <button
                                 *ngIf="!canAddSpends && currentStatus !== 'APPROVED' && currentStatus !== 'REJECTED'"
-                                (click)="consultarEstado()" class="btn btn-outline-primary"
+                                (click)="consultarEstado()"
+                                class="btn btn-outline-primary btn-lg d-inline-flex align-items-center shadow-sm"
                                 [disabled]="isRefreshing">
-                                <i class="bi" [ngClass]="isRefreshing ? 'bi-arrow-repeat spin' : 'bi-search'"></i>
-                                <span class="ms-2">Consultar Estado</span>
+                                <i class="bi fs-4" [ngClass]="isRefreshing ? 'bi-arrow-repeat spin' : 'bi-search'"></i>
+                                <span class="ms-3">Consultar Estado</span>
                             </button>
 
                             <!-- Botón Finalizar (solo si puede agregar gastos) -->
@@ -613,11 +533,11 @@
                 </div>
             </div>
 
-            <!-- VISTA PARA ASISTENTE/ADMIN: WIZARD COMPLETO -->
+            <!-- ═══════════ [ADMIN/ASISTENTE] WIZARD DE 3 PASOS ═══════════ -->
             <div *ngIf="!isAsesor" id="closing-wizard">
                 <ng-stepper cdkStepper #stepper [linear]="false" class="cdksteppercontent nav nav-pills">
 
-                    <!-- PASO 1: BASE (Asistente) -->
+                    <!-- [ADMIN/ASISTENTE] Paso 1: Registro de Base -->
                     <cdk-step class="nav-justified mb-4">
                         <ng-template cdkStepLabel>
                             <li class="nav-item form-wizard-header"
@@ -694,7 +614,7 @@
                         </div>
                     </cdk-step>
 
-                    <!--estudio -->
+                    <!-- [ADMIN/ASISTENTE] Paso 2: Estudio (resumen, ajustes, gastos y recaudos del asesor) -->
                     <cdk-step>
                         <ng-template cdkStepLabel>
                             <li class="nav-item form-wizard-header"
@@ -848,6 +768,7 @@
                                 </fieldset>
                             </form>
 
+                            <!-- [ADMIN/ASISTENTE] -->
                             <fieldset class="mt-4">
                                 <legend>Ajustes registrados</legend>
 
@@ -872,7 +793,7 @@
                                                         <th class="d-none d-md-table-cell">Descripción</th>
                                                         <!-- oculta en mobile -->
                                                         <th class="text-end">Valor</th>
-                                                        <th class="d-none d-md-table-cell">Evidencia</th>
+                                                        <!-- <th class="d-none d-md-table-cell">Evidencia</th> -->
                                                         <!-- oculta en mobile -->
                                                         <th *ngIf="canAddSpends" class="text-center">Acciones</th>
                                                     </tr>
@@ -885,12 +806,13 @@
                                                                 {{ spend.spendTypeName }}
                                                             </span>
                                                         </td>
-                                                        <td class="d-none d-md-table-cell">{{ spend.description || '-' }}
+                                                        <td class="d-none d-md-table-cell">{{ spend.description || '-'
+                                                            }}
                                                         </td> <!-- oculta en mobile -->
                                                         <td class="text-end">
                                                             <strong>${{ formatCurrency(spend.amount) }}</strong>
                                                         </td>
-                                                        <td class="d-none d-md-table-cell"> <!-- oculta en mobile -->
+                                                        <!-- <td class="d-none d-md-table-cell"> 
                                                             <span *ngIf="spend.fileName" class="text-success">
                                                                 <i class="bi bi-file-earmark-check me-1"></i>
                                                                 {{ spend.fileName }}
@@ -898,7 +820,7 @@
                                                             <span *ngIf="!spend.fileName" class="text-muted">
                                                                 Sin evidencia
                                                             </span>
-                                                        </td>
+                                                        </td> -->
                                                         <td *ngIf="canAddSpends" class="text-center">
                                                             <button *ngIf="spend.spendTypeId !== baseSpendTypeId"
                                                                 type="button" (click)="removeSpend(spend)"
@@ -915,13 +837,15 @@
                                                 <tfoot class="table-light">
                                                     <tr>
                                                         <th>TOTAL:</th>
-                                                        <th class="d-none d-md-table-cell"></th> <!-- oculta en mobile -->
+                                                        <th class="d-none d-md-table-cell"></th>
+                                                        <!-- oculta en mobile -->
                                                         <th class="text-end">
                                                             <span class="fs-5 text-primary">
                                                                 ${{ formatCurrency(getTotalAjustes()) }}
                                                             </span>
                                                         </th>
-                                                        <th class="d-none d-md-table-cell"></th> <!-- oculta en mobile -->
+                                                        <th class="d-none d-md-table-cell"></th>
+                                                        <!-- oculta en mobile -->
                                                         <th *ngIf="canAddSpends"></th>
                                                     </tr>
                                                 </tfoot>
@@ -1013,7 +937,8 @@
                                                             </span>
                                                         </td>
                                                         <td>
-                                                            <span class="badge" [ngClass]="r.description === 'Pago de Cuota' ? 'badge-zone-red' : 'bg-secondary'">
+                                                            <span class="badge"
+                                                                [ngClass]="r.description === 'Pago de Cuota' ? 'badge-zone-red' : 'bg-secondary'">
                                                                 {{ r.description }}
                                                             </span>
                                                         </td>
@@ -1044,107 +969,107 @@
                                 </div>
                             </fieldset>
 
-                                <div class="card border-warning mb-4">
-                                    <div class="card-header bg-warning bg-opacity-10">
-                                        <h5 class="mb-0 text-warning">
-                                            <i class="bi bi-arrow-up-right-circle me-2"></i>
-                                            Dinero entregado a clientes hoy
-                                        </h5>
-                                    </div>
-                                    <div class="card-body p-0">
-                                        <table class="table table-sm mb-0">
+                            <div class="card border-warning mb-4">
+                                <div class="card-header bg-warning bg-opacity-10">
+                                    <h5 class="mb-0 text-warning">
+                                        <i class="bi bi-arrow-up-right-circle me-2"></i>
+                                        Dinero entregado a clientes hoy
+                                    </h5>
+                                </div>
+                                <div class="card-body p-0">
+                                    <table class="table table-sm mb-0">
+                                        <thead class="table-light">
+                                            <tr>
+                                                <th>#</th>
+                                                <th>Cliente</th>
+                                                <th class="text-end">Capital entregado</th>
+                                                <th>Hora</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr *ngFor="let c of creditsCausados; let i = index">
+                                                <td>{{ i + 1 }}</td>
+                                                <td>{{ c.clientName || '-' }}</td>
+                                                <td class="text-end text-warning">
+                                                    <strong>-${{ formatCurrency(c.totalCapitalValue) }}</strong>
+                                                </td>
+                                                <td>{{ formatDateTime(c.createdAt) }}</td>
+                                            </tr>
+                                        </tbody>
+                                        <tfoot class="table-light">
+                                            <tr>
+                                                <th colspan="2">TOTAL SALIDAS:</th>
+                                                <th class="text-end text-warning">
+                                                    <strong>-${{ formatCurrency(getTotalCreditsCausados())
+                                                        }}</strong>
+                                                </th>
+                                                <th></th>
+                                            </tr>
+                                        </tfoot>
+                                    </table>
+                                </div>
+                            </div>
+
+                            <div *ngIf="intentions.length === 0" class="alert alert-info">
+                                <i class="bi bi-info-circle me-2"></i>
+                                No hay intenciones de crédito registradas hoy
+                            </div>
+
+                            <div *ngIf="intentions.length > 0" class="card border-secondary mb-4">
+                                <div class="card-header bg-light">
+                                    <h5 class="mb-0">
+                                        <i class="bi bi-file-earmark-text me-2"></i>
+                                        Intenciones del día
+                                    </h5>
+                                </div>
+                                <div class="card-body">
+                                    <div class="table-responsive">
+                                        <table class="table table-hover table-sm mb-0">
                                             <thead class="table-light">
                                                 <tr>
                                                     <th>#</th>
                                                     <th>Cliente</th>
-                                                    <th class="text-end">Capital entregado</th>
-                                                    <th>Hora</th>
+                                                    <th>Documento</th>
+                                                    <th class="text-end">Capital</th>
+                                                    <th class="text-end">Valor Total</th>
+                                                    <th>Cuota</th>
+                                                    <th>Plazo</th>
                                                 </tr>
                                             </thead>
                                             <tbody>
-                                                <tr *ngFor="let c of creditsCausados; let i = index">
+                                                <tr *ngFor="let intention of intentions; let i = index">
                                                     <td>{{ i + 1 }}</td>
-                                                    <td>{{ c.clientName || '-' }}</td>
-                                                    <td class="text-end text-warning">
-                                                        <strong>-${{ formatCurrency(c.totalCapitalValue) }}</strong>
+                                                    <td>{{ intention.clientName || '-' }}</td>
+                                                    <td>{{ intention.document || '-' }}</td>
+                                                    <td class="text-end">
+                                                        <strong>${{ formatCurrency(intention.totalCapitalValue)
+                                                            }}</strong>
                                                     </td>
-                                                    <td>{{ formatDateTime(c.createdAt) }}</td>
+                                                    <td class="text-end">
+                                                        <strong class="text-primary">${{
+                                                            formatCurrency(intention.totalIntentionValue)
+                                                            }}</strong>
+                                                    </td>
+                                                    <td class="text-end">${{ formatCurrency(intention.quotaValue) }}
+                                                    </td>
+                                                    <td>{{ intention.periodQuantity }} cuotas</td>
                                                 </tr>
                                             </tbody>
                                             <tfoot class="table-light">
                                                 <tr>
-                                                    <th colspan="2">TOTAL SALIDAS:</th>
-                                                    <th class="text-end text-warning">
-                                                        <strong>-${{ formatCurrency(getTotalCreditsCausados())
-                                                            }}</strong>
+                                                    <th colspan="4">TOTAL:</th>
+                                                    <th class="text-end">
+                                                        <span class="fs-5 text-primary">
+                                                            ${{ formatCurrency(getTotalIntentions()) }}
+                                                        </span>
                                                     </th>
-                                                    <th></th>
+                                                    <th colspan="2"></th>
                                                 </tr>
                                             </tfoot>
                                         </table>
                                     </div>
                                 </div>
-
-                                <div *ngIf="intentions.length === 0" class="alert alert-info">
-                                    <i class="bi bi-info-circle me-2"></i>
-                                    No hay intenciones de crédito registradas hoy
-                                </div>
-
-                                <div *ngIf="intentions.length > 0" class="card border-secondary mb-4">
-                                    <div class="card-header bg-light">
-                                        <h5 class="mb-0">
-                                            <i class="bi bi-file-earmark-text me-2"></i>
-                                            Intenciones del día
-                                        </h5>
-                                    </div>
-                                    <div class="card-body">
-                                        <div class="table-responsive">
-                                            <table class="table table-hover table-sm mb-0">
-                                                <thead class="table-light">
-                                                    <tr>
-                                                        <th>#</th>
-                                                        <th>Cliente</th>
-                                                        <th>Documento</th>
-                                                        <th class="text-end">Capital</th>
-                                                        <th class="text-end">Valor Total</th>
-                                                        <th>Cuota</th>
-                                                        <th>Plazo</th>
-                                                    </tr>
-                                                </thead>
-                                                <tbody>
-                                                    <tr *ngFor="let intention of intentions; let i = index">
-                                                        <td>{{ i + 1 }}</td>
-                                                        <td>{{ intention.clientName || '-' }}</td>
-                                                        <td>{{ intention.document || '-' }}</td>
-                                                        <td class="text-end">
-                                                            <strong>${{ formatCurrency(intention.totalCapitalValue)
-                                                                }}</strong>
-                                                        </td>
-                                                        <td class="text-end">
-                                                            <strong class="text-primary">${{
-                                                                formatCurrency(intention.totalIntentionValue)
-                                                                }}</strong>
-                                                        </td>
-                                                        <td class="text-end">${{ formatCurrency(intention.quotaValue) }}
-                                                        </td>
-                                                        <td>{{ intention.periodQuantity }} cuotas</td>
-                                                    </tr>
-                                                </tbody>
-                                                <tfoot class="table-light">
-                                                    <tr>
-                                                        <th colspan="4">TOTAL:</th>
-                                                        <th class="text-end">
-                                                            <span class="fs-5 text-primary">
-                                                                ${{ formatCurrency(getTotalIntentions()) }}
-                                                            </span>
-                                                        </th>
-                                                        <th colspan="2"></th>
-                                                    </tr>
-                                                </tfoot>
-                                            </table>
-                                        </div>
-                                    </div>
-                                </div>
+                            </div>
 
                             <div class="d-flex wizard justify-content-between flex-wrap gap-2 mt-3">
                                 <button cdkStepperPrevious class="btn btn-primary">
@@ -1154,10 +1079,10 @@
                                     Siguiente <i class="bx bx-right-arrow-alt ms-2"></i>
                                 </button>
                             </div>
-                        </div>                        
+                        </div>
                     </cdk-step>
 
-                    <!-- PASO 3: REVISIÓN-->
+                    <!-- [ADMIN/ASISTENTE] Paso 3: Revisión y Aprobación -->
                     <cdk-step>
                         <ng-template cdkStepLabel>
                             <li class="nav-item form-wizard-header"
@@ -1360,7 +1285,7 @@
                                                         <td>{{ spend.description || '-' }}</td>
                                                         <td>
                                                             <strong>${{ formatCurrency(spend.amount) }}</strong>
-                                                        </td>                                                        
+                                                        </td>
                                                     </tr>
                                                 </tbody>
                                                 <tfoot class="table-light">
@@ -1585,12 +1510,12 @@
                                     </div>
                                     <!-- Inside the card-body where the form is -->
                                     <div class="card-body">
-                                        
+
                                         <!-- Lista de gastos con opción de eliminar Y EDITAR -->
                                         <fieldset class="mt-4">
                                             <legend>Gastos</legend>
                                             <!-- Formulario para agregar/editar gastos -->
-                                            <form [formGroup]="spendsForm">                                            
+                                            <form [formGroup]="spendsForm">
                                                 <!-- Alert cuando está editando -->
                                                 <div *ngIf="isEditMode"
                                                     class="alert alert-warning alert-dismissible fade show"
@@ -1668,7 +1593,8 @@
                                                     </div>
                                                 </div>
 
-                                                <div class="d-flex justify-content-end gap-2" style="margin: 0 0 10px 0;">
+                                                <div class="d-flex justify-content-end gap-2"
+                                                    style="margin: 0 0 10px 0;">
                                                     <button *ngIf="isEditMode" type="button" (click)="cancelEdit()"
                                                         class="btn btn-secondary">
                                                         <i class="bi bi-x-circle me-2"></i>
@@ -1739,7 +1665,7 @@
                                             </div>
                                         </fieldset>
 
-                                        
+
                                         <fieldset class="mt-4">
                                             <legend>Ajustes</legend>
                                             <form [formGroup]="ajustesForm">
@@ -1748,10 +1674,12 @@
                                                         <label class="form-label">
                                                             Tipo de ajuste <span class="text-danger">*</span>
                                                         </label>
-                                                        <select class="form-control form-select" formControlName="spendTypeId"
+                                                        <select class="form-control form-select"
+                                                            formControlName="spendTypeId"
                                                             [ngClass]="{ 'is-invalid': submitted && ajustesForm.get('spendTypeId')?.invalid }">
                                                             <option value="">Seleccione</option>
-                                                            <option *ngFor="let type of availableIncrementTypes" [value]="type.id">
+                                                            <option *ngFor="let type of availableIncrementTypes"
+                                                                [value]="type.id">
                                                                 {{ type.name }}
                                                             </option>
                                                         </select>
@@ -1760,14 +1688,15 @@
                                                             Campo obligatorio
                                                         </div>
                                                     </div>
-    
+
                                                     <div class="col-lg-4 mb-3">
                                                         <label class="form-label">
                                                             Valor <span class="text-danger">*</span>
                                                         </label>
                                                         <div class="input-group">
                                                             <span class="input-group-text">$</span>
-                                                            <input type="text" class="form-control" formControlName="amount"
+                                                            <input type="text" class="form-control"
+                                                                formControlName="amount"
                                                                 placeholder="Ingrese el valor del gasto"
                                                                 (input)="formatCurrencyString(spendsForm,'amount')"
                                                                 [ngClass]="{ 'is-invalid': submitted && spendsForm.get('amount')?.invalid }">
@@ -1777,14 +1706,15 @@
                                                             Campo obligatorio
                                                         </div>
                                                     </div>
-    
+
                                                     <div class="col-lg-4 mb-3">
                                                         <label class="form-label">Descripción</label>
-                                                        <input type="text" class="form-control" formControlName="description"
+                                                        <input type="text" class="form-control"
+                                                            formControlName="description"
                                                             placeholder="Descripción del gasto">
                                                     </div>
                                                 </div>
-    
+
                                                 <div class="d-flex justify-content-end" style="margin: 0 0 10px 0;">
                                                     <button type="button" (click)="addAjuste()" class="btn btn-success">
                                                         <i class="bi bi-plus-circle me-2"></i>
@@ -1880,87 +1810,83 @@
 
                                     <!-- Formulario de entrega -->
                                     <form [formGroup]="approvalForm" class="mt-3">
-                                            <div class="mb-3">
-                                                <label class="form-label">Seleccione el tipo de entrega <span
-                                                        class="text-danger">*</span></label>
-                                                <select class="form-select" formControlName="deliveryType"
-                                                    (change)="deliveryTotal()">
-                                                    <option value="">Seleccione una opción</option>
-                                                    <option value="admin">Entregar todo al Admin</option>
-                                                    <option value="asesor">Entregar todo al Asesor</option>
-                                                    <option value="parcial">Entrega Parcial (Admin + Asesor)</option>
-                                                </select>
-                                            </div>
+                                        <div class="mb-3">
+                                            <label class="form-label">Seleccione el tipo de entrega <span
+                                                    class="text-danger">*</span></label>
+                                            <select class="form-select" formControlName="deliveryType"
+                                                (change)="deliveryTotal()">
+                                                <option value="">Seleccione una opción</option>
+                                                <option value="admin">Entregar todo al Admin</option>
+                                                <option value="asesor">Entregar todo al Asesor</option>
+                                                <option value="parcial">Entrega Parcial (Admin + Asesor)</option>
+                                            </select>
+                                        </div>
 
-                                            <!-- Opción: Todo al Admin -->
-                                            <div *ngIf="approvalForm.get('deliveryType')?.value === 'admin'"
-                                                class="mb-3">
-                                                <div class="alert alert-info">
-                                                    <i class="bi bi-info-circle me-2"></i>
-                                                    El valor total de <strong>${{ formatCurrency(getSubtotal())
-                                                        }}</strong>
-                                                    será entregado al <strong>Administrador</strong>
-                                                </div>
+                                        <!-- Opción: Todo al Admin -->
+                                        <div *ngIf="approvalForm.get('deliveryType')?.value === 'admin'" class="mb-3">
+                                            <div class="alert alert-info">
+                                                <i class="bi bi-info-circle me-2"></i>
+                                                El valor total de <strong>${{ formatCurrency(getSubtotal())
+                                                    }}</strong>
+                                                será entregado al <strong>Administrador</strong>
                                             </div>
+                                        </div>
 
-                                            <!-- Opción: Todo al Asesor -->
-                                            <div *ngIf="approvalForm.get('deliveryType')?.value === 'asesor'"
-                                                class="mb-3">
-                                                <div class="alert alert-info">
-                                                    <i class="bi bi-info-circle me-2"></i>
-                                                    El valor total de <strong>${{ formatCurrency(getSubtotal())
-                                                        }}</strong>
-                                                    será entregado al <strong>Asesor</strong>
-                                                </div>
+                                        <!-- Opción: Todo al Asesor -->
+                                        <div *ngIf="approvalForm.get('deliveryType')?.value === 'asesor'" class="mb-3">
+                                            <div class="alert alert-info">
+                                                <i class="bi bi-info-circle me-2"></i>
+                                                El valor total de <strong>${{ formatCurrency(getSubtotal())
+                                                    }}</strong>
+                                                será entregado al <strong>Asesor</strong>
                                             </div>
+                                        </div>
 
-                                            <!-- Opción: Parcial -->
-                                            <div *ngIf="approvalForm.get('deliveryType')?.value === 'parcial'">
-                                                <div class="row">
-                                                    <div class="col-md-6 mb-3">
-                                                        <label class="form-label">
-                                                            Cantidad para Admin <span class="text-danger">*</span>
-                                                        </label>
-                                                        <div class="input-group">
-                                                            <span class="input-group-text">$</span>
-                                                            <input type="text" class="form-control"
-                                                                formControlName="adminAmount"
-                                                                (input)="formatCurrencyString(approvalForm,'adminAmount')"
-                                                                placeholder="Monto para admin">
-                                                        </div>
-                                                    </div>
-                                                    <div class="col-md-6 mb-3">
-                                                        <label class="form-label">
-                                                            Cantidad para Asesor <span class="text-danger">*</span>
-                                                        </label>
-                                                        <div class="input-group">
-                                                            <span class="input-group-text">$</span>
-                                                            <input type="text" class="form-control"
-                                                                formControlName="asesorAmount"
-                                                                (input)="formatCurrencyString(approvalForm,'asesorAmount')"
-                                                                placeholder="Monto para asesor">
-                                                        </div>
+                                        <!-- Opción: Parcial -->
+                                        <div *ngIf="approvalForm.get('deliveryType')?.value === 'parcial'">
+                                            <div class="row">
+                                                <div class="col-md-6 mb-3">
+                                                    <label class="form-label">
+                                                        Cantidad para Admin <span class="text-danger">*</span>
+                                                    </label>
+                                                    <div class="input-group">
+                                                        <span class="input-group-text">$</span>
+                                                        <input type="text" class="form-control"
+                                                            formControlName="adminAmount"
+                                                            (input)="formatCurrencyString(approvalForm,'adminAmount')"
+                                                            placeholder="Monto para admin">
                                                     </div>
                                                 </div>
-
-                                                <div class="alert"
-                                                    [ngClass]="faltanteCorrecto ? 'alert-success' : 'alert-danger'">
-                                                    <strong>Faltante:</strong> ${{ formatCurrency(faltante)
-                                                    }}<br>
-                                                    <strong>Total a entregar:</strong> ${{
-                                                    formatCurrency(getSubtotal()) }}<br>
-                                                    <span *ngIf="getSumaParcial() !== getSubtotal()"
-                                                        class="text-danger">
-                                                        <i class="bi bi-exclamation-triangle me-1"></i>
-                                                        La suma debe ser igual al subtotal
-                                                    </span>
-                                                    <span *ngIf="getSumaParcial() === getSubtotal()"
-                                                        class="text-success">
-                                                        <i class="bi bi-check-circle me-1"></i>
-                                                        ¡Correcto!
-                                                    </span>
+                                                <div class="col-md-6 mb-3">
+                                                    <label class="form-label">
+                                                        Cantidad para Asesor <span class="text-danger">*</span>
+                                                    </label>
+                                                    <div class="input-group">
+                                                        <span class="input-group-text">$</span>
+                                                        <input type="text" class="form-control"
+                                                            formControlName="asesorAmount"
+                                                            (input)="formatCurrencyString(approvalForm,'asesorAmount')"
+                                                            placeholder="Monto para asesor">
+                                                    </div>
                                                 </div>
                                             </div>
+
+                                            <div class="alert"
+                                                [ngClass]="faltanteCorrecto ? 'alert-success' : 'alert-danger'">
+                                                <strong>Faltante:</strong> ${{ formatCurrency(faltante)
+                                                }}<br>
+                                                <strong>Total a entregar:</strong> ${{
+                                                formatCurrency(getSubtotal()) }}<br>
+                                                <span *ngIf="getSumaParcial() !== getSubtotal()" class="text-danger">
+                                                    <i class="bi bi-exclamation-triangle me-1"></i>
+                                                    La suma debe ser igual al subtotal
+                                                </span>
+                                                <span *ngIf="getSumaParcial() === getSubtotal()" class="text-success">
+                                                    <i class="bi bi-check-circle me-1"></i>
+                                                    ¡Correcto!
+                                                </span>
+                                            </div>
+                                        </div>
                                     </form>
                                 </div>
 

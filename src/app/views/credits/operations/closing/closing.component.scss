@@ -1,4 +1,16 @@
 // En closing.component.scss
+//
+// ════════════════════════════════════════════════════════════════════
+// MAPA DE ESTE ARCHIVO
+//   [COMPARTIDO]        estilos genéricos (badges, tablas, botones, spinner)
+//                       usados por las dos vistas
+//   [ASESOR]            tarjetas/acordeón/listas móviles del modal simplificado
+//   [ADMIN/ASISTENTE]   estilos exclusivos del wizard de 3 pasos
+// Busca (Ctrl+F) esas etiquetas para ubicar cada bloque.
+// ════════════════════════════════════════════════════════════════════
+
+// ===== [COMPARTIDO] Estilos genéricos (spinner, tablas, botones, badges) =====
+
 @keyframes spin {
   from {
     transform: rotate(0deg);
@@ -58,12 +70,14 @@ span.active {
   letter-spacing: 0.3px;
 }
 
+// [ADMIN/ASISTENTE] badge de "Pago de Cuota" en la tabla de recaudos del wizard
 .badge-zone-red {
   box-shadow: 0 0 0 1px rgba(227, 16, 16, 0.35);
   background-color: #e31010;
-  color: #fff;  
+  color: #fff;
 }
 
+// [ADMIN/ASISTENTE] panel informativo del paso de Aprobación
 .alert-admin-panel {
   background: #f8fafc;
   border: 1px solid #cbd5e1;
@@ -75,4 +89,628 @@ span.active {
 
 .alert-admin-panel strong {
   color: #6ac75a;
+}
+
+// ============================================================
+// VISTA ASESOR — Recuperar ancho en mobile/app Capacitor.
+// El layout apila page-content + page-container (container-fluid)
+// + col-lg-12 + card-body, y entre los 4 se comen ~100px de ancho
+// a cada lado en una pantalla de teléfono. Se libera ese espacio
+// solo en mobile, sin tocar el layout de escritorio.
+// ============================================================
+@media (max-width: 767.98px) {
+  ::ng-deep .page-content {
+    padding: 0 !important;
+  }
+
+  ::ng-deep .page-container {
+    padding-left: 6px !important;
+    padding-right: 6px !important;
+  }
+
+  .col-lg-12 {
+    padding-left: 4px;
+    padding-right: 4px;
+  }
+
+  .col-lg-12>.card>.card-body {
+    padding-left: 10px;
+    padding-right: 10px;
+  }
+
+  .asesor-view .card-body {
+    padding-left: 12px;
+    padding-right: 12px;
+  }
+}
+
+// ============================================================
+// VISTA ASESOR — Resumen financiero tipo tarjeta
+// ============================================================
+.summary-card-v2 {
+  background: #fff;
+  border: 1px solid #e9ecf1;
+  border-radius: 14px;
+  overflow: hidden;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, .05);
+}
+
+.summary-card-v2-head {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 14px 18px;
+  background: rgba(var(--bs-primary-rgb), .08);
+  color: var(--bs-primary);
+  font-weight: 700;
+  font-size: .95rem;
+}
+
+.summary-card-v2-icon {
+  width: 30px;
+  height: 30px;
+  border-radius: 9px;
+  background: rgba(var(--bs-primary-rgb), .15);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.summary-card-v2-body {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 10px;
+  padding: 16px 18px;
+}
+
+@media (max-width: 991.98px) {
+  .summary-card-v2-body {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 575.98px) {
+  .summary-card-v2-body {
+    grid-template-columns: 1fr;
+    gap: 8px;
+    padding: 12px;
+  }
+
+  // En una sola columna cada cifra tiene ancho de sobra: etiqueta
+  // a la izquierda, valor a la derecha, sin envolver el número.
+  .stat-tile {
+    flex-direction: row;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 2px 10px;
+  }
+
+  .stat-value {
+    font-size: 1.05rem;
+    white-space: nowrap;
+  }
+
+  .stat-hint {
+    width: 100%;
+    text-align: right;
+  }
+}
+
+.stat-tile {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  padding: 10px 12px;
+  border-radius: 10px;
+  background: #f8f9fb;
+  border-left: 4px solid #adb5bd;
+  min-width: 0;
+}
+
+.stat-label {
+  color: #6c757d;
+  font-size: .72rem;
+  text-transform: uppercase;
+  letter-spacing: .03em;
+}
+
+.stat-value {
+  font-size: 1.15rem;
+  font-weight: 700;
+  color: #212529;
+  line-height: 1.2;
+  overflow-wrap: break-word;
+}
+
+.stat-hint {
+  color: #9ca3af;
+  font-size: .72rem;
+}
+
+.stat-hint-danger {
+  color: #dc3545;
+  font-weight: 600;
+}
+
+.stat-neutral {
+  border-left-color: #212529;
+}
+
+.stat-success {
+  border-left-color: #198754;
+
+  .stat-value {
+    color: #198754;
+  }
+}
+
+.stat-info {
+  border-left-color: #0dcaf0;
+
+  .stat-value {
+    color: #0a97b8;
+  }
+}
+
+.stat-danger {
+  border-left-color: #dc3545;
+
+  .stat-value {
+    color: #dc3545;
+  }
+}
+
+.stat-warning {
+  border-left-color: #ffc107;
+
+  .stat-value {
+    color: #b8860b;
+  }
+}
+
+.stat-primary {
+  border-left-color: var(--bs-primary);
+
+  .stat-value {
+    color: var(--bs-primary);
+  }
+}
+
+.stat-highlight {
+  background: rgba(var(--bs-primary-rgb), .06);
+}
+
+// ============================================================
+// VISTA ASESOR — Acordeón de recaudos
+// ============================================================
+.rec-accordion-card {
+  background: #fff;
+  border: 1px solid #e9ecf1;
+  border-radius: 14px;
+  overflow: hidden;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, .05);
+}
+
+.rec-accordion-head {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 6px 10px;
+  padding: 14px 18px;
+  background: rgba(var(--bs-primary-rgb), .08);
+}
+
+.rec-accordion-icon {
+  width: 30px;
+  height: 30px;
+  border-radius: 9px;
+  background: rgba(var(--bs-primary-rgb), .15);
+  color: var(--bs-primary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.rec-accordion-title {
+  font-weight: 700;
+  color: var(--bs-primary);
+  font-size: .95rem;
+  white-space: nowrap;
+}
+
+.rec-accordion-count {
+  background: #fff;
+  color: var(--bs-primary);
+  border: 1px solid rgba(var(--bs-primary-rgb), .3);
+  font-size: .72rem;
+  font-weight: 700;
+  padding: 2px 9px;
+  border-radius: 999px;
+}
+
+.rec-accordion-total {
+  margin-left: auto;
+  font-weight: 700;
+  color: #198754;
+  font-size: 1rem;
+}
+
+.rec-accordion-body {
+  max-height: 420px;
+  overflow-y: auto;
+}
+
+.rec-item {
+  border-bottom: 1px solid #f0f1f3;
+
+  &:last-child {
+    border-bottom: none;
+  }
+
+  &.open {
+    background: #fbfcfe;
+  }
+}
+
+.rec-item-summary {
+  width: 100%;
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  padding: 10px 18px;
+  background: transparent;
+  border: none;
+  text-align: left;
+  cursor: pointer;
+  transition: background .15s ease;
+
+  &:hover {
+    background: #f8f9fb;
+  }
+}
+
+.rec-item-index {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background: #eef1f5;
+  color: #6c757d;
+  font-size: .72rem;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  margin-top: 1px;
+}
+
+.rec-item-client {
+  flex: 1;
+  min-width: 0;
+  font-weight: 600;
+  font-size: .88rem;
+  color: #212529;
+  overflow-wrap: break-word;
+}
+
+.rec-item-amount {
+  font-weight: 700;
+  color: #198754;
+  font-size: .9rem;
+  white-space: nowrap;
+  margin-top: 2px;
+}
+
+.rec-item-chevron {
+  color: #9ca3af;
+  transition: transform .2s ease;
+  flex-shrink: 0;
+  margin-top: 4px;
+}
+
+.rec-item.open .rec-item-chevron {
+  transform: rotate(180deg);
+}
+
+.rec-item-body {
+  padding: 0 18px 14px 52px;
+}
+
+.rec-detail-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(110px, 1fr));
+  gap: 6px;
+  margin-bottom: 8px;
+}
+
+.rec-detail-chip {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+  background: #f8f9fb;
+  border: 1px solid #eef0f3;
+  border-radius: 8px;
+  padding: 6px 9px;
+}
+
+.rec-detail-label {
+  font-size: .65rem;
+  text-transform: uppercase;
+  letter-spacing: .03em;
+  color: #9ca3af;
+}
+
+.rec-detail-value {
+  font-size: .8rem;
+  font-weight: 600;
+  color: #374151;
+}
+
+.rec-accordion-foot {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px 18px;
+  background: #f8f9fb;
+  border-top: 1px solid #eef0f3;
+  font-size: .85rem;
+  color: #6c757d;
+
+  strong {
+    color: #198754;
+    font-size: 1.05rem;
+  }
+}
+
+@media (max-width: 575.98px) {
+  .rec-item-body {
+    padding-left: 18px;
+  }
+}
+
+// [ASESOR] Cuerpo del formulario "Gastos diarios", reutiliza el
+// contenedor .rec-accordion-card / .rec-accordion-head de Recaudos.
+.rec-form-body {
+  padding: 16px 18px;
+}
+
+// ============================================================
+// VISTA ASESOR — Listas móviles (gastos, ajustes, intenciones,
+// dinero entregado). Pensadas para verse en la app Capacitor,
+// donde una tabla ancha obligaría a hacer scroll horizontal.
+// ============================================================
+.mv-card {
+  background: #fff;
+  border: 1px solid #e9ecf1;
+  border-radius: 14px;
+  overflow: hidden;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, .05);
+}
+
+.mv-card-head {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 6px 10px;
+  padding: 12px 16px;
+  background: #f8f9fb;
+  border-bottom: 1px solid #eef0f3;
+}
+
+.mv-card-icon {
+  width: 28px;
+  height: 28px;
+  border-radius: 8px;
+  background: #eef1f5;
+  color: #495057;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: .85rem;
+  flex-shrink: 0;
+}
+
+.mv-card-title {
+  font-weight: 700;
+  font-size: .88rem;
+  color: #374151;
+  white-space: nowrap;
+}
+
+.mv-card-total {
+  margin-left: auto;
+  font-weight: 700;
+  font-size: .95rem;
+  white-space: nowrap;
+}
+
+.mv-list {
+  display: flex;
+  flex-direction: column;
+}
+
+.mv-item {
+  padding: 12px 16px;
+  border-bottom: 1px solid #f0f1f3;
+
+  &:last-child {
+    border-bottom: none;
+  }
+}
+
+.mv-item-top {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.mv-item-title {
+  flex: 1;
+  min-width: 0;
+  font-weight: 600;
+  font-size: .88rem;
+  color: #212529;
+  overflow-wrap: break-word;
+}
+
+.mv-item-amount {
+  font-weight: 700;
+  font-size: .9rem;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.mv-item-desc {
+  margin: 6px 0 0;
+  font-size: .8rem;
+  color: #6c757d;
+}
+
+.mv-item-foot {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  margin-top: 8px;
+  font-size: .75rem;
+  color: #9ca3af;
+}
+
+.mv-evidence {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  color: #b45309;
+
+  &.has-file {
+    color: #198754;
+  }
+}
+
+.mv-chip-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 6px;
+  margin-top: 8px;
+}
+
+.mv-chip {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+  background: #f8f9fb;
+  border: 1px solid #eef0f3;
+  border-radius: 8px;
+  padding: 6px 9px;
+}
+
+.mv-chip-label {
+  font-size: .65rem;
+  text-transform: uppercase;
+  letter-spacing: .03em;
+  color: #9ca3af;
+}
+
+.mv-chip-value {
+  font-size: .8rem;
+  font-weight: 600;
+  color: #374151;
+}
+
+.rec-item-detail {
+  padding: 2px 2px 12px 29px;
+}
+
+.rec-cuota-head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  margin-bottom: 7px;
+
+  .rec-cuota-title {
+    font-size: 12px;
+    font-weight: 600;
+    color: #212529;
+
+    small {
+      color: #adb5bd;
+      font-weight: 400;
+      font-size: 12px;
+    }
+  }
+
+  .rec-cuota-pend {
+    font-size: 11px;
+    color: #868e96;
+  }
+}
+
+.rec-progress {
+  display: flex;
+  gap: 3px;
+
+  .seg {
+    flex: 1;
+    height: 6px;
+    border-radius: 3px;
+    background: #e9ecef;
+
+    &.done {
+      background: #16a34a;
+    }
+
+    &.current {
+      background: #0f7a48;
+    }
+  }
+}
+
+.rec-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-top: 9px;
+
+  .chip {
+    font-size: 10.5px;
+    font-weight: 600;
+    color: #495057;
+    background: #f1f3f5;
+    border-radius: 20px;
+    padding: 5px 9px;
+  }
+
+  .chip-ok {
+    color: #0f7a48;
+    background: #e7f7ef;
+  }
+
+  .chip-warn {
+    color: #8a5a00;
+    background: #fff4e0;
+  }
+}
+
+.rec-item-foot {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-top: 9px;
+  padding-top: 8px;
+  border-top: 1px dashed #dee2e6;
+  font-size: 10.5px;
+  font-weight: 600;
+  color: #343a40;
+
+  i { color: #212529; }
+
+  .rec-id {
+    margin-left: auto;
+    font-family: ui-monospace, Menlo, monospace;
+  }
 }

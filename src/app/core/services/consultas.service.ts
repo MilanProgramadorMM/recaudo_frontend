@@ -79,7 +79,8 @@ export interface DebidoCobrarDetalleDto {
     expirationDate: string;
     clientName: string;
     clientOrden: number;
-    valorCuota: number;
+    valorCuotaNominal: number;
+    valorCuotaPendiente: number;
     zonaCode: string;
     zona: string;
     nombreDia: string;

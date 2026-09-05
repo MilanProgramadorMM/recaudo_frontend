@@ -38,94 +38,94 @@
         </div>
     </div>
 
+    <!-- Aviso: lo de arriba es consolidado de créditos activos; el detalle puntual está abajo -->
+    <div class="alert alert-light border d-flex align-items-start gap-2 mb-4">
+        <i class="ti ti-info-circle fs-16 text-muted mt-1"></i>
+        <div class="fs-13 text-muted">
+            Los datos de <strong>Cartera activa</strong> y <strong>Evolución</strong> son el consolidado de los
+            créditos <strong>activos</strong> de este cliente. Para ver el detalle de un crédito en particular,
+            selecciónalo en <strong>Historial de créditos</strong>, más abajo.
+        </div>
+    </div>
+
     <!-- ══════════════ 1. CARTERA ACTIVA ══════════════ -->
-    <h6 class="text-muted fs-13 text-uppercase mb-2">
-        <i class="ti ti-chart-pie me-1"></i> Cartera activa al {{ fecha }}
-    </h6>
-
-    <div *ngIf="loadingEstado" class="text-muted py-3">
-        <div class="spinner-border spinner-border-sm text-danger me-2" role="status"></div>
-        Cargando estado de cartera...
-    </div>
-
-    <div *ngIf="!loadingEstado && errorEstado" class="alert alert-danger">
-        <i class="ti ti-alert-circle me-2"></i>
-        No se pudo cargar el estado de la cartera para esta fecha.
-    </div>
-
-    <div *ngIf="!loadingEstado && sinCartera" class="alert alert-light border text-muted">
-        <i class="ti ti-info-circle me-2"></i>
-        Este cliente no tiene cartera registrada el {{ fecha }}. El historial de créditos de abajo
-        sigue mostrando todo su recorrido.
-    </div>
-
-    <ng-container *ngIf="!loadingEstado && estado">
-        <div class="row g-2 mb-3">
-            <div class="col-6 col-lg-3">
-                <div class="border rounded p-2 h-100">
-                    <p class="text-muted fs-13 mb-1">Saldo total</p>
-                    <h5 class="mb-0">{{ currency }} {{ formatCurrency(estado.saldoTotal) }}</h5>
-                </div>
-            </div>
-            <div class="col-6 col-lg-3">
-                <div class="border rounded p-2 h-100">
-                    <p class="text-muted fs-13 mb-1">Capital pendiente</p>
-                    <h5 class="mb-0">{{ currency }} {{ formatCurrency(estado.capital.pendiente) }}</h5>
-                </div>
-            </div>
-            <div class="col-6 col-lg-3">
-                <div class="border rounded p-2 h-100">
-                    <p class="text-muted fs-13 mb-1">Mora pendiente</p>
-                    <h5 class="mb-0 text-danger">{{ currency }} {{ formatCurrency(estado.mora.pendiente) }}</h5>
-                </div>
-            </div>
-            <div class="col-6 col-lg-3">
-                <div class="border rounded p-2 h-100">
-                    <p class="text-muted fs-13 mb-1">Créditos activos</p>
-                    <h5 class="mb-0">
-                        {{ estado.conteos.activos }}
-                        <small class="text-muted fs-13">/ {{ estado.conteos.total }}</small>
-                    </h5>
-                </div>
-            </div>
+    <div class="rec-accordion-card mb-4">
+        <div class="rec-accordion-head">
+            <span class="rec-accordion-icon"><i class="ti ti-chart-pie"></i></span>
+            <span class="rec-accordion-title">Cartera activa al {{ fecha }}</span>
         </div>
 
-        <div class="row g-2 mb-3">
-            <div class="col-6 col-lg-3">
-                <div class="border rounded p-2 h-100">
-                    <p class="text-muted fs-13 mb-1">Total pagado</p>
-                    <h6 class="mb-0 text-success">{{ currency }} {{ formatCurrency(estado.totalPagado) }}</h6>
+        <div *ngIf="loadingEstado" class="text-muted py-3 px-3">
+            <div class="spinner-border spinner-border-sm text-danger me-2" role="status"></div>
+            Cargando estado de cartera...
+        </div>
+
+        <div *ngIf="!loadingEstado && errorEstado" class="alert alert-danger m-3 mb-0">
+            <i class="ti ti-alert-circle me-2"></i>
+            No se pudo cargar el estado de la cartera para esta fecha.
+        </div>
+
+        <div *ngIf="!loadingEstado && sinCartera" class="alert alert-light border text-muted m-3 mb-0">
+            <i class="ti ti-info-circle me-2"></i>
+            Este cliente no tiene cartera registrada el {{ fecha }}. El historial de créditos de abajo
+            sigue mostrando todo su recorrido.
+        </div>
+
+        <ng-container *ngIf="!loadingEstado && estado">
+            <div class="summary-card-v2-body">
+                <div class="stat-tile stat-neutral">
+                    <small class="stat-label">Saldo total</small>
+                    <strong class="stat-value">{{ currency }} {{ formatCurrency(estado.saldoTotal) }}</strong>
                 </div>
-            </div>
-            <div class="col-6 col-lg-3">
-                <div class="border rounded p-2 h-100">
-                    <p class="text-muted fs-13 mb-1">Cuotas pagadas</p>
-                    <h6 class="mb-0">
+                <div class="stat-tile stat-info">
+                    <small class="stat-label">Capital pendiente</small>
+                    <strong class="stat-value">{{ currency }} {{ formatCurrency(estado.capital.pendiente) }}</strong>
+                </div>
+                <div class="stat-tile stat-danger">
+                    <small class="stat-label">Mora pendiente</small>
+                    <strong class="stat-value">{{ currency }} {{ formatCurrency(estado.mora.pendiente) }}</strong>
+                </div>
+                <div class="stat-tile stat-primary">
+                    <small class="stat-label">Créditos activos</small>
+                    <strong class="stat-value">
+                        {{ estado.conteos.activos }}
+                        <small class="text-muted fs-13">/ {{ estado.conteos.total }}</small>
+                    </strong>
+                </div>
+                <div class="stat-tile stat-success">
+                    <small class="stat-label">Total pagado</small>
+                    <strong class="stat-value">{{ currency }} {{ formatCurrency(estado.totalPagado) }}</strong>
+                </div>
+                <div class="stat-tile stat-info">
+                    <small class="stat-label">Cuotas pagadas</small>
+                    <strong class="stat-value">
                         {{ estado.cuotas.pagadas }}
                         <small class="text-muted fs-13">/ {{ estado.cuotas.totales }}</small>
-                    </h6>
+                    </strong>
                 </div>
-            </div>
-            <div class="col-6 col-lg-3">
-                <div class="border rounded p-2 h-100">
-                    <p class="text-muted fs-13 mb-1">Días mora máx.</p>
-                    <h6 class="mb-0">
+                <div class="stat-tile stat-warning">
+                    <small class="stat-label">Días mora máx.</small>
+                    <span class="stat-value d-block">
                         <span class="badge" [ngClass]="moraBadgeClass(estado.diasMoraMaximo)">
                             {{ estado.diasMoraMaximo ?? 0 }}
                         </span>
-                    </h6>
+                    </span>
+                </div>
+                <div class="stat-tile stat-neutral">
+                    <small class="stat-label">Días mora prom.</small>
+                    <strong class="stat-value">{{ estado.diasMoraPromedio ?? 0 }}</strong>
                 </div>
             </div>
-            <div class="col-6 col-lg-3">
-                <div class="border rounded p-2 h-100">
-                    <p class="text-muted fs-13 mb-1">Días mora prom.</p>
-                    <h6 class="mb-0">{{ estado.diasMoraPromedio ?? 0 }}</h6>
-                </div>
-            </div>
-        </div>
+        </ng-container>
+    </div>
 
-        <!-- Desglose por concepto -->
-        <div class="table-responsive mb-4">
+    <!-- Desglose por concepto -->
+    <div class="mv-card mb-4" *ngIf="!loadingEstado && estado">
+        <div class="mv-card-head">
+            <span class="mv-card-icon"><i class="ti ti-list-details"></i></span>
+            <span class="mv-card-title">Desglose por concepto</span>
+        </div>
+        <div class="table-responsive">
             <table class="table table-sm table-hover align-middle mb-0">
                 <thead>
                     <tr>
@@ -183,125 +183,122 @@
                 </tfoot>
             </table>
         </div>
-    </ng-container>
-
-    <hr class="my-4" />
+    </div>
 
     <!-- ══════════════ 2. EVOLUCIÓN ══════════════ -->
-    <h6 class="text-muted fs-13 text-uppercase mb-2">
-        <i class="ti ti-chart-line me-1"></i> Evolución entre {{ startDate }} y {{ endDate }}
-    </h6>
+    <div class="rec-accordion-card mb-4">
+        <div class="rec-accordion-head">
+            <span class="rec-accordion-icon"><i class="ti ti-chart-line"></i></span>
+            <span class="rec-accordion-title">Evolución entre {{ startDate }} y {{ endDate }}</span>
+        </div>
 
-    <div *ngIf="loadingHistorial" class="text-muted py-3">
-        <div class="spinner-border spinner-border-sm text-danger me-2" role="status"></div>
-        Cargando evolución...
-    </div>
+        <div *ngIf="loadingHistorial" class="text-muted py-3 px-3">
+            <div class="spinner-border spinner-border-sm text-danger me-2" role="status"></div>
+            Cargando evolución...
+        </div>
 
-    <div *ngIf="!loadingHistorial && errorHistorial" class="alert alert-danger">
-        <i class="ti ti-alert-circle me-2"></i>
-        No se pudo cargar la evolución de la cartera de este cliente.
-    </div>
+        <div *ngIf="!loadingHistorial && errorHistorial" class="alert alert-danger m-3 mb-0">
+            <i class="ti ti-alert-circle me-2"></i>
+            No se pudo cargar la evolución de la cartera de este cliente.
+        </div>
 
-    <div *ngIf="!loadingHistorial && sinHistorial" class="alert alert-light border text-muted">
-        <i class="ti ti-info-circle me-2"></i>
-        No hay snapshots de este cliente en el rango seleccionado. Prueba con otras fechas.
-    </div>
+        <div *ngIf="!loadingHistorial && sinHistorial" class="alert alert-light border text-muted m-3 mb-0">
+            <i class="ti ti-info-circle me-2"></i>
+            No hay snapshots de este cliente en el rango seleccionado. Prueba con otras fechas.
+        </div>
 
-    <ng-container *ngIf="!loadingHistorial && historial">
-        <!-- Resumen de la evolución -->
-        <div class="row g-2 mb-3">
-            <div class="col-6 col-lg-3">
-                <div class="border rounded p-2 h-100">
-                    <p class="text-muted fs-13 mb-1">Variación del saldo</p>
-                    <h6 class="mb-0" [ngClass]="variacionClass(historial.resumenEvolucion.variacionSaldo)">
+        <ng-container *ngIf="!loadingHistorial && historial">
+            <!-- Resumen de la evolución -->
+            <div class="summary-card-v2-body">
+                <div class="stat-tile" [ngClass]="variacionTileClass(historial.resumenEvolucion.variacionSaldo)">
+                    <small class="stat-label">Variación del saldo</small>
+                    <strong class="stat-value" [ngClass]="variacionClass(historial.resumenEvolucion.variacionSaldo)">
                         <i [class]="variacionIcon(historial.resumenEvolucion.variacionSaldo)"></i>
                         {{ currency }} {{ formatCurrency(historial.resumenEvolucion.variacionSaldo) }}
-                    </h6>
-                    <small class="text-muted" *ngIf="historial.resumenEvolucion.pctVariacionSaldo !== null">
+                    </strong>
+                    <small class="stat-hint" *ngIf="historial.resumenEvolucion.pctVariacionSaldo !== null">
                         {{ historial.resumenEvolucion.pctVariacionSaldo }}%
                     </small>
                 </div>
-            </div>
-            <div class="col-6 col-lg-3">
-                <div class="border rounded p-2 h-100">
-                    <p class="text-muted fs-13 mb-1">Total recuperado</p>
-                    <h6 class="mb-0 text-success">
+                <div class="stat-tile stat-success">
+                    <small class="stat-label">Total recuperado</small>
+                    <strong class="stat-value text-success">
                         {{ currency }} {{ formatCurrency(historial.resumenEvolucion.totalRecuperado) }}
-                    </h6>
-                    <small class="text-muted">
+                    </strong>
+                    <small class="stat-hint">
                         Capital: {{ currency }} {{ formatCurrency(historial.resumenEvolucion.capitalRecuperado) }}
                     </small>
                 </div>
-            </div>
-            <div class="col-6 col-lg-3">
-                <div class="border rounded p-2 h-100">
-                    <p class="text-muted fs-13 mb-1">Variación de mora</p>
-                    <h6 class="mb-0" [ngClass]="variacionClass(historial.resumenEvolucion.variacionMoraPendiente)">
+                <div class="stat-tile" [ngClass]="variacionTileClass(historial.resumenEvolucion.variacionMoraPendiente)">
+                    <small class="stat-label">Variación de mora</small>
+                    <strong class="stat-value" [ngClass]="variacionClass(historial.resumenEvolucion.variacionMoraPendiente)">
                         <i [class]="variacionIcon(historial.resumenEvolucion.variacionMoraPendiente)"></i>
                         {{ currency }} {{ formatCurrency(historial.resumenEvolucion.variacionMoraPendiente) }}
-                    </h6>
+                    </strong>
                 </div>
-            </div>
-            <div class="col-6 col-lg-3">
-                <div class="border rounded p-2 h-100">
-                    <p class="text-muted fs-13 mb-1">Créditos en mora</p>
-                    <h6 class="mb-0">
+                <div class="stat-tile stat-neutral">
+                    <small class="stat-label">Créditos en mora</small>
+                    <strong class="stat-value">
                         {{ historial.resumenEvolucion.creditosEnMoraInicial }}
                         <i class="ti ti-arrow-right mx-1 text-muted"></i>
                         <span [ngClass]="variacionClass(historial.resumenEvolucion.variacionCreditosEnMora)">
                             {{ historial.resumenEvolucion.creditosEnMoraFinal }}
                         </span>
-                    </h6>
-                    <small class="text-muted">{{ historial.diasConSnapshot }} días con snapshot</small>
+                    </strong>
+                    <small class="stat-hint">{{ historial.diasConSnapshot }} días con snapshot</small>
                 </div>
             </div>
+
+            <div class="px-3 pb-3">
+                <!-- Gráfico de montos -->
+                <apx-chart *ngIf="historial.serie.length > 0" [series]="evolucionChartOptions.series!"
+                    [chart]="evolucionChartOptions.chart!" [xaxis]="evolucionChartOptions.xaxis!"
+                    [yaxis]="evolucionChartOptions.yaxis!" [stroke]="evolucionChartOptions.stroke!"
+                    [dataLabels]="evolucionChartOptions.dataLabels!" [tooltip]="evolucionChartOptions.tooltip!"
+                    [legend]="evolucionChartOptions.legend!" [markers]="evolucionChartOptions.markers!"
+                    [grid]="evolucionChartOptions.grid!" [colors]="evolucionChartOptions.colors!"></apx-chart>
+
+                <!-- Gráfico de conteo de créditos -->
+                <h6 class="text-muted fs-13 text-uppercase mb-2 mt-3">Créditos al día vs. en mora</h6>
+                <apx-chart *ngIf="historial.serie.length > 0" [series]="creditosChartOptions.series!"
+                    [chart]="creditosChartOptions.chart!" [xaxis]="creditosChartOptions.xaxis!"
+                    [plotOptions]="creditosChartOptions.plotOptions!" [dataLabels]="creditosChartOptions.dataLabels!"
+                    [tooltip]="creditosChartOptions.tooltip!" [legend]="creditosChartOptions.legend!"
+                    [fill]="creditosChartOptions.fill!" [colors]="creditosChartOptions.colors!"></apx-chart>
+            </div>
+        </ng-container>
+    </div>
+
+    <!-- ══════════════ 3. HISTORIAL DE CRÉDITOS (solo activos) ══════════════ -->
+    <div class="mv-card mb-2">
+        <div class="mv-card-head">
+            <span class="mv-card-icon"><i class="ti ti-list-details"></i></span>
+            <span class="mv-card-title">Historial de créditos</span>
+            <span class="mv-card-total text-muted" *ngIf="!loadingCreditos && creditosActivos.length">
+                {{ creditosActivos.length }} activo(s)
+            </span>
         </div>
 
-        <!-- Gráfico de montos -->
-        <apx-chart *ngIf="historial.serie.length > 0" [series]="evolucionChartOptions.series!"
-            [chart]="evolucionChartOptions.chart!" [xaxis]="evolucionChartOptions.xaxis!"
-            [yaxis]="evolucionChartOptions.yaxis!" [stroke]="evolucionChartOptions.stroke!"
-            [dataLabels]="evolucionChartOptions.dataLabels!" [tooltip]="evolucionChartOptions.tooltip!"
-            [legend]="evolucionChartOptions.legend!" [markers]="evolucionChartOptions.markers!"
-            [grid]="evolucionChartOptions.grid!" [colors]="evolucionChartOptions.colors!"></apx-chart>
+        <small class="text-muted d-block px-3 pt-2" *ngIf="!loadingCreditos && !errorCreditos && creditosActivos.length">
+            <i class="ti ti-hand-click me-1"></i>Haz clic en un crédito para ver su detalle.
+        </small>
 
-        <!-- Gráfico de conteo de créditos -->
-        <h6 class="text-muted fs-13 text-uppercase mb-2 mt-3">Créditos al día vs. en mora</h6>
-        <apx-chart *ngIf="historial.serie.length > 0" [series]="creditosChartOptions.series!"
-            [chart]="creditosChartOptions.chart!" [xaxis]="creditosChartOptions.xaxis!"
-            [plotOptions]="creditosChartOptions.plotOptions!" [dataLabels]="creditosChartOptions.dataLabels!"
-            [tooltip]="creditosChartOptions.tooltip!" [legend]="creditosChartOptions.legend!"
-            [fill]="creditosChartOptions.fill!" [colors]="creditosChartOptions.colors!"></apx-chart>
-    </ng-container>
+        <div *ngIf="loadingCreditos" class="text-muted py-3 px-3">
+            <div class="spinner-border spinner-border-sm text-danger me-2" role="status"></div>
+            Cargando créditos...
+        </div>
 
-    <hr class="my-4" />
+        <div *ngIf="!loadingCreditos && errorCreditos" class="alert alert-danger m-3 mb-0">
+            <i class="ti ti-alert-circle me-2"></i>
+            No se pudo cargar el historial de créditos del cliente.
+        </div>
 
-    <!-- ══════════════ 3. HISTORIAL DE CRÉDITOS ══════════════ -->
-    <h6 class="text-muted fs-13 text-uppercase mb-1">
-        <i class="ti ti-list-details me-1"></i> Historial de créditos
-    </h6>
-    <!-- <p class="text-muted fs-13">
-        Estado actual de todos los créditos del cliente. No depende de la fecha seleccionada arriba.
-    </p> -->
+        <div *ngIf="!loadingCreditos && !errorCreditos && creditosActivos.length === 0"
+            class="text-muted text-center py-4">
+            Este cliente no tiene créditos activos.
+        </div>
 
-    <div *ngIf="loadingCreditos" class="text-muted py-3">
-        <div class="spinner-border spinner-border-sm text-danger me-2" role="status"></div>
-        Cargando créditos...
-    </div>
-
-    <div *ngIf="!loadingCreditos && errorCreditos" class="alert alert-danger">
-        <i class="ti ti-alert-circle me-2"></i>
-        No se pudo cargar el historial de créditos del cliente.
-    </div>
-
-    <div *ngIf="!loadingCreditos && !errorCreditos && creditos.length === 0" class="text-muted text-center py-4">
-        Este cliente no tiene créditos registrados.
-    </div>
-
-    <ng-container *ngIf="!loadingCreditos && !errorCreditos && creditos.length > 0">
-
-        <!-- DESKTOP -->
-        <div class="table-responsive d-none d-lg-block">
+        <div class="table-responsive" *ngIf="!loadingCreditos && !errorCreditos && creditosActivos.length > 0">
             <table class="table table-sm table-hover align-middle mb-0">
                 <thead>
                     <tr>
@@ -311,7 +308,7 @@
                     </tr>
                 </thead>
                 <tbody>
-                    <tr *ngFor="let c of creditos; trackBy: trackByCreditId" class="fila-credito" role="button"
+                    <tr *ngFor="let c of creditosActivos; trackBy: trackByCreditId" class="fila-credito" role="button"
                         (click)="verDetalleCredito(c)">
                         <td class="fw-semibold">#{{ c.id }}</td>
                         <td>{{ c.creditLineName }}</td>
@@ -320,33 +317,7 @@
                 </tbody>
             </table>
         </div>
-
-        <!-- MOBILE -->
-        <!-- <div class="d-lg-none">
-            <div class="border rounded p-3 mb-2" *ngFor="let c of creditos; trackBy: trackByCreditId">
-                <div class="d-flex justify-content-between align-items-center mb-2">
-                    <h6 class="mb-0">Crédito #{{ c.id }}</h6>
-                    <span class="badge" [ngClass]="estadoCreditoBadge(c.creditStatus)">{{ c.creditStatus }}</span>
-                </div>
-                <div class="d-flex justify-content-between fs-13 text-muted">
-                    <span>Línea</span><span class="text-body">{{ c.creditLineName }}</span>
-                </div>
-                <div class="d-flex justify-content-between fs-13 text-muted">
-                    <span>Financiado</span>
-                    <span class="text-body">{{ currency }} {{ formatCurrency(c.totalFinancedValue) }}</span>
-                </div>
-                <div class="d-flex justify-content-between fs-13 text-muted">
-                    <span>Cuota</span>
-                    <span class="text-body">{{ currency }} {{ formatCurrency(c.quotaValue) }} × {{ c.periodQuantity
-                        }}</span>
-                </div>
-                <div class="d-flex justify-content-between fs-13 text-muted">
-                    <span>Creado</span>
-                    <span class="text-body">{{ c.createdAt ? (c.createdAt | date: 'dd/MM/yyyy') : '—' }}</span>
-                </div>
-            </div>
-        </div> -->
-    </ng-container>
+    </div>
 
 </div>
 
