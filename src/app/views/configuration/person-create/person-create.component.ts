@@ -170,7 +170,7 @@ export class PersonCreateComponent implements OnInit {
       correo: data.correo,
 
       // zona
-      zona: data.zid ? Number(data.zid) : null,
+      zona: this.parseZonaId(data.zid),
       orden: data.orden
 
     });
@@ -178,14 +178,15 @@ export class PersonCreateComponent implements OnInit {
     // ===== CARGAR ZONA PARA CLIENTE =====
     if (this.personType === 'CLIENTE' && data.zid) {
       this.form.patchValue({
-        zona: Number(data.zid)  // ← AGREGAR: Establecer zona para CLIENTE
+        zona: this.parseZonaId(data.zid)
       });
     }
     // ===== CARGAR ZONAS PARA ASESOR =====
     if (this.personType === 'ASESOR' && data.zid) {
       this.selectedZonas = String(data.zid)
         .split('-')
-        .map((id: string) => Number(id.trim()));
+        .map((id: string) => Number(id.trim()))
+        .filter((id: number) => !isNaN(id) && id > 0);
     }
 
 
@@ -206,6 +207,13 @@ export class PersonCreateComponent implements OnInit {
         }
       });
     }
+  }
+
+  /** Parsea el id de zona de forma segura — nunca debe devolver NaN al form. */
+  private parseZonaId(zid: unknown): number | null {
+    if (zid === null || zid === undefined || String(zid).trim() === '') return null;
+    const n = Number(zid);
+    return isNaN(n) || n <= 0 ? null : n;
   }
 
   // Método para manejar el cambio en los checkboxes

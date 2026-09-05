@@ -80,25 +80,10 @@ export class PersonComponentComponent {
 
     this.personService.getPersonsByType(this.personType).subscribe({
       next: (response) => {
-        this.persons = response.data.map((p: any) => {
-          const cleanedPerson = { ...p };
-
-          Object.keys(cleanedPerson).forEach(key => {
-            if (
-              cleanedPerson[key] === null ||
-              cleanedPerson[key] === undefined ||
-              String(cleanedPerson[key]).trim() === ''
-            ) {
-              if (key !== 'status' && key !== 'id') {
-                cleanedPerson[key] = '---';
-              }
-            }
-          });
-
-          cleanedPerson.closingsByZona = {};
-
-          return cleanedPerson;
-        });
+        this.persons = response.data.map((p: any) => ({
+          ...p,
+          closingsByZona: {}
+        }));
 
         // CAMBIO IMPORTANTE: Cargar cierres por zona en lugar del método anterior
         if (this.personType === 'ASESOR') {
@@ -163,6 +148,18 @@ export class PersonComponentComponent {
   get pagedPersons(): PersonResponseDto[] {
     const start = (this.page - 1) * this.pageSize;
     return this.filteredPersons.slice(start, start + this.pageSize);
+  }
+
+  /**
+   * Solo para mostrar en la tabla — nunca usar el resultado para editar/guardar.
+   * A diferencia de la limpieza anterior, esto NO muta `person`, así que el
+   * modal de edición sigue viendo el dato real (null/vacío) en vez de '---'.
+   */
+  display(value: unknown): string {
+    if (value === null || value === undefined || String(value).trim() === '') {
+      return '---';
+    }
+    return String(value);
   }
 
   openUserModal(person?: PersonRegisterDto) {

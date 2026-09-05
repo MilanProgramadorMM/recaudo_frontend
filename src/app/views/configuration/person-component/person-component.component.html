@@ -111,21 +111,21 @@
                   </div>
                 </div>
               </td>
-              <td>{{ person.document }}</td>
-              <td>{{ person.lastName }}</td>
-              <td>{{ person.maternalLastname }}</td>
-              <td>{{ person.firstName }}</td>
-              <td>{{ person.middleName }}</td>
-              <td>{{ person.zona }}</td>
-              <td>{{ person.occupation }}</td>
-              <td>{{ person.correo }}</td>
-              <td>{{ person.celular }}</td>
-              <td>{{ person.whatsApp }}</td>
-              <td>{{ person.country }}</td>
-              <td>{{ person.departent }}</td>
-              <td>{{ person.city }}</td>
-              <td>{{ person.neighborhood }}</td>
-              <td *ngIf="personType === 'CLIENTE'">{{ person.orden }}</td>             
+              <td>{{ display(person.document) }}</td>
+              <td>{{ display(person.lastName) }}</td>
+              <td>{{ display(person.maternalLastname) }}</td>
+              <td>{{ display(person.firstName) }}</td>
+              <td>{{ display(person.middleName) }}</td>
+              <td>{{ display(person.zona) }}</td>
+              <td>{{ display(person.occupation) }}</td>
+              <td>{{ display(person.correo) }}</td>
+              <td>{{ display(person.celular) }}</td>
+              <td>{{ display(person.whatsApp) }}</td>
+              <td>{{ display(person.country) }}</td>
+              <td>{{ display(person.departent) }}</td>
+              <td>{{ display(person.city) }}</td>
+              <td>{{ display(person.neighborhood) }}</td>
+              <td *ngIf="personType === 'CLIENTE'">{{ display(person.orden) }}</td>
               <td>
                 <div class="form-check form-switch d-flex align-items-center gap-2">
                   <input class="form-check-input" type="checkbox" [checked]="person.status"
